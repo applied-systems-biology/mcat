@@ -26,6 +26,26 @@ public class MCATWorkbenchUI extends JFrame {
         UIUtils.setToAskOnClose(this, "Do you really want to close MCAT?", "Close window");
 
         documentTabPane = new DocumentTabPane();
+        documentTabPane.addTab( "Data",
+                UIUtils.getIconFromResources("sample.png"),
+                new MCATDataUI(this),
+                DocumentTabPane.CloseMode.withoutCloseButton,
+                false);
+        documentTabPane.addTab( "Preprocessing",
+                UIUtils.getIconFromResources("wrench.png"),
+                new MCATPreprocessingUI(this),
+                DocumentTabPane.CloseMode.withoutCloseButton,
+                false);
+        documentTabPane.addTab( "Clustering",
+                UIUtils.getIconFromResources("tree.png"),
+                new MCATClusteringUI(this),
+                DocumentTabPane.CloseMode.withoutCloseButton,
+                false);
+        documentTabPane.addTab( "Postprocessing",
+                UIUtils.getIconFromResources("statistics.png"),
+                new MCATPostprocessingUI(this),
+                DocumentTabPane.CloseMode.withoutCloseButton,
+                false);
         add(documentTabPane, BorderLayout.CENTER);
 
         initializeToolbar();
