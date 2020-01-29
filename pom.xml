@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Copyright by  Zoltán Cseresnyés, Ruman Gerst
+Research Group Applied Systems Biology - Head: Prof. Dr. Marc Thilo Figge
+https://www.leibniz-hki.de/en/applied-systems-biology.html
+HKI-Center for Systems Biology of Infection
+Leibniz Institute for Natural Product Research and Infection Biology - Hans Knöll Insitute (HKI)
+Adolf-Reichwein-Straße 23, 07745 Jena, Germany
+
+This code is licensed under BSD 2-Clause
+See the LICENSE file provided with this code for the full license.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.hkijena</groupId>
+    <artifactId>mcat</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <name>mcat</name>
+    <description>MSOT Cluster Analysis Tool</description>
+    <url>https://applied-systems-biology.github.io/mcat/</url>
+    <inceptionYear>2020</inceptionYear>
+    <organization>
+        <name>Leibniz Institute for Natural Product Research and Infection Biology - Hans Knöll Institute (HKI)</name>
+        <url>https://www.leibniz-hki.de/</url>
+    </organization>
+    <licenses>
+        <license>
+            <name>BSD-2-Clause</name>
+            <url>https://opensource.org/licenses/BSD-2-Clause</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <id>BHoffmann</id>
+            <name>Bianca Hoffmann</name>
+            <url>https://www.leibniz-hki.de/en/institut-staff-details.html?member=205</url>
+        </developer>
+        <developer>
+            <id>Zseresnyes</id>
+            <name>Zoltán Cseresnyés</name>
+            <url>https://www.leibniz-hki.de/en/asb-staff-details.html?member=144</url>
+        </developer>
+        <developer>
+            <id>RGerst</id>
+            <name>Ruman Gerst</name>
+            <url>https://www.leibniz-hki.de/en/asb-staff-details.html?member=1027</url>
+        </developer>        
+    </developers>
+    <contributors>
+        <contributor>
+            <name>None</name>
+        </contributor>
+    </contributors>
+    <mailingLists>
+        <mailingList>
+            <name>HKI Jena</name>
+            <archive>https://www.leibniz-hki.de/de/angewandte-systembiologie.html</archive>
+        </mailingList>
+    </mailingLists>
+    <scm>
+        <connection>scm:git:https://github.com/applied-systems-biology/mcat.git</connection>
+        <developerConnection>scm:git:https://github.com/applied-systems-biology/mcat.git</developerConnection>
+        <tag>HEAD</tag>
+        <url>https://github.com/applied-systems-biology/mcat</url>
+    </scm>
+    <issueManagement>
+        <system>GitHub Issues</system>
+        <url>https://github.com/applied-systems-biology/mcat/issues</url>
+    </issueManagement>
+    <ciManagement>
+        <system>GitHub CI</system>
+        <url>https://github.com/applied-systems-biology/mcat</url>
+    </ciManagement>
+
+    <parent>
+        <groupId>org.scijava</groupId>
+        <artifactId>pom-scijava</artifactId>
+        <version>26.0.0</version>
+        <relativePath />
+    </parent>
+
+    <repositories>
+        <repository>
+            <id>imagej.public</id>
+            <url>http://maven.imagej.net/content/groups/public</url>
+        </repository>
+        <repository>
+            <id>external-jars</id>
+            <name>External JAR files</name>
+            <url>file://${project.basedir}/external-dependencies</url>
+        </repository>
+    </repositories>
+
+    <dependencies>
+        <dependency>
+            <groupId>net.imagej</groupId>
+            <artifactId>imagej</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.imglib2</groupId>
+            <artifactId>imglib2-ij</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.scijava</groupId>
+            <artifactId>scijava-log-slf4j</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>26.0-jre</version>
+        </dependency>
+        <dependency>
+            <groupId>fr.inra.ijpb</groupId>
+            <artifactId>MorphoLibJ_</artifactId>
+            <version>1.4.1</version>
+        </dependency>
+        <dependency>
+            <groupId>sc.fiji</groupId>
+            <artifactId>FeatureJ_</artifactId>
+            <version>2.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>2.7.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.7.3</version>
+        </dependency>
+        <dependency>
+            <groupId>sc.fiji</groupId>
+            <artifactId>MTrackJ_</artifactId>
+            <version>1.5.4</version>
+        </dependency>
+        <dependency>
+            <groupId>sc.fiji</groupId>
+            <artifactId>RandomJ_</artifactId>
+            <version>2.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>sc.fiji</groupId>
+            <artifactId>imagescience</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.9</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.7.9</version>
+        </dependency>
+        <dependency>
+            <groupId>mpicbg</groupId>
+            <artifactId>mpicbg</artifactId>
+            <version>20120621</version>
+        </dependency>
+        <dependency>
+            <groupId>org.swinglabs.swingx</groupId>
+            <artifactId>swingx-core</artifactId>
+            <version>1.6.5-1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.vladsch.flexmark</groupId>
+            <artifactId>flexmark</artifactId>
+            <version>0.18.5</version>
+        </dependency>
+        <dependency>
+            <groupId>com.vladsch.flexmark</groupId>
+            <artifactId>flexmark-ext-tables</artifactId>
+            <version>0.18.5</version>
+        </dependency>
+        <dependency>
+            <groupId>com.vladsch.flexmark</groupId>
+            <artifactId>flexmark-ext-toc</artifactId>
+            <version>0.18.5</version>
+        </dependency>
+        <dependency>
+            <groupId>com.vladsch.flexmark</groupId>
+            <artifactId>flexmark-ext-autolink</artifactId>
+            <version>0.18.5</version>
+        </dependency>
+        <dependency>
+            <groupId>com.vladsch.flexmark</groupId>
+            <artifactId>flexmark-pdf-converter</artifactId>
+            <version>0.18.5</version>
+        </dependency>
+        <dependency>
+            <groupId>com.vladsch.flexmark</groupId>
+            <artifactId>flexmark-util</artifactId>
+            <version>0.18.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jgrapht</groupId>
+            <artifactId>jgrapht-core</artifactId>
+            <version>1.3.1</version>
+        </dependency>
+    </dependencies>
+
+    <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <license.licenseName>BSD-2-Clause</license.licenseName>
+        <license.copyrightOwners>N/A</license.copyrightOwners>
+        <license.projectName>MISA ImageJ</license.projectName>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.1.1</version>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/dependencies</outputDirectory>
+                            <overWriteReleases>false</overWriteReleases>
+                            <overWriteSnapshots>false</overWriteSnapshots>
+                            <overWriteIfNewer>true</overWriteIfNewer>
+                            <excludeGroupIds>net.imagej, net.imglib2, org.scijava, com.google.code.gson, com.google.guava, org.swinglabs, org.jfree, ome</excludeGroupIds>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.scijava</groupId>
+                <artifactId>scijava-maven-plugin</artifactId>
+                <version>1.1.0</version>
+                <executions>
+                    <execution>
+                        <id>set-rootdir</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>set-rootdir</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>copy-jars</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>copy-jars</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
