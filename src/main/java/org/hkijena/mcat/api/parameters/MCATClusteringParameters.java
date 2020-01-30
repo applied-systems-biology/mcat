@@ -8,5 +8,22 @@ import org.hkijena.mcat.api.MCATParameters;
  */
 public class MCATClusteringParameters extends MCATParameters {
     private int kMeansK = 3;
-    private MCATClusteringHierarchy clusteringHierarchy;
+    private MCATClusteringHierarchy clusteringHierarchy = MCATClusteringHierarchy.PerTreatment;
+
+    public MCATClusteringHierarchy getClusteringHierarchy() {
+        return clusteringHierarchy;
+    }
+
+    public void setClusteringHierarchy(MCATClusteringHierarchy clusteringHierarchy) {
+        this.clusteringHierarchy = clusteringHierarchy;
+
+    }
+
+    public int getkMeansK() {
+        return kMeansK;
+    }
+
+    public void setkMeansK(int kMeansK) {
+        this.kMeansK = kMeansK;
+    }
 }

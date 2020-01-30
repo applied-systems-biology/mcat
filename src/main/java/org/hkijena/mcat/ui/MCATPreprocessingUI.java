@@ -1,12 +1,41 @@
 package org.hkijena.mcat.ui;
 
+import org.hkijena.mcat.api.parameters.MCATPreprocessingParameters;
+import org.hkijena.mcat.ui.components.FormPanel;
+
+import javax.swing.*;
+import java.awt.*;
+
 public class MCATPreprocessingUI extends MCATUIPanel {
+
     public MCATPreprocessingUI(MCATWorkbenchUI workbenchUI) {
         super(workbenchUI);
         initialize();
     }
 
     private void initialize() {
+        setLayout(new BorderLayout());
+        FormPanel formPanel = new FormPanel();
 
+        MCATPreprocessingParameters parameters = getProject().getPreprocessingParameters();
+
+        // Downsampling factor
+        JSpinner downsamplingFactorEditor = formPanel.addToForm(new JSpinner(new SpinnerNumberModel(parameters.getDownsamplingFactor(),
+                0, Integer.MAX_VALUE, 1)), new JLabel("Downsampling factor (0 to disable)"));
+        downsamplingFactorEditor.setToolTipText("Set to zero to disable downsampling.");
+        downsamplingFactorEditor.addChangeListener(e -> parameters.setDownsamplingFactor((Integer)downsamplingFactorEditor.getValue()));
+
+        // Channel of interest
+        JSpinner channelOfInterestEditor = formPanel.addToForm(new JSpinner(new SpinnerNumberModel(parameters.getChannelOfInterest(),
+                0, Integer.MAX_VALUE, 1)), new JLabel("Channel of interest"));
+        channelOfInterestEditor.addChangeListener(e -> parameters.setChannelOfInterest((Integer)channelOfInterestEditor.getValue()));
+
+        // Anatomic channel
+        JSpinner anatomicChannelEditor = formPanel.addToForm(new JSpinner(new SpinnerNumberModel(parameters.getAnatomicChannel(),
+                0, Integer.MAX_VALUE, 1)), new JLabel("Anatomic channel"));
+        anatomicChannelEditor.addChangeListener(e -> parameters.setAnatomicChannel((Integer)anatomicChannelEditor.getValue()));
+
+        formPanel.addVerticalGlue();
+        add(new JScrollPane(formPanel), BorderLayout.CENTER);
     }
 }

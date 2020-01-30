@@ -7,6 +7,9 @@ import com.google.common.eventbus.EventBus;
 import org.hkijena.mcat.api.events.MCATSampleAddedEvent;
 import org.hkijena.mcat.api.events.MCATSampleRemovedEvent;
 import org.hkijena.mcat.api.events.MCATSampleRenamedEvent;
+import org.hkijena.mcat.api.parameters.MCATClusteringParameters;
+import org.hkijena.mcat.api.parameters.MCATPostprocessingParameters;
+import org.hkijena.mcat.api.parameters.MCATPreprocessingParameters;
 
 import java.awt.*;
 import java.util.HashMap;
@@ -21,6 +24,9 @@ import java.util.Set;
 public class MCATProject {
 
     private EventBus eventBus = new EventBus();
+    private MCATPreprocessingParameters preprocessingParameters = new MCATPreprocessingParameters();
+    private MCATClusteringParameters clusteringParameters = new MCATClusteringParameters();
+    private MCATPostprocessingParameters postprocessingParameters = new MCATPostprocessingParameters();
     private BiMap<String, MCATSample> samples = HashBiMap.create();
 
     public MCATProject() {
@@ -77,5 +83,17 @@ public class MCATProject {
         samples.put(name, sample);
         eventBus.post(new MCATSampleRenamedEvent(sample));
         return true;
+    }
+
+    public MCATPreprocessingParameters getPreprocessingParameters() {
+        return preprocessingParameters;
+    }
+
+    public MCATClusteringParameters getClusteringParameters() {
+        return clusteringParameters;
+    }
+
+    public MCATPostprocessingParameters getPostprocessingParameters() {
+        return postprocessingParameters;
     }
 }
