@@ -1,5 +1,7 @@
 package org.hkijena.mcat.ui;
 
+import org.hkijena.mcat.api.MCATProject;
+
 import javax.swing.*;
 
 public class MCATUIPanel extends JPanel {
@@ -12,5 +14,9 @@ public class MCATUIPanel extends JPanel {
 
     public MCATWorkbenchUI getWorkbenchUI() {
         return workbenchUI;
+    }
+
+    public MCATProject getProject() {
+        return getWorkbenchUI().getProject();
     }
 }

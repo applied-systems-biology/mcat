@@ -200,8 +200,15 @@ public class UIUtils {
     }
 
     public static Color stringToColor(String string, float s, float b) {
-        float h = Math.abs(string.hashCode() % 256) / 255.0f;
+        long hash = string == null ? 0 : string.hashCode();
+        float h = Math.abs(hash % 256) / 255.0f;
         return Color.getHSBColor(h, s, b);
+    }
+
+    public static void expandAllTree(JTree tree) {
+        for (int i = 0; i < tree.getRowCount(); i++) {
+            tree.expandRow(i);
+        }
     }
 
 }
