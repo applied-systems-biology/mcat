@@ -68,6 +68,10 @@ public class MCATSampleUI extends MCATUIPanel {
         // Add treatment selection
         JComboBox<String> treatmentEditor = formPanel.addToForm(new JComboBox<>(), new JLabel("Treatment"));
         treatmentEditor.setEditable(true);
+        treatmentEditor.setSelectedItem(sample.getParameters().getTreatment());
+        treatmentEditor.addActionListener(e -> {
+            sample.getParameters().setTreatment("" + treatmentEditor.getSelectedItem());
+        });
 
         // Add input type selection
         RadioButtonGroup<MCATSample.InputType> inputTypeEditor = formPanel.addToForm(new RadioButtonGroup<>(Arrays.asList(MCATSample.InputType.values())),

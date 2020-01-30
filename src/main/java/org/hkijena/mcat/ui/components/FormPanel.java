@@ -105,6 +105,12 @@ public class FormPanel extends JPanel {
         ++numRows;
     }
 
+    public void setGroupVisiblity(String group, boolean visible) {
+        for(Component component : componentGroups.get(group)) {
+            component.setVisible(visible);
+        }
+    }
+
     public String getCurrentGroup() {
         return currentGroup;
     }

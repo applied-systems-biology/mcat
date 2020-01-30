@@ -2,9 +2,11 @@ package org.hkijena.mcat.ui;
 
 import com.google.common.eventbus.Subscribe;
 import org.hkijena.mcat.api.MCATSample;
+import org.hkijena.mcat.api.events.MCATParameterChangedEvent;
 import org.hkijena.mcat.api.events.MCATSampleAddedEvent;
 import org.hkijena.mcat.api.events.MCATSampleRemovedEvent;
 import org.hkijena.mcat.api.events.MCATSampleRenamedEvent;
+import org.hkijena.mcat.api.parameters.MCATSampleParameters;
 import org.hkijena.mcat.ui.components.MCATSampleTreeCellRenderer;
 import org.hkijena.mcat.utils.UIUtils;
 
@@ -107,6 +109,7 @@ public class MCATSampleManagerUI extends MCATUIPanel {
         for(Map.Entry<String, Set<MCATSample>> kv : groupedSamples.entrySet()) {
             DefaultMutableTreeNode groupNode = new DefaultMutableTreeNode(kv.getValue());
             for(MCATSample sample : kv.getValue().stream().sorted().collect(Collectors.toList())) {
+                sample.getParameters().getEventBus().register(this);
                 DefaultMutableTreeNode sampleNode = new DefaultMutableTreeNode(sample);
                 if(sample == selectedSample) {
                     toSelect = sampleNode;
@@ -138,6 +141,13 @@ public class MCATSampleManagerUI extends MCATUIPanel {
     @Subscribe
     public void onSampleRenamed(MCATSampleRenamedEvent event) {
         rebuildSampleListTree();
+    }
+
+    @Subscribe
+    public void onSampleTreatmentChanged(MCATParameterChangedEvent event) {
+        if(event.getSource() instanceof MCATSampleParameters && event.getName().equals("treatment")) {
+            rebuildSampleListTree();
+        }
     }
 
     public JTree getSampleTree() {

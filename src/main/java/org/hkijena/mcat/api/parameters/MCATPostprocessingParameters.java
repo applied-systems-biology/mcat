@@ -1,6 +1,8 @@
 package org.hkijena.mcat.api.parameters;
 
-public class MCATPostprocessingParameters {
+import org.hkijena.mcat.api.MCATParameters;
+
+public class MCATPostprocessingParameters extends MCATParameters {
     private boolean analyzeNetIncrease = true;
     private boolean analyzeNetDecrease = true;
     private boolean analyzeMaxIncrease = true;

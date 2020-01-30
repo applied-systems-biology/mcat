@@ -37,7 +37,7 @@ public class MCATWorkbenchUI extends JFrame {
                 DocumentTabPane.CloseMode.withoutCloseButton,
                 false);
         documentTabPane.addTab( "Clustering",
-                UIUtils.getIconFromResources("tree.png"),
+                UIUtils.getIconFromResources("clustering.png"),
                 new MCATClusteringUI(this),
                 DocumentTabPane.CloseMode.withoutCloseButton,
                 false);

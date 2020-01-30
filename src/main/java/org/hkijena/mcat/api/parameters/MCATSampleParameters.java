@@ -1,6 +1,8 @@
 package org.hkijena.mcat.api.parameters;
 
-public class MCATSampleParameters {
+import org.hkijena.mcat.api.MCATParameters;
+
+public class MCATSampleParameters extends MCATParameters {
     private String treatment;
 
     public String getTreatment() {
@@ -9,5 +11,6 @@ public class MCATSampleParameters {
 
     public void setTreatment(String treatment) {
         this.treatment = treatment;
+        postChangedEvent("treatment");
     }
 }
