@@ -20,11 +20,11 @@ public class MCATClusteringUI extends MCATUIPanel {
         MCATClusteringParameters parameters = getProject().getClusteringParameters();
 
         JComboBox<MCATClusteringHierarchy> clusteringHierarchyEditor = formPanel.addToForm(new JComboBox<>(MCATClusteringHierarchy.values()),
-                new JLabel("Clustering hierarchy"));
+                new JLabel("Clustering hierarchy"), null);
         clusteringHierarchyEditor.setSelectedItem(parameters.getClusteringHierarchy());
         clusteringHierarchyEditor.addActionListener(e -> parameters.setClusteringHierarchy((MCATClusteringHierarchy) clusteringHierarchyEditor.getSelectedItem()));
 
         formPanel.addVerticalGlue();
-        add(new JScrollPane(formPanel), BorderLayout.CENTER);
+        add(formPanel, BorderLayout.CENTER);
     }
 }

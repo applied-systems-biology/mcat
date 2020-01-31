@@ -33,7 +33,7 @@ public class MCATSampleUI extends MCATUIPanel {
         setLayout(new BorderLayout());
         initializeTitlePanel();
         formPanel = new FormPanel();
-        add(new JScrollPane(formPanel), BorderLayout.CENTER);
+        add(formPanel, BorderLayout.CENTER);
 
         initializeGeneralSettings();
         initializeRawDataSettings();
@@ -66,7 +66,7 @@ public class MCATSampleUI extends MCATUIPanel {
         formPanel.setCurrentGroup(COMPONENTS_GENERAL);
 
         // Add treatment selection
-        JComboBox<String> treatmentEditor = formPanel.addToForm(new JComboBox<>(), new JLabel("Treatment"));
+        JComboBox<String> treatmentEditor = formPanel.addToForm(new JComboBox<>(), new JLabel("Treatment"), null);
         treatmentEditor.setEditable(true);
         treatmentEditor.setSelectedItem(sample.getParameters().getTreatment());
         treatmentEditor.addActionListener(e -> {
@@ -75,7 +75,7 @@ public class MCATSampleUI extends MCATUIPanel {
 
         // Add input type selection
         RadioButtonGroup<MCATSample.InputType> inputTypeEditor = formPanel.addToForm(new RadioButtonGroup<>(Arrays.asList(MCATSample.InputType.values())),
-                new JLabel("Input type"));
+                new JLabel("Input type"), null);
 
     }
 

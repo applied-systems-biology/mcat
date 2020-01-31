@@ -21,21 +21,24 @@ public class MCATPreprocessingUI extends MCATUIPanel {
 
         // Downsampling factor
         JSpinner downsamplingFactorEditor = formPanel.addToForm(new JSpinner(new SpinnerNumberModel(parameters.getDownsamplingFactor(),
-                0, Integer.MAX_VALUE, 1)), new JLabel("Downsampling factor (0 to disable)"));
-        downsamplingFactorEditor.setToolTipText("Set to zero to disable downsampling.");
+                0, Integer.MAX_VALUE, 1)),
+                new JLabel("Downsampling factor"),
+                "documentation/parameter_preprocessing_downsampling_factor.md");
         downsamplingFactorEditor.addChangeListener(e -> parameters.setDownsamplingFactor((Integer)downsamplingFactorEditor.getValue()));
 
         // Channel of interest
         JSpinner channelOfInterestEditor = formPanel.addToForm(new JSpinner(new SpinnerNumberModel(parameters.getChannelOfInterest(),
-                0, Integer.MAX_VALUE, 1)), new JLabel("Channel of interest"));
+                0, Integer.MAX_VALUE, 1)), new JLabel("Channel of interest"),
+                null);
         channelOfInterestEditor.addChangeListener(e -> parameters.setChannelOfInterest((Integer)channelOfInterestEditor.getValue()));
 
         // Anatomic channel
         JSpinner anatomicChannelEditor = formPanel.addToForm(new JSpinner(new SpinnerNumberModel(parameters.getAnatomicChannel(),
-                0, Integer.MAX_VALUE, 1)), new JLabel("Anatomic channel"));
+                0, Integer.MAX_VALUE, 1)), new JLabel("Anatomic channel"),
+                null);
         anatomicChannelEditor.addChangeListener(e -> parameters.setAnatomicChannel((Integer)anatomicChannelEditor.getValue()));
 
         formPanel.addVerticalGlue();
-        add(new JScrollPane(formPanel), BorderLayout.CENTER);
+        add(formPanel, BorderLayout.CENTER);
     }
 }

@@ -89,7 +89,12 @@ public class MCATSampleManagerUI extends MCATUIPanel {
     }
 
     private void batchImportSamples() {
-
+        MCATBatchImporterDialog dialog = new MCATBatchImporterDialog(getWorkbenchUI());
+        dialog.setModal(true);
+        dialog.pack();
+        dialog.setSize(new Dimension(800,600));
+        dialog.setLocationRelativeTo(this);
+        dialog.setVisible(true);
     }
 
     public void rebuildSampleListTree() {
@@ -104,7 +109,11 @@ public class MCATSampleManagerUI extends MCATUIPanel {
 
         DefaultMutableTreeNode toSelect = null;
 
-        DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("Samples");
+        String rootNodeName = "Samples";
+        if(getProject().getSamples().isEmpty()) {
+            rootNodeName = "No samples";
+        }
+        DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(rootNodeName);
         Map<String, Set<MCATSample>> groupedSamples = getProject().getSamplesGroupedByTreatment();
         for(Map.Entry<String, Set<MCATSample>> kv : groupedSamples.entrySet()) {
             DefaultMutableTreeNode groupNode = new DefaultMutableTreeNode(kv.getValue());
