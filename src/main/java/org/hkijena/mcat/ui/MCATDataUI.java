@@ -1,6 +1,8 @@
 package org.hkijena.mcat.ui;
 
+import com.google.common.eventbus.Subscribe;
 import org.hkijena.mcat.api.MCATSample;
+import org.hkijena.mcat.api.events.MCATSampleRemovedEvent;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -16,6 +18,7 @@ public class MCATDataUI extends MCATUIPanel {
         super(workbenchUI);
         sampleManagerUI = new MCATSampleManagerUI(workbenchUI);
         initialize();
+        getProject().getEventBus().register(this);
     }
 
     private void initialize() {
@@ -42,6 +45,16 @@ public class MCATDataUI extends MCATUIPanel {
         currentlyDisplayedSample = sample;
         if(sample != null) {
             splitPane.setRightComponent(new MCATSampleUI(getWorkbenchUI(), sample));
+        }
+        else {
+            splitPane.setRightComponent(new JPanel());
+        }
+    }
+
+    @Subscribe
+    public void onCurrentlyDisplayedSampleDeleted(MCATSampleRemovedEvent event) {
+        if(event.getSample() == currentlyDisplayedSample) {
+            setCurrentlyDisplayedSample(null);
         }
     }
 }

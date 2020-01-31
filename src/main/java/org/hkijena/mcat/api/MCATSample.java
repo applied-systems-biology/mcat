@@ -1,7 +1,6 @@
 package org.hkijena.mcat.api;
 
-import org.hkijena.mcat.api.datatypes.HyperstackData;
-import org.hkijena.mcat.api.datatypes.ROIData;
+import org.hkijena.mcat.api.datainterfaces.MCATRawDataInterface;
 import org.hkijena.mcat.api.parameters.MCATSampleParameters;
 import org.hkijena.mcat.ui.components.MonochromeColorIcon;
 import org.hkijena.mcat.utils.UIUtils;
@@ -14,6 +13,8 @@ public class MCATSample implements Comparable<MCATSample> {
     private MCATProject project;
 
     private MCATSampleParameters parameters = new MCATSampleParameters();
+
+    private MCATRawDataInterface rawDataInterface = new MCATRawDataInterface();
 
     public MCATSample(MCATProject project) {
         this.project = project;
@@ -42,6 +43,10 @@ public class MCATSample implements Comparable<MCATSample> {
     @Override
     public int compareTo(MCATSample other) {
         return getName().compareTo(other.getName());
+    }
+
+    public MCATRawDataInterface getRawDataInterface() {
+        return rawDataInterface;
     }
 
     public enum InputType {

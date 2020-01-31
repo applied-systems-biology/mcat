@@ -1,19 +1,18 @@
 package org.hkijena.mcat.api.datainterfaces;
 
-import org.hkijena.mcat.api.MCATDataSlot;
-import org.hkijena.mcat.api.datatypes.HyperstackData;
-import org.hkijena.mcat.api.datatypes.ROIData;
+import org.hkijena.mcat.api.dataslots.HyperstackDataSlot;
+import org.hkijena.mcat.api.dataslots.ROIDataSlot;
 
 public class MCATRawDataInterface {
 
-    private MCATDataSlot<HyperstackData> rawImage = new MCATDataSlot<>(HyperstackData.class);
-    private MCATDataSlot<ROIData> tissueROI = new MCATDataSlot<>(ROIData.class);
+    private HyperstackDataSlot rawImage = new HyperstackDataSlot();
+    private ROIDataSlot tissueROI = new ROIDataSlot();
 
-    public MCATDataSlot<HyperstackData> getRawImage() {
+    public HyperstackDataSlot getRawImage() {
         return rawImage;
     }
 
-    public MCATDataSlot<ROIData> getTissueROI() {
+    public ROIDataSlot getTissueROI() {
         return tissueROI;
     }
 }

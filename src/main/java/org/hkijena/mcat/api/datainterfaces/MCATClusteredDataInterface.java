@@ -1,18 +1,17 @@
 package org.hkijena.mcat.api.datainterfaces;
 
-import org.hkijena.mcat.api.MCATDataSlot;
-import org.hkijena.mcat.api.datatypes.ClusterCentersData;
-import org.hkijena.mcat.api.datatypes.HyperstackData;
+import org.hkijena.mcat.api.dataslots.ClusterCentersDataSlot;
+import org.hkijena.mcat.api.dataslots.HyperstackDataSlot;
 
 public class MCATClusteredDataInterface {
-    private MCATDataSlot<ClusterCentersData> clusterCenters = new MCATDataSlot<>(ClusterCentersData.class);
-    private MCATDataSlot<HyperstackData> clusterImages = new MCATDataSlot<>(HyperstackData.class);
+    private ClusterCentersDataSlot clusterCenters = new ClusterCentersDataSlot();
+    private HyperstackDataSlot clusterImages = new HyperstackDataSlot();
 
-    public MCATDataSlot<ClusterCentersData> getClusterCenters() {
+    public ClusterCentersDataSlot getClusterCenters() {
         return clusterCenters;
     }
 
-    public MCATDataSlot<HyperstackData> getClusterImages() {
+    public HyperstackDataSlot getClusterImages() {
         return clusterImages;
     }
 }

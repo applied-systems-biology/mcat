@@ -11,11 +11,7 @@ import org.hkijena.mcat.api.parameters.MCATClusteringParameters;
 import org.hkijena.mcat.api.parameters.MCATPostprocessingParameters;
 import org.hkijena.mcat.api.parameters.MCATPreprocessingParameters;
 
-import java.awt.*;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * An ACAQ5 project.
@@ -83,6 +79,15 @@ public class MCATProject {
         samples.put(name, sample);
         eventBus.post(new MCATSampleRenamedEvent(sample));
         return true;
+    }
+
+    public Set<String> getKnownTreatments() {
+        Set<String> result = new HashSet<>();
+        for(MCATSample sample : samples.values()) {
+            if(sample.getParameters().getTreatment() != null)
+                result.add(sample.getParameters().getTreatment());
+        }
+        return result;
     }
 
     public MCATPreprocessingParameters getPreprocessingParameters() {

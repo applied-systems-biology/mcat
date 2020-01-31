@@ -1,11 +1,8 @@
 package org.hkijena.mcat.ui.components;
 
-import org.scijava.util.Colors;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

@@ -1,5 +1,8 @@
 package org.hkijena.mcat.api;
 
+import org.hkijena.mcat.api.dataproviders.HyperstackFromTifDataProvider;
+import org.hkijena.mcat.api.dataproviders.ROIFromFileDataProvider;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -146,13 +149,33 @@ public class MCATBatchImporter {
         return project;
     }
 
-    private MCATSample importSample(Path folder, String treatment) {
+    private Path matchFile(Path folder, String pattern) throws IOException {
+        return Files.list(folder).filter(path -> path.getFileName().toString().matches(pattern)).findFirst().orElse(null);
+    }
+
+    private MCATSample importSample(Path folder, String treatment) throws IOException {
         String name = folder.getFileName().toString();
         if(treatment != null && includeTreatmentInName) {
             name = treatment + "_" + name;
         }
         MCATSample sample = getProject().addSample(name);
         sample.getParameters().setTreatment(treatment);
+
+        if(importRawImages) {
+            Path matched = matchFile(folder, rawImagesPattern);
+            if(matched != null) {
+                sample.getRawDataInterface().getRawImage().getProvider(HyperstackFromTifDataProvider.class).setFilePath(matched);
+                sample.getRawDataInterface().getRawImage().setCurrentProvider(HyperstackFromTifDataProvider.class);
+            }
+        }
+        if(importROI) {
+            Path matched = matchFile(folder, roiPattern);
+            if(matched != null) {
+                sample.getRawDataInterface().getTissueROI().getProvider(ROIFromFileDataProvider.class).setFilePath(matched);
+                sample.getRawDataInterface().getTissueROI().setCurrentProvider(ROIFromFileDataProvider.class);
+            }
+        }
+
         return sample;
     }
 
@@ -169,7 +192,9 @@ public class MCATBatchImporter {
 
         for(Path treatmentPath : treatmentPaths) {
             String treatmentName = treatmentPath.equals(inputFolder) ? null : treatmentPath.getFileName().toString();
-            result.add(importSample(treatmentPath, treatmentName));
+            for(Path samplePath : Files.list(treatmentPath).filter(d -> Files.isDirectory(d)).collect(Collectors.toList())) {
+                result.add(importSample(samplePath, treatmentName));
+            }
         }
 
         return result;

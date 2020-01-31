@@ -59,9 +59,40 @@ public class MCATSampleManagerUI extends MCATUIPanel {
 
         toolBar.add(Box.createHorizontalGlue());
 
-        JButton removeButton = new JButton("Remove selected", UIUtils.getIconFromResources("delete.png"));
+        JButton changeTreatmentButton = new JButton(UIUtils.getIconFromResources("relabel-sample.png"));
+        changeTreatmentButton.setToolTipText("Set treatment of selected samples");
+        changeTreatmentButton.addActionListener(e -> relabelSelectedSamples());
+        toolBar.add(changeTreatmentButton);
+
+        JButton removeButton = new JButton(UIUtils.getIconFromResources("delete.png"));
+        removeButton.setToolTipText("Remove selected samples");;
         removeButton.addActionListener(e -> removeSelectedSamples());
         toolBar.add(removeButton);
+
+    }
+
+    private void relabelSelectedSamples() {
+        Set<MCATSample> toRelabel = new HashSet<>();
+        Set<String> treatments = new HashSet<>();
+        if(getSampleTree().getSelectionPaths() != null) {
+            for(TreePath path : getSampleTree().getSelectionPaths()) {
+                DefaultMutableTreeNode nd = (DefaultMutableTreeNode)path.getLastPathComponent();
+                if(nd.getUserObject() instanceof MCATSample) {
+                    toRelabel.add((MCATSample)nd.getUserObject());
+                    treatments.add(((MCATSample)(nd.getUserObject())).getParameters().getTreatment());
+                }
+            }
+        }
+
+        if(!toRelabel.isEmpty()) {
+            String suggestion = String.join("_", treatments);
+            String newName = JOptionPane.showInputDialog(this,"Please input a new treatment", suggestion);
+            if(newName != null && !newName.isEmpty()) {
+                for(MCATSample sample : toRelabel) {
+                    sample.getParameters().setTreatment(newName);
+                }
+            }
+        }
     }
 
     private void removeSelectedSamples() {

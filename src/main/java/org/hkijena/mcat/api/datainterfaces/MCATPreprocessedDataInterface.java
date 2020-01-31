@@ -1,18 +1,17 @@
 package org.hkijena.mcat.api.datainterfaces;
 
-import org.hkijena.mcat.api.MCATDataSlot;
-import org.hkijena.mcat.api.datatypes.DerivationMatrixData;
-import org.hkijena.mcat.api.datatypes.HyperstackData;
+import org.hkijena.mcat.api.dataslots.DerivationMatrixDataSlot;
+import org.hkijena.mcat.api.dataslots.HyperstackDataSlot;
 
 public class MCATPreprocessedDataInterface {
-    private MCATDataSlot<HyperstackData> preprocessedImage = new MCATDataSlot<>(HyperstackData.class);
-    private MCATDataSlot<DerivationMatrixData> derivationMatrix = new MCATDataSlot<>(DerivationMatrixData.class);
+    private HyperstackDataSlot preprocessedImage = new HyperstackDataSlot();
+    private DerivationMatrixDataSlot derivationMatrix = new DerivationMatrixDataSlot();
 
-    public MCATDataSlot<HyperstackData> getPreprocessedImage() {
+    public HyperstackDataSlot getPreprocessedImage() {
         return preprocessedImage;
     }
 
-    public MCATDataSlot<DerivationMatrixData> getDerivationMatrix() {
+    public DerivationMatrixDataSlot getDerivationMatrix() {
         return derivationMatrix;
     }
 }

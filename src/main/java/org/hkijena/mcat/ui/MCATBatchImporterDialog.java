@@ -10,7 +10,7 @@ import org.hkijena.mcat.utils.UIUtils;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import java.awt.*;
-import java.security.Provider;
+import java.io.IOException;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -80,7 +80,7 @@ public class MCATBatchImporterDialog extends JDialog {
         fileSelection.getFileChooser().setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         fileSelection.addActionListener(e -> batchImporter.setInputFolder(fileSelection.getPath()));
 
-        JCheckBox treatmentFolders = formPanel.addToForm(new JCheckBox("Subfolders are treatments"),
+        JCheckBox treatmentFolders = formPanel.addToForm(new JCheckBox("Subfolders are treatments", batchImporter.isSubfoldersAreTreatments()),
                 null);
         treatmentFolders.addActionListener(e -> batchImporter.setSubfoldersAreTreatments(treatmentFolders.isSelected()));
         formPanel.setCurrentGroup("Subfolders are treatments");
@@ -131,6 +131,11 @@ public class MCATBatchImporterDialog extends JDialog {
     }
 
     private void runImport() {
-        setVisible(false);
+        try {
+            batchImporter.run();
+            setVisible(false);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

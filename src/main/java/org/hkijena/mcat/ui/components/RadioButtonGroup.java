@@ -1,7 +1,10 @@
 package org.hkijena.mcat.ui.components;
 
 import javax.swing.*;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class RadioButtonGroup<T> extends JPanel {
     private List<T> options;

@@ -1,11 +1,21 @@
 package org.hkijena.mcat.api;
 
-public class MCATDataSlot<T extends MCATData> {
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
+public abstract class MCATDataSlot<T extends MCATData> {
+
     private Class<T> acceptedDataType;
     private T data;
+    private Map<Class<? extends MCATDataProvider<T>> ,MCATDataProvider<T>> availableProviders = new HashMap<>();
+    private MCATDataProvider<T> dataProvider;
 
-    public MCATDataSlot(Class<T> acceptedDataType) {
+    public MCATDataSlot(Class<T> acceptedDataType, MCATDataProvider<T>... dataProviders) {
         this.acceptedDataType = acceptedDataType;
+        for(MCATDataProvider<T> provider : dataProviders) {
+            availableProviders.put((Class<? extends MCATDataProvider<T>>) provider.getClass(), provider);
+        }
     }
 
     public Class<T> getAcceptedDataType() {
@@ -13,10 +23,52 @@ public class MCATDataSlot<T extends MCATData> {
     }
 
     public T getData() {
+        // Automatically load data if available
+        if(data == null && dataProvider != null)
+            data = dataProvider.get();
         return data;
     }
 
     public void setData(T data) {
         this.data = data;
+    }
+
+    /**
+     * Gets the matching data provider
+     * @param klass
+     * @param <U>
+     * @return
+     */
+    public <U extends MCATDataProvider<T>> U getProvider(Class<? extends U> klass) {
+        return (U)availableProviders.get(klass);
+    }
+
+    public MCATDataProvider<T> getCurrentProvider() {
+        return dataProvider;
+    }
+
+    /**
+     * Sets the data provider to the specified type.
+     * Set to null to disable the data provider.
+     * @param klass
+     * @param <U>
+     */
+    public <U extends MCATDataProvider<T>> void setCurrentProvider(Class<? extends U> klass) {
+        if(klass != null)
+            dataProvider = getProvider(klass);
+        else
+            dataProvider = null;
+    }
+
+    /**
+     * Ensures that a data provider is assigned
+     */
+    public void ensureDataProvider() {
+        if(dataProvider == null)
+            dataProvider = availableProviders.values().iterator().next();
+    }
+
+    public Map<Class<? extends MCATDataProvider<T>>, MCATDataProvider<T>> getAvailableProviders() {
+        return Collections.unmodifiableMap(availableProviders);
     }
 }

@@ -91,7 +91,10 @@ public class FileSelection extends JPanel {
     }
 
     public void setPath(Path path) {
-        pathEdit.setText(path.toString());
+        if(path != null)
+            pathEdit.setText(path.toString());
+        else
+            pathEdit.setText("");
     }
 
     public Path getPath() {

@@ -66,7 +66,8 @@ public class MCATSampleUI extends MCATUIPanel {
         formPanel.setCurrentGroup(COMPONENTS_GENERAL);
 
         // Add treatment selection
-        JComboBox<String> treatmentEditor = formPanel.addToForm(new JComboBox<>(), new JLabel("Treatment"),
+        JComboBox<String> treatmentEditor = formPanel.addToForm(new JComboBox<>(sample.getProject().getKnownTreatments().toArray(new String[0])),
+                new JLabel("Treatment"),
                 "documentation/parameter_sample_treatment.md");
         treatmentEditor.setEditable(true);
         treatmentEditor.setSelectedItem(sample.getParameters().getTreatment());
@@ -89,6 +90,14 @@ public class MCATSampleUI extends MCATUIPanel {
 
     private void initializeRawDataSettings() {
         formPanel.setCurrentGroup(COMPONENTS_RAW_DATA);
+
+        MCATDataSlotUI rawImageEditor = formPanel.addToForm(new MCATDataSlotUI(sample, sample.getRawDataInterface().getRawImage()),
+                new JLabel("Raw image"),
+                null);
+
+        MCATDataSlotUI roiEditor = formPanel.addToForm(new MCATDataSlotUI(sample, sample.getRawDataInterface().getTissueROI()),
+                new JLabel("Tissue ROI"),
+                null);
     }
 
     private void renameSample() {
