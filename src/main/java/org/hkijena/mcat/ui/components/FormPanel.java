@@ -41,22 +41,20 @@ public class FormPanel extends JPanel {
     }
 
     private void documentComponent(Component component, String documentationPath) {
-        if(documentationPath != null) {
-            component.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseEntered(MouseEvent e) {
-                    super.mouseEntered(e);
-                    parameterHelp.loadFromResource(documentationPath);
-                }
-            });
-            component.addFocusListener(new FocusAdapter() {
-                @Override
-                public void focusGained(FocusEvent e) {
-                    super.focusGained(e);
-                    parameterHelp.loadFromResource(documentationPath);
-                }
-            });
-        }
+        component.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                super.mouseEntered(e);
+                parameterHelp.loadFromResource(documentationPath);
+            }
+        });
+        component.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                super.focusGained(e);
+                parameterHelp.loadFromResource(documentationPath);
+            }
+        });
     }
 
     public <T extends Component> T addToForm(T component, String documentationPath) {
