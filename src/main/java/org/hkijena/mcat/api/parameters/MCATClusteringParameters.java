@@ -7,7 +7,7 @@ import org.hkijena.mcat.api.MCATParameters;
  * Data class that contains all clustering parameters
  */
 public class MCATClusteringParameters extends MCATParameters {
-    private int kMeansK = 3;
+    private int kMeansK = 6;
     private MCATClusteringHierarchy clusteringHierarchy = MCATClusteringHierarchy.PerTreatment;
 
     public MCATClusteringHierarchy getClusteringHierarchy() {

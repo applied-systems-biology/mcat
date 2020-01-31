@@ -28,4 +28,13 @@ public class StringUtils {
         }
         return input + " " + index;
     }
+
+    public static String capitalizeFirstLetter(String input) {
+        if(input == null || input.length() < 2) {
+            return input;
+        }
+        else {
+            return input.substring(0, 1).toUpperCase() + input.substring(1);
+        }
+    }
 }

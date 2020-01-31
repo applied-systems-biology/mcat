@@ -53,6 +53,7 @@ public class MarkdownReader extends JPanel {
     private JScrollPane scrollPane;
     private JTextPane content;
     private String markdown;
+    private String defaultDocumentMarkdown;
 
     public MarkdownReader(boolean withToolbar) {
         initialize(withToolbar);
@@ -197,6 +198,10 @@ public class MarkdownReader extends JPanel {
     }
 
     public void setMarkdown(String markdown) {
+        if(markdown == null)
+            markdown = "";
+        if(markdown.equals(this.markdown))
+            return;
         this.markdown = markdown;
         Parser parser = Parser.builder(OPTIONS).build();
         Node document = parser.parse(markdown);
@@ -208,7 +213,7 @@ public class MarkdownReader extends JPanel {
 
     public void loadFromResource(String resourcePath) {
         if(resourcePath == null) {
-            setMarkdown("");
+            setMarkdown(defaultDocumentMarkdown);
             return;
         }
         try {
@@ -222,5 +227,26 @@ public class MarkdownReader extends JPanel {
 
     public String getMarkdown() {
         return markdown;
+    }
+
+    public String getDefaultDocumentMarkdown() {
+        return defaultDocumentMarkdown;
+    }
+
+    public void setDefaultDocumentMarkdown(String defaultDocumentMarkdown) {
+        this.defaultDocumentMarkdown = defaultDocumentMarkdown;
+        setMarkdown(defaultDocumentMarkdown);
+    }
+
+    public void loadDefaultDocument(String resourcePath) {
+        if(resourcePath == null)
+            return;
+        try {
+            String md = Resources.toString(ResourceUtils.getPluginResource(resourcePath), Charsets.UTF_8);
+            md = md.replace("image://", ResourceUtils.getPluginResource("").toString());
+            setDefaultDocumentMarkdown(md);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

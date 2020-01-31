@@ -4,10 +4,7 @@ import org.scijava.util.Colors;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,20 +21,30 @@ public class FormPanel extends JPanel {
     private JPanel forms = new JPanel();
     private MarkdownReader parameterHelp;
 
-    public FormPanel() {
+    public FormPanel(String defaultHelpDocumentPath) {
         setLayout(new BorderLayout());
         forms.setLayout(new GridBagLayout());
 
         JPanel helpPanel = new JPanel(new BorderLayout());
         parameterHelp = new MarkdownReader(false);
+        parameterHelp.loadDefaultDocument(defaultHelpDocumentPath);
         helpPanel.add(parameterHelp, BorderLayout.CENTER);
 
-        add(new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, new JScrollPane(forms), helpPanel) {
-            {
-                setDividerSize(3);
-                setResizeWeight(0.33);
+        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, new JScrollPane(forms), helpPanel);
+        splitPane.setDividerSize(3);
+        splitPane.setResizeWeight(0.33);
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                super.componentResized(e);
+                splitPane.setDividerLocation(0.66);
             }
         });
+        add(splitPane, BorderLayout.CENTER);
+    }
+
+    public FormPanel() {
+        this(null);
     }
 
     private void documentComponent(Component component, String documentationPath) {
@@ -98,6 +105,7 @@ public class FormPanel extends JPanel {
         });
         ++numRows;
         getComponentListForCurrentGroup().add(component);
+        getComponentListForCurrentGroup().add(description);
         documentComponent(component, documentationPath);
         documentComponent(description, documentationPath);
         return component;
@@ -148,6 +156,11 @@ public class FormPanel extends JPanel {
         for(Component component : componentGroups.get(group)) {
             component.setVisible(visible);
         }
+    }
+
+    public void addGroupToggle(AbstractButton toggle, String group) {
+        toggle.addActionListener(e -> setGroupVisiblity(group, toggle.isSelected()));
+        setGroupVisiblity(group, toggle.isSelected());
     }
 
     public String getCurrentGroup() {

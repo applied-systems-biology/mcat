@@ -15,30 +15,12 @@ public class MCATSample implements Comparable<MCATSample> {
 
     private MCATSampleParameters parameters = new MCATSampleParameters();
 
-    /**
-     * The raw input image
-     */
-    private MCATDataSlot<HyperstackData> rawInputImage = new MCATDataSlot<>(HyperstackData.class);
-
-    /**
-     * The ROI of the tissue
-     */
-    private MCATDataSlot<ROIData> tissueROI = new MCATDataSlot<>(ROIData.class);
-
     public MCATSample(MCATProject project) {
         this.project = project;
     }
 
     public MCATProject getProject() {
         return project;
-    }
-
-    public MCATDataSlot<HyperstackData> getRawInputImage() {
-        return rawInputImage;
-    }
-
-    public MCATDataSlot<ROIData> getTissueROI() {
-        return tissueROI;
     }
 
     public MCATSampleParameters getParameters() {

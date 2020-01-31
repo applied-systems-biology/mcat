@@ -71,11 +71,19 @@ public class MCATWorkbenchUI extends JFrame {
 
         // "Run" entry
         JButton runProject = new JButton("Run", UIUtils.getIconFromResources("run.png"));
+        runProject.addActionListener(e -> openRunUI());
         toolBar.add(runProject);
 
         initializeToolbarHelpMenu(toolBar);
 
         add(toolBar, BorderLayout.NORTH);
+    }
+
+    private void openRunUI() {
+        MCATRunUI ui = new MCATRunUI(this);
+        documentTabPane.addTab("Run", UIUtils.getIconFromResources("run.png"), ui,
+                DocumentTabPane.CloseMode.withAskOnCloseButton, false);
+        documentTabPane.switchToLastTab();
     }
 
     private void initializeToolbarHelpMenu(JToolBar toolBar) {
