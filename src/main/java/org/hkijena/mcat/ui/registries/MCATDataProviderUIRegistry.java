@@ -16,6 +16,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Contains definitions that link a {@link MCATDataProvider} to its respective UI class
+ */
 public class MCATDataProviderUIRegistry {
 
     private static MCATDataProviderUIRegistry instance;

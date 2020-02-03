@@ -6,6 +6,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * A group of multiple radio button options
+ * @param <T>
+ */
 public class RadioButtonGroup<T> extends JPanel {
     private List<T> options;
     private Map<T, JRadioButton> buttons = new HashMap<>();

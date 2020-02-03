@@ -11,10 +11,13 @@ import org.hkijena.mcat.api.parameters.MCATClusteringParameters;
 import org.hkijena.mcat.api.parameters.MCATPostprocessingParameters;
 import org.hkijena.mcat.api.parameters.MCATPreprocessingParameters;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
- * An ACAQ5 project.
+ * An MCAT5 project.
  * It contains all information to setup and run an analysis
  */
 public class MCATProject {

@@ -20,20 +20,39 @@ import java.net.URL;
  */
 public class ResourceUtils {
 
+    /**
+     * Returns the resource path for this software
+     * @return
+     */
     public static String getResourceBasePath() {
         return "/org/hkijena/mcat";
     }
 
+    /**
+     * Returns the path of a resource within the getResourceBasePath()
+     * @param internalResourcePath
+     * @return
+     */
     public static String getResourcePath(String internalResourcePath) {
         if(internalResourcePath.startsWith("/"))
             internalResourcePath = internalResourcePath.substring(1);
         return getResourceBasePath() + "/" + internalResourcePath;
     }
 
+    /**
+     * Returns a resource URL
+     * @param internalResourcePath
+     * @return
+     */
     public static URL getPluginResource(String internalResourcePath) {
         return ResourceUtils.class.getResource(getResourcePath(internalResourcePath));
     }
 
+    /**
+     * Returns a resource stream
+     * @param internalResourcePath
+     * @return
+     */
     public static InputStream getPluginResourceAsStream(String internalResourcePath) {
         return ResourceUtils.class.getResourceAsStream(getResourcePath(internalResourcePath));
     }

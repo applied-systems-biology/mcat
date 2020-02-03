@@ -5,6 +5,9 @@ import org.hkijena.mcat.api.datatypes.ClusterCentersData;
 
 import java.nio.file.Path;
 
+/**
+ * Loads a {@link ClusterCentersData} from a file
+ */
 public class ClusterCentersFromFileProvider implements MCATDataProvider<ClusterCentersData> {
 
     private Path filePath;

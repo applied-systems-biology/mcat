@@ -9,6 +9,9 @@ import org.hkijena.mcat.utils.UIUtils;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * UI for a {@link MCATDataSlot}
+ */
 public class MCATDataSlotUI extends JPanel {
     private MCATSample sample;
     private MCATDataSlot<?> slot;

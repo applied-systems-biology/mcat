@@ -7,6 +7,9 @@ import org.hkijena.mcat.ui.components.FileSelection;
 
 import java.awt.*;
 
+/**
+ * UI for {@link HyperstackFromTifDataProvider}
+ */
 public class HyperstackFromTifDataProviderUI extends MCATDataProviderUI<HyperstackFromTifDataProvider> {
     public HyperstackFromTifDataProviderUI(MCATSample sample, HyperstackFromTifDataProvider dataProvider) {
         super(sample, dataProvider);

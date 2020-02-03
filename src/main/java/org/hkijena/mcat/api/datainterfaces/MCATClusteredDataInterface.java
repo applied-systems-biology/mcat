@@ -3,6 +3,9 @@ package org.hkijena.mcat.api.datainterfaces;
 import org.hkijena.mcat.api.dataslots.ClusterCentersDataSlot;
 import org.hkijena.mcat.api.dataslots.HyperstackDataSlot;
 
+/**
+ * Organizes clustered data
+ */
 public class MCATClusteredDataInterface {
     private ClusterCentersDataSlot clusterCenters = new ClusterCentersDataSlot();
     private HyperstackDataSlot clusterImages = new HyperstackDataSlot();

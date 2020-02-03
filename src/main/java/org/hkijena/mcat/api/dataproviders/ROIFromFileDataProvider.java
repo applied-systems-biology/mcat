@@ -6,6 +6,9 @@ import org.hkijena.mcat.api.datatypes.ROIData;
 
 import java.nio.file.Path;
 
+/**
+ * Loads a {@link ROIData} from a file
+ */
 public class ROIFromFileDataProvider implements MCATDataProvider<ROIData> {
 
     private Path filePath;

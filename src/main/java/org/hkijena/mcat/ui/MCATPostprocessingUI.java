@@ -6,6 +6,9 @@ import org.hkijena.mcat.ui.components.FormPanel;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * UI for postprocessing parameters
+ */
 public class MCATPostprocessingUI extends MCATUIPanel {
     public MCATPostprocessingUI(MCATWorkbenchUI workbenchUI) {
         super(workbenchUI);

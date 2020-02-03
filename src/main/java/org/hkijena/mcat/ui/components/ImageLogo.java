@@ -3,6 +3,9 @@ package org.hkijena.mcat.ui.components;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Draws an image fit into the panel's boundaries
+ */
 public class ImageLogo extends JPanel {
     private Image image;
 

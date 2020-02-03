@@ -6,6 +6,9 @@ import org.hkijena.mcat.api.datatypes.HyperstackData;
 
 import java.nio.file.Path;
 
+/**
+ * Loads a {@link HyperstackData} from a file
+ */
 public class HyperstackFromTifDataProvider implements MCATDataProvider<HyperstackData> {
 
     private Path filePath;

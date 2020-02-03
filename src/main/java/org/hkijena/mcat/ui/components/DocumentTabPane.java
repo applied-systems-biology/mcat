@@ -21,6 +21,9 @@ import java.util.List;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Provides a tabbed interface
+ */
 public class DocumentTabPane extends JTabbedPane {
     public enum CloseMode {
         withSilentCloseButton,

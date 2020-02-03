@@ -1,5 +1,8 @@
 package org.hkijena.mcat.api;
 
+/**
+ * Contains clustering hierarchy types
+ */
 public enum MCATClusteringHierarchy {
     AllInOne,
     PerTreatment,

@@ -6,6 +6,9 @@ import org.hkijena.mcat.api.MCATData;
 
 import java.nio.file.Path;
 
+/**
+ * Contains a hyperstack as {@link ImagePlus}
+ */
 public class HyperstackData extends MCATData {
 
     private ImagePlus image;

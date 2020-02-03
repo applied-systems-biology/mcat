@@ -2,6 +2,9 @@ package org.hkijena.mcat.api.parameters;
 
 import org.hkijena.mcat.api.MCATParameters;
 
+/**
+ * Contains sample parameters
+ */
 public class MCATSampleParameters extends MCATParameters {
     private String treatment;
 

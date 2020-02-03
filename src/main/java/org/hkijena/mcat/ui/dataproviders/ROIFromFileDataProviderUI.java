@@ -7,6 +7,9 @@ import org.hkijena.mcat.ui.components.FileSelection;
 
 import java.awt.*;
 
+/**
+ * UI for {@link ROIFromFileDataProvider}
+ */
 public class ROIFromFileDataProviderUI extends MCATDataProviderUI<ROIFromFileDataProvider> {
     public ROIFromFileDataProviderUI(MCATSample sample, ROIFromFileDataProvider dataProvider) {
         super(sample, dataProvider);

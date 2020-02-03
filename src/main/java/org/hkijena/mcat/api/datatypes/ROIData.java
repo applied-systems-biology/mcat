@@ -7,6 +7,9 @@ import org.hkijena.mcat.api.MCATData;
 import java.io.IOException;
 import java.nio.file.Path;
 
+/**
+ * Contains a {@link Roi}
+ */
 public class ROIData extends MCATData {
 
     private Roi roi;

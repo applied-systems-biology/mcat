@@ -4,6 +4,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Base class for a data slot.
+ * A slot holds data and also have the capability to load data from an MCATDataProvider if data is requested, but not set
+ * @param <T> data type held within this slow
+ */
 public abstract class MCATDataSlot<T extends MCATData> {
 
     private Class<T> acceptedDataType;

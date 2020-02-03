@@ -28,118 +28,11 @@ public class UIUtils {
 
     public static final Insets UI_PADDING = new Insets(4,4,4,4);
 
-    public static JLabel createDescriptionLabelUI(JPanel panel, String text, int row, int column) {
-        JLabel description = new JLabel(text);
-        panel.add(description, new GridBagConstraints() {
-            {
-                anchor = GridBagConstraints.WEST;
-                gridx = column;
-                gridy = row;
-                insets = UI_PADDING;
-            }
-        });
-        return description;
-    }
-
-    public static JTextField createDescriptionTextFieldUI(JPanel panel, String text, int row, int column) {
-        JTextField description = new JTextField(text);
-        description.setEditable(false);
-        description.setBorder(null);
-        panel.add(description, new GridBagConstraints() {
-            {
-                anchor = GridBagConstraints.WEST;
-                gridx = column;
-                gridy = row;
-                insets = UI_PADDING;
-                fill = GridBagConstraints.HORIZONTAL;
-                weightx = 1;
-            }
-        });
-        return description;
-    }
-
-    public static JTextArea createDescriptionTextAreaUI(JPanel panel, String text, int row, int column) {
-        JTextArea description = new JTextArea(text);
-        description.setEditable(false);
-        description.setBorder(null);
-        description.setOpaque(false);
-        description.setWrapStyleWord(true);
-        description.setLineWrap(true);
-        panel.add(description, new GridBagConstraints() {
-            {
-                anchor = GridBagConstraints.WEST;
-                gridx = column;
-                gridy = row;
-                insets = UI_PADDING;
-                fill = GridBagConstraints.HORIZONTAL;
-                weightx = 1;
-            }
-        });
-        return description;
-    }
-
-    public static void addToGridBag(JPanel panel, JButton component, int row, int column) {
-        panel.add(component, new GridBagConstraints() {
-            {
-                anchor = GridBagConstraints.WEST;
-                gridx = column;
-                gridy = row;
-                insets = UI_PADDING;
-                fill = GridBagConstraints.HORIZONTAL;
-            }
-        });
-    }
-
-    public static JLabel backgroundColorJLabel(JLabel label, Color color) {
-        label.setOpaque(true);
-        label.setBackground(color);
-
-        // Set the text color to white if needed
-        double r = color.getRed() / 255.0;
-        double g = color.getGreen() / 255.0;
-        double b = color.getBlue() / 255.0;
-        double max = Math.max(r, Math.max(g, b));
-        double min = Math.min(r, Math.min(g, b));
-
-        double v = (max + min) / 2.0;
-        if(v < 0.5) {
-            label.setForeground(Color.WHITE);
-        }
-
-        return label;
-    }
-
-    public static JLabel borderedJLabel(JLabel label) {
-        label.setBorder(BorderFactory.createEmptyBorder(4,4,4,4));
-        return label;
-    }
-
-    public static void addFillerGridBagComponent(Container component, int row) {
-        component.add(new JPanel(), new GridBagConstraints() {
-            {
-                anchor = GridBagConstraints.PAGE_START;
-                gridx = 0;
-                gridy = row;
-                fill = GridBagConstraints.HORIZONTAL | GridBagConstraints.VERTICAL;
-                weightx = 1;
-                weighty = 1;
-            }
-        });
-    }
-
-    public static void addFillerGridBagComponent(Container component, int row, int column) {
-        component.add(new JPanel(), new GridBagConstraints() {
-            {
-                anchor = GridBagConstraints.PAGE_START;
-                gridx = column;
-                gridy = row;
-                fill = GridBagConstraints.HORIZONTAL | GridBagConstraints.VERTICAL;
-                weightx = 1;
-                weighty = 1;
-            }
-        });
-    }
-
+    /**
+     * Adds a popup menu to a button component that will be opened next to it if the button is clicked
+     * @param target
+     * @return
+     */
     public static JPopupMenu addPopupMenuToComponent(AbstractButton target) {
         JPopupMenu popupMenu = new JPopupMenu();
         target.addMouseListener(new MouseAdapter() {
@@ -164,14 +57,28 @@ public class UIUtils {
         return popupMenu;
     }
 
+    /**
+     * Gets an icon from the "icons" resource folder
+     * @param iconName Must include the file extension
+     * @return
+     */
     public static ImageIcon getIconFromResources(String iconName) {
         return new ImageIcon(ResourceUtils.getPluginResource("icons/" + iconName));
     }
 
+    /**
+     * Generates a 16x16 icon that has a single color
+     * @param color
+     * @return
+     */
     public static ColorIcon getIconFromColor(Color color) {
         return new ColorIcon(16, 16, color);
     }
 
+    /**
+     * Makes a button have a flat style
+     * @param component
+     */
     public static void makeFlat(AbstractButton component) {
         component.setBackground(Color.WHITE);
         component.setOpaque(false);
@@ -180,12 +87,22 @@ public class UIUtils {
         component.setBorder(compound);
     }
 
+    /**
+     * Makes a button have a flat style
+     * @param component
+     */
     public static void makeFlatWithoutMargin(AbstractButton component) {
         component.setBackground(Color.WHITE);
         component.setOpaque(false);
         component.setBorder(null);
     }
 
+    /**
+     * Adds behavior to a window to let the user confirm to actually close the window
+     * @param window
+     * @param message
+     * @param title
+     */
     public static void setToAskOnClose(JFrame window, String message, String title) {
         window.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         window.addWindowListener(new WindowAdapter() {
@@ -199,12 +116,23 @@ public class UIUtils {
         });
     }
 
+    /**
+     * Converts a color hash for a string
+     * @param string Input string
+     * @param s HSV Saturation 0.0 - 1.0
+     * @param b HSV Brightness 0.0 - 1.0
+     * @return
+     */
     public static Color stringToColor(String string, float s, float b) {
         long hash = string == null ? 0 : string.hashCode();
         float h = Math.abs(hash % 256) / 255.0f;
         return Color.getHSBColor(h, s, b);
     }
 
+    /**
+     * Expands the whole tree
+     * @param tree
+     */
     public static void expandAllTree(JTree tree) {
         for (int i = 0; i < tree.getRowCount(); i++) {
             tree.expandRow(i);

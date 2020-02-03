@@ -7,6 +7,9 @@ import org.hkijena.mcat.utils.UIUtils;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Main MCAT window
+ */
 public class MCATWorkbenchUI extends JFrame {
 
     private MCATProject project;
@@ -108,7 +111,7 @@ public class MCATWorkbenchUI extends JFrame {
     public static void newWindow(org.hkijena.mcat.MCATCommand command, MCATProject project) {
         org.hkijena.mcat.ui.MCATWorkbenchUI frame = new org.hkijena.mcat.ui.MCATWorkbenchUI(command, project);
         frame.pack();
-        frame.setSize(800, 600);
+        frame.setSize(1024, 768);
         frame.setVisible(true);
 //        frame.setExtendedState(frame.getExtendedState() | JFrame.MAXIMIZED_BOTH);
     }

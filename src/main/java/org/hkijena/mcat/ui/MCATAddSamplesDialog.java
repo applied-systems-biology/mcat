@@ -19,6 +19,9 @@ import java.awt.*;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
+/**
+ * Allows adding one or multiple samples manually by providing name(s)
+ */
 public class MCATAddSamplesDialog extends JDialog implements WindowListener {
 
     private MCATWorkbenchUI workbenchUI;

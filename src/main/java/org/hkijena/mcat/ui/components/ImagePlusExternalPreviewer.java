@@ -5,6 +5,10 @@ import ij.ImagePlus;
 
 import java.awt.*;
 
+/**
+ * Allows preview of multiple {@link ImagePlus} instances.
+ * The user can change to another preview that will close the old image, but applies the Window position & sizing to the preview of the new image
+ */
 public class ImagePlusExternalPreviewer {
     private ImagePlus currentImage;
     private Point lastWindowLocation;

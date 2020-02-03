@@ -13,6 +13,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * UI for a {@link MCATSample}
+ */
 public class MCATSampleUI extends MCATUIPanel {
 
     private static final String COMPONENTS_GENERAL = "General";

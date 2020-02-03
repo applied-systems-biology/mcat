@@ -5,6 +5,9 @@ import org.hkijena.mcat.api.datatypes.DerivationMatrixData;
 
 import java.nio.file.Path;
 
+/**
+ * Loads a {@link DerivationMatrixData} from a file
+ */
 public class DerivationMatrixFromFileProvider implements MCATDataProvider<DerivationMatrixData> {
 
     private Path filePath;

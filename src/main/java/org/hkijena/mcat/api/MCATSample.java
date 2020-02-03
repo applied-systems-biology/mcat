@@ -1,6 +1,7 @@
 package org.hkijena.mcat.api;
 
 import org.hkijena.mcat.api.datainterfaces.MCATClusteredDataInterface;
+import org.hkijena.mcat.api.datainterfaces.MCATPostprocessedDataInterface;
 import org.hkijena.mcat.api.datainterfaces.MCATPreprocessedDataInterface;
 import org.hkijena.mcat.api.datainterfaces.MCATRawDataInterface;
 import org.hkijena.mcat.api.parameters.MCATSampleParameters;
@@ -10,6 +11,9 @@ import org.hkijena.mcat.utils.UIUtils;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Manages one sample/subject
+ */
 public class MCATSample implements Comparable<MCATSample> {
 
     private MCATProject project;
@@ -21,6 +25,8 @@ public class MCATSample implements Comparable<MCATSample> {
     private MCATPreprocessedDataInterface preprocessedDataInterface = new MCATPreprocessedDataInterface();
 
     private MCATClusteredDataInterface clusteredDataInterface = new MCATClusteredDataInterface();
+
+    private MCATPostprocessedDataInterface postprocessedDataInterface = new MCATPostprocessedDataInterface();
 
     public MCATSample(MCATProject project) {
         this.project = project;
@@ -61,6 +67,10 @@ public class MCATSample implements Comparable<MCATSample> {
 
     public MCATClusteredDataInterface getClusteredDataInterface() {
         return clusteredDataInterface;
+    }
+
+    public MCATPostprocessedDataInterface getPostprocessedDataInterface() {
+        return postprocessedDataInterface;
     }
 
     public enum InputType {

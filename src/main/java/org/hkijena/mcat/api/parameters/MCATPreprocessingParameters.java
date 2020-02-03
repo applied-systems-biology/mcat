@@ -2,6 +2,9 @@ package org.hkijena.mcat.api.parameters;
 
 import org.hkijena.mcat.api.MCATParameters;
 
+/**
+ * Contains preprocessing parameters
+ */
 public class MCATPreprocessingParameters extends MCATParameters  {
     private int downsamplingFactor = 4;
     private int channelOfInterest = 4;

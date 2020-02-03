@@ -38,6 +38,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Arrays;
 
+/**
+ * Panel that allows reading of Markdown data
+ */
 public class MarkdownReader extends JPanel {
 
     static final MutableDataHolder OPTIONS = new MutableDataSet()

@@ -7,6 +7,9 @@ import org.hkijena.mcat.ui.components.FormPanel;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * UI for MCAT clustering parameters
+ */
 public class MCATClusteringUI extends MCATUIPanel {
     public MCATClusteringUI(MCATWorkbenchUI workbenchUI) {
         super(workbenchUI);

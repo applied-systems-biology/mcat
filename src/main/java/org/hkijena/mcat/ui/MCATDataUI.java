@@ -8,6 +8,9 @@ import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.*;
 
+/**
+ * UI that contains a {@link MCATSampleManagerUI} and allows changing sample settings
+ */
 public class MCATDataUI extends MCATUIPanel {
 
     private MCATSampleManagerUI sampleManagerUI;

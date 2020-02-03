@@ -18,6 +18,9 @@ import org.scijava.ui.UIService;
 
 import javax.swing.*;
 
+/**
+ * Plugin main entry point
+ */
 @Plugin(type = Command.class, menuPath = "Plugins>MSOT Cluster Analysis Tool (MCAT)")
 public class MCATCommand implements Command {
     @Parameter

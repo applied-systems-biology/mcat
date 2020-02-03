@@ -6,6 +6,9 @@ import org.hkijena.mcat.ui.components.FormPanel;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * UI for preprocessing parameters
+ */
 public class MCATPreprocessingUI extends MCATUIPanel {
 
     public MCATPreprocessingUI(MCATWorkbenchUI workbenchUI) {

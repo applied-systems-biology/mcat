@@ -20,6 +20,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * UI that manages the samples in a {@link org.hkijena.mcat.api.MCATProject}
+ */
 public class MCATSampleManagerUI extends MCATUIPanel {
 
     private JTree sampleTree;

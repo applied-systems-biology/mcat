@@ -19,6 +19,12 @@ public class StringUtils {
 
     }
 
+    /**
+     * Adds a counter to a string to make the result unique
+     * @param input
+     * @param existing
+     * @return
+     */
     public static String makeUniqueString(String input, Collection<String> existing) {
         if(!existing.contains(input))
             return input;
@@ -29,6 +35,11 @@ public class StringUtils {
         return input + " " + index;
     }
 
+    /**
+     * Capitalizes the first letter in the string
+     * @param input
+     * @return
+     */
     public static String capitalizeFirstLetter(String input) {
         if(input == null || input.length() < 2) {
             return input;

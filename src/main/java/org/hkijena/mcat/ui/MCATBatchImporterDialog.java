@@ -14,6 +14,9 @@ import java.io.IOException;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+/**
+ * UI for {@link MCATBatchImporter}
+ */
 public class MCATBatchImporterDialog extends JDialog {
     private MCATWorkbenchUI workbenchUI;
     private MCATBatchImporter batchImporter;

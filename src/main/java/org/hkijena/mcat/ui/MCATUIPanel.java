@@ -4,6 +4,9 @@ import org.hkijena.mcat.api.MCATProject;
 
 import javax.swing.*;
 
+/**
+ * {@link JPanel} that contains a reference to a {@link MCATWorkbenchUI}
+ */
 public class MCATUIPanel extends JPanel {
 
     private final MCATWorkbenchUI workbenchUI;

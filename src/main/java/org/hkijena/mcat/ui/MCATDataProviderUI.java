@@ -5,6 +5,10 @@ import org.hkijena.mcat.api.MCATSample;
 
 import javax.swing.*;
 
+/**
+ * Base class for any {@link MCATDataProvider} UI
+ * @param <T>
+ */
 public abstract class MCATDataProviderUI <T extends MCATDataProvider<?>> extends JPanel {
     private MCATSample sample;
     private T dataProvider;

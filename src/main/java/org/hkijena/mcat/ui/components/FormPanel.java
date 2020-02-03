@@ -10,6 +10,9 @@ import java.util.Map;
 
 import static org.hkijena.mcat.utils.UIUtils.UI_PADDING;
 
+/**
+ * Organizes UI in a form layout with integrated help functionality, and grouping with conditional visibility
+ */
 public class FormPanel extends JPanel {
 
     private int numRows = 0;

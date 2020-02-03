@@ -9,6 +9,9 @@ import javax.swing.tree.TreeCellRenderer;
 import java.awt.*;
 import java.util.Collection;
 
+/**
+ * Renders a sample in the {@link org.hkijena.mcat.ui.MCATSampleManagerUI}
+ */
 public class MCATSampleTreeCellRenderer extends JLabel implements TreeCellRenderer {
 
     public MCATSampleTreeCellRenderer() {

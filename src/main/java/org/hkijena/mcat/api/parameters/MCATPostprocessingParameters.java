@@ -2,6 +2,9 @@ package org.hkijena.mcat.api.parameters;
 
 import org.hkijena.mcat.api.MCATParameters;
 
+/**
+ * Contains postprocessing parameters
+ */
 public class MCATPostprocessingParameters extends MCATParameters {
     private boolean analyzeNetIncrease = true;
     private boolean analyzeNetDecrease = true;

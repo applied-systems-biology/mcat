@@ -15,6 +15,9 @@ package org.hkijena.mcat.ui.components;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+/**
+ * Merges {@link DocumentListener} events into one "changed" event
+ */
 public abstract class DocumentChangeListener implements DocumentListener {
 
     public abstract void changed(DocumentEvent documentEvent);

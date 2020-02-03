@@ -3,7 +3,10 @@ package org.hkijena.mcat.api;
 import com.google.common.eventbus.EventBus;
 import org.hkijena.mcat.api.events.MCATParameterChangedEvent;
 
-public class MCATParameters {
+/**
+ * Base class for MCAT sample data classes
+ */
+public abstract class MCATParameters {
     private EventBus eventBus = new EventBus();
 
     public EventBus getEventBus() {

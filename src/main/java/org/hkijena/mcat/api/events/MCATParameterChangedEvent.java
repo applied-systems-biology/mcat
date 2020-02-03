@@ -2,6 +2,9 @@ package org.hkijena.mcat.api.events;
 
 import org.hkijena.mcat.api.MCATParameters;
 
+/**
+ * Event triggered when a {@link MCATParameters} property is changed
+ */
 public class MCATParameterChangedEvent {
     private MCATParameters source;
     private String name;
