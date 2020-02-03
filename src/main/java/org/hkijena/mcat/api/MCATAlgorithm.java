@@ -1,21 +1,24 @@
 package org.hkijena.mcat.api;
 
 import org.hkijena.mcat.api.datainterfaces.MCATClusteredDataInterface;
+import org.hkijena.mcat.api.datainterfaces.MCATPostprocessedDataInterface;
 import org.hkijena.mcat.api.datainterfaces.MCATPreprocessedDataInterface;
 import org.hkijena.mcat.api.datainterfaces.MCATRawDataInterface;
+import org.hkijena.mcat.api.parameters.MCATClusteringParameters;
+import org.hkijena.mcat.api.parameters.MCATPostprocessingParameters;
+import org.hkijena.mcat.api.parameters.MCATPreprocessingParameters;
+import org.hkijena.mcat.api.parameters.MCATSampleParameters;
 
-public abstract class MCATAlgorithm {
+/**
+ * Base class for an algorithm node
+ * Please use the provided properties to access data and parameters to later allow easy extension to hyperparameters
+ */
+public abstract class MCATAlgorithm implements MCATValidatable {
 
     private MCATSample sample;
-    private MCATRawDataInterface rawData;
-    private MCATPreprocessedDataInterface preprocessedData;
-    private MCATClusteredDataInterface postprocessedData;
 
-    protected MCATAlgorithm(MCATSample sample, MCATRawDataInterface rawData, MCATPreprocessedDataInterface preprocessedData, MCATClusteredDataInterface postprocessedData) {
+    public MCATAlgorithm(MCATSample sample) {
         this.sample = sample;
-        this.rawData = rawData;
-        this.preprocessedData = preprocessedData;
-        this.postprocessedData = postprocessedData;
     }
 
     public abstract void run();
@@ -29,14 +32,34 @@ public abstract class MCATAlgorithm {
     }
 
     public MCATRawDataInterface getRawData() {
-        return rawData;
+        return sample.getRawDataInterface();
     }
 
     public MCATPreprocessedDataInterface getPreprocessedData() {
-        return preprocessedData;
+        return sample.getPreprocessedDataInterface();
     }
 
-    public MCATClusteredDataInterface getPostprocessedData() {
-        return postprocessedData;
+    public MCATClusteredDataInterface getClusteredDataInterface() {
+        return sample.getClusteredDataInterface();
+    }
+
+    public MCATPostprocessedDataInterface getPostprocessedData() {
+        return sample.getPostprocessedDataInterface();
+    }
+
+    public MCATSampleParameters getSampleParameters() {
+        return sample.getParameters();
+    }
+
+    public MCATClusteringParameters getClusteringParameters() {
+        return sample.getProject().getClusteringParameters();
+    }
+
+    public MCATPreprocessingParameters getPreprocessingParameters() {
+        return sample.getProject().getPreprocessingParameters();
+    }
+
+    public MCATPostprocessingParameters getPostprocessingParameters() {
+        return sample.getProject().getPostprocessingParameters();
     }
 }

@@ -72,25 +72,4 @@ public class MCATSample implements Comparable<MCATSample> {
     public MCATPostprocessedDataInterface getPostprocessedDataInterface() {
         return postprocessedDataInterface;
     }
-
-    public enum InputType {
-        RawData,
-        PreprocessedData,
-        ClusteredData;
-
-
-        @Override
-        public String toString() {
-            switch(this) {
-                case RawData:
-                    return "Raw data";
-                case PreprocessedData:
-                    return "Preprocessed data";
-                case ClusteredData:
-                    return "Clustered data";
-                default:
-                    throw new IllegalArgumentException();
-            }
-        }
-    }
 }

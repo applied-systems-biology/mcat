@@ -91,12 +91,6 @@ public class MCATSampleUI extends MCATUIPanel {
         treatmentEditor.setEditable(true);
         treatmentEditor.setSelectedItem(sample.getParameters().getTreatment());
         treatmentEditor.addActionListener(e -> sample.getParameters().setTreatment("" + treatmentEditor.getSelectedItem()));
-
-        // Add input type selection
-        RadioButtonGroup<MCATSample.InputType> inputTypeEditor = formPanel.addToForm(new RadioButtonGroup<>(Arrays.asList(MCATSample.InputType.values())),
-                new JLabel("Input type"),
-                "documentation/parameter_sample_input_type.md");
-
     }
 
     private void initializeClusteredDataSettings() {
