@@ -9,7 +9,9 @@ import org.hkijena.mcat.utils.UIUtils;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class MCATSampleUI extends MCATUIPanel {
 
@@ -21,6 +23,8 @@ public class MCATSampleUI extends MCATUIPanel {
     private MCATSample sample;
     private JLabel sampleTitle;
     private FormPanel formPanel;
+
+    private List<MCATDataSlotUI> slotUIList = new ArrayList<>();
 
     public MCATSampleUI(MCATWorkbenchUI workbenchUI, MCATSample sample) {
         super(workbenchUI);
@@ -40,6 +44,18 @@ public class MCATSampleUI extends MCATUIPanel {
         initializePreprocessedDataSettings();
         initializeClusteredDataSettings();
         formPanel.addVerticalGlue();
+
+        resizeSlotButtons();
+    }
+
+    private void resizeSlotButtons() {
+        int buttonSize = 0;
+        for(MCATDataSlotUI ui : slotUIList) {
+            buttonSize = Math.max(buttonSize, ui.getSelectionButton().getPreferredSize().width);
+        }
+        for(MCATDataSlotUI ui : slotUIList) {
+            ui.getSelectionButton().setPreferredSize(new Dimension(buttonSize, ui.getSelectionButton().getPreferredSize().height));
+        }
     }
 
     private void initializeTitlePanel() {
@@ -82,10 +98,28 @@ public class MCATSampleUI extends MCATUIPanel {
 
     private void initializeClusteredDataSettings() {
         formPanel.setCurrentGroup(COMPONENTS_CLUSTERED_DATA);
+
+        MCATDataSlotUI clusterCentersEditor = formPanel.addToForm(new MCATDataSlotUI(sample, sample.getClusteredDataInterface().getClusterCenters()),
+                new JLabel("Cluster centers"),
+                "documentation/parameter_sample_cluster_centers.md");
+        slotUIList.add(clusterCentersEditor);
+        MCATDataSlotUI clusterImageEditor = formPanel.addToForm(new MCATDataSlotUI(sample, sample.getClusteredDataInterface().getClusterImages()),
+                new JLabel("Cluster image"),
+                "documentation/parameter_sample_cluster_image.md");
+        slotUIList.add(clusterImageEditor);
     }
 
     private void initializePreprocessedDataSettings() {
         formPanel.setCurrentGroup(COMPONENTS_PREPROCESSED_DATA);
+
+        MCATDataSlotUI preprocessedImageEditor = formPanel.addToForm(new MCATDataSlotUI(sample, sample.getPreprocessedDataInterface().getPreprocessedImage()),
+                new JLabel("Preprocessed image"),
+                "documentation/parameter_sample_preprocessed_image.md");
+        slotUIList.add(preprocessedImageEditor);
+        MCATDataSlotUI derivationMatrixEditor = formPanel.addToForm(new MCATDataSlotUI(sample, sample.getPreprocessedDataInterface().getDerivationMatrix()),
+                new JLabel("Derivation matrix"),
+                "documentation/parameter_sample_derivation_matrix.md");
+        slotUIList.add(derivationMatrixEditor);
     }
 
     private void initializeRawDataSettings() {
@@ -93,11 +127,12 @@ public class MCATSampleUI extends MCATUIPanel {
 
         MCATDataSlotUI rawImageEditor = formPanel.addToForm(new MCATDataSlotUI(sample, sample.getRawDataInterface().getRawImage()),
                 new JLabel("Raw image"),
-                null);
-
+                "documentation/parameter_sample_raw_image.md");
+        slotUIList.add(rawImageEditor);
         MCATDataSlotUI roiEditor = formPanel.addToForm(new MCATDataSlotUI(sample, sample.getRawDataInterface().getTissueROI()),
                 new JLabel("Tissue ROI"),
-                null);
+                "documentation/parameter_sample_roi.md");
+        slotUIList.add(roiEditor);
     }
 
     private void renameSample() {

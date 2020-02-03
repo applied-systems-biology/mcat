@@ -13,6 +13,7 @@ public class MCATDataSlotUI extends JPanel {
     private MCATSample sample;
     private MCATDataSlot<?> slot;
     private MCATDataProviderUI<?> currentProviderUI = null;
+    private JButton selectionButton;
 
     public MCATDataSlotUI(MCATSample sample, MCATDataSlot<?> slot) {
         this.sample = sample;
@@ -24,14 +25,15 @@ public class MCATDataSlotUI extends JPanel {
     }
 
     private void initializeDataProviderSelection() {
-        JButton button = new JButton(slot.getCurrentProvider().getName(), UIUtils.getIconFromResources("database.png"));
-        JPopupMenu menu = UIUtils.addPopupMenuToComponent(button);
+        selectionButton = new JButton(slot.getCurrentProvider().getName(), UIUtils.getIconFromResources("database.png"));
+        selectionButton.setHorizontalAlignment(SwingConstants.LEFT);
+        JPopupMenu menu = UIUtils.addPopupMenuToComponent(selectionButton);
         for(MCATDataProvider<?> provider : slot.getAvailableProviders().values()) {
             JMenuItem item = new JMenuItem(provider.getName(), UIUtils.getIconFromResources("database.png"));
             menu.add(item);
         }
 
-        add(button, BorderLayout.EAST);
+        add(selectionButton, BorderLayout.EAST);
     }
 
     private void createDataProviderUI() {
@@ -43,4 +45,7 @@ public class MCATDataSlotUI extends JPanel {
     }
 
 
+    public JButton getSelectionButton() {
+        return selectionButton;
+    }
 }

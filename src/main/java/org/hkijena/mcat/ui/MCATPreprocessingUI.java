@@ -29,13 +29,13 @@ public class MCATPreprocessingUI extends MCATUIPanel {
         // Channel of interest
         JSpinner channelOfInterestEditor = formPanel.addToForm(new JSpinner(new SpinnerNumberModel(parameters.getChannelOfInterest(),
                 0, Integer.MAX_VALUE, 1)), new JLabel("Channel of interest"),
-                null);
+                "documentation/parameter_preprocessing_channel_of_interest.md");
         channelOfInterestEditor.addChangeListener(e -> parameters.setChannelOfInterest((Integer)channelOfInterestEditor.getValue()));
 
         // Anatomic channel
         JSpinner anatomicChannelEditor = formPanel.addToForm(new JSpinner(new SpinnerNumberModel(parameters.getAnatomicChannel(),
                 0, Integer.MAX_VALUE, 1)), new JLabel("Anatomic channel"),
-                null);
+                "documentation/parameter_preprocessing_anatomic_channel.md");
         anatomicChannelEditor.addChangeListener(e -> parameters.setAnatomicChannel((Integer)anatomicChannelEditor.getValue()));
 
         formPanel.addVerticalGlue();

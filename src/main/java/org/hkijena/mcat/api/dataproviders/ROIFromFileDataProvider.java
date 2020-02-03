@@ -26,7 +26,7 @@ public class ROIFromFileDataProvider implements MCATDataProvider<ROIData> {
 
     @Override
     public String getName() {
-        return "ROI file";
+        return "ROI (*.roi)";
     }
 
     public Path getFilePath() {

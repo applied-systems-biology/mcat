@@ -25,7 +25,7 @@ public class HyperstackFromTifDataProvider implements MCATDataProvider<Hyperstac
 
     @Override
     public String getName() {
-        return "TIFF file";
+        return "Hyperstack (*.tif)";
     }
 
     public Path getFilePath() {
