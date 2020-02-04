@@ -2,7 +2,7 @@ package org.hkijena.mcat.ui;
 
 import com.google.common.eventbus.Subscribe;
 import org.hkijena.mcat.api.MCATSample;
-import org.hkijena.mcat.api.events.MCATParameterChangedEvent;
+import org.hkijena.mcat.api.events.MCATPropertyChangedEvent;
 import org.hkijena.mcat.api.events.MCATSampleAddedEvent;
 import org.hkijena.mcat.api.events.MCATSampleRemovedEvent;
 import org.hkijena.mcat.api.events.MCATSampleRenamedEvent;
@@ -187,7 +187,7 @@ public class MCATSampleManagerUI extends MCATUIPanel {
     }
 
     @Subscribe
-    public void onSampleTreatmentChanged(MCATParameterChangedEvent event) {
+    public void onSampleTreatmentChanged(MCATPropertyChangedEvent event) {
         if(event.getSource() instanceof MCATSampleParameters && event.getName().equals("treatment")) {
             rebuildSampleListTree();
         }

@@ -1,5 +1,12 @@
 package org.hkijena.mcat.api;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -9,6 +16,7 @@ import java.util.Map;
  * A slot holds data and also have the capability to load data from an MCATDataProvider if data is requested, but not set
  * @param <T> data type held within this slow
  */
+@JsonSerialize(using = MCATDataSlot.Serializer.class)
 public abstract class MCATDataSlot<T extends MCATData> {
 
     private Class<T> acceptedDataType;
@@ -75,5 +83,16 @@ public abstract class MCATDataSlot<T extends MCATData> {
 
     public Map<Class<? extends MCATDataProvider<T>>, MCATDataProvider<T>> getAvailableProviders() {
         return Collections.unmodifiableMap(availableProviders);
+    }
+
+    public boolean hasData() {
+        return data != null;
+    }
+
+    public static class Serializer extends JsonSerializer<MCATDataSlot<?>> {
+        @Override
+        public void serialize(MCATDataSlot<?> dataSlot, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException, JsonProcessingException {
+
+        }
     }
 }

@@ -6,6 +6,7 @@ import org.hkijena.mcat.utils.UIUtils;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 
 /**
  * Main MCAT window
@@ -67,8 +68,9 @@ public class MCATWorkbenchUI extends JFrame {
         toolBar.add(openProject);
 
         // "Save project" entry
-        JButton saveProject = new JButton("Save project ...", UIUtils.getIconFromResources("save.png"));
-        toolBar.add(saveProject);
+        JButton saveProjectButton = new JButton("Save project ...", UIUtils.getIconFromResources("save.png"));
+        saveProjectButton.addActionListener(e -> saveProject());
+        toolBar.add(saveProjectButton);
 
         toolBar.add(Box.createHorizontalGlue());
 
@@ -80,6 +82,19 @@ public class MCATWorkbenchUI extends JFrame {
         initializeToolbarHelpMenu(toolBar);
 
         add(toolBar, BorderLayout.NORTH);
+    }
+
+    private void saveProject() {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        fileChooser.setDialogTitle("Save project (*.json");
+        if(fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+            try {
+                getProject().saveProject(fileChooser.getSelectedFile().toPath());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     private void openRunUI() {

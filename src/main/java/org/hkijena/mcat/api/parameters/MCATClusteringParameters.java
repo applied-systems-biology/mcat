@@ -1,5 +1,8 @@
 package org.hkijena.mcat.api.parameters;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import org.hkijena.mcat.api.MCATClusteringHierarchy;
 import org.hkijena.mcat.api.MCATParameters;
 
@@ -19,10 +22,12 @@ public class MCATClusteringParameters extends MCATParameters {
 
     }
 
+    @JsonGetter("kmeans-k")
     public int getkMeansK() {
         return kMeansK;
     }
 
+    @JsonSetter("kmeans-k")
     public void setkMeansK(int kMeansK) {
         this.kMeansK = kMeansK;
     }

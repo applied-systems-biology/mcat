@@ -1,5 +1,12 @@
 package org.hkijena.mcat.api;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
 import org.hkijena.mcat.api.datainterfaces.MCATClusteredDataInterface;
 import org.hkijena.mcat.api.datainterfaces.MCATPostprocessedDataInterface;
 import org.hkijena.mcat.api.datainterfaces.MCATPreprocessedDataInterface;
@@ -10,6 +17,7 @@ import org.hkijena.mcat.utils.UIUtils;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 
 /**
  * Manages one sample/subject
@@ -71,5 +79,19 @@ public class MCATSample implements Comparable<MCATSample> {
 
     public MCATPostprocessedDataInterface getPostprocessedDataInterface() {
         return postprocessedDataInterface;
+    }
+
+    public static class Serializer extends JsonSerializer<MCATSample> {
+        @Override
+        public void serialize(MCATSample sample, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException, JsonProcessingException {
+            jsonGenerator.writeObject(sample.getParameters());
+        }
+    }
+
+    public static class Deserializer extends JsonDeserializer<MCATSample> {
+        @Override
+        public MCATSample deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
+            return null;
+        }
     }
 }

@@ -5,11 +5,11 @@ import org.hkijena.mcat.api.MCATParameters;
 /**
  * Event triggered when a {@link MCATParameters} property is changed
  */
-public class MCATParameterChangedEvent {
+public class MCATPropertyChangedEvent {
     private MCATParameters source;
     private String name;
 
-    public MCATParameterChangedEvent(MCATParameters source, String name) {
+    public MCATPropertyChangedEvent(MCATParameters source, String name) {
         this.source = source;
         this.name = name;
     }

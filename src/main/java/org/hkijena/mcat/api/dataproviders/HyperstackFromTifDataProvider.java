@@ -2,19 +2,20 @@ package org.hkijena.mcat.api.dataproviders;
 
 import ij.IJ;
 import org.hkijena.mcat.api.MCATDataProvider;
+import org.hkijena.mcat.api.MCATParameters;
+import org.hkijena.mcat.api.MCATValidityReport;
 import org.hkijena.mcat.api.datatypes.HyperstackData;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 /**
  * Loads a {@link HyperstackData} from a file
  */
-public class HyperstackFromTifDataProvider implements MCATDataProvider<HyperstackData> {
-
-    private Path filePath;
+public class HyperstackFromTifDataProvider extends FileDataProvider<HyperstackData> {
 
     public HyperstackFromTifDataProvider(Path filePath) {
-        this.filePath = filePath;
+        setFilePath(filePath);
     }
 
     public HyperstackFromTifDataProvider() {
@@ -23,7 +24,7 @@ public class HyperstackFromTifDataProvider implements MCATDataProvider<Hyperstac
 
     @Override
     public HyperstackData get() {
-        return new HyperstackData(IJ.openImage(filePath.toString()));
+        return new HyperstackData(IJ.openImage(getFilePath().toString()));
     }
 
     @Override
@@ -31,11 +32,4 @@ public class HyperstackFromTifDataProvider implements MCATDataProvider<Hyperstac
         return "Hyperstack (*.tif)";
     }
 
-    public Path getFilePath() {
-        return filePath;
-    }
-
-    public void setFilePath(Path filePath) {
-        this.filePath = filePath;
-    }
 }
