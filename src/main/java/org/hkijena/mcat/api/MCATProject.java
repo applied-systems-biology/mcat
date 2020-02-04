@@ -1,16 +1,14 @@
 package org.hkijena.mcat.api;
 
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.TreeNode;
-import com.fasterxml.jackson.databind.JsonSerializer;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
-import com.google.common.collect.ImmutableBiMap;
+import com.google.common.collect.*;
 import com.google.common.eventbus.EventBus;
 import org.hkijena.mcat.api.dataproviders.FileDataProvider;
 import org.hkijena.mcat.api.events.MCATSampleAddedEvent;
@@ -32,6 +30,7 @@ import java.util.*;
  * It contains all information to setup and run an analysis
  */
 @JsonSerialize(using = MCATProject.Serializer.class)
+@JsonDeserialize(using = MCATProject.Deserializer.class)
 public class MCATProject {
 
     private EventBus eventBus = new EventBus();
@@ -120,6 +119,78 @@ public class MCATProject {
     public void saveProject(Path fileName) throws IOException {
         ObjectMapper mapper = JsonUtils.getObjectMapper();
         mapper.writerWithDefaultPrettyPrinter().writeValue(fileName.toFile(), this);
+    }
+
+    public static MCATProject loadProject(Path fileName) throws IOException {
+        return JsonUtils.getObjectMapper().readerFor(MCATProject.class).readValue(fileName.toFile());
+    }
+
+    public static class Deserializer extends JsonDeserializer<MCATProject> {
+        @Override
+        public MCATProject deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
+            MCATProject project = new MCATProject();
+            JsonNode node = jsonParser.getCodec().readTree(jsonParser);
+            if(node.has("samples"))
+                readSamples(project, node.get("samples"));
+            if(node.has("algorithm"))
+                readAlgorithmParameters(project, node.get("algorithm"));
+
+            JsonNode importedDataNode = node.path("filesystem").path("json-data").path("imported").path("children");
+            if(!importedDataNode.isMissingNode()) {
+                for(Map.Entry<String, MCATSample> kv : project.getSamples().entrySet()) {
+                    if(importedDataNode.has(kv.getKey())) {
+                        JsonNode dataSlotsNode = importedDataNode.get(kv.getKey()).path("children");
+                        if(!dataSlotsNode.isMissingNode()) {
+                            for(Map.Entry<String, JsonNode> slot : ImmutableList.copyOf(dataSlotsNode.fields())) {
+                                switch (slot.getKey()) {
+                                    case "raw-image":
+                                        readDataSlot(kv.getValue().getRawDataInterface().getRawImage(), slot.getValue());
+                                        break;
+                                    case "tissue-roi":
+                                        readDataSlot(kv.getValue().getRawDataInterface().getTissueROI(), slot.getValue());
+                                        break;
+                                    case "preprocessed-image":
+                                        readDataSlot(kv.getValue().getPreprocessedDataInterface().getPreprocessedImage(), slot.getValue());
+                                        break;
+                                    case "derivation-matrix":
+                                        readDataSlot(kv.getValue().getPreprocessedDataInterface().getDerivationMatrix(), slot.getValue());
+                                        break;
+                                    case "cluster-image":
+                                        readDataSlot(kv.getValue().getClusteredDataInterface().getClusterImages(), slot.getValue());
+                                        break;
+                                    case "cluster-centers":
+                                        readDataSlot(kv.getValue().getClusteredDataInterface().getClusterCenters(), slot.getValue());
+                                        break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            return project;
+        }
+
+        private void readSamples(MCATProject project, JsonNode node) throws IOException {
+            for(Map.Entry<String, JsonNode> kv : ImmutableList.copyOf(node.fields())) {
+                MCATSample sample = project.addSample(kv.getKey());
+                JsonUtils.getObjectMapper().readerForUpdating(sample.getParameters()).readValue(kv.getValue().traverse());
+            }
+        }
+
+        private void readAlgorithmParameters(MCATProject project, JsonNode node) throws IOException {
+            JsonUtils.getObjectMapper().readerForUpdating(project.getPreprocessingParameters()).readValue(node.get("preprocessing").traverse());
+            JsonUtils.getObjectMapper().readerForUpdating(project.getClusteringParameters()).readValue(node.get("clustering").traverse());
+            JsonUtils.getObjectMapper().readerForUpdating(project.getPostprocessingParameters()).readValue(node.get("postprocessing").traverse());
+        }
+
+        private void readDataSlot(MCATDataSlot<?> slot, JsonNode node) {
+            JsonNode filePathNode = node.path("metadata").path("file-path");
+            if(!filePathNode.isMissingNode()) {
+                slot.setCurrentProvider(FileDataProvider.class);
+                slot.getProvider(FileDataProvider.class).setFilePath(Paths.get(filePathNode.asText()));
+            }
+        }
     }
 
     public static class Serializer extends JsonSerializer<MCATProject> {

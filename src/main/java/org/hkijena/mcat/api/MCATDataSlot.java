@@ -7,9 +7,7 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Base class for a data slot.
@@ -21,14 +19,12 @@ public abstract class MCATDataSlot<T extends MCATData> {
 
     private Class<T> acceptedDataType;
     private T data;
-    private Map<Class<? extends MCATDataProvider<T>> ,MCATDataProvider<T>> availableProviders = new HashMap<>();
+    private List<MCATDataProvider<T>> availableProviders = new ArrayList<>();
     private MCATDataProvider<T> dataProvider;
 
     public MCATDataSlot(Class<T> acceptedDataType, MCATDataProvider<T>... dataProviders) {
         this.acceptedDataType = acceptedDataType;
-        for(MCATDataProvider<T> provider : dataProviders) {
-            availableProviders.put((Class<? extends MCATDataProvider<T>>) provider.getClass(), provider);
-        }
+        availableProviders.addAll(Arrays.asList(dataProviders));
     }
 
     public Class<T> getAcceptedDataType() {
@@ -53,7 +49,7 @@ public abstract class MCATDataSlot<T extends MCATData> {
      * @return
      */
     public <U extends MCATDataProvider<T>> U getProvider(Class<? extends U> klass) {
-        return (U)availableProviders.get(klass);
+        return (U)availableProviders.stream().filter(k -> klass.isAssignableFrom(k.getClass())).findFirst().orElse(null);
     }
 
     public MCATDataProvider<T> getCurrentProvider() {
@@ -78,11 +74,11 @@ public abstract class MCATDataSlot<T extends MCATData> {
      */
     public void ensureDataProvider() {
         if(dataProvider == null)
-            dataProvider = availableProviders.values().iterator().next();
+            dataProvider = availableProviders.get(0);
     }
 
-    public Map<Class<? extends MCATDataProvider<T>>, MCATDataProvider<T>> getAvailableProviders() {
-        return Collections.unmodifiableMap(availableProviders);
+    public List<MCATDataProvider<T>> getAvailableProviders() {
+        return Collections.unmodifiableList(availableProviders);
     }
 
     public boolean hasData() {

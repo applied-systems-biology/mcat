@@ -59,13 +59,14 @@ public class MCATWorkbenchUI extends JFrame {
         JToolBar toolBar = new JToolBar();
 
         // Add "New project" toolbar entry
-        JButton newProject = new JButton("New project ...", UIUtils.getIconFromResources("new.png"));
-        newProject.addActionListener(e -> newWindow(command, new MCATProject()));
-        toolBar.add(newProject);
+        JButton newProjectButton = new JButton("New project ...", UIUtils.getIconFromResources("new.png"));
+        newProjectButton.addActionListener(e -> newWindow(command, new MCATProject()));
+        toolBar.add(newProjectButton);
 
         // "Open project" entry
-        JButton openProject = new JButton("Open project ...", UIUtils.getIconFromResources("open.png"));
-        toolBar.add(openProject);
+        JButton openProjectButton = new JButton("Open project ...", UIUtils.getIconFromResources("open.png"));
+        openProjectButton.addActionListener(e -> openProject());
+        toolBar.add(openProjectButton);
 
         // "Save project" entry
         JButton saveProjectButton = new JButton("Save project ...", UIUtils.getIconFromResources("save.png"));
@@ -82,6 +83,19 @@ public class MCATWorkbenchUI extends JFrame {
         initializeToolbarHelpMenu(toolBar);
 
         add(toolBar, BorderLayout.NORTH);
+    }
+
+    private void openProject() {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        fileChooser.setDialogTitle("Open project (*.json");
+        if(fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+            try {
+                newWindow(command, MCATProject.loadProject(fileChooser.getSelectedFile().toPath()));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     private void saveProject() {

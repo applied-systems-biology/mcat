@@ -31,7 +31,7 @@ public class MCATDataSlotUI extends JPanel {
         selectionButton = new JButton(slot.getCurrentProvider().getName(), UIUtils.getIconFromResources("database.png"));
         selectionButton.setHorizontalAlignment(SwingConstants.LEFT);
         JPopupMenu menu = UIUtils.addPopupMenuToComponent(selectionButton);
-        for(MCATDataProvider<?> provider : slot.getAvailableProviders().values()) {
+        for(MCATDataProvider<?> provider : slot.getAvailableProviders()) {
             JMenuItem item = new JMenuItem(provider.getName(), UIUtils.getIconFromResources("database.png"));
             menu.add(item);
         }
