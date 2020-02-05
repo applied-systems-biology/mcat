@@ -19,8 +19,8 @@ public class ROIData extends MCATData {
     }
 
     @Override
-    public void saveTo(Path file) {
-        RoiEncoder re = new RoiEncoder(file.toString());
+    public void saveTo(Path folder, String name) {
+        RoiEncoder re = new RoiEncoder(folder.resolve(name + ".roi").toString());
         try {
             re.write(getRoi());
         } catch (IOException e) {

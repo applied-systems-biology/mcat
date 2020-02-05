@@ -1,14 +1,19 @@
 package org.hkijena.mcat.api.datainterfaces;
 
+import org.hkijena.mcat.api.MCATDataInterface;
+import org.hkijena.mcat.api.MCATDataSlot;
 import org.hkijena.mcat.api.dataslots.ClusterCentersDataSlot;
 import org.hkijena.mcat.api.dataslots.HyperstackDataSlot;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Organizes clustered data
  */
-public class MCATClusteredDataInterface {
-    private ClusterCentersDataSlot clusterCenters = new ClusterCentersDataSlot();
-    private HyperstackDataSlot clusterImages = new HyperstackDataSlot();
+public class MCATClusteredDataInterface implements MCATDataInterface {
+    private ClusterCentersDataSlot clusterCenters = new ClusterCentersDataSlot("cluster-centers");
+    private HyperstackDataSlot clusterImages = new HyperstackDataSlot("cluster-image");
 
     public MCATClusteredDataInterface() {
 
@@ -25,5 +30,10 @@ public class MCATClusteredDataInterface {
 
     public HyperstackDataSlot getClusterImages() {
         return clusterImages;
+    }
+
+    @Override
+    public List<MCATDataSlot<?>> getSlots() {
+        return Arrays.asList(clusterCenters, clusterImages);
     }
 }

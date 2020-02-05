@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -20,12 +21,19 @@ import java.util.List;
 @JsonSerialize(using = MCATDataSlot.Serializer.class)
 public abstract class MCATDataSlot<T extends MCATData> {
 
+    private String name;
     private Class<T> acceptedDataType;
     private T data;
     private List<MCATDataProvider<T>> availableProviders = new ArrayList<>();
     private MCATDataProvider<T> dataProvider;
 
-    public MCATDataSlot(Class<T> acceptedDataType, MCATDataProvider<T>... dataProviders) {
+    /**
+     * The path where the slot stores its data
+     */
+    private Path storageFilePath;
+
+    public MCATDataSlot(String name, Class<T> acceptedDataType, MCATDataProvider<T>... dataProviders) {
+        this.name = name;
         this.acceptedDataType = acceptedDataType;
         availableProviders.addAll(Arrays.asList(dataProviders));
     }
@@ -86,6 +94,25 @@ public abstract class MCATDataSlot<T extends MCATData> {
 
     public boolean hasData() {
         return data != null;
+    }
+
+    public Path getStorageFilePath() {
+        return storageFilePath;
+    }
+
+    public void setStorageFilePath(Path storageFilePath) {
+        this.storageFilePath = storageFilePath;
+    }
+
+    /**
+     * Stores the data to the
+     */
+    public void flush() {
+        data.saveTo(storageFilePath, getName());
+    }
+
+    public String getName() {
+        return name;
     }
 
     public static class Serializer extends JsonSerializer<MCATDataSlot<?>> {

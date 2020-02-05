@@ -11,11 +11,11 @@ import org.hkijena.mcat.api.datatypes.ClusterCentersData;
 @JsonSerialize(using = MCATDataSlot.Serializer.class)
 public class ClusterCentersDataSlot extends MCATDataSlot<ClusterCentersData> {
 
-    public ClusterCentersDataSlot() {
-        super(ClusterCentersData.class, new ClusterCentersFromFileProvider());
+    public ClusterCentersDataSlot(String name) {
+        super(name, ClusterCentersData.class, new ClusterCentersFromFileProvider());
     }
 
     public ClusterCentersDataSlot(ClusterCentersDataSlot other) {
-        super(ClusterCentersData.class, new ClusterCentersFromFileProvider(other.getProvider(ClusterCentersFromFileProvider.class)));
+        super(other.getName(), ClusterCentersData.class, new ClusterCentersFromFileProvider(other.getProvider(ClusterCentersFromFileProvider.class)));
     }
 }

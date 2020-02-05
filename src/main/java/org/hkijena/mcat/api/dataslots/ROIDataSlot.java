@@ -11,11 +11,11 @@ import org.hkijena.mcat.api.datatypes.ROIData;
 @JsonSerialize(using = MCATDataSlot.Serializer.class)
 public class ROIDataSlot extends MCATDataSlot<ROIData> {
 
-    public ROIDataSlot() {
-        super(ROIData.class, new ROIFromFileDataProvider());
+    public ROIDataSlot(String name) {
+        super(name, ROIData.class, new ROIFromFileDataProvider());
     }
 
     public ROIDataSlot(ROIDataSlot other) {
-        super(ROIData.class, new ROIFromFileDataProvider(other.getProvider(ROIFromFileDataProvider.class)));
+        super(other.getName(), ROIData.class, new ROIFromFileDataProvider(other.getProvider(ROIFromFileDataProvider.class)));
     }
 }

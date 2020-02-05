@@ -10,11 +10,11 @@ import org.hkijena.mcat.api.datatypes.DerivationMatrixData;
  */
 @JsonSerialize(using = MCATDataSlot.Serializer.class)
 public class DerivationMatrixDataSlot extends MCATDataSlot<DerivationMatrixData> {
-    public DerivationMatrixDataSlot() {
-        super(DerivationMatrixData.class, new DerivationMatrixFromFileProvider());
+    public DerivationMatrixDataSlot(String name) {
+        super(name, DerivationMatrixData.class, new DerivationMatrixFromFileProvider());
     }
 
     public DerivationMatrixDataSlot(DerivationMatrixDataSlot other) {
-        super(DerivationMatrixData.class, new DerivationMatrixFromFileProvider(other.getProvider(DerivationMatrixFromFileProvider.class)));
+        super(other.getName(), DerivationMatrixData.class, new DerivationMatrixFromFileProvider(other.getProvider(DerivationMatrixFromFileProvider.class)));
     }
 }

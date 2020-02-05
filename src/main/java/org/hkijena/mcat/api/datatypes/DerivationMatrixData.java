@@ -9,7 +9,7 @@ import java.nio.file.Path;
  */
 public class DerivationMatrixData extends MCATData {
     @Override
-    public void saveTo(Path file) {
+    public void saveTo(Path folder, String name) {
 
     }
 }

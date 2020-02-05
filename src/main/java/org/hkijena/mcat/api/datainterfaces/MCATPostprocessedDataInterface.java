@@ -1,6 +1,12 @@
 package org.hkijena.mcat.api.datainterfaces;
 
-public class MCATPostprocessedDataInterface {
+import org.hkijena.mcat.api.MCATDataInterface;
+import org.hkijena.mcat.api.MCATDataSlot;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class MCATPostprocessedDataInterface implements MCATDataInterface {
 
     public MCATPostprocessedDataInterface() {
 
@@ -10,4 +16,8 @@ public class MCATPostprocessedDataInterface {
 
     }
 
+    @Override
+    public List<MCATDataSlot<?>> getSlots() {
+        return new ArrayList<>();
+    }
 }

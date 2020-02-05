@@ -57,9 +57,9 @@ public class MCATAlgorithmGraph implements MCATValidatable, Runnable {
         insertNode(clusteringAlgorithm);
         insertNode(postprocessingAlgorithm);
 
-        connect(preprocessingAlgorithm, clusteringAlgorithm);
-        connect(clusteringAlgorithm, postprocessingAlgorithm);
-        connect(postprocessingAlgorithm, rootNode);
+       connect(rootNode, preprocessingAlgorithm);
+       connect(preprocessingAlgorithm, clusteringAlgorithm);
+       connect(clusteringAlgorithm, postprocessingAlgorithm);
     }
 
     public void insertNode(MCATAlgorithm algorithm) {
@@ -96,6 +96,10 @@ public class MCATAlgorithmGraph implements MCATValidatable, Runnable {
             result.add(algorithm);
         }
         return result;
+    }
+
+    public int size() {
+        return graph.vertexSet().size();
     }
 
     @Override

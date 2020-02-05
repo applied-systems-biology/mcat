@@ -10,13 +10,22 @@ import org.hkijena.mcat.utils.UIUtils;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.List;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ExecutionException;
 
 public class MCATRunUI extends MCATUIPanel {
 
     private MCATRun run;
     private MCATValidityReport validityReport;
     private Worker worker;
+
+    JPanel setupPanel;
+    JButton cancelButton;
+    JButton runButton;
+    JProgressBar progressBar;
 
     public MCATRunUI(MCATWorkbenchUI workbenchUI) {
         super(workbenchUI);
@@ -27,18 +36,19 @@ public class MCATRunUI extends MCATUIPanel {
 
     private void initialize() {
         setLayout(new BorderLayout(8, 8));
-        initializeSetupGUI();
         initializeButtons();
+        initializeSetupGUI();
     }
 
     private void initializeSetupGUI() {
-        JPanel setupPanel = new JPanel(new BorderLayout());
-        FormPanel formPanel = new FormPanel();
+        setupPanel = new JPanel(new BorderLayout());
+        FormPanel formPanel = new FormPanel("documentation/run.md");
 
         FileSelection outputFolderSelection = formPanel.addToForm(new FileSelection(FileSelection.Mode.OPEN),
                 new JLabel("Output folder"),
                 null);
         outputFolderSelection.getFileChooser().setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        outputFolderSelection.addActionListener(e -> run.setOutputPath(outputFolderSelection.getPath()));
         formPanel.addVerticalGlue();
 
         setupPanel.add(formPanel, BorderLayout.CENTER);
@@ -50,43 +60,105 @@ public class MCATRunUI extends MCATUIPanel {
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(0,8,8,8));
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
 
-        JProgressBar progressBar = new JProgressBar();
+        progressBar = new JProgressBar();
         progressBar.setString("Ready");
         progressBar.setStringPainted(true);
         buttonPanel.add(progressBar);
         buttonPanel.add(Box.createHorizontalStrut(16));
 
-        JButton cancelButton = new JButton("Cancel", UIUtils.getIconFromResources("remove.png"));
+        cancelButton = new JButton("Cancel", UIUtils.getIconFromResources("remove.png"));
         buttonPanel.add(cancelButton);
 
-        JButton runButton = new JButton("Run now", UIUtils.getIconFromResources("run.png"));
+        runButton = new JButton("Run now", UIUtils.getIconFromResources("run.png"));
+        runButton.addActionListener(e -> runNow());
         buttonPanel.add(runButton);
 
         add(buttonPanel, BorderLayout.SOUTH);
+
+        cancelButton.setVisible(false);
     }
 
-    private static class Worker extends SwingWorker<Object, Object> {
+    private void runNow() {
+        runButton.setVisible(false);
+        cancelButton.setVisible(true);
+        setupPanel.setVisible(false);
+        remove(setupPanel);
+
+        Worker worker = new Worker(run, progressBar);
+        cancelButton.addActionListener(e -> {
+            cancelButton.setEnabled(false);
+            worker.cancel(true);
+        });
+        worker.addPropertyChangeListener(p -> {
+            if("state".equals(p.getPropertyName())) {
+                switch ((SwingWorker.StateValue)p.getNewValue()) {
+                    case DONE:
+                        cancelButton.setEnabled(false);
+                        if(!worker.isCancelled()) {
+                            cancelButton.setVisible(false);
+                        }
+                        try {
+                            if(worker.isCancelled()) {
+                                SwingUtilities.invokeLater(() -> openError(new RuntimeException("Execution was cancelled by user!")));
+                            }
+                            else if(worker.get() != null) {
+                                final Exception e = worker.get();
+                                SwingUtilities.invokeLater(() -> openError(e));
+                            }
+                            else {
+                                openResults();
+                            }
+                        } catch (InterruptedException | ExecutionException | CancellationException e) {
+                            SwingUtilities.invokeLater(() -> openError(e));
+                        }
+                        break;
+                }
+            }
+        });
+        worker.execute();
+    }
+
+    private void openError(Exception exception) {
+        StringWriter writer = new StringWriter();
+        exception.printStackTrace(new PrintWriter(writer));
+        JTextArea errorPanel = new JTextArea(writer.toString());
+        errorPanel.setEditable(false);
+        add(new JScrollPane(errorPanel), BorderLayout.CENTER);
+        revalidate();
+    }
+
+    private void openResults() {
+
+    }
+
+    private static class Worker extends SwingWorker<Exception, Object> {
 
         private JProgressBar progressBar;
-        private List<MCATAlgorithm> algorithms;
+        private MCATRun run;
 
-        public Worker(MCATAlgorithmGraph graph, JProgressBar progressBar) {
+        public Worker(MCATRun run, JProgressBar progressBar) {
             this.progressBar = progressBar;
-            this.algorithms = graph.traverse();
+            this.run = run;
 
-            progressBar.setMaximum(algorithms.size());
+            progressBar.setMaximum(run.getGraph().size());
             progressBar.setValue(0);
         }
 
+        private void onStatus(MCATRun.Status status) {
+            publish(status.getCurrentTask());
+            publish(status.getProgress());
+        }
+
         @Override
-        protected Object doInBackground() throws Exception {
-            int count = 0;
-            for(MCATAlgorithm algorithm : algorithms) {
-                publish(algorithm.getName());
-                algorithm.run();
-                ++count;
-                publish(count);
+        protected Exception doInBackground() throws Exception {
+            try {
+                run.run(this::onStatus, this::isCancelled);
             }
+            catch(Exception e) {
+                e.printStackTrace();
+                return e;
+            }
+
             return null;
         }
 

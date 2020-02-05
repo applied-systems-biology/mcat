@@ -6,7 +6,10 @@ import org.hkijena.mcat.api.datainterfaces.MCATPreprocessedDataInterface;
 import org.hkijena.mcat.api.datainterfaces.MCATRawDataInterface;
 import org.hkijena.mcat.api.parameters.MCATSampleParameters;
 
-public class MCATRunSample {
+import java.util.ArrayList;
+import java.util.List;
+
+public class MCATRunSample implements MCATDataInterface {
     private MCATProjectSample sourceSample;
     private MCATRun run;
 
@@ -58,5 +61,15 @@ public class MCATRunSample {
 
     public String getName() {
         return  getRun().getSamples().inverse().get(this);
+    }
+
+    @Override
+    public List<MCATDataSlot<?>> getSlots() {
+        List<MCATDataSlot<?>> result = new ArrayList<>();
+        result.addAll(rawDataInterface.getSlots());
+        result.addAll(preprocessedDataInterface.getSlots());
+        result.addAll(clusteredDataInterface.getSlots());
+        result.addAll(postprocessedDataInterface.getSlots());
+        return result;
     }
 }

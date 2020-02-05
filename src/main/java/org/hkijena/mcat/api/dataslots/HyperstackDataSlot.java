@@ -10,10 +10,10 @@ import org.hkijena.mcat.api.datatypes.HyperstackData;
  */
 @JsonSerialize(using = MCATDataSlot.Serializer.class)
 public class HyperstackDataSlot extends MCATDataSlot<HyperstackData> {
-    public HyperstackDataSlot() {
-        super(HyperstackData.class, new HyperstackFromTifDataProvider());
+    public HyperstackDataSlot(String name) {
+        super(name, HyperstackData.class, new HyperstackFromTifDataProvider());
     }
     public HyperstackDataSlot(HyperstackDataSlot other) {
-        super(HyperstackData.class, new HyperstackFromTifDataProvider(other.getProvider(HyperstackFromTifDataProvider.class)));
+        super(other.getName(), HyperstackData.class, new HyperstackFromTifDataProvider(other.getProvider(HyperstackFromTifDataProvider.class)));
     }
 }
