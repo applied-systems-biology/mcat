@@ -22,7 +22,7 @@ import java.io.IOException;
 /**
  * Manages one sample/subject
  */
-public class MCATSample implements Comparable<MCATSample> {
+public class MCATProjectSample implements Comparable<MCATProjectSample> {
 
     private MCATProject project;
 
@@ -36,7 +36,7 @@ public class MCATSample implements Comparable<MCATSample> {
 
     private MCATPostprocessedDataInterface postprocessedDataInterface = new MCATPostprocessedDataInterface();
 
-    public MCATSample(MCATProject project) {
+    public MCATProjectSample(MCATProject project) {
         this.project = project;
     }
 
@@ -61,7 +61,7 @@ public class MCATSample implements Comparable<MCATSample> {
     }
 
     @Override
-    public int compareTo(MCATSample other) {
+    public int compareTo(MCATProjectSample other) {
         return getName().compareTo(other.getName());
     }
 
@@ -81,16 +81,16 @@ public class MCATSample implements Comparable<MCATSample> {
         return postprocessedDataInterface;
     }
 
-    public static class Serializer extends JsonSerializer<MCATSample> {
+    public static class Serializer extends JsonSerializer<MCATProjectSample> {
         @Override
-        public void serialize(MCATSample sample, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException, JsonProcessingException {
+        public void serialize(MCATProjectSample sample, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException, JsonProcessingException {
             jsonGenerator.writeObject(sample.getParameters());
         }
     }
 
-    public static class Deserializer extends JsonDeserializer<MCATSample> {
+    public static class Deserializer extends JsonDeserializer<MCATProjectSample> {
         @Override
-        public MCATSample deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
+        public MCATProjectSample deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
             return null;
         }
     }

@@ -1,7 +1,6 @@
 package org.hkijena.mcat.api.parameters;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import org.hkijena.mcat.api.MCATParameters;
 
@@ -14,6 +13,18 @@ public class MCATPreprocessingParameters extends MCATParameters  {
     private int anatomicChannel = 0;
     private int minTime = 0;
     private int maxTime = Integer.MAX_VALUE;
+
+    public MCATPreprocessingParameters() {
+
+    }
+
+    public MCATPreprocessingParameters(MCATPreprocessingParameters other) {
+        this.downsamplingFactor = other.downsamplingFactor;
+        this.channelOfInterest = other.channelOfInterest;
+        this.anatomicChannel = other.anatomicChannel;
+        this.minTime = other.minTime;
+        this.maxTime = other.maxTime;
+    }
 
     @JsonGetter("downsampling-factor")
     public int getDownsamplingFactor() {

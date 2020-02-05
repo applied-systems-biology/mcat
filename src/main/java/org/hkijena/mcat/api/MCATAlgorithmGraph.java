@@ -3,26 +3,25 @@ package org.hkijena.mcat.api;
 import org.hkijena.mcat.api.algorithms.MCATClusteringAlgorithm;
 import org.hkijena.mcat.api.algorithms.MCATPostprocessingAlgorithm;
 import org.hkijena.mcat.api.algorithms.MCATPreprocessingAlgorithm;
-import org.hkijena.mcat.api.parameters.MCATPostprocessingParameters;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
+import org.jgrapht.traverse.DepthFirstIterator;
+import org.jgrapht.traverse.GraphIterator;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Manages multiple {@link MCATAlgorithm} instances as graph
  */
-public class MCATAlgorithmGraph implements MCATValidatable {
+public class MCATAlgorithmGraph implements MCATValidatable, Runnable {
 
     private DefaultDirectedGraph<MCATAlgorithm, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
     private Set<MCATAlgorithm> algorithms = new HashSet<>();
-    private MCATProject project;
+    private MCATRun run;
     private MCATAlgorithm rootNode;
 
-    public MCATAlgorithmGraph(MCATProject project) {
-        this.project = project;
+    public MCATAlgorithmGraph(MCATRun run) {
+        this.run = run;
         initialize();
     }
 
@@ -37,13 +36,19 @@ public class MCATAlgorithmGraph implements MCATValidatable {
             public void run() {
 
             }
+
+            @Override
+            public String getName() {
+                return "Root";
+            }
         };
-        for(MCATSample sample : project.getSamples().values()) {
+        insertNode(rootNode);
+        for(MCATRunSample sample : run.getSamples().values()) {
             initializeSample(sample);
         }
     }
 
-    private void initializeSample(MCATSample sample) {
+    private void initializeSample(MCATRunSample sample) {
         MCATPreprocessingAlgorithm preprocessingAlgorithm = new MCATPreprocessingAlgorithm(sample);
         MCATClusteringAlgorithm clusteringAlgorithm = new MCATClusteringAlgorithm(sample);
         MCATPostprocessingAlgorithm postprocessingAlgorithm = new MCATPostprocessingAlgorithm(sample);
@@ -59,6 +64,7 @@ public class MCATAlgorithmGraph implements MCATValidatable {
 
     public void insertNode(MCATAlgorithm algorithm) {
         algorithms.add(algorithm);
+        graph.addVertex(algorithm);
     }
 
     public void removeNode(MCATAlgorithm algorithm) {
@@ -80,5 +86,24 @@ public class MCATAlgorithmGraph implements MCATValidatable {
             report.merge(algorithm.getValidityReport(), "Algorithm graph", "Node");
         }
         return report;
+    }
+
+    public List<MCATAlgorithm> traverse() {
+        GraphIterator<MCATAlgorithm, DefaultEdge> iterator = new DepthFirstIterator<>(graph, rootNode);
+        List<MCATAlgorithm> result = new ArrayList<>();
+        while(iterator.hasNext()) {
+            MCATAlgorithm algorithm = iterator.next();
+            result.add(algorithm);
+        }
+        return result;
+    }
+
+    @Override
+    public void run() {
+        GraphIterator<MCATAlgorithm, DefaultEdge> iterator = new DepthFirstIterator<>(graph, rootNode);
+        while(iterator.hasNext()) {
+            MCATAlgorithm algorithm = iterator.next();
+            algorithm.run();
+        }
     }
 }

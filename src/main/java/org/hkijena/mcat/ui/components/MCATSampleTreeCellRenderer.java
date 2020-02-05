@@ -1,6 +1,6 @@
 package org.hkijena.mcat.ui.components;
 
-import org.hkijena.mcat.api.MCATSample;
+import org.hkijena.mcat.api.MCATProjectSample;
 import org.hkijena.mcat.utils.UIUtils;
 
 import javax.swing.*;
@@ -26,13 +26,13 @@ public class MCATSampleTreeCellRenderer extends JLabel implements TreeCellRender
         }
 
         Object o = ((DefaultMutableTreeNode)value).getUserObject();
-        if(o instanceof MCATSample) {
-            MCATSample sample = (MCATSample)o;
+        if(o instanceof MCATProjectSample) {
+            MCATProjectSample sample = (MCATProjectSample)o;
             setText(sample.getName());
             setIcon(new MonochromeColorIcon(UIUtils.getIconFromResources("sample-template.png"), sample.getTreatmentColor()));
         }
         else if(o instanceof Collection) {
-            Collection<MCATSample> samples = (Collection<MCATSample>)o;
+            Collection<MCATProjectSample> samples = (Collection<MCATProjectSample>)o;
             String treatment = samples.iterator().next().getParameters().getTreatment();
             if(treatment == null || treatment.isEmpty())
                 treatment = "<No treatment>";

@@ -1,19 +1,19 @@
 package org.hkijena.mcat.api.events;
 
-import org.hkijena.mcat.api.MCATSample;
+import org.hkijena.mcat.api.MCATProjectSample;
 
 
 /**
  * Triggered when a sample in an {@link org.hkijena.mcat.api.MCATProject} is renamed
  */
 public class MCATSampleRenamedEvent {
-    private MCATSample sample;
+    private MCATProjectSample sample;
 
-    public MCATSampleRenamedEvent(MCATSample sample) {
+    public MCATSampleRenamedEvent(MCATProjectSample sample) {
         this.sample = sample;
     }
 
-    public MCATSample getSample() {
+    public MCATProjectSample getSample() {
         return sample;
     }
 }

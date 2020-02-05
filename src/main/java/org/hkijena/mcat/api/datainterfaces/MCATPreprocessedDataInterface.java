@@ -10,6 +10,15 @@ public class MCATPreprocessedDataInterface {
     private HyperstackDataSlot preprocessedImage = new HyperstackDataSlot();
     private DerivationMatrixDataSlot derivationMatrix = new DerivationMatrixDataSlot();
 
+    public MCATPreprocessedDataInterface() {
+
+    }
+
+    public MCATPreprocessedDataInterface(MCATPreprocessedDataInterface other) {
+        this.preprocessedImage = new HyperstackDataSlot(other.preprocessedImage);
+        this.derivationMatrix = new DerivationMatrixDataSlot(other.derivationMatrix);
+    }
+
     public HyperstackDataSlot getPreprocessedImage() {
         return preprocessedImage;
     }

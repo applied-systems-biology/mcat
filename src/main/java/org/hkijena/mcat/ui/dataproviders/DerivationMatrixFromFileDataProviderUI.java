@@ -1,6 +1,6 @@
 package org.hkijena.mcat.ui.dataproviders;
 
-import org.hkijena.mcat.api.MCATSample;
+import org.hkijena.mcat.api.MCATProjectSample;
 import org.hkijena.mcat.api.dataproviders.DerivationMatrixFromFileProvider;
 import org.hkijena.mcat.ui.MCATDataProviderUI;
 import org.hkijena.mcat.ui.components.FileSelection;
@@ -11,7 +11,7 @@ import java.awt.*;
  * UI for {@link DerivationMatrixFromFileProvider}
  */
 public class DerivationMatrixFromFileDataProviderUI extends MCATDataProviderUI<DerivationMatrixFromFileProvider> {
-    public DerivationMatrixFromFileDataProviderUI(MCATSample sample, DerivationMatrixFromFileProvider dataProvider) {
+    public DerivationMatrixFromFileDataProviderUI(MCATProjectSample sample, DerivationMatrixFromFileProvider dataProvider) {
         super(sample, dataProvider);
         setLayout(new BorderLayout());
 

@@ -11,6 +11,15 @@ public class MCATRawDataInterface {
     private HyperstackDataSlot rawImage = new HyperstackDataSlot();
     private ROIDataSlot tissueROI = new ROIDataSlot();
 
+    public MCATRawDataInterface() {
+
+    }
+
+    public MCATRawDataInterface(MCATRawDataInterface other) {
+        this.rawImage = new HyperstackDataSlot(other.getRawImage());
+        this.tissueROI = new ROIDataSlot(other.getTissueROI());
+    }
+
     public HyperstackDataSlot getRawImage() {
         return rawImage;
     }

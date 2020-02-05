@@ -10,6 +10,15 @@ public class MCATClusteredDataInterface {
     private ClusterCentersDataSlot clusterCenters = new ClusterCentersDataSlot();
     private HyperstackDataSlot clusterImages = new HyperstackDataSlot();
 
+    public MCATClusteredDataInterface() {
+
+    }
+
+    public MCATClusteredDataInterface(MCATClusteredDataInterface other) {
+        this.clusterCenters = new ClusterCentersDataSlot(other.getClusterCenters());
+        this.clusterImages = new HyperstackDataSlot(other.getClusterImages());
+    }
+
     public ClusterCentersDataSlot getClusterCenters() {
         return clusterCenters;
     }

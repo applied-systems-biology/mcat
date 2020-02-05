@@ -13,21 +13,23 @@ import org.hkijena.mcat.api.parameters.MCATSampleParameters;
  * Base class for an algorithm node
  * Please use the provided properties to access data and parameters to later allow easy extension to hyperparameters
  */
-public abstract class MCATAlgorithm implements MCATValidatable {
+public abstract class MCATAlgorithm implements MCATValidatable, Runnable {
 
-    private MCATSample sample;
+    private MCATRunSample sample;
 
-    public MCATAlgorithm(MCATSample sample) {
+    public MCATAlgorithm(MCATRunSample sample) {
         this.sample = sample;
     }
 
     public abstract void run();
 
-    public MCATProject getProject() {
-        return sample.getProject();
+    public abstract String getName();
+
+    public MCATRun getRun() {
+        return sample.getRun();
     }
 
-    public MCATSample getSample() {
+    public MCATRunSample getSample() {
         return sample;
     }
 
@@ -52,14 +54,14 @@ public abstract class MCATAlgorithm implements MCATValidatable {
     }
 
     public MCATClusteringParameters getClusteringParameters() {
-        return sample.getProject().getClusteringParameters();
+        return sample.getRun().getClusteringParameters();
     }
 
     public MCATPreprocessingParameters getPreprocessingParameters() {
-        return sample.getProject().getPreprocessingParameters();
+        return sample.getRun().getPreprocessingParameters();
     }
 
     public MCATPostprocessingParameters getPostprocessingParameters() {
-        return sample.getProject().getPostprocessingParameters();
+        return sample.getRun().getPostprocessingParameters();
     }
 }

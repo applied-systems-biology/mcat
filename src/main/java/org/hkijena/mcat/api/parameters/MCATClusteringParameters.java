@@ -1,7 +1,6 @@
 package org.hkijena.mcat.api.parameters;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import org.hkijena.mcat.api.MCATClusteringHierarchy;
 import org.hkijena.mcat.api.MCATParameters;
@@ -12,6 +11,15 @@ import org.hkijena.mcat.api.MCATParameters;
 public class MCATClusteringParameters extends MCATParameters {
     private int kMeansK = 6;
     private MCATClusteringHierarchy clusteringHierarchy = MCATClusteringHierarchy.PerTreatment;
+
+    public MCATClusteringParameters() {
+
+    }
+
+    public MCATClusteringParameters(MCATClusteringParameters other) {
+        this.kMeansK = other.kMeansK;
+        this.clusteringHierarchy = other.clusteringHierarchy;
+    }
 
     public MCATClusteringHierarchy getClusteringHierarchy() {
         return clusteringHierarchy;

@@ -1,20 +1,18 @@
 package org.hkijena.mcat.ui;
 
 import com.google.common.eventbus.Subscribe;
-import org.hkijena.mcat.api.MCATSample;
+import org.hkijena.mcat.api.MCATProjectSample;
 import org.hkijena.mcat.api.events.MCATSampleRenamedEvent;
 import org.hkijena.mcat.ui.components.FormPanel;
-import org.hkijena.mcat.ui.components.RadioButtonGroup;
 import org.hkijena.mcat.utils.UIUtils;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
- * UI for a {@link MCATSample}
+ * UI for a {@link MCATProjectSample}
  */
 public class MCATSampleUI extends MCATUIPanel {
 
@@ -23,13 +21,13 @@ public class MCATSampleUI extends MCATUIPanel {
     private static final String COMPONENTS_PREPROCESSED_DATA = "Preprocessed data input";
     private static final String COMPONENTS_CLUSTERED_DATA = "Clustered data input";
 
-    private MCATSample sample;
+    private MCATProjectSample sample;
     private JLabel sampleTitle;
     private FormPanel formPanel;
 
     private List<MCATDataSlotUI> slotUIList = new ArrayList<>();
 
-    public MCATSampleUI(MCATWorkbenchUI workbenchUI, MCATSample sample) {
+    public MCATSampleUI(MCATWorkbenchUI workbenchUI, MCATProjectSample sample) {
         super(workbenchUI);
         this.sample = sample;
         initialize();
@@ -150,7 +148,7 @@ public class MCATSampleUI extends MCATUIPanel {
         }
     }
 
-    public MCATSample getSample() {
+    public MCATProjectSample getSample() {
         return sample;
     }
 }

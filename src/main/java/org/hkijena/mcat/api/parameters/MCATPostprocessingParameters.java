@@ -1,7 +1,6 @@
 package org.hkijena.mcat.api.parameters;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import org.hkijena.mcat.api.MCATParameters;
 
@@ -14,6 +13,18 @@ public class MCATPostprocessingParameters extends MCATParameters {
     private boolean analyzeMaxIncrease = true;
     private boolean analyzeMaxDecrease = true;
     private boolean performClusterMorphologyAnalysis = true;
+
+    public MCATPostprocessingParameters() {
+
+    }
+
+    public MCATPostprocessingParameters(MCATPostprocessingParameters other) {
+        this.analyzeNetIncrease = other.analyzeNetIncrease;
+        this.analyzeNetDecrease = other.analyzeNetDecrease;
+        this.analyzeMaxIncrease = other.analyzeMaxIncrease;
+        this.analyzeMaxDecrease = other.analyzeMaxDecrease;
+        this.performClusterMorphologyAnalysis = other.performClusterMorphologyAnalysis;
+    }
 
     @JsonGetter("analyze-net-increase")
     public boolean isAnalyzeNetIncrease() {

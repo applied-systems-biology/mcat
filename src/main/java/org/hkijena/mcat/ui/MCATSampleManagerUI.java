@@ -1,7 +1,7 @@
 package org.hkijena.mcat.ui;
 
 import com.google.common.eventbus.Subscribe;
-import org.hkijena.mcat.api.MCATSample;
+import org.hkijena.mcat.api.MCATProjectSample;
 import org.hkijena.mcat.api.events.MCATPropertyChangedEvent;
 import org.hkijena.mcat.api.events.MCATSampleAddedEvent;
 import org.hkijena.mcat.api.events.MCATSampleRemovedEvent;
@@ -75,14 +75,14 @@ public class MCATSampleManagerUI extends MCATUIPanel {
     }
 
     private void relabelSelectedSamples() {
-        Set<MCATSample> toRelabel = new HashSet<>();
+        Set<MCATProjectSample> toRelabel = new HashSet<>();
         Set<String> treatments = new HashSet<>();
         if(getSampleTree().getSelectionPaths() != null) {
             for(TreePath path : getSampleTree().getSelectionPaths()) {
                 DefaultMutableTreeNode nd = (DefaultMutableTreeNode)path.getLastPathComponent();
-                if(nd.getUserObject() instanceof MCATSample) {
-                    toRelabel.add((MCATSample)nd.getUserObject());
-                    treatments.add(((MCATSample)(nd.getUserObject())).getParameters().getTreatment());
+                if(nd.getUserObject() instanceof MCATProjectSample) {
+                    toRelabel.add((MCATProjectSample)nd.getUserObject());
+                    treatments.add(((MCATProjectSample)(nd.getUserObject())).getParameters().getTreatment());
                 }
             }
         }
@@ -91,7 +91,7 @@ public class MCATSampleManagerUI extends MCATUIPanel {
             String suggestion = String.join("_", treatments);
             String newName = JOptionPane.showInputDialog(this,"Please input a new treatment", suggestion);
             if(newName != null && !newName.isEmpty()) {
-                for(MCATSample sample : toRelabel) {
+                for(MCATProjectSample sample : toRelabel) {
                     sample.getParameters().setTreatment(newName);
                 }
             }
@@ -99,16 +99,16 @@ public class MCATSampleManagerUI extends MCATUIPanel {
     }
 
     private void removeSelectedSamples() {
-        Set<MCATSample> toRemove = new HashSet<>();
+        Set<MCATProjectSample> toRemove = new HashSet<>();
         if(getSampleTree().getSelectionPaths() != null) {
             for(TreePath path : getSampleTree().getSelectionPaths()) {
                 DefaultMutableTreeNode nd = (DefaultMutableTreeNode)path.getLastPathComponent();
-                if(nd.getUserObject() instanceof MCATSample) {
-                    toRemove.add((MCATSample)nd.getUserObject());
+                if(nd.getUserObject() instanceof MCATProjectSample) {
+                    toRemove.add((MCATProjectSample)nd.getUserObject());
                 }
             }
         }
-        for(MCATSample sample : toRemove) {
+        for(MCATProjectSample sample : toRemove) {
             getProject().removeSample(sample);
         }
     }
@@ -133,11 +133,11 @@ public class MCATSampleManagerUI extends MCATUIPanel {
 
     public void rebuildSampleListTree() {
 
-        MCATSample selectedSample = null;
+        MCATProjectSample selectedSample = null;
         if(sampleTree.getLastSelectedPathComponent() != null) {
             DefaultMutableTreeNode nd = (DefaultMutableTreeNode) sampleTree.getLastSelectedPathComponent();
-            if(nd.getUserObject() instanceof MCATSample) {
-                selectedSample = (MCATSample)nd.getUserObject();
+            if(nd.getUserObject() instanceof MCATProjectSample) {
+                selectedSample = (MCATProjectSample)nd.getUserObject();
             }
         }
 
@@ -148,10 +148,10 @@ public class MCATSampleManagerUI extends MCATUIPanel {
             rootNodeName = "No samples";
         }
         DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(rootNodeName);
-        Map<String, Set<MCATSample>> groupedSamples = getProject().getSamplesGroupedByTreatment();
-        for(Map.Entry<String, Set<MCATSample>> kv : groupedSamples.entrySet()) {
+        Map<String, Set<MCATProjectSample>> groupedSamples = getProject().getSamplesGroupedByTreatment();
+        for(Map.Entry<String, Set<MCATProjectSample>> kv : groupedSamples.entrySet()) {
             DefaultMutableTreeNode groupNode = new DefaultMutableTreeNode(kv.getValue());
-            for(MCATSample sample : kv.getValue().stream().sorted().collect(Collectors.toList())) {
+            for(MCATProjectSample sample : kv.getValue().stream().sorted().collect(Collectors.toList())) {
                 sample.getParameters().getEventBus().register(this);
                 DefaultMutableTreeNode sampleNode = new DefaultMutableTreeNode(sample);
                 if(sample == selectedSample) {

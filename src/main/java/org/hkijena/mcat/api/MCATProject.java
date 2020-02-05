@@ -3,12 +3,13 @@ package org.hkijena.mcat.api;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.TreeNode;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.collect.*;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+import com.google.common.collect.ImmutableBiMap;
+import com.google.common.collect.ImmutableList;
 import com.google.common.eventbus.EventBus;
 import org.hkijena.mcat.api.dataproviders.FileDataProvider;
 import org.hkijena.mcat.api.events.MCATSampleAddedEvent;
@@ -19,7 +20,6 @@ import org.hkijena.mcat.api.parameters.MCATPostprocessingParameters;
 import org.hkijena.mcat.api.parameters.MCATPreprocessingParameters;
 import org.hkijena.mcat.utils.JsonUtils;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -37,7 +37,7 @@ public class MCATProject {
     private MCATPreprocessingParameters preprocessingParameters = new MCATPreprocessingParameters();
     private MCATClusteringParameters clusteringParameters = new MCATClusteringParameters();
     private MCATPostprocessingParameters postprocessingParameters = new MCATPostprocessingParameters();
-    private BiMap<String, MCATSample> samples = HashBiMap.create();
+    private BiMap<String, MCATProjectSample> samples = HashBiMap.create();
 
     public MCATProject() {
     }
@@ -46,13 +46,13 @@ public class MCATProject {
         return eventBus;
     }
 
-    public BiMap<String, MCATSample> getSamples() {
+    public BiMap<String, MCATProjectSample> getSamples() {
         return ImmutableBiMap.copyOf(samples);
     }
 
-    public Map<String, Set<MCATSample>> getSamplesGroupedByTreatment() {
-        Map<String, Set<MCATSample>> result = new HashMap<>();
-        for(MCATSample sample : samples.values()) {
+    public Map<String, Set<MCATProjectSample>> getSamplesGroupedByTreatment() {
+        Map<String, Set<MCATProjectSample>> result = new HashMap<>();
+        for(MCATProjectSample sample : samples.values()) {
             if(!result.containsKey(sample.getParameters().getTreatment())) {
                 result.put(sample.getParameters().getTreatment(), new HashSet<>());
             }
@@ -61,19 +61,19 @@ public class MCATProject {
         return result;
     }
 
-    public MCATSample addSample(String sampleName) {
+    public MCATProjectSample addSample(String sampleName) {
         if(samples.containsKey(sampleName)) {
             return samples.get(sampleName);
         }
         else {
-            MCATSample sample = new MCATSample(this);
+            MCATProjectSample sample = new MCATProjectSample(this);
             samples.put(sampleName, sample);
             eventBus.post(new MCATSampleAddedEvent(sample));
             return sample;
         }
     }
 
-    public boolean removeSample(MCATSample sample) {
+    public boolean removeSample(MCATProjectSample sample) {
         String name = sample.getName();
         if(samples.containsKey(name)) {
             samples.remove(name);
@@ -83,7 +83,7 @@ public class MCATProject {
         return false;
     }
 
-    public boolean renameSample(MCATSample sample, String name) {
+    public boolean renameSample(MCATProjectSample sample, String name) {
         if(name == null)
             return false;
         name = name.trim();
@@ -97,7 +97,7 @@ public class MCATProject {
 
     public Set<String> getKnownTreatments() {
         Set<String> result = new HashSet<>();
-        for(MCATSample sample : samples.values()) {
+        for(MCATProjectSample sample : samples.values()) {
             if(sample.getParameters().getTreatment() != null)
                 result.add(sample.getParameters().getTreatment());
         }
@@ -137,7 +137,7 @@ public class MCATProject {
 
             JsonNode importedDataNode = node.path("filesystem").path("json-data").path("imported").path("children");
             if(!importedDataNode.isMissingNode()) {
-                for(Map.Entry<String, MCATSample> kv : project.getSamples().entrySet()) {
+                for(Map.Entry<String, MCATProjectSample> kv : project.getSamples().entrySet()) {
                     if(importedDataNode.has(kv.getKey())) {
                         JsonNode dataSlotsNode = importedDataNode.get(kv.getKey()).path("children");
                         if(!dataSlotsNode.isMissingNode()) {
@@ -173,7 +173,7 @@ public class MCATProject {
 
         private void readSamples(MCATProject project, JsonNode node) throws IOException {
             for(Map.Entry<String, JsonNode> kv : ImmutableList.copyOf(node.fields())) {
-                MCATSample sample = project.addSample(kv.getKey());
+                MCATProjectSample sample = project.addSample(kv.getKey());
                 JsonUtils.getObjectMapper().readerForUpdating(sample.getParameters()).readValue(kv.getValue().traverse());
             }
         }
@@ -230,7 +230,7 @@ public class MCATProject {
                 jsonGenerator.writeStartObject();
                 jsonGenerator.writeFieldName("children");
                 jsonGenerator.writeStartObject();
-                for(Map.Entry<String, MCATSample> kv : project.getSamples().entrySet()) {
+                for(Map.Entry<String, MCATProjectSample> kv : project.getSamples().entrySet()) {
                     jsonGenerator.writeFieldName(kv.getKey());
                     jsonGenerator.writeStartObject();
                     jsonGenerator.writeFieldName("children");
@@ -259,7 +259,7 @@ public class MCATProject {
         private void serializeSampleParameters(MCATProject project, JsonGenerator jsonGenerator) throws IOException {
             jsonGenerator.writeFieldName("samples");
             jsonGenerator.writeStartObject();
-            for(Map.Entry<String, MCATSample> kv : project.getSamples().entrySet()) {
+            for(Map.Entry<String, MCATProjectSample> kv : project.getSamples().entrySet()) {
                 jsonGenerator.writeObjectField(kv.getKey(), kv.getValue().getParameters());
             }
             jsonGenerator.writeEndObject();

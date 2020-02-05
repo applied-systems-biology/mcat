@@ -13,4 +13,8 @@ public class DerivationMatrixDataSlot extends MCATDataSlot<DerivationMatrixData>
     public DerivationMatrixDataSlot() {
         super(DerivationMatrixData.class, new DerivationMatrixFromFileProvider());
     }
+
+    public DerivationMatrixDataSlot(DerivationMatrixDataSlot other) {
+        super(DerivationMatrixData.class, new DerivationMatrixFromFileProvider(other.getProvider(DerivationMatrixFromFileProvider.class)));
+    }
 }

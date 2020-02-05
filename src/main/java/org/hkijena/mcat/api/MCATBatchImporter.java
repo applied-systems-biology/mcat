@@ -153,12 +153,12 @@ public class MCATBatchImporter {
         return Files.list(folder).filter(path -> path.getFileName().toString().matches(pattern)).findFirst().orElse(null);
     }
 
-    private MCATSample importSample(Path folder, String treatment) throws IOException {
+    private MCATProjectSample importSample(Path folder, String treatment) throws IOException {
         String name = folder.getFileName().toString();
         if(treatment != null && includeTreatmentInName) {
             name = treatment + "_" + name;
         }
-        MCATSample sample = getProject().addSample(name);
+        MCATProjectSample sample = getProject().addSample(name);
         sample.getParameters().setTreatment(treatment);
 
         if(importRawImages) {
@@ -179,8 +179,8 @@ public class MCATBatchImporter {
         return sample;
     }
 
-    public Set<MCATSample> run() throws IOException {
-        Set<MCATSample> result = new HashSet<>();
+    public Set<MCATProjectSample> run() throws IOException {
+        Set<MCATProjectSample> result = new HashSet<>();
         List<Path> treatmentPaths;
 
         if(subfoldersAreTreatments) {
