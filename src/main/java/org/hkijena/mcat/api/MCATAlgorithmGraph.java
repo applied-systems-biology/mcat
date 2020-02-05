@@ -5,15 +5,20 @@ import org.hkijena.mcat.api.algorithms.MCATPostprocessingAlgorithm;
 import org.hkijena.mcat.api.algorithms.MCATPreprocessingAlgorithm;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
+import org.jgrapht.io.ComponentNameProvider;
+import org.jgrapht.io.DOTExporter;
 import org.jgrapht.traverse.DepthFirstIterator;
 import org.jgrapht.traverse.GraphIterator;
+import org.jgrapht.traverse.TopologicalOrderIterator;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 
 /**
  * Manages multiple {@link MCATAlgorithm} instances as graph
  */
-public class MCATAlgorithmGraph implements MCATValidatable, Runnable {
+public class MCATAlgorithmGraph implements MCATValidatable {
 
     private DefaultDirectedGraph<MCATAlgorithm, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
     private Set<MCATAlgorithm> algorithms = new HashSet<>();
@@ -34,7 +39,6 @@ public class MCATAlgorithmGraph implements MCATValidatable, Runnable {
 
             @Override
             public void run() {
-
             }
 
             @Override
@@ -45,6 +49,13 @@ public class MCATAlgorithmGraph implements MCATValidatable, Runnable {
         insertNode(rootNode);
         for(MCATRunSample sample : run.getSamples().values()) {
             initializeSample(sample);
+        }
+
+        DOTExporter<MCATAlgorithm, DefaultEdge> exporter = new DOTExporter<>();
+        try(FileWriter writer = new FileWriter("/home/rgerst/graph.dot")) {
+            exporter.exportGraph(graph, writer);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -92,7 +103,7 @@ public class MCATAlgorithmGraph implements MCATValidatable, Runnable {
     }
 
     public List<MCATAlgorithm> traverse() {
-        GraphIterator<MCATAlgorithm, DefaultEdge> iterator = new DepthFirstIterator<>(graph, rootNode);
+        GraphIterator<MCATAlgorithm, DefaultEdge> iterator = new TopologicalOrderIterator<>(graph);
         List<MCATAlgorithm> result = new ArrayList<>();
         while(iterator.hasNext()) {
             MCATAlgorithm algorithm = iterator.next();
@@ -103,14 +114,5 @@ public class MCATAlgorithmGraph implements MCATValidatable, Runnable {
 
     public int size() {
         return graph.vertexSet().size();
-    }
-
-    @Override
-    public void run() {
-        GraphIterator<MCATAlgorithm, DefaultEdge> iterator = new DepthFirstIterator<>(graph, rootNode);
-        while(iterator.hasNext()) {
-            MCATAlgorithm algorithm = iterator.next();
-            algorithm.run();
-        }
     }
 }

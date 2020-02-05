@@ -9,7 +9,7 @@ import org.hkijena.mcat.api.datainterfaces.MCATPostprocessedDataInterface;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MCATRunSample implements MCATDataInterface {
+public class MCATRunSample implements MCATDataInterface, Comparable<MCATRunSample> {
     private MCATRun run;
 
     private MCATClusteredDataInterface clusteredDataInterface;
@@ -64,5 +64,10 @@ public class MCATRunSample implements MCATDataInterface {
         result.addAll(clusteredDataInterface.getSlots());
         result.addAll(postprocessedDataInterface.getSlots());
         return result;
+    }
+
+    @Override
+    public int compareTo(MCATRunSample o) {
+        return getName().compareTo(o.getName());
     }
 }

@@ -26,6 +26,7 @@ public class MCATRunUI extends MCATUIPanel {
     JButton cancelButton;
     JButton runButton;
     JProgressBar progressBar;
+    JPanel buttonPanel;
 
     public MCATRunUI(MCATWorkbenchUI workbenchUI) {
         super(workbenchUI);
@@ -56,7 +57,7 @@ public class MCATRunUI extends MCATUIPanel {
     }
 
     private void initializeButtons() {
-        JPanel buttonPanel = new JPanel();
+        buttonPanel = new JPanel();
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(0,8,8,8));
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
 
@@ -128,7 +129,10 @@ public class MCATRunUI extends MCATUIPanel {
     }
 
     private void openResults() {
-
+        MCATResultUI resultUI = new MCATResultUI(run);
+        add(resultUI, BorderLayout.CENTER);
+        buttonPanel.setVisible(false);
+        revalidate();
     }
 
     private static class Worker extends SwingWorker<Exception, Object> {

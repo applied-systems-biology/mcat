@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class MCATRunSampleSubject implements MCATDataInterface {
+public class MCATRunSampleSubject implements MCATDataInterface, Comparable<MCATRunSampleSubject> {
 
     private MCATRunSample sample;
     private MCATSampleParameters parameters;
@@ -48,5 +48,10 @@ public class MCATRunSampleSubject implements MCATDataInterface {
 
     public String getName() {
         return sample.getSubjects().inverse().get(this);
+    }
+
+    @Override
+    public int compareTo(MCATRunSampleSubject o) {
+        return getName().compareTo(o.getName());
     }
 }
