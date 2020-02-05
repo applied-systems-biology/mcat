@@ -59,4 +59,7 @@ public class MCATResultSampleManagerUI extends JPanel {
     }
 
 
+    public JTree getSampleTree() {
+        return sampleTree;
+    }
 }
