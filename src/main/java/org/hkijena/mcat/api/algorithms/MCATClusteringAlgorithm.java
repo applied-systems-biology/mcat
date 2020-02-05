@@ -1,10 +1,11 @@
 package org.hkijena.mcat.api.algorithms;
 
 import org.hkijena.mcat.api.MCATAlgorithm;
+import org.hkijena.mcat.api.MCATPerSampleAlgorithm;
 import org.hkijena.mcat.api.MCATRunSample;
 import org.hkijena.mcat.api.MCATValidityReport;
 
-public class MCATClusteringAlgorithm extends MCATAlgorithm {
+public class MCATClusteringAlgorithm extends MCATPerSampleAlgorithm {
 
     public MCATClusteringAlgorithm(MCATRunSample sample) {
         super(sample);

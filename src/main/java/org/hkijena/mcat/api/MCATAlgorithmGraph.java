@@ -49,17 +49,20 @@ public class MCATAlgorithmGraph implements MCATValidatable, Runnable {
     }
 
     private void initializeSample(MCATRunSample sample) {
-        MCATPreprocessingAlgorithm preprocessingAlgorithm = new MCATPreprocessingAlgorithm(sample);
         MCATClusteringAlgorithm clusteringAlgorithm = new MCATClusteringAlgorithm(sample);
         MCATPostprocessingAlgorithm postprocessingAlgorithm = new MCATPostprocessingAlgorithm(sample);
 
-        insertNode(preprocessingAlgorithm);
         insertNode(clusteringAlgorithm);
         insertNode(postprocessingAlgorithm);
 
-       connect(rootNode, preprocessingAlgorithm);
-       connect(preprocessingAlgorithm, clusteringAlgorithm);
-       connect(clusteringAlgorithm, postprocessingAlgorithm);
+        for(MCATRunSampleSubject subject : sample.getSubjects().values()) {
+            MCATPreprocessingAlgorithm preprocessingAlgorithm = new MCATPreprocessingAlgorithm(subject);
+            insertNode(preprocessingAlgorithm);
+
+            connect(rootNode, preprocessingAlgorithm); // Should be the first algorithm in the chain
+            connect(preprocessingAlgorithm, clusteringAlgorithm);
+            connect(clusteringAlgorithm, postprocessingAlgorithm);
+        }
     }
 
     public void insertNode(MCATAlgorithm algorithm) {

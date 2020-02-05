@@ -15,10 +15,10 @@ import org.hkijena.mcat.api.parameters.MCATSampleParameters;
  */
 public abstract class MCATAlgorithm implements MCATValidatable, Runnable {
 
-    private MCATRunSample sample;
+    private MCATRun run;
 
-    public MCATAlgorithm(MCATRunSample sample) {
-        this.sample = sample;
+    public MCATAlgorithm(MCATRun run) {
+        this.run = run;
     }
 
     public abstract void run();
@@ -26,42 +26,6 @@ public abstract class MCATAlgorithm implements MCATValidatable, Runnable {
     public abstract String getName();
 
     public MCATRun getRun() {
-        return sample.getRun();
-    }
-
-    public MCATRunSample getSample() {
-        return sample;
-    }
-
-    public MCATRawDataInterface getRawData() {
-        return sample.getRawDataInterface();
-    }
-
-    public MCATPreprocessedDataInterface getPreprocessedData() {
-        return sample.getPreprocessedDataInterface();
-    }
-
-    public MCATClusteredDataInterface getClusteredDataInterface() {
-        return sample.getClusteredDataInterface();
-    }
-
-    public MCATPostprocessedDataInterface getPostprocessedData() {
-        return sample.getPostprocessedDataInterface();
-    }
-
-    public MCATSampleParameters getSampleParameters() {
-        return sample.getParameters();
-    }
-
-    public MCATClusteringParameters getClusteringParameters() {
-        return sample.getRun().getClusteringParameters();
-    }
-
-    public MCATPreprocessingParameters getPreprocessingParameters() {
-        return sample.getRun().getPreprocessingParameters();
-    }
-
-    public MCATPostprocessingParameters getPostprocessingParameters() {
-        return sample.getRun().getPostprocessingParameters();
+        return run;
     }
 }

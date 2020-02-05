@@ -50,6 +50,17 @@ public class MCATProject {
         return ImmutableBiMap.copyOf(samples);
     }
 
+    public Map<String, List<MCATProjectSample>> getSamplesByTreatment() {
+        Map<String, List<MCATProjectSample>> result = new HashMap<>();
+        for(MCATProjectSample sample : samples.values()) {
+            if(!result.containsKey(sample.getParameters().getTreatment())) {
+                result.put(sample.getParameters().getTreatment(), new ArrayList<>());
+            }
+            result.get(sample.getParameters().getTreatment()).add(sample);
+        }
+        return result;
+    }
+
     public Map<String, Set<MCATProjectSample>> getSamplesGroupedByTreatment() {
         Map<String, Set<MCATProjectSample>> result = new HashMap<>();
         for(MCATProjectSample sample : samples.values()) {

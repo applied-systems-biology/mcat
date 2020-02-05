@@ -1,13 +1,11 @@
 package org.hkijena.mcat.api.algorithms;
 
-import org.hkijena.mcat.api.MCATAlgorithm;
-import org.hkijena.mcat.api.MCATRunSample;
-import org.hkijena.mcat.api.MCATValidityReport;
+import org.hkijena.mcat.api.*;
 
-public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
+public class MCATPreprocessingAlgorithm extends MCATPerSubjectAlgorithm {
 
-    public MCATPreprocessingAlgorithm(MCATRunSample sample) {
-        super(sample);
+    public MCATPreprocessingAlgorithm(MCATRunSampleSubject subject) {
+        super(subject);
     }
 
     @Override
@@ -21,7 +19,7 @@ public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
 
     @Override
     public String getName() {
-        return "Preprocessing " + getSample().getName();
+        return "Preprocessing " + getSample().getName() + "/" + getSubject().getName();
     }
 
     @Override

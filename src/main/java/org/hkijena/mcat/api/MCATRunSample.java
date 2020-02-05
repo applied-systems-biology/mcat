@@ -1,54 +1,45 @@
 package org.hkijena.mcat.api;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+import com.google.common.collect.ImmutableBiMap;
 import org.hkijena.mcat.api.datainterfaces.MCATClusteredDataInterface;
 import org.hkijena.mcat.api.datainterfaces.MCATPostprocessedDataInterface;
-import org.hkijena.mcat.api.datainterfaces.MCATPreprocessedDataInterface;
-import org.hkijena.mcat.api.datainterfaces.MCATRawDataInterface;
-import org.hkijena.mcat.api.parameters.MCATSampleParameters;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MCATRunSample implements MCATDataInterface {
-    private MCATProjectSample sourceSample;
     private MCATRun run;
 
-    private MCATSampleParameters parameters;
-    private MCATRawDataInterface rawDataInterface;
-    private MCATPreprocessedDataInterface preprocessedDataInterface;
     private MCATClusteredDataInterface clusteredDataInterface;
     private MCATPostprocessedDataInterface postprocessedDataInterface;
+    private BiMap<String, MCATRunSampleSubject> subjects = HashBiMap.create();
 
-    public MCATRunSample(MCATRun run, MCATProjectSample source) {
-        this.sourceSample = source;
+    public MCATRunSample(MCATRun run, List<MCATProjectSample> sources) {
         this.run = run;
 
-        // Initialize from source sample
-        this.parameters = new MCATSampleParameters(source.getParameters());
-        this.rawDataInterface = new MCATRawDataInterface(source.getRawDataInterface());
-        this.preprocessedDataInterface = new MCATPreprocessedDataInterface(source.getPreprocessedDataInterface());
-        this.clusteredDataInterface = new MCATClusteredDataInterface(source.getClusteredDataInterface());
-        this.postprocessedDataInterface = new MCATPostprocessedDataInterface(source.getPostprocessedDataInterface());
-    }
+        // Initialize subjects
+        for(MCATProjectSample sample : sources) {
+            subjects.put(sample.getName(), new MCATRunSampleSubject(this, sample));
+        }
 
-    public MCATProjectSample getSourceSample() {
-        return sourceSample;
+        // Initialize from source sample
+        if(sources.size() == 1) {
+            MCATProjectSample source = sources.get(0);
+            this.clusteredDataInterface = new MCATClusteredDataInterface(source.getClusteredDataInterface());
+            this.postprocessedDataInterface = new MCATPostprocessedDataInterface(source.getPostprocessedDataInterface());
+        }
+        else {
+            // If we have multiple source samples, we cannot do this
+            this.clusteredDataInterface = new MCATClusteredDataInterface();
+            this.postprocessedDataInterface = new MCATPostprocessedDataInterface();
+        }
+
     }
 
     public MCATRun getRun() {
         return run;
-    }
-
-    public MCATSampleParameters getParameters() {
-        return parameters;
-    }
-
-    public MCATRawDataInterface getRawDataInterface() {
-        return rawDataInterface;
-    }
-
-    public MCATPreprocessedDataInterface getPreprocessedDataInterface() {
-        return preprocessedDataInterface;
     }
 
     public MCATClusteredDataInterface getClusteredDataInterface() {
@@ -63,11 +54,13 @@ public class MCATRunSample implements MCATDataInterface {
         return  getRun().getSamples().inverse().get(this);
     }
 
+    public BiMap<String, MCATRunSampleSubject> getSubjects() {
+        return ImmutableBiMap.copyOf(subjects);
+    }
+
     @Override
     public List<MCATDataSlot<?>> getSlots() {
         List<MCATDataSlot<?>> result = new ArrayList<>();
-        result.addAll(rawDataInterface.getSlots());
-        result.addAll(preprocessedDataInterface.getSlots());
         result.addAll(clusteredDataInterface.getSlots());
         result.addAll(postprocessedDataInterface.getSlots());
         return result;

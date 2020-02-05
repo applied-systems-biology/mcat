@@ -10,6 +10,9 @@ import org.hkijena.mcat.api.parameters.MCATPreprocessingParameters;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -30,8 +33,26 @@ public class MCATRun implements MCATValidatable {
         this.preprocessingParameters = new MCATPreprocessingParameters(project.getPreprocessingParameters());
         this.clusteringParameters = new MCATClusteringParameters(project.getClusteringParameters());
         this.postprocessingParameters = new MCATPostprocessingParameters(project.getPostprocessingParameters());
-        for(Map.Entry<String, MCATProjectSample> sampleEntry : project.getSamples().entrySet()) {
-            samples.put(sampleEntry.getKey(), new MCATRunSample(this, sampleEntry.getValue()));
+
+        switch (clusteringParameters.getClusteringHierarchy()) {
+            case PerSubject:
+                for(Map.Entry<String, MCATProjectSample> kv : project.getSamples().entrySet()) {
+                    MCATRunSample sample = new MCATRunSample(this, Arrays.asList(kv.getValue()));
+                    samples.put(kv.getKey(), sample);
+                }
+                break;
+            case PerTreatment: {
+                for(Map.Entry<String, List<MCATProjectSample>> kv : project.getSamplesByTreatment().entrySet()) {
+                    MCATRunSample sample = new MCATRunSample(this, kv.getValue());
+                    samples.put(kv.getKey(), sample);
+                }
+            }
+                break;
+            case AllInOne: {
+                MCATRunSample sample = new MCATRunSample(this, new ArrayList<>(project.getSamples().values()));
+                samples.put("all-in-one", sample);
+            }
+            break;
         }
 
         this.graph = new MCATAlgorithmGraph(this);
@@ -79,7 +100,7 @@ public class MCATRun implements MCATValidatable {
     private void prepare() {
         isReady = true;
 
-        if(!Files.exists(outputPath)) {
+        if (!Files.exists(outputPath)) {
             try {
                 Files.createDirectories(outputPath);
             } catch (IOException e) {
@@ -89,24 +110,40 @@ public class MCATRun implements MCATValidatable {
 
         // Apply output path to the data slots
         for (Map.Entry<String, MCATRunSample> kv : samples.entrySet()) {
-           for(MCATDataSlot<?> slot : kv.getValue().getSlots()) {
-               slot.setStorageFilePath(outputPath.resolve(kv.getKey()).resolve(slot.getName()));
-               if(!Files.exists(slot.getStorageFilePath())) {
-                   try {
-                       Files.createDirectories(slot.getStorageFilePath());
-                   } catch (IOException e) {
-                       throw new RuntimeException(e);
-                   }
-               }
-           }
+
+            // Apply output path to the data slots
+            for (MCATDataSlot<?> slot : kv.getValue().getSlots()) {
+                slot.setStorageFilePath(outputPath.resolve(kv.getKey()).resolve(slot.getName()));
+                if (!Files.exists(slot.getStorageFilePath())) {
+                    try {
+                        Files.createDirectories(slot.getStorageFilePath());
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+
+            // Do the same for the subjects
+            for (Map.Entry<String, MCATRunSampleSubject> kv2 : kv.getValue().getSubjects().entrySet()) {
+                for (MCATDataSlot<?> slot : kv2.getValue().getSlots()) {
+                    slot.setStorageFilePath(outputPath.resolve(kv.getKey()).resolve(kv2.getKey()).resolve(slot.getName()));
+                    if (!Files.exists(slot.getStorageFilePath())) {
+                        try {
+                            Files.createDirectories(slot.getStorageFilePath());
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }
+            }
         }
     }
 
     public void run(Consumer<Status> onProgress, Supplier<Boolean> isCancelled) {
         prepare();
         int counter = 0;
-        for(MCATAlgorithm algorithm : graph.traverse()) {
-            if(isCancelled.get())
+        for (MCATAlgorithm algorithm : graph.traverse()) {
+            if (isCancelled.get())
                 throw new RuntimeException("Execution was cancelled");
             onProgress.accept(new Status(counter, graph.size(), algorithm.getName()));
             algorithm.run();
