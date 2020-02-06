@@ -1,9 +1,6 @@
 package org.hkijena.mcat.ui.registries;
 
-import org.hkijena.mcat.api.MCATDataProvider;
 import org.hkijena.mcat.api.MCATDataSlot;
-import org.hkijena.mcat.api.MCATProjectSample;
-import org.hkijena.mcat.ui.MCATDataProviderUI;
 import org.hkijena.mcat.ui.MCATResultDataSlotUI;
 import org.hkijena.mcat.ui.dataslots.MCATDefaultDataSlotResultUI;
 

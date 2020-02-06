@@ -16,6 +16,6 @@ public class ClusterCentersDataSlot extends MCATDataSlot<ClusterCentersData> {
     }
 
     public ClusterCentersDataSlot(ClusterCentersDataSlot other) {
-        super(other.getName(), ClusterCentersData.class, new ClusterCentersFromFileProvider(other.getProvider(ClusterCentersFromFileProvider.class)));
+        super(other);
     }
 }

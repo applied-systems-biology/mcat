@@ -1,7 +1,5 @@
 package org.hkijena.mcat.ui;
 
-import org.hkijena.mcat.api.MCATAlgorithm;
-import org.hkijena.mcat.api.MCATAlgorithmGraph;
 import org.hkijena.mcat.api.MCATRun;
 import org.hkijena.mcat.api.MCATValidityReport;
 import org.hkijena.mcat.ui.components.FileSelection;
@@ -49,7 +47,10 @@ public class MCATRunUI extends MCATUIPanel {
                 new JLabel("Output folder"),
                 null);
         outputFolderSelection.getFileChooser().setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        outputFolderSelection.addActionListener(e -> run.setOutputPath(outputFolderSelection.getPath()));
+        outputFolderSelection.addActionListener(e -> {
+            run.setOutputPath(outputFolderSelection.getPath());
+            runButton.setEnabled(outputFolderSelection.getPath() != null);
+        });
         formPanel.addVerticalGlue();
 
         setupPanel.add(formPanel, BorderLayout.CENTER);
@@ -72,6 +73,7 @@ public class MCATRunUI extends MCATUIPanel {
 
         runButton = new JButton("Run now", UIUtils.getIconFromResources("run.png"));
         runButton.addActionListener(e -> runNow());
+        runButton.setEnabled(false);
         buttonPanel.add(runButton);
 
         add(buttonPanel, BorderLayout.SOUTH);

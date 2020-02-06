@@ -5,9 +5,7 @@ import org.hkijena.mcat.api.algorithms.MCATPostprocessingAlgorithm;
 import org.hkijena.mcat.api.algorithms.MCATPreprocessingAlgorithm;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
-import org.jgrapht.io.ComponentNameProvider;
 import org.jgrapht.io.DOTExporter;
-import org.jgrapht.traverse.DepthFirstIterator;
 import org.jgrapht.traverse.GraphIterator;
 import org.jgrapht.traverse.TopologicalOrderIterator;
 
@@ -49,13 +47,6 @@ public class MCATAlgorithmGraph implements MCATValidatable {
         insertNode(rootNode);
         for(MCATRunSample sample : run.getSamples().values()) {
             initializeSample(sample);
-        }
-
-        DOTExporter<MCATAlgorithm, DefaultEdge> exporter = new DOTExporter<>();
-        try(FileWriter writer = new FileWriter("/home/rgerst/graph.dot")) {
-            exporter.exportGraph(graph, writer);
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 

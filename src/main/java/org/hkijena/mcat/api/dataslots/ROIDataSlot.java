@@ -16,6 +16,6 @@ public class ROIDataSlot extends MCATDataSlot<ROIData> {
     }
 
     public ROIDataSlot(ROIDataSlot other) {
-        super(other.getName(), ROIData.class, new ROIFromFileDataProvider(other.getProvider(ROIFromFileDataProvider.class)));
+        super(other);
     }
 }

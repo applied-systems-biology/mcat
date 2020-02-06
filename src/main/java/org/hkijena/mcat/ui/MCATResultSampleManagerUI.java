@@ -1,11 +1,9 @@
 package org.hkijena.mcat.ui;
 
-import org.hkijena.mcat.api.MCATProjectSample;
 import org.hkijena.mcat.api.MCATRun;
 import org.hkijena.mcat.api.MCATRunSample;
 import org.hkijena.mcat.api.MCATRunSampleSubject;
 import org.hkijena.mcat.ui.components.MCATRunSampleTreeCellRenderer;
-import org.hkijena.mcat.ui.components.MCATSampleTreeCellRenderer;
 import org.hkijena.mcat.utils.UIUtils;
 
 import javax.swing.*;

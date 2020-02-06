@@ -14,6 +14,6 @@ public class HyperstackDataSlot extends MCATDataSlot<HyperstackData> {
         super(name, HyperstackData.class, new HyperstackFromTifDataProvider());
     }
     public HyperstackDataSlot(HyperstackDataSlot other) {
-        super(other.getName(), HyperstackData.class, new HyperstackFromTifDataProvider(other.getProvider(HyperstackFromTifDataProvider.class)));
+        super(other);
     }
 }

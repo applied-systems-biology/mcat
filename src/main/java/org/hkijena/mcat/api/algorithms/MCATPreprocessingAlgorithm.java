@@ -1,6 +1,8 @@
 package org.hkijena.mcat.api.algorithms;
 
-import org.hkijena.mcat.api.*;
+import org.hkijena.mcat.api.MCATPerSubjectAlgorithm;
+import org.hkijena.mcat.api.MCATRunSampleSubject;
+import org.hkijena.mcat.api.MCATValidityReport;
 
 public class MCATPreprocessingAlgorithm extends MCATPerSubjectAlgorithm {
 

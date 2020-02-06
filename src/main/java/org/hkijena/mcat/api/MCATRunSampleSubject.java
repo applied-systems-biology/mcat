@@ -5,7 +5,6 @@ import org.hkijena.mcat.api.datainterfaces.MCATRawDataInterface;
 import org.hkijena.mcat.api.parameters.MCATSampleParameters;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class MCATRunSampleSubject implements MCATDataInterface, Comparable<MCATRunSampleSubject> {

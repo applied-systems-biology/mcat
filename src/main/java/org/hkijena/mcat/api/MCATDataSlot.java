@@ -38,6 +38,18 @@ public abstract class MCATDataSlot<T extends MCATData> {
         availableProviders.addAll(Arrays.asList(dataProviders));
     }
 
+    public MCATDataSlot(MCATDataSlot<T> other) {
+        this.name = other.name;
+        this.acceptedDataType = other.acceptedDataType;
+        for(MCATDataProvider<T> provider : other.availableProviders) {
+            MCATDataProvider<T> copy = MCATDataProvider.duplicate(provider);
+            this.availableProviders.add(copy);
+            if(other.dataProvider == provider) {
+                this.dataProvider = copy;
+            }
+        }
+    }
+
     public Class<T> getAcceptedDataType() {
         return acceptedDataType;
     }
@@ -94,6 +106,10 @@ public abstract class MCATDataSlot<T extends MCATData> {
 
     public boolean hasData() {
         return data != null;
+    }
+
+    public boolean hasDataOrIsProvidedData() {
+        return hasData() || (getCurrentProvider() != null && getCurrentProvider().providesData());
     }
 
     public Path getStorageFilePath() {

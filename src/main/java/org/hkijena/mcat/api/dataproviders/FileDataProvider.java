@@ -29,6 +29,11 @@ public abstract class FileDataProvider <T extends MCATData> extends MCATParamete
     }
 
     @Override
+    public boolean providesData() {
+        return filePath != null && Files.exists(filePath);
+    }
+
+    @Override
     public MCATValidityReport getValidityReport() {
         if(Files.exists(filePath))
             return new MCATValidityReport(this, getName(), true, "");

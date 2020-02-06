@@ -21,11 +21,11 @@ public class MCATResultSampleUI extends JPanel {
         initialize();
     }
 
-    private void addSlotToForm(String name, MCATDataSlot<?> slot) {
+    private void addSlotToForm(String name, MCATDataSlot<?> slot, String documentationPath) {
         Component ui = MCATResultDataSlotUIRegistry.getInstance().getUIFor(slot);
         formPanel.addToForm(ui,
                 new JLabel(name),
-                null);
+                documentationPath);
     }
 
     private void initialize() {
@@ -33,14 +33,26 @@ public class MCATResultSampleUI extends JPanel {
         formPanel = new FormPanel();
 
         if(sample != null) {
-            addSlotToForm("Cluster images", sample.getClusteredDataInterface().getClusterImages());
-            addSlotToForm("Cluster centers", sample.getClusteredDataInterface().getClusterCenters());
+            addSlotToForm("Cluster image",
+                    sample.getClusteredDataInterface().getClusterImages(),
+                    "documentation/parameter_sample_cluster_image.md");
+            addSlotToForm("Cluster centers",
+                    sample.getClusteredDataInterface().getClusterCenters(),
+                    "documentation/parameter_sample_cluster_centers.md");
         }
         if(subject != null) {
-            addSlotToForm("Raw image", subject.getRawDataInterface().getRawImage());
-            addSlotToForm("Tissue ROI", subject.getRawDataInterface().getTissueROI());
-            addSlotToForm("Preprocessed image", subject.getPreprocessedDataInterface().getPreprocessedImage());
-            addSlotToForm("Derivation matrix", subject.getPreprocessedDataInterface().getDerivationMatrix());
+            addSlotToForm("Raw image",
+                    subject.getRawDataInterface().getRawImage(),
+                    "documentation/parameter_sample_raw_image.md");
+            addSlotToForm("Tissue ROI",
+                    subject.getRawDataInterface().getTissueROI(),
+                    "documentation/parameter_sample_roi.md");
+            addSlotToForm("Preprocessed image",
+                    subject.getPreprocessedDataInterface().getPreprocessedImage(),
+                    "documentation/parameter_sample_preprocessed_image.md");
+            addSlotToForm("Derivation matrix",
+                    subject.getPreprocessedDataInterface().getDerivationMatrix(),
+                    "documentation/parameter_sample_derivation_matrix.md");
         }
 
         formPanel.addVerticalGlue();
