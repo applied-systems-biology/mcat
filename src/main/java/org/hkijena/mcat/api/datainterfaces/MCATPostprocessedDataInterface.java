@@ -2,11 +2,13 @@ package org.hkijena.mcat.api.datainterfaces;
 
 import org.hkijena.mcat.api.MCATDataInterface;
 import org.hkijena.mcat.api.MCATDataSlot;
+import org.hkijena.mcat.api.dataslots.HyperstackDataSlot;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MCATPostprocessedDataInterface implements MCATDataInterface {
+	
 
     public MCATPostprocessedDataInterface() {
 

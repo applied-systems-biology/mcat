@@ -9,7 +9,9 @@ import org.hkijena.mcat.api.MCATParameters;
  * Data class that contains all clustering parameters
  */
 public class MCATClusteringParameters extends MCATParameters {
-    private int kMeansK = 6;
+    private int kMeansK = 5;
+    private int minLength = Integer.MAX_VALUE;
+    
     private MCATClusteringHierarchy clusteringHierarchy = MCATClusteringHierarchy.PerTreatment;
 
     public MCATClusteringParameters() {
@@ -39,4 +41,14 @@ public class MCATClusteringParameters extends MCATParameters {
     public void setkMeansK(int kMeansK) {
         this.kMeansK = kMeansK;
     }
+
+	public int getMinLength() {
+		return minLength;
+	}
+
+	public void setMinLength(int minLength) {
+		this.minLength = minLength;
+	}
+    
+    
 }

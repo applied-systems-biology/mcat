@@ -158,6 +158,7 @@ public class MCATBatchImporter {
         if(treatment != null && includeTreatmentInName) {
             name = treatment + "_" + name;
         }
+        
         MCATProjectSample sample = getProject().addSample(name);
         sample.getParameters().setTreatment(treatment);
 

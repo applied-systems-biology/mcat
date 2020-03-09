@@ -9,10 +9,11 @@ import org.hkijena.mcat.api.MCATParameters;
  */
 public class MCATPostprocessingParameters extends MCATParameters {
     private boolean analyzeNetIncrease = true;
-    private boolean analyzeNetDecrease = true;
-    private boolean analyzeMaxIncrease = true;
-    private boolean analyzeMaxDecrease = true;
-    private boolean performClusterMorphologyAnalysis = true;
+    private boolean analyzeNetDecrease = false;
+    private boolean analyzeMaxIncrease = false;
+    private boolean analyzeMaxDecrease = false;
+    private boolean performClusterMorphologyAnalysis = false;
+    private double cutoffValue = 0;
 
     public MCATPostprocessingParameters() {
 
@@ -24,6 +25,7 @@ public class MCATPostprocessingParameters extends MCATParameters {
         this.analyzeMaxIncrease = other.analyzeMaxIncrease;
         this.analyzeMaxDecrease = other.analyzeMaxDecrease;
         this.performClusterMorphologyAnalysis = other.performClusterMorphologyAnalysis;
+        this.cutoffValue = other.cutoffValue;
     }
 
     @JsonGetter("analyze-net-increase")
@@ -79,5 +81,16 @@ public class MCATPostprocessingParameters extends MCATParameters {
     public void setPerformClusterMorphologyAnalysis(boolean performClusterMorphologyAnalysis) {
         this.performClusterMorphologyAnalysis = performClusterMorphologyAnalysis;
         postChangedEvent("perform-morphology-analysis");
+    }
+    
+    @JsonGetter("cutoffValue")
+    public double getCutoffValue() {
+        return cutoffValue;
+    }
+
+    @JsonSetter("cutoffValue")
+    public void setCutoffValue(double cutoffValue) {
+        this.cutoffValue = cutoffValue;
+        postChangedEvent("cutoffValue");
     }
 }
