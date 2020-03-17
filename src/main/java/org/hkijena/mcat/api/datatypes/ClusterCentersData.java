@@ -6,6 +6,7 @@ import org.hkijena.mcat.api.MCATData;
 
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Contains cluster centers
@@ -33,9 +34,9 @@ public class ClusterCentersData extends MCATData {
 		for (int i = 0; i < clusterCenters.length; i++) {
 			for (int j = 0; j < clusterCenters[i].length; j++) {
 				if(j == 0)
-					centroidsString+= String.format("%.2f", clusterCenters[i][j]);
+					centroidsString+= String.format(Locale.ENGLISH, "%.2f", clusterCenters[i][j]);
 				else
-					centroidsString+= ";" + String.format("%.2f", clusterCenters[i][j]);
+					centroidsString+= ";" + String.format(Locale.ENGLISH, "%.2f", clusterCenters[i][j]);
 			}
 			if(i != clusterCenters.length -1)
 				centroidsString += System.lineSeparator();

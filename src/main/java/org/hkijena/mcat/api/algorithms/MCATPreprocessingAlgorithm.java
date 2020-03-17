@@ -29,7 +29,7 @@ public class MCATPreprocessingAlgorithm extends MCATPerSubjectAlgorithm {
         super(subject);
     }
     
-    private void registerImages(String transformFile, ImagePlus... imps) {
+    private ImagePlus registerImages(String transformFile, ImagePlus... imps) {
     	System.out.println("\t\tRegistering channels...");
     	MultiStackReg_ msr = new MultiStackReg_();
     	
@@ -54,16 +54,21 @@ public class MCATPreprocessingAlgorithm extends MCATPerSubjectAlgorithm {
 		default: System.err.println("Invalid number of images specified for registration: " + imps.length);
 			break;
 		}
+    	
+    	return imps[imps.length-1];
     }
     
-    private void ztransform(ImagePlus imp) {
+    private ImagePlus ztransform(ImagePlus imp) {
     	System.out.println("\t\tPerforming z-transformation...");
     	ImageStatistics is = imp.getStatistics();
+    	System.out.println("before: " + is.mean);
     	IJ.run(imp, "Subtract...", "value=" + is.mean + " stack");
     	IJ.run(imp, "Divide...", "value=" + is.stdDev + " stack");
+    	
+    	return imp;
     }
     
-    private void setOuterPixels(ImagePlus imp, Roi r) {
+    private ImagePlus setOuterPixels(ImagePlus imp, Roi r) {
     	System.out.println("\t\tSetting pixels outside ROI to zero...");
     	imp.setRoi(r);
     	IJ.run(imp, "Make Inverse", "");
@@ -71,9 +76,11 @@ public class MCATPreprocessingAlgorithm extends MCATPerSubjectAlgorithm {
     	imp.setRoi(r);
     	IJ.run(imp,"Crop","");
     	IJ.run(imp,"Select None","");
+    	
+    	return imp;
     }
     
-    private void downsample(ImagePlus imp, int factor) {
+    private ImagePlus downsample(ImagePlus imp, int factor) {
     	System.out.println("\t\tPerforming downsampling by factor " + factor + "...");
     	int newFrames = imp.getNFrames()/factor;
     	imp = new ij.plugin.Resizer().zScale(imp, newFrames, 1);
@@ -83,17 +90,25 @@ public class MCATPreprocessingAlgorithm extends MCATPerSubjectAlgorithm {
     	int minLength = getRun().getClusteringParameters().getMinLength();
     	if(slices < minLength)
     		getRun().getClusteringParameters().setMinLength(slices);
+    	
+    	return imp;
     }
 
-    private void toTimeDerivativeImage(ImagePlus imp) {
+    private ImagePlus toTimeDerivativeImage(ImagePlus imp) {
     	ImagePlus dup = imp.duplicate();
     	dup.getStack().deleteLastSlice();
     	ImagePlus dup2 = imp.duplicate();
     	dup2.getStack().deleteSlice(1);
     	
     	imp = new ImageCalculator().run("Subtract 32-bit stack create", dup2, dup);
+    	
+    	ImageStatistics is = imp.getStatistics();
+    	System.out.println("before der: " + is.mean);
+    	
     	dup.close();
     	dup2.close();
+    	
+    	return imp;
     }
     
     private void toTimeDerivativeMatrix(ImagePlus imp) {
@@ -134,7 +149,6 @@ public class MCATPreprocessingAlgorithm extends MCATPerSubjectAlgorithm {
     	String outName = getSubject().getName() + "_preprocessed.tif";
     	IJ.save(imp, storageFilePath.toString() + System.getProperty("file.separator") + outName);
     	getSubject().getPreprocessedDataInterface().getPreprocessedImage().setData(new HyperstackData(imp));
-
     }
     
     @Override
@@ -169,36 +183,40 @@ public class MCATPreprocessingAlgorithm extends MCATPerSubjectAlgorithm {
     	 * perform image registration
     	 */
     	String transforms = System.getProperty("java.io.tmpdir") + "transform.txt";
-    	/*
-
+    	
+    	/* TODO uncomment (commented to save time when testing)
         	if(anatomy == null)
-        		registerImages(transforms, new ImagePlus[] {interest});
+        		interest = registerImages(transforms, interest);
         	else
-        		registerImages(transforms, new ImagePlus[] {anatomy, interest});
+        		interest = registerImages(transforms, anatomy, interest);
     	 */
     	anatomy.close();
 
     	/*
     	 * perform z-transformation on pixel values of channel of interest
     	 */
-    	ztransform(interest);
+    	interest = ztransform(interest);
+    	ImageStatistics is = interest.getStatistics();
+    	System.out.println("after: " + is.mean);
 
     	/*
     	 * set pixels outside ROI to zero and crop to ROI
     	 */
     	Roi r = getRawDataInterface().getTissueROI().getCurrentProvider().get().getRoi();
-    	setOuterPixels(interest, r);
+    	interest = setOuterPixels(interest, r);
 
     	/*
     	 * downsample by specified downsampling factor
     	 */
     	int downFactor = getSample().getRun().getPreprocessingParameters().getDownsamplingFactor();
-    	downsample(interest, downFactor);
+    	interest = downsample(interest, downFactor);
     	
     	/*
     	 * convert to time derivative
     	 */
-    	toTimeDerivativeImage(interest);
+    	interest = toTimeDerivativeImage(interest);
+    	is = interest.getStatistics();
+    	System.out.println("after der: " + is.mean);
     	
     	/*
     	 * save pre-processed image
