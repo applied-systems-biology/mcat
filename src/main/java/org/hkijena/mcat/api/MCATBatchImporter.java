@@ -23,10 +23,10 @@ public class MCATBatchImporter {
     private boolean includeTreatmentInName = false;
 
     private boolean importRawImages = true;
-    private String rawImagesPattern = ".*\\.tif";
+    private String rawImagesPattern = ".*LinReg.*\\.tif";
 
     private boolean importROI = true;
-    private String roiPattern = ".*\\.roi";
+    private String roiPattern = ".*WM.*\\.roi";
 
     private boolean importPreprocessedImages = false;
     private String preprocessedImagesPattern = ".*\\.tif";

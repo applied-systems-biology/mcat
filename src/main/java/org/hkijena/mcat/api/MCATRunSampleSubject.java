@@ -1,5 +1,6 @@
 package org.hkijena.mcat.api;
 
+import org.hkijena.mcat.api.datainterfaces.MCATClusteredDataInterface;
 import org.hkijena.mcat.api.datainterfaces.MCATPreprocessedDataInterface;
 import org.hkijena.mcat.api.datainterfaces.MCATRawDataInterface;
 import org.hkijena.mcat.api.parameters.MCATSampleParameters;
@@ -13,12 +14,18 @@ public class MCATRunSampleSubject implements MCATDataInterface, Comparable<MCATR
     private MCATSampleParameters parameters;
     private MCATRawDataInterface rawDataInterface;
     private MCATPreprocessedDataInterface preprocessedDataInterface;
+    
+    //added
+    private MCATClusteredDataInterface clusteredDataInterface;
 
     public MCATRunSampleSubject(MCATRunSample sample, MCATProjectSample source) {
         this.sample = sample;
         this.parameters = new MCATSampleParameters(source.getParameters());
         this.rawDataInterface = new MCATRawDataInterface(source.getRawDataInterface());
         this.preprocessedDataInterface = new MCATPreprocessedDataInterface(source.getPreprocessedDataInterface());
+        
+        //added
+        this.clusteredDataInterface = new MCATClusteredDataInterface(source.getClusteredDataInterface());
     }
 
     @Override
@@ -26,6 +33,10 @@ public class MCATRunSampleSubject implements MCATDataInterface, Comparable<MCATR
         List<MCATDataSlot<?>> result = new ArrayList<>();
         result.addAll(rawDataInterface.getSlots());
         result.addAll(preprocessedDataInterface.getSlots());
+        
+        //added TODO maybe only add clusteredImage Slot?
+        result.addAll(clusteredDataInterface.getSlots());
+        
         return result;
     }
 
@@ -43,6 +54,11 @@ public class MCATRunSampleSubject implements MCATDataInterface, Comparable<MCATR
 
     public MCATPreprocessedDataInterface getPreprocessedDataInterface() {
         return preprocessedDataInterface;
+    }
+    
+    //added
+    public MCATClusteredDataInterface getClusteredDataInterface() {
+        return clusteredDataInterface;
     }
 
     public String getName() {

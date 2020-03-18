@@ -14,6 +14,9 @@ import java.util.List;
 public class MCATClusteredDataInterface implements MCATDataInterface {
     private ClusterCentersDataSlot clusterCenters = new ClusterCentersDataSlot("cluster-centers");
     private HyperstackDataSlot clusterImages = new HyperstackDataSlot("cluster-image");
+    
+    //added
+    private HyperstackDataSlot singleClusterImage = new HyperstackDataSlot("single-cluster-image");
 
     public MCATClusteredDataInterface() {
 
@@ -22,6 +25,9 @@ public class MCATClusteredDataInterface implements MCATDataInterface {
     public MCATClusteredDataInterface(MCATClusteredDataInterface other) {
         this.clusterCenters = new ClusterCentersDataSlot(other.getClusterCenters());
         this.clusterImages = new HyperstackDataSlot(other.getClusterImages());
+        
+        //added
+        this.singleClusterImage = new HyperstackDataSlot(other.getSingleClusterImage());
     }
 
     public ClusterCentersDataSlot getClusterCenters() {
@@ -30,6 +36,11 @@ public class MCATClusteredDataInterface implements MCATDataInterface {
 
     public HyperstackDataSlot getClusterImages() {
         return clusterImages;
+    }
+    
+    //added
+    public HyperstackDataSlot getSingleClusterImage() {
+    	return singleClusterImage;
     }
 
     @Override

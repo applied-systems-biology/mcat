@@ -112,6 +112,7 @@ public class MCATPreprocessingAlgorithm extends MCATPerSubjectAlgorithm {
     }
     
     private void toTimeDerivativeMatrix(ImagePlus imp) {
+    	//TODO change to getVoxel for speedup
     	System.out.println("\tConstructing time derivative matrix...");
     	int width = imp.getWidth();
 		int height = imp.getHeight();

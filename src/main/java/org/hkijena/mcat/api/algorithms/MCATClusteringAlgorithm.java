@@ -10,12 +10,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.IntStream;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.math3.ml.clustering.CentroidCluster;
 import org.apache.commons.math3.ml.clustering.DoublePoint;
 import org.apache.commons.math3.ml.clustering.KMeansPlusPlusClusterer;
 import org.apache.commons.math3.ml.clustering.KMeansPlusPlusClusterer.EmptyClusterStrategy;
-import org.apache.commons.math3.ml.distance.DistanceMeasure;
 import org.apache.commons.math3.ml.distance.EuclideanDistance;
 import org.apache.commons.math3.random.JDKRandomGenerator;
 import org.hkijena.mcat.api.MCATPerSampleAlgorithm;
@@ -25,16 +23,12 @@ import org.hkijena.mcat.api.MCATValidityReport;
 import org.hkijena.mcat.api.datatypes.ClusterCentersData;
 import org.hkijena.mcat.api.datatypes.HyperstackData;
 
-import com.openhtmltopdf.util.ArrayUtil;
-
 import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
-import ij.plugin.StackCombiner;
 import ij.plugin.SubstackMaker;
+import ij.process.ImageConverter;
 import net.sf.ij_plugins.clustering.KMeans2D;
-import net.sf.ij_plugins.clustering.KMeans3D;
-import net.sf.ij_plugins.clustering.KMeansConfig;
 
 public class MCATClusteringAlgorithm extends MCATPerSampleAlgorithm {
 	
@@ -44,7 +38,7 @@ public class MCATClusteringAlgorithm extends MCATPerSampleAlgorithm {
 	private String[] names;
 	private ImagePlus[] imps;
 	private KMeans2D kMeans;
-	private List<DoublePoint> points = new ArrayList<DoublePoint>();
+	private List<DoublePoint> points = new ArrayList<DoublePoint>(); //TODO should not be class variable
 	
     public MCATClusteringAlgorithm(MCATRunSample sample) {
         super(sample);
@@ -112,8 +106,9 @@ public class MCATClusteringAlgorithm extends MCATPerSampleAlgorithm {
     		
     		imp.setTitle(samp.getName());
     		imps[i] = new SubstackMaker().makeSubstack(imp, "1-" + minLength);
-
+    		imps[i].setTitle(samp.getName());
     		
+    		samp.getPreprocessedDataInterface().getPreprocessedImage().setData(new HyperstackData(imps[i]));
 
     		if(maxWidth < width)
     			maxWidth = width;
@@ -123,31 +118,36 @@ public class MCATClusteringAlgorithm extends MCATPerSampleAlgorithm {
     }
 
     /*
-	 * increase canvas of all images to maxWidth and maxHeight
-	 * combine into on stack with all images aligned horizontally
-	 * (this is cheating because other kMeans Clustering algorithms were to slow, but would be nice to change this)
-	 */
-    private ImageStack getCombinedStack() {
-    	System.out.println(imps.length);
-    	for (ImagePlus imp : imps) {
-    		IJ.run(imp, "Canvas Size...", "width=" + maxWidth + " height=" + maxHeight + " position=Center zero");
-    		imp.show();
-    	}
-    	
-    	ImageStack combinedStack;
-    	if(imps.length == 1)
-    		combinedStack = imps[0].getImageStack();
-    	else {
-    		combinedStack = new StackCombiner().combineHorizontally(imps[0].getImageStack(), imps[1].getImageStack());
-        	for (int i = 2; i < imps.length; i++) {
-        		combinedStack = new StackCombiner().combineHorizontally(combinedStack, imps[i].getImageStack());
-        	}
-    	}
-    	
-    	return combinedStack;
-    }
+//	 * increase canvas of all images to maxWidth and maxHeight
+//	 * combine into one stack with all images aligned horizontally
+//	 * (this is cheating because other kMeans Clustering algorithms were to slow, but would be nice to change this)
+//	 */
+//    private ImageStack getCombinedStack() {
+//    	
+//    	System.out.println(imps.length);
+//    	for (ImagePlus imp : imps) {
+//    		IJ.run(imp, "Canvas Size...", "width=" + maxWidth + " height=" + maxHeight + " position=Center zero");
+//    		imp.show();
+//    	}
+//    	
+//    	System.out.println("in combine nSlices: " + imps[0].getNSlices() + " frames: " + imps[0].getNFrames());
+//    	
+//    	ImageStack combinedStack;
+//    	if(imps.length == 1)
+//    		combinedStack = imps[0].getImageStack();
+//    	else {
+//    		combinedStack = new StackCombiner().combineHorizontally(imps[0].getImageStack(), imps[1].getImageStack());
+//        	for (int i = 2; i < imps.length; i++) {
+//        		combinedStack = new StackCombiner().combineHorizontally(combinedStack, imps[i].getImageStack());
+//        	}
+//    	}
+//    	
+//    	System.out.println("in combine 2 nSlices: " + imps[0].getNSlices() + " frames: " + imps[0].getNFrames());
+//    	
+//    	return combinedStack;
+//    }
     
-    private ImagePlus runKMeans(ImageStack stack){
+    private void runKMeans(){
     	
     	System.out.println("   performing kmeans on double points");
     	
@@ -159,32 +159,88 @@ public class MCATClusteringAlgorithm extends MCATPerSampleAlgorithm {
 			System.out.println(centroidCluster.getCenter());
 		}
     	
+    	
+    	//TODO
+    	// cluster individual images accordingly
+    	
+    	Set<String> keys = getSample().getSubjects().keySet();
+    	
+    	for (String key : keys) {
+    		MCATRunSampleSubject samp = getSample().getSubjects().get(key);
+    		
+    		ImagePlus imp = samp.getPreprocessedDataInterface().getPreprocessedImage().getData().getImage();
+		
+    		ImageStack is = imp.getStack();
+    		int w = imp.getWidth();
+    		int h = imp.getHeight();
+    		int[] clusteredPixels = new int[w*h];
+    		
+    		for (int x = 0; x < w; x++) {
+				for (int y = 0; y < h; y++) {
+					
+					float[] tmp = is.getVoxels(x, y, 0, 1, 1, minLength, new float[minLength]);
+					double[] pixels = new double[tmp.length];
+					IntStream.range(0, tmp.length).forEach(index -> pixels[index] = tmp[index]);
+					
+					double minDist = Double.MAX_VALUE;
+					int closestCluster = -1;
+					
+					for (int i = 0; i < centroids.size(); i++) {
+						
+						double[] center = centroids.get(i).getCenter().getPoint();
+						double dist = new EuclideanDistance().compute(center, pixels);
+						if(dist < minDist) {
+							minDist = dist;
+							closestCluster = i;
+						}
+					}
+					
+					if(closestCluster == -1) {
+						System.err.println("No closest cluster found for this pixel position (x=" + x + "; y=" + y + ")");
+					}
+					clusteredPixels[y*w+x] = Math.round(255/k) * closestCluster;
+				}
+			}
+    		ImageStack clusteredStack = new ImageStack(w, h, 1);
+    		clusteredStack.setPixels(clusteredPixels, 1);
+    		
+    		ImagePlus clusteredImage = new ImagePlus(imp.getTitle() + "_clusteredImage", clusteredStack);
+    		
+    		new ImageConverter(clusteredImage).convertToGray8();
+    		clusteredImage.resetDisplayRange();
+    		
+    		samp.getClusteredDataInterface().getSingleClusterImage().setData(new HyperstackData(clusteredImage));
+		}
+    	
     	System.out.println("   finished");
     	
-    	/*
-    	 * set kmeans config params
-    	 */
-    	KMeansConfig kmc = new KMeansConfig();
-    	kmc.setClusterAnimationEnabled(false);
-    	kmc.setNumberOfClusters(k);
-    	kmc.setPrintTraceEnabled(false);
-    	kmc.setRandomizationSeed(nSeeds);
-    	kmc.setRandomizationSeedEnabled(true);
-    	kmc.setTolerance(tolerance);
-
-    	kMeans = new KMeans2D(kmc);
-    	kMeans.run(stack);
-    	
-    	/*
-    	 * get results image with all clustered images
-    	 */
-    	ImageStack clusters = kMeans.getCentroidValueImage();
-    	ImagePlus res = new ImagePlus("clusters", clusters);
-    	res.setSlice(0);
-    	res = res.crop();
-    	res.show();
-    	
-    	return res;
+//    	/*
+//    	 * set kmeans config params
+//    	 */
+//    	KMeansConfig kmc = new KMeansConfig();
+//    	kmc.setClusterAnimationEnabled(false);
+//    	kmc.setNumberOfClusters(k);
+//    	kmc.setPrintTraceEnabled(false);
+//    	kmc.setRandomizationSeed(nSeeds);
+//    	kmc.setRandomizationSeedEnabled(true);
+//    	kmc.setTolerance(tolerance);
+//
+//    	kMeans = new KMeans2D(kmc);
+//    	kMeans.run(stack);
+//    	
+//    	/*
+//    	 * get results image with all clustered images
+//    	 */
+//    	ImageStack clusters = kMeans.getCentroidValueImage();
+//    	ImagePlus res = new ImagePlus("clusters", clusters);
+//    	res.setSlice(0);
+//    	res = res.crop();
+//    	res.show();
+//    	
+//    	
+//    	return res;
+//    	
+//    	
     }
     
     /*
@@ -208,33 +264,43 @@ public class MCATClusteringAlgorithm extends MCATPerSampleAlgorithm {
     }
     
     private void saveData(float[][] centroids, ImageStack clusteredImages) {
-    	/*
-    	 * save cluster centers
-    	 */
-    	getSample().getClusteredDataInterface().getClusterCenters().setData(new ClusterCentersData(centroids));
-    	System.out.println(getSample().getClusteredDataInterface().getClusterCenters().getData());
-    	Path storageFilePathCenters = getSample().getClusteredDataInterface().getClusterCenters().getStorageFilePath();
-    	String outNameCenters = getSample().getName() + "_clustereCenters.csv";
-    	try {
-			BufferedWriter bw = new BufferedWriter(new FileWriter(new File(storageFilePathCenters.toString() + System.getProperty("file.separator") + outNameCenters)));
-			bw.write(getSample().getClusteredDataInterface().getClusterCenters().getData().toString());
-			bw.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+//    	/*
+//    	 * save cluster centers
+//    	 */
+//    	getSample().getClusteredDataInterface().getClusterCenters().setData(new ClusterCentersData(centroids));
+//    	System.out.println(getSample().getClusteredDataInterface().getClusterCenters().getData());
+//    	Path storageFilePathCenters = getSample().getClusteredDataInterface().getClusterCenters().getStorageFilePath();
+//    	String outNameCenters = getSample().getName() + "_clustereCenters.csv";
+//    	try {
+//			BufferedWriter bw = new BufferedWriter(new FileWriter(new File(storageFilePathCenters.toString() + System.getProperty("file.separator") + outNameCenters)));
+//			bw.write(getSample().getClusteredDataInterface().getClusterCenters().getData().toString());
+//			bw.close();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//    	
+//    	//TODO convert image to 8-bit
+//    	
+//    	/*
+//    	 * save clustered images
+//    	 */
+//    	getSample().getClusteredDataInterface().getClusterImages().setData(new HyperstackData(new ImagePlus("ClusteredImages", clusteredImages)));
+//    	Path storageFilePathClusters = getSample().getClusteredDataInterface().getClusterImages().getStorageFilePath();
+//    	String outNameClusters = getSample().getName() + "_clusteredImages.tif";
+//    	IJ.save(new ImagePlus("ClusteredImages",clusteredImages), storageFilePathClusters.toString() + System.getProperty("file.separator") + outNameClusters);
     	
-    	//TODO convert image to 8-bit
     	
-    	/*
-    	 * save clustered images
-    	 */
-    	getSample().getClusteredDataInterface().getClusterImages().setData(new HyperstackData(new ImagePlus("ClusteredImages", clusteredImages)));
-    	Path storageFilePathClusters = getSample().getClusteredDataInterface().getClusterImages().getStorageFilePath();
-    	String outNameClusters = getSample().getName() + "_clusteredImages.tif";
-    	IJ.save(new ImagePlus("ClusteredImages",clusteredImages), storageFilePathClusters.toString() + System.getProperty("file.separator") + outNameClusters);
+    	Set<String> keys = getSample().getSubjects().keySet();
     	
+    	for (String key : keys) {
+    		MCATRunSampleSubject samp = getSample().getSubjects().get(key);
     	
-    	
+    		Path storageFilePathClusteredImage = getSample().getClusteredDataInterface().getClusterImages().getStorageFilePath();
+    		String outNameClusteredImage = samp.getName() + "_clusteredImage.tif";
+    		IJ.save(samp.getClusteredDataInterface().getSingleClusterImage().getData().getImage(), 
+    				storageFilePathClusteredImage.toString() + System.getProperty("file.separator") + outNameClusteredImage);
+    		
+    	}
     	
     }
     
@@ -247,14 +313,18 @@ public class MCATClusteringAlgorithm extends MCATPerSampleAlgorithm {
 
     	loadImages();
     	
-    	ImageStack combinedStack = getCombinedStack();
+//    	ImageStack combinedStack = getCombinedStack();
     	
-    	ImagePlus clustersImage = runKMeans(combinedStack);
-    	ImageStack clusteredImages = getClusteredImages(clustersImage);
+    	System.out.println("after combine nSlices: " + imps[0].getNSlices() + " frames: " + imps[0].getNFrames());
     	
-    	float[][] centroids = kMeans.getClusterCenters();
+    	runKMeans();
+    	
+//    	ImagePlus clustersImage = runKMeans(combinedStack);
+//    	ImageStack clusteredImages = getClusteredImages(clustersImage);
+    	
+//    	float[][] centroids = kMeans.getClusterCenters();
 
-    	saveData(centroids, clusteredImages);
+    	saveData(null, null);
     	
     }
 
