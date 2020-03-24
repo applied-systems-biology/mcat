@@ -13,39 +13,30 @@ import java.util.Locale;
  */
 public class ClusterCentersData extends MCATData {
 	
-	float[][] clusterCenters;
+	List<CentroidCluster<DoublePoint>> clusterCenters;
 	
-    public ClusterCentersData(float[][] centroids) {
+    public ClusterCentersData(List<CentroidCluster<DoublePoint>> centroids) {
 		super();
 		this.clusterCenters = centroids;
 	}
 
-	public float[][] getCentroids() {
+	public List<CentroidCluster<DoublePoint>> getCentroids() {
 		return clusterCenters;
 	}
 
-	public void setCentroids(float[][] centroids) {
+	public void setCentroids(List<CentroidCluster<DoublePoint>> centroids) {
 		this.clusterCenters = centroids;
 	}
 
 	@Override
 	public String toString() {
 		String centroidsString = "";
-		for (int i = 0; i < clusterCenters.length; i++) {
-			for (int j = 0; j < clusterCenters[i].length; j++) {
-				if(j == 0)
-					centroidsString+= String.format(Locale.ENGLISH, "%.2f", clusterCenters[i][j]);
-				else
-					centroidsString+= ";" + String.format(Locale.ENGLISH, "%.2f", clusterCenters[i][j]);
-			}
-			if(i != clusterCenters.length -1)
-				centroidsString += System.lineSeparator();
-		}
 		
+		for (CentroidCluster<DoublePoint> centroidCluster : clusterCenters) {
+			centroidsString+= centroidCluster.getCenter().toString() + System.lineSeparator();
+		}
 		return centroidsString;
 	}
-
-
 
 	@Override
     public void saveTo(Path folder, String name) {
