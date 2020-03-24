@@ -2,15 +2,10 @@ package org.hkijena.mcat.api.algorithms;
 
 
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.stream.IntStream;
 
-import org.apache.commons.math3.ml.clustering.DoublePoint;
 import org.hkijena.mcat.api.MCATPerSubjectAlgorithm;
 import org.hkijena.mcat.api.MCATRunSampleSubject;
 import org.hkijena.mcat.api.MCATValidityReport;
@@ -23,10 +18,13 @@ import ij.ImagePlus;
 import ij.ImageStack;
 import ij.gui.Roi;
 import ij.plugin.ImageCalculator;
-import ij.plugin.Resizer;
 import ij.process.ImageStatistics;
 
 public class MCATPreprocessingAlgorithm extends MCATPerSubjectAlgorithm {
+	
+	private int downFactor = 1;
+	private int channelAnatomy, channelOfInterest = -1;
+	private String roiName = "noROI";
 
     public MCATPreprocessingAlgorithm(MCATRunSampleSubject subject) {
         super(subject);
@@ -70,21 +68,27 @@ public class MCATPreprocessingAlgorithm extends MCATPerSubjectAlgorithm {
     	return imp;
     }
     
-    private ImagePlus setOuterPixels(ImagePlus imp, Roi r) {
+    private ImagePlus setOuterPixels(ImagePlus imp) {
     	System.out.println("\t\tSetting pixels outside ROI to zero...");
-    	imp.setRoi(r);
-    	IJ.run(imp, "Make Inverse", "");
-    	IJ.run(imp,"Set...", "value=0 stack");
-    	imp.setRoi(r);
-    	IJ.run(imp,"Crop","");
-    	IJ.run(imp,"Select None","");
-    	
+    	Roi r = getRawDataInterface().getTissueROI().getCurrentProvider().get().getRoi();
+    	if(r != null) {
+    		roiName = r.getName();
+	    	imp.setRoi(r);
+	    	IJ.run(imp, "Make Inverse", "");
+	    	IJ.run(imp,"Set...", "value=0 stack");
+	    	imp.setRoi(r);
+	    	IJ.run(imp,"Crop","");
+	    	IJ.run(imp,"Select None","");
+    	}else{
+    		System.out.println("WARNING: no ROI specified, background will not be set to zero!");
+    	}
     	return imp;
     }
     
-    private ImagePlus downsample(ImagePlus imp, int factor) {
-    	System.out.println("\t\tPerforming downsampling by factor " + factor + "...");
-    	int newFrames = imp.getNFrames()/factor;
+    private ImagePlus downsample(ImagePlus imp) {
+    	System.out.println("\t\tPerforming downsampling by factor " + downFactor + "...");
+    	downFactor = getSample().getRun().getPreprocessingParameters().getDownsamplingFactor();
+    	int newFrames = imp.getNFrames()/downFactor;
     	imp = new ij.plugin.Resizer().zScale(imp, newFrames, 1);
     	
     	//check if minimum number of time frames has to be updated
@@ -103,8 +107,6 @@ public class MCATPreprocessingAlgorithm extends MCATPerSubjectAlgorithm {
     	dup2.getStack().deleteSlice(1);
     	
     	imp = new ImageCalculator().run("Subtract 32-bit stack create", dup2, dup);
-    	
-    	ImageStatistics is = imp.getStatistics();
     	
     	dup.close();
     	dup2.close();
@@ -137,16 +139,16 @@ public class MCATPreprocessingAlgorithm extends MCATPerSubjectAlgorithm {
     
     private void saveTimeDerivativeMatrix(){
     	System.out.println("\t\tWriting time derivative matrix...");
+    	String params = "roi-" + roiName + "_downsampling-" + downFactor + "_anatomyCh-" + channelAnatomy + "_interestCh-" + channelOfInterest;
     	Path storageFilePath = getSubject().getPreprocessedDataInterface().getDerivationMatrix().getStorageFilePath();
-    	String outName = FileSystems.getDefault().getSeparator() + getSubject().getName() + "_timeDerivative.csv";
+    	String outName = FileSystems.getDefault().getSeparator() + getSubject().getName() + "_timeDerivative_" + params + ".csv";
     	getSubject().getPreprocessedDataInterface().getDerivationMatrix().getData().saveTo(storageFilePath, outName);
     }
     
     private void saveImage(ImagePlus imp) {
-    	//TODO add ROI identifier
-    	String roiName = getSubject().getRawDataInterface().getTissueROI().getName();
+    	String params = "roi-" + roiName + "_downsampling-" + downFactor + "_anatomyCh-" + channelAnatomy + "_interestCh-" + channelOfInterest;
     	Path storageFilePath = getSubject().getPreprocessedDataInterface().getPreprocessedImage().getStorageFilePath();
-    	String outName = getSubject().getName() + "_preprocessed_roi-" + roiName + ".tif";
+    	String outName = getSubject().getName() + "_preprocessed_" + params + ".tif";
     	IJ.save(imp, storageFilePath.toString() + System.getProperty("file.separator") + outName);
     	getSubject().getPreprocessedDataInterface().getPreprocessedImage().setData(new HyperstackData(imp));
     }
@@ -163,52 +165,48 @@ public class MCATPreprocessingAlgorithm extends MCATPerSubjectAlgorithm {
 
     	ImagePlus[] channels = ij.plugin.ChannelSplitter.split(imp.duplicate());
 
-    	int anatomyCh = getSample().getRun().getPreprocessingParameters().getAnatomicChannel();
-    	int interestCh = getSample().getRun().getPreprocessingParameters().getChannelOfInterest();
+    	channelAnatomy = getSample().getRun().getPreprocessingParameters().getAnatomicChannel();
+    	channelOfInterest = getSample().getRun().getPreprocessingParameters().getChannelOfInterest();
 
-
-    	//TODO check if channels exist and if two channels are to be loaded
 
     	/*
-    	 * if anatomy = 0 -> no anatomy, just process interest
-    	 * if interest = 0 -> error, specify channel of interest
-    	 * if anatomy OOB -> error, but proceed with interest
-    	 * if interest OOB -> error, specify channel of interest
+    	 * check if anatomy channel should be used for registration and if channel of interest is specified
+    	 * perform image registration accordingly
     	 */
-
-    	ImagePlus anatomy = channels[getSample().getRun().getPreprocessingParameters().getAnatomicChannel() - 1];
-    	ImagePlus interest = channels[getSample().getRun().getPreprocessingParameters().getChannelOfInterest() - 1];
+    	boolean anatomyProvided = false;
+    	if(channelAnatomy > 0 && channelAnatomy < channels.length + 1)
+    		anatomyProvided = true;
+    		
+    	if(!(channelOfInterest > 0 && channelOfInterest < channels.length + 1))
+    		throw new IllegalArgumentException("Channel of interest has to be specified for image processing!");
     	
-    	
-    	/*
-    	 * perform image registration
-    	 */
+    	ImagePlus interest = channels[channelOfInterest - 1];
     	String transforms = System.getProperty("java.io.tmpdir") + "transform.txt";
     	
-        if(anatomy == null)
-        	interest = registerImages(transforms, interest);
-        else
-        	interest = registerImages(transforms, anatomy, interest);
+    	if(anatomyProvided) {
+    		ImagePlus anatomy = channels[channelAnatomy - 1];
+    		interest = registerImages(transforms, anatomy, interest);
+    		anatomy.close();
+    	}else{
+    		System.out.println("WARNING: no anatomy channel provided for image registration. Will register channel of interest without anatomy information.");
+    		interest = registerImages(transforms, interest);
+    	}
     	
-    	anatomy.close();
-
     	/*
     	 * perform z-transformation on pixel values of channel of interest
     	 */
     	interest = ztransform(interest);
-    	ImageStatistics is = interest.getStatistics();
     	
     	/*
     	 * set pixels outside ROI to zero and crop to ROI
     	 */
-    	Roi r = getRawDataInterface().getTissueROI().getCurrentProvider().get().getRoi();
-    	interest = setOuterPixels(interest, r);
+    	
+    	interest = setOuterPixels(interest);
 
     	/*
     	 * downsample by specified downsampling factor
     	 */
-    	int downFactor = getSample().getRun().getPreprocessingParameters().getDownsamplingFactor();
-    	interest = downsample(interest, downFactor);
+    	interest = downsample(interest);
     	
     	/*
     	 * convert to time derivative
@@ -220,8 +218,14 @@ public class MCATPreprocessingAlgorithm extends MCATPerSubjectAlgorithm {
     	 */
     	saveImage(interest);
     	
+    	/*
+    	 * construct time derivative matrix from pre-processed image
+    	 */
     	toTimeDerivativeMatrix(interest);
     	
+    	/*
+    	 * save time-derivative matrix
+    	 */
     	saveTimeDerivativeMatrix();
     	
     	interest.close();
