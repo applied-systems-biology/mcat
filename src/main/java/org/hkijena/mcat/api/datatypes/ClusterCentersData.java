@@ -4,6 +4,8 @@ import org.apache.commons.math3.ml.clustering.CentroidCluster;
 import org.apache.commons.math3.ml.clustering.DoublePoint;
 import org.hkijena.mcat.api.MCATData;
 
+import ij.IJ;
+
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Locale;
@@ -40,6 +42,6 @@ public class ClusterCentersData extends MCATData {
 
 	@Override
     public void saveTo(Path folder, String name) {
-
+		System.out.println("folder: " + folder + System.lineSeparator() + "name: " + name);
     }
 }

@@ -34,8 +34,6 @@ public class DerivationMatrixData extends MCATData {
 		try {
 			BufferedWriter bw = new BufferedWriter(new FileWriter(new File(folder + name)));
 			
-			System.out.println("Rows " + derivativeMatrix.length);
-			System.out.println("Columns " + derivativeMatrix[0].length);
 			for (int i = 0; i < derivativeMatrix.length; i++) {
 				String out = "";
 				double[] line = derivativeMatrix[i];

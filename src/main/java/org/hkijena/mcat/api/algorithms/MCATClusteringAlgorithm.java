@@ -28,37 +28,28 @@ import ij.ImagePlus;
 import ij.ImageStack;
 import ij.plugin.SubstackMaker;
 import ij.process.ImageConverter;
-import net.sf.ij_plugins.clustering.KMeans2D;
 
 public class MCATClusteringAlgorithm extends MCATPerSampleAlgorithm {
 	
 	private int nSeeds = 50;
-	private float tolerance = 0.0001f;
-	private int maxWidth = -1, maxHeight = -1, minLength = -1, k = -1;
+	private int minLength, k;
 	private String[] names;
 	private ImagePlus[] imps;
-	private KMeans2D kMeans;
-	private List<DoublePoint> points = new ArrayList<DoublePoint>(); //TODO should not be class variable
+	private List<DoublePoint> points = new ArrayList<DoublePoint>();
 	
     public MCATClusteringAlgorithm(MCATRunSample sample) {
         super(sample);
     }
     
-    /*
-	 * put all images from group in list
-	 * crop time range to minLength
-	 * store max width and height of images
-	 */
     private void loadImages(){
+    	System.out.println("\tLoading images...");
     	Set<String> keys = getSample().getSubjects().keySet();
     	names = new String[keys.size()];
     	imps = new ImagePlus[keys.size()];
     	
-    	System.out.println("loading images");
-    	
     	for (int i = 0; i < keys.size(); i++) {
     		MCATRunSampleSubject samp = getSample().getSubjects().get(keys.toArray()[i]);
-    		System.out.println("Subject: " + samp.getName());
+    		System.out.println("\t\tSubject: " + samp.getName());
     		names[i] = samp.getName();
 
     		ImagePlus imp = samp.getPreprocessedDataInterface().getPreprocessedImage().getData().getImage();
@@ -82,25 +73,16 @@ public class MCATClusteringAlgorithm extends MCATPerSampleAlgorithm {
     		imps[i].setTitle(samp.getName());
     		
     		samp.getPreprocessedDataInterface().getPreprocessedImage().setData(new HyperstackData(imps[i]));
-
-    		if(maxWidth < width)
-    			maxWidth = width;
-    		if(maxHeight < height)
-    			maxHeight = height;
     	}
     }
 
     private void runKMeans(){
     	
-    	System.out.println("   performing kmeans on double points");
+    	System.out.println("\tPerforming k-means algorithm...");
     	
     	KMeansPlusPlusClusterer<DoublePoint> kmpp = new KMeansPlusPlusClusterer<DoublePoint>(k, 50, new EuclideanDistance(), new JDKRandomGenerator(nSeeds), EmptyClusterStrategy.FARTHEST_POINT);
     	
     	List<CentroidCluster<DoublePoint>> centroids = kmpp.cluster(points);
-    	
-    	for (CentroidCluster<DoublePoint> centroidCluster : centroids) {
-			System.out.println(centroidCluster.getCenter());
-		}
     	
     	getSample().getClusteredDataInterface().getClusterCenters().setData(new ClusterCentersData(centroids));
     	
@@ -156,11 +138,10 @@ public class MCATClusteringAlgorithm extends MCATPerSampleAlgorithm {
     		
     		samp.getClusteredDataInterface().getSingleClusterImage().setData(new HyperstackData(clusteredImage));
 		}
-    	
-    	System.out.println("   finished"); 	
     }
     
-    private void saveData(float[][] centroids, ImageStack clusteredImages) {
+    private void saveData() {
+    	System.out.println("\tSaving clustering results...");
     	/*
     	 * save cluster centers
     	 */
@@ -168,9 +149,8 @@ public class MCATClusteringAlgorithm extends MCATPerSampleAlgorithm {
     	Path storageFilePathCenters = getSample().getClusteredDataInterface().getClusterCenters().getStorageFilePath();
     	String outNameCenters = getSample().getName() + "_clusterCenters.csv";
     	
-    	System.out.println(getSample().getClusteredDataInterface().getClusterCenters().getData().toString());
-    	
-    	
+    	System.out.println("flush...");
+    	getSample().getClusteredDataInterface().getClusterCenters().flush();
     	
     	try {
 			BufferedWriter bw = new BufferedWriter(new FileWriter(new File(storageFilePathCenters.toString() + System.getProperty("file.separator") + outNameCenters)));
@@ -195,9 +175,9 @@ public class MCATClusteringAlgorithm extends MCATPerSampleAlgorithm {
     	
     	for (String key : keys) {
     		MCATRunSampleSubject samp = getSample().getSubjects().get(key);
-    	
+    		
     		Path storageFilePathClusteredImage = getSample().getClusteredDataInterface().getClusterImages().getStorageFilePath();
-    		String outNameClusteredImage = samp.getName() + "_clusteredImage.tif";
+    		String outNameClusteredImage = samp.getName() + "_clusteredImage.png";
     		IJ.save(samp.getClusteredDataInterface().getSingleClusterImage().getData().getImage(), 
     				storageFilePathClusteredImage.toString() + System.getProperty("file.separator") + outNameClusteredImage);
     		
@@ -207,18 +187,17 @@ public class MCATClusteringAlgorithm extends MCATPerSampleAlgorithm {
     
     @Override
     public void run() {
-    	System.out.println("Starting Clustering for group");
+    	//TODO add treatment group here
+    	System.out.println("Starting " + getName());
 
     	k = getRun().getClusteringParameters().getkMeansK();
     	minLength = getRun().getClusteringParameters().getMinLength() - 1; //subtract one because of differences in indexing and slice number measurement
 
     	loadImages();
     	
-    	System.out.println("after combine nSlices: " + imps[0].getNSlices() + " frames: " + imps[0].getNFrames());
-    	
     	runKMeans();
     	
-    	saveData(null, null);
+    	saveData();
     	
     }
 
