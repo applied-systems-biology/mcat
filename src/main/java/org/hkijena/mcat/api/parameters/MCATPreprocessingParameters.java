@@ -11,6 +11,8 @@ public class MCATPreprocessingParameters extends MCATParameters  {
     private int downsamplingFactor = 4;
     private int channelOfInterest = 2;
     private int anatomicChannel = 1;
+    private boolean saveRawImage = true;
+    private boolean saveRoi = true;
     private int minTime = 0;
     private int maxTime = Integer.MAX_VALUE;
 
@@ -22,6 +24,8 @@ public class MCATPreprocessingParameters extends MCATParameters  {
         this.downsamplingFactor = other.downsamplingFactor;
         this.channelOfInterest = other.channelOfInterest;
         this.anatomicChannel = other.anatomicChannel;
+        this.saveRawImage = other.saveRawImage;
+        this.saveRoi = other.saveRoi;
         this.minTime = other.minTime;
         this.maxTime = other.maxTime;
     }
@@ -57,6 +61,28 @@ public class MCATPreprocessingParameters extends MCATParameters  {
     public void setAnatomicChannel(int anatomicChannel) {
         this.anatomicChannel = anatomicChannel;
         postChangedEvent("anatomic-channel");
+    }
+    
+    @JsonGetter("save-raw-image")
+    public boolean isSaveRawImage() {
+        return saveRawImage;
+    }
+
+    @JsonSetter("save-raw-image")
+    public void setSaveRawImage(boolean saveRawImage) {
+        this.saveRawImage = saveRawImage;
+        postChangedEvent("save-raw-image");
+    }
+    
+    @JsonGetter("save-roi")
+    public boolean isSaveRoi() {
+        return saveRoi;
+    }
+
+    @JsonSetter("save-roi")
+    public void setSaveRoi(boolean saveRoi) {
+        this.saveRoi = saveRoi;
+        postChangedEvent("save-roi");
     }
 
     @JsonGetter("min-time")

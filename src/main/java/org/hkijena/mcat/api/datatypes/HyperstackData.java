@@ -18,8 +18,8 @@ public class HyperstackData extends MCATData {
     }
 
     @Override
-    public void saveTo(Path folder, String name) {
-        IJ.save(image, folder.resolve(name + "tif").toString());
+    public void saveTo(Path folder, String name, String identifier) {
+        IJ.save(image, folder.resolve(name + identifier + ".tif").toString());
     }
 
     public ImagePlus getImage() {

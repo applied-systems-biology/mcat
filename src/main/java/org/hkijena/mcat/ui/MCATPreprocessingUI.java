@@ -40,7 +40,17 @@ public class MCATPreprocessingUI extends MCATUIPanel {
                 0, Integer.MAX_VALUE, 1)), new JLabel("Anatomic channel"),
                 "documentation/parameter_preprocessing_anatomic_channel.md");
         anatomicChannelEditor.addChangeListener(e -> parameters.setAnatomicChannel((Integer)anatomicChannelEditor.getValue()));
-
+        
+        // Save raw image?
+        JCheckBox saveRawImageEditor = formPanel.addToForm(new JCheckBox("Save raw images in output folder?", parameters.isSaveRawImage()),
+                "documentation/parameter_preprocessing_save_raw_image.md");
+        saveRawImageEditor.addActionListener(e -> parameters.setSaveRawImage(saveRawImageEditor.isSelected()));
+        
+        // Save tissue roi?
+        JCheckBox saveRoiEditor = formPanel.addToForm(new JCheckBox("Save tissue ROI in output folder?", parameters.isSaveRoi()),
+                "documentation/parameter_preprocessing_save_roi.md");
+        saveRoiEditor.addActionListener(e -> parameters.setSaveRoi(saveRoiEditor.isSelected()));
+        	
         formPanel.addVerticalGlue();
         add(formPanel, BorderLayout.CENTER);
     }

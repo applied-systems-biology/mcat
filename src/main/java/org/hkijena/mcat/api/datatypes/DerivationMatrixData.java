@@ -30,9 +30,9 @@ public class DerivationMatrixData extends MCATData {
 
 
 	@Override
-    public void saveTo(Path folder, String name) {
+    public void saveTo(Path folder, String name, String identifier) {
 		try {
-			BufferedWriter bw = new BufferedWriter(new FileWriter(new File(folder + name)));
+			BufferedWriter bw = new BufferedWriter(new FileWriter(new File(folder.resolve(name + identifier + ".csv").toString())));
 			
 			for (int i = 0; i < derivativeMatrix.length; i++) {
 				String out = "";

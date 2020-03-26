@@ -11,5 +11,5 @@ public abstract class MCATData {
      * @param folder
      * @param name optional name that is considered during generating the output file name
      */
-    public abstract void saveTo(Path folder, String name);
+    public abstract void saveTo(Path folder, String name, String identifier);
 }

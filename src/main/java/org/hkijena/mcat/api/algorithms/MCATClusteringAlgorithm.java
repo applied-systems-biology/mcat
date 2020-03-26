@@ -140,26 +140,21 @@ public class MCATClusteringAlgorithm extends MCATPerSampleAlgorithm {
 		}
     }
     
+    /*
+	 * save cluster centers
+	 */
     private void saveData() {
     	System.out.println("\tSaving clustering results...");
-    	/*
-    	 * save cluster centers
-    	 */
-    	//TODO save params in file name
-    	Path storageFilePathCenters = getSample().getClusteredDataInterface().getClusterCenters().getStorageFilePath();
-    	String outNameCenters = getSample().getName() + "_clusterCenters.csv";
     	
     	System.out.println("flush...");
-    	getSample().getClusteredDataInterface().getClusterCenters().flush();
+    	String identifier = "_downsampling-" + getSample().getRun().getPreprocessingParameters().getDownsamplingFactor() +
+    			"_anatomyCh-" + getSample().getRun().getPreprocessingParameters().getAnatomicChannel() + 
+    			"_interestCh-" + getSample().getRun().getPreprocessingParameters().getChannelOfInterest() +
+    			"_timeFrames-" + getSample().getRun().getClusteringParameters().getMinLength() +
+    			"_k-" + getSample().getRun().getClusteringParameters().getkMeansK();
+    	getSample().getClusteredDataInterface().getClusterCenters().flush(identifier);
     	
-    	try {
-			BufferedWriter bw = new BufferedWriter(new FileWriter(new File(storageFilePathCenters.toString() + System.getProperty("file.separator") + outNameCenters)));
-			bw.write(getSample().getClusteredDataInterface().getClusterCenters().getData().toString());
-			bw.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-//    	
+
 //    	//TODO convert image to 8-bit
 //    	
 //    	/*

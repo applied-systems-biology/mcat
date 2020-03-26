@@ -11,6 +11,7 @@ import org.hkijena.mcat.api.MCATRunSampleSubject;
 import org.hkijena.mcat.api.MCATValidityReport;
 import org.hkijena.mcat.api.datatypes.DerivationMatrixData;
 import org.hkijena.mcat.api.datatypes.HyperstackData;
+import org.hkijena.mcat.api.datatypes.ROIData;
 
 import de.embl.cmci.registration.MultiStackReg_;
 import ij.IJ;
@@ -22,6 +23,7 @@ import ij.process.ImageStatistics;
 
 public class MCATPreprocessingAlgorithm extends MCATPerSubjectAlgorithm {
 	
+	private boolean saveRaw = false, saveRoi = false;
 	private int downFactor = 1;
 	private int channelAnatomy, channelOfInterest = -1;
 	private String roiName = "noROI";
@@ -71,6 +73,7 @@ public class MCATPreprocessingAlgorithm extends MCATPerSubjectAlgorithm {
     private ImagePlus setOuterPixels(ImagePlus imp) {
     	System.out.println("\tSetting pixels outside ROI to zero...");
     	Roi r = getRawDataInterface().getTissueROI().getCurrentProvider().get().getRoi();
+    	getRawDataInterface().getTissueROI().setData(new ROIData(r));
     	if(r != null) {
     		roiName = r.getName();
 	    	imp.setRoi(r);
@@ -142,24 +145,24 @@ public class MCATPreprocessingAlgorithm extends MCATPerSubjectAlgorithm {
     
     private void saveTimeDerivativeMatrix(){
     	System.out.println("\tWriting time derivative matrix...");
-    	String params = "roi-" + roiName + "_downsampling-" + downFactor + "_anatomyCh-" + channelAnatomy + "_interestCh-" + channelOfInterest;
-    	Path storageFilePath = getSubject().getPreprocessedDataInterface().getDerivationMatrix().getStorageFilePath();
-    	String outName = FileSystems.getDefault().getSeparator() + getSubject().getName() + "_timeDerivative_" + params + ".csv";
-    	getSubject().getPreprocessedDataInterface().getDerivationMatrix().getData().saveTo(storageFilePath, outName);
+    	String identifier = "_roi-" + roiName + "_downsampling-" + downFactor + "_anatomyCh-" + channelAnatomy + "_interestCh-" + channelOfInterest;
+    	getSubject().getPreprocessedDataInterface().getDerivationMatrix().flush(identifier);
     }
     
     private void saveImage(ImagePlus imp) {
     	System.out.println("\tWriting pre-processed image...");
-    	String params = "roi-" + roiName + "_downsampling-" + downFactor + "_anatomyCh-" + channelAnatomy + "_interestCh-" + channelOfInterest;
-    	Path storageFilePath = getSubject().getPreprocessedDataInterface().getPreprocessedImage().getStorageFilePath();
-    	String outName = getSubject().getName() + "_preprocessed_" + params + ".tif";
-    	IJ.save(imp, storageFilePath.toString() + System.getProperty("file.separator") + outName);
     	getSubject().getPreprocessedDataInterface().getPreprocessedImage().setData(new HyperstackData(imp));
+    	String identifier = "_roi-" + roiName + "_downsampling-" + downFactor + "_anatomyCh-" + channelAnatomy + "_interestCh-" + channelOfInterest;
+    	getSubject().getPreprocessedDataInterface().getPreprocessedImage().flush(identifier);
     }
     
     @Override
     public void run() {
     	ImagePlus imp = getRawDataInterface().getRawImage().getCurrentProvider().get().getImage();
+    	getRawDataInterface().getRawImage().setData(new HyperstackData(imp));
+    	
+    	saveRaw = getSample().getRun().getPreprocessingParameters().isSaveRawImage();
+    	saveRoi = getSample().getRun().getPreprocessingParameters().isSaveRoi();
 
     	System.out.println("Start pre-processing for " + imp.getTitle() + 
     			" width " + imp.getWidth() +
@@ -231,6 +234,11 @@ public class MCATPreprocessingAlgorithm extends MCATPerSubjectAlgorithm {
     	 * save time-derivative matrix
     	 */
     	saveTimeDerivativeMatrix();
+    	
+    	if(saveRaw)
+    		getSubject().getRawDataInterface().getRawImage().flush("_" + getSubject().getName());
+    	if(saveRoi)
+    		getSubject().getRawDataInterface().getTissueROI().flush("_" + roiName);
     	
     	interest.close();
     	IJ.freeMemory();

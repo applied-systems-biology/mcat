@@ -123,8 +123,8 @@ public abstract class MCATDataSlot<T extends MCATData> {
     /**
      * Stores the data to the
      */
-    public void flush() {
-        data.saveTo(storageFilePath, getName());
+    public void flush(String identifier) {
+        data.saveTo(storageFilePath, getName(), identifier);
     }
 
     public String getName() {
