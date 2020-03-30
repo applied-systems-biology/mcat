@@ -2,7 +2,7 @@ package org.hkijena.mcat.api.datainterfaces;
 
 import org.hkijena.mcat.api.MCATDataInterface;
 import org.hkijena.mcat.api.MCATDataSlot;
-import org.hkijena.mcat.api.dataslots.DerivationMatrixDataSlot;
+import org.hkijena.mcat.api.dataslots.DerivativeMatrixDataSlot;
 import org.hkijena.mcat.api.dataslots.HyperstackDataSlot;
 
 import java.util.Arrays;
@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class MCATPreprocessedDataInterface implements MCATDataInterface {
     private HyperstackDataSlot preprocessedImage = new HyperstackDataSlot("preprocessed-image");
-    private DerivationMatrixDataSlot derivationMatrix = new DerivationMatrixDataSlot("derivation-matrix");
+    private DerivativeMatrixDataSlot derivativeMatrix = new DerivativeMatrixDataSlot("derivative-matrix");
 
     public MCATPreprocessedDataInterface() {
 
@@ -21,19 +21,19 @@ public class MCATPreprocessedDataInterface implements MCATDataInterface {
 
     public MCATPreprocessedDataInterface(MCATPreprocessedDataInterface other) {
         this.preprocessedImage = new HyperstackDataSlot(other.preprocessedImage);
-        this.derivationMatrix = new DerivationMatrixDataSlot(other.derivationMatrix);
+        this.derivativeMatrix = new DerivativeMatrixDataSlot(other.derivativeMatrix);
     }
 
     public HyperstackDataSlot getPreprocessedImage() {
         return preprocessedImage;
     }
 
-    public DerivationMatrixDataSlot getDerivationMatrix() {
-        return derivationMatrix;
+    public DerivativeMatrixDataSlot getDerivativeMatrix() {
+        return derivativeMatrix;
     }
 
     @Override
     public List<MCATDataSlot<?>> getSlots() {
-        return Arrays.asList(preprocessedImage, derivationMatrix);
+        return Arrays.asList(preprocessedImage, derivativeMatrix);
     }
 }

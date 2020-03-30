@@ -11,11 +11,11 @@ import java.nio.file.Path;
 /**
  * Contains a derivation matrix
  */
-public class DerivationMatrixData extends MCATData {
+public class DerivativeMatrixData extends MCATData {
 	
 	private double[][] derivativeMatrix;
 
-	public DerivationMatrixData(double[][] derivativeMatrix) {
+	public DerivativeMatrixData(double[][] derivativeMatrix) {
 		super();
 		this.derivativeMatrix = derivativeMatrix;
 	}

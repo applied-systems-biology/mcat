@@ -9,7 +9,7 @@ import java.util.stream.IntStream;
 import org.hkijena.mcat.api.MCATPerSubjectAlgorithm;
 import org.hkijena.mcat.api.MCATRunSampleSubject;
 import org.hkijena.mcat.api.MCATValidityReport;
-import org.hkijena.mcat.api.datatypes.DerivationMatrixData;
+import org.hkijena.mcat.api.datatypes.DerivativeMatrixData;
 import org.hkijena.mcat.api.datatypes.HyperstackData;
 import org.hkijena.mcat.api.datatypes.ROIData;
 
@@ -130,23 +130,25 @@ public class MCATPreprocessingAlgorithm extends MCATPerSubjectAlgorithm {
 		int slices = imp.getNSlices() == 1 ? imp.getNFrames():imp.getNSlices();
 		
 		double[][] derivativeMatrix = new double[width*height][slices];
+		float[] tmp = new float[slices];
 		
 		for (int x = 0; x < width; x++) {
 			for (int y = 0; y < height; y++) {
-				float[] tmp = is.getVoxels(x, y, 0, 1, 1, slices, new float[slices]);
+				tmp = is.getVoxels(x, y, 0, 1, 1, slices, new float[slices]);
 				double[] pixels = new double[tmp.length];
-				IntStream.range(0, tmp.length).forEach(index -> pixels[index] = tmp[index]);
-				
+			    for (int j = 0; j < tmp.length; j++){
+			        pixels[j] = tmp[j];
+			    }
 				derivativeMatrix[y * width + x] = pixels;
 			}
 		}
-		getSubject().getPreprocessedDataInterface().getDerivationMatrix().setData(new DerivationMatrixData(derivativeMatrix));
+		getSubject().getPreprocessedDataInterface().getDerivativeMatrix().setData(new DerivativeMatrixData(derivativeMatrix));
     }
     
     private void saveTimeDerivativeMatrix(){
     	System.out.println("\tWriting time derivative matrix...");
     	String identifier = "_roi-" + roiName + "_downsampling-" + downFactor + "_anatomyCh-" + channelAnatomy + "_interestCh-" + channelOfInterest;
-    	getSubject().getPreprocessedDataInterface().getDerivationMatrix().flush(identifier);
+    	getSubject().getPreprocessedDataInterface().getDerivativeMatrix().flush(identifier);
     }
     
     private void saveImage(ImagePlus imp) {

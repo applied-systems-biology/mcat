@@ -163,8 +163,8 @@ public class MCATProject {
                                     case "preprocessed-image":
                                         readDataSlot(kv.getValue().getPreprocessedDataInterface().getPreprocessedImage(), slot.getValue());
                                         break;
-                                    case "derivation-matrix":
-                                        readDataSlot(kv.getValue().getPreprocessedDataInterface().getDerivationMatrix(), slot.getValue());
+                                    case "derivative-matrix":
+                                        readDataSlot(kv.getValue().getPreprocessedDataInterface().getDerivativeMatrix(), slot.getValue());
                                         break;
                                     case "cluster-image":
                                         readDataSlot(kv.getValue().getClusteredDataInterface().getClusterImages(), slot.getValue());
@@ -251,7 +251,7 @@ public class MCATProject {
                         serializeDataSlot(kv.getValue().getRawDataInterface().getRawImage(), "raw-image", jsonGenerator);
                         serializeDataSlot(kv.getValue().getRawDataInterface().getTissueROI(), "tissue-roi", jsonGenerator);
                         serializeDataSlot(kv.getValue().getPreprocessedDataInterface().getPreprocessedImage(), "preprocessed-image", jsonGenerator);
-                        serializeDataSlot(kv.getValue().getPreprocessedDataInterface().getDerivationMatrix(), "derivation-matrix", jsonGenerator);
+                        serializeDataSlot(kv.getValue().getPreprocessedDataInterface().getDerivativeMatrix(), "derivative-matrix", jsonGenerator);
                         serializeDataSlot(kv.getValue().getClusteredDataInterface().getClusterImages(), "cluster-image", jsonGenerator);
                         serializeDataSlot(kv.getValue().getClusteredDataInterface().getClusterCenters(), "cluster-centers", jsonGenerator);
                     }

@@ -115,11 +115,11 @@ public class MCATBatchImporterDialog extends JDialog {
                 batchImporter::setPreprocessedImagesPattern,
                 null);
         addToggleForPattern(formPanel,
-                "derivation matrix",
-                batchImporter::isImportDerivationMatrix,
-                batchImporter::setImportDerivationMatrix,
-                batchImporter::getDerivationMatrixPattern,
-                batchImporter::setDerivationMatrixPattern,
+                "derivative matrix",
+                batchImporter::isImportDerivativeMatrix,
+                batchImporter::setImportDerivativeMatrix,
+                batchImporter::getDerivativeMatrixPattern,
+                batchImporter::setDerivativeMatrixPattern,
                 null);
         addToggleForPattern(formPanel,
                 "clusters",

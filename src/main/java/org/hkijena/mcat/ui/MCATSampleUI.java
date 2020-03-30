@@ -111,10 +111,10 @@ public class MCATSampleUI extends MCATUIPanel {
                 new JLabel("Preprocessed image"),
                 "documentation/parameter_sample_preprocessed_image.md");
         slotUIList.add(preprocessedImageEditor);
-        MCATDataSlotUI derivationMatrixEditor = formPanel.addToForm(new MCATDataSlotUI(sample, sample.getPreprocessedDataInterface().getDerivationMatrix()),
-                new JLabel("Derivation matrix"),
-                "documentation/parameter_sample_derivation_matrix.md");
-        slotUIList.add(derivationMatrixEditor);
+        MCATDataSlotUI derivativeMatrixEditor = formPanel.addToForm(new MCATDataSlotUI(sample, sample.getPreprocessedDataInterface().getDerivativeMatrix()),
+                new JLabel("Derivative matrix"),
+                "documentation/parameter_sample_derivative_matrix.md");
+        slotUIList.add(derivativeMatrixEditor);
     }
 
     private void initializeRawDataSettings() {

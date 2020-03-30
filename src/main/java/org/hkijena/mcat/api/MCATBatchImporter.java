@@ -31,8 +31,8 @@ public class MCATBatchImporter {
     private boolean importPreprocessedImages = false;
     private String preprocessedImagesPattern = ".*\\.tif";
 
-    private boolean importDerivationMatrix = false;
-    private String derivationMatrixPattern = ".*\\.derivation_matrix.csv";
+    private boolean importDerivativeMatrix = false;
+    private String derivativeMatrixPattern = ".*\\.derivative_matrix.csv";
 
     private boolean importClusters = false;
     private String clustersPattern = ".*\\.clusters.csv";
@@ -105,20 +105,20 @@ public class MCATBatchImporter {
         this.importPreprocessedImages = importPreprocessedImages;
     }
 
-    public boolean isImportDerivationMatrix() {
-        return importDerivationMatrix;
+    public boolean isImportDerivativeMatrix() {
+        return importDerivativeMatrix;
     }
 
-    public void setImportDerivationMatrix(boolean importDerivationMatrix) {
-        this.importDerivationMatrix = importDerivationMatrix;
+    public void setImportDerivativeMatrix(boolean importDerivativeMatrix) {
+        this.importDerivativeMatrix = importDerivativeMatrix;
     }
 
-    public String getDerivationMatrixPattern() {
-        return derivationMatrixPattern;
+    public String getDerivativeMatrixPattern() {
+        return derivativeMatrixPattern;
     }
 
-    public void setDerivationMatrixPattern(String derivationMatrixPattern) {
-        this.derivationMatrixPattern = derivationMatrixPattern;
+    public void setDerivativeMatrixPattern(String derivativeMatrixPattern) {
+        this.derivativeMatrixPattern = derivativeMatrixPattern;
     }
 
     public String getPreprocessedImagesPattern() {

@@ -58,11 +58,15 @@ public class MCATClusteringAlgorithm extends MCATPerSampleAlgorithm {
     		int width = imp.getWidth();
     		int height = imp.getHeight();
     		
+    		float[] tmp = new float[minLength];
+    		
     		for (int x = 0; x < width; x++) {
 				for (int y = 0; y < height; y++) {
-					float[] tmp = is.getVoxels(x, y, 0, 1, 1, minLength, new float[minLength]);
+					tmp = is.getVoxels(x, y, 0, 1, 1, minLength, new float[minLength]);
 					double[] pixels = new double[tmp.length];
-					IntStream.range(0, tmp.length).forEach(index -> pixels[index] = tmp[index]);
+				    for (int j = 0; j < tmp.length; j++){
+				        pixels[j] = tmp[j];
+				    }
 					
 					points.add(new DoublePoint(pixels));
 				}
@@ -84,11 +88,12 @@ public class MCATClusteringAlgorithm extends MCATPerSampleAlgorithm {
     	
     	List<CentroidCluster<DoublePoint>> centroids = kmpp.cluster(points);
     	
+    	//TODO sort according to cum sum 
+    	
     	getSample().getClusteredDataInterface().getClusterCenters().setData(new ClusterCentersData(centroids));
     	
     	
-    	//TODO
-    	// cluster individual images accordingly
+    	//TODO assign colors according to cluster center 
     	
     	Set<String> keys = getSample().getSubjects().keySet();
     	
@@ -155,17 +160,6 @@ public class MCATClusteringAlgorithm extends MCATPerSampleAlgorithm {
     	getSample().getClusteredDataInterface().getClusterCenters().flush(identifier);
     	
 
-//    	//TODO convert image to 8-bit
-//    	
-//    	/*
-//    	 * save clustered images
-//    	 */
-//    	getSample().getClusteredDataInterface().getClusterImages().setData(new HyperstackData(new ImagePlus("ClusteredImages", clusteredImages)));
-//    	Path storageFilePathClusters = getSample().getClusteredDataInterface().getClusterImages().getStorageFilePath();
-//    	String outNameClusters = getSample().getName() + "_clusteredImages.tif";
-//    	IJ.save(new ImagePlus("ClusteredImages",clusteredImages), storageFilePathClusters.toString() + System.getProperty("file.separator") + outNameClusters);
-    	
-    	
     	Set<String> keys = getSample().getSubjects().keySet();
     	
     	for (String key : keys) {
@@ -182,7 +176,6 @@ public class MCATClusteringAlgorithm extends MCATPerSampleAlgorithm {
     
     @Override
     public void run() {
-    	//TODO add treatment group here
     	System.out.println("Starting " + getName());
 
     	k = getRun().getClusteringParameters().getkMeansK();

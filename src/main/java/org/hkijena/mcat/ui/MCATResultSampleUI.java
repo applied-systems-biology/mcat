@@ -50,9 +50,9 @@ public class MCATResultSampleUI extends JPanel {
             addSlotToForm("Preprocessed image",
                     subject.getPreprocessedDataInterface().getPreprocessedImage(),
                     "documentation/parameter_sample_preprocessed_image.md");
-            addSlotToForm("Derivation matrix",
-                    subject.getPreprocessedDataInterface().getDerivationMatrix(),
-                    "documentation/parameter_sample_derivation_matrix.md");
+            addSlotToForm("Derivative matrix",
+                    subject.getPreprocessedDataInterface().getDerivativeMatrix(),
+                    "documentation/parameter_sample_derivative_matrix.md");
         }
 
         formPanel.addVerticalGlue();
