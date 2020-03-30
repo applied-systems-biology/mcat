@@ -1,11 +1,10 @@
 package org.hkijena.mcat.api.algorithms;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.IntStream;
@@ -16,6 +15,7 @@ import org.apache.commons.math3.ml.clustering.KMeansPlusPlusClusterer;
 import org.apache.commons.math3.ml.clustering.KMeansPlusPlusClusterer.EmptyClusterStrategy;
 import org.apache.commons.math3.ml.distance.EuclideanDistance;
 import org.apache.commons.math3.random.JDKRandomGenerator;
+import org.hkijena.mcat.api.MCATCentroidCluster;
 import org.hkijena.mcat.api.MCATPerSampleAlgorithm;
 import org.hkijena.mcat.api.MCATRunSample;
 import org.hkijena.mcat.api.MCATRunSampleSubject;
@@ -86,9 +86,20 @@ public class MCATClusteringAlgorithm extends MCATPerSampleAlgorithm {
     	
     	KMeansPlusPlusClusterer<DoublePoint> kmpp = new KMeansPlusPlusClusterer<DoublePoint>(k, 50, new EuclideanDistance(), new JDKRandomGenerator(nSeeds), EmptyClusterStrategy.FARTHEST_POINT);
     	
-    	List<CentroidCluster<DoublePoint>> centroids = kmpp.cluster(points);
+    	List<CentroidCluster<DoublePoint>> tmpCentroidCluster = kmpp.cluster(points);
     	
-    	//TODO sort according to cum sum 
+    	List<MCATCentroidCluster<DoublePoint>> centroids = new ArrayList<MCATCentroidCluster<DoublePoint>>();
+    	for (CentroidCluster<DoublePoint> centroidCluster : tmpCentroidCluster) {
+			centroids.add(new MCATCentroidCluster<DoublePoint>(centroidCluster.getCenter()));
+		}
+    	
+    	Collections.sort(centroids, new Comparator<MCATCentroidCluster<DoublePoint>>() {
+			@Override
+			public int compare(MCATCentroidCluster<DoublePoint> o1, MCATCentroidCluster<DoublePoint> o2) {
+				return Double.compare(o1.getCumSum(), o2.getCumSum());
+			}
+		});
+    	
     	
     	getSample().getClusteredDataInterface().getClusterCenters().setData(new ClusterCentersData(centroids));
     	

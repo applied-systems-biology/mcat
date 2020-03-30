@@ -1,11 +1,11 @@
 package org.hkijena.mcat.api.dataproviders;
 
-import org.hkijena.mcat.api.datatypes.DerivationMatrixData;
+import org.hkijena.mcat.api.datatypes.DerivativeMatrixData;
 
 /**
- * Loads a {@link DerivationMatrixData} from a file
+ * Loads a {@link DerivativeMatrixData} from a file
  */
-public class DerivationMatrixFromFileProvider extends FileDataProvider<DerivationMatrixData> {
+public class DerivationMatrixFromFileProvider extends FileDataProvider<DerivativeMatrixData> {
 
     public DerivationMatrixFromFileProvider() {
         super();
@@ -16,7 +16,7 @@ public class DerivationMatrixFromFileProvider extends FileDataProvider<Derivatio
     }
 
     @Override
-    public DerivationMatrixData get() {
+    public DerivativeMatrixData get() {
         return null;
     }
 

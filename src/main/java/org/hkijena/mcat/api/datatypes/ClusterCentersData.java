@@ -2,6 +2,7 @@ package org.hkijena.mcat.api.datatypes;
 
 import org.apache.commons.math3.ml.clustering.CentroidCluster;
 import org.apache.commons.math3.ml.clustering.DoublePoint;
+import org.hkijena.mcat.api.MCATCentroidCluster;
 import org.hkijena.mcat.api.MCATData;
 
 import ij.IJ;
@@ -19,18 +20,18 @@ import java.util.Locale;
  */
 public class ClusterCentersData extends MCATData {
 	
-	List<CentroidCluster<DoublePoint>> clusterCenters;
+	List<MCATCentroidCluster<DoublePoint>> clusterCenters;
 	
-    public ClusterCentersData(List<CentroidCluster<DoublePoint>> centroids) {
+    public ClusterCentersData(List<MCATCentroidCluster<DoublePoint>> centroids) {
 		super();
 		this.clusterCenters = centroids;
 	}
 
-	public List<CentroidCluster<DoublePoint>> getCentroids() {
+	public List<MCATCentroidCluster<DoublePoint>> getCentroids() {
 		return clusterCenters;
 	}
 
-	public void setCentroids(List<CentroidCluster<DoublePoint>> centroids) {
+	public void setCentroids(List<MCATCentroidCluster<DoublePoint>> centroids) {
 		this.clusterCenters = centroids;
 	}
 
@@ -38,7 +39,7 @@ public class ClusterCentersData extends MCATData {
 	public String toString() {
 		String centroidsString = "";
 		
-		for (CentroidCluster<DoublePoint> centroidCluster : clusterCenters) {
+		for (MCATCentroidCluster<DoublePoint> centroidCluster : clusterCenters) {
 			centroidsString+= centroidCluster.getCenter().toString() + System.lineSeparator();
 		}
 		centroidsString = centroidsString.replace("[", "").replace("]", "");
