@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.IntStream;
@@ -35,6 +36,7 @@ public class MCATClusteringAlgorithm extends MCATPerSampleAlgorithm {
 	private int minLength, k;
 	private String[] names;
 	private ImagePlus[] imps;
+	private HashMap<String, ImagePlus> clustered = new HashMap<String, ImagePlus>();
 	private List<DoublePoint> points = new ArrayList<DoublePoint>();
 	
     public MCATClusteringAlgorithm(MCATRunSample sample) {
@@ -141,6 +143,7 @@ public class MCATClusteringAlgorithm extends MCATPerSampleAlgorithm {
 					if(closestCluster == -1) {
 						System.err.println("No closest cluster found for this pixel position (x=" + x + "; y=" + y + ")");
 					}
+					centroids.get(closestCluster).addMember();
 					clusteredPixels[y*w+x] = Math.round(255/k) * closestCluster;
 				}
 			}
@@ -152,41 +155,41 @@ public class MCATClusteringAlgorithm extends MCATPerSampleAlgorithm {
     		new ImageConverter(clusteredImage).convertToGray8();
     		clusteredImage.resetDisplayRange();
     		
-    		samp.getClusteredDataInterface().getSingleClusterImage().setData(new HyperstackData(clusteredImage));
+    		clustered.put(samp.getName(), clusteredImage);
+//    		samp.getClusteredDataInterface().getSingleClusterImage().setData(new HyperstackData(clusteredImage));
 		}
     }
     
     /*
-	 * save cluster centers
+	 * save cluster centers and clustered images
 	 */
     private void saveData() {
     	System.out.println("\tSaving clustering results...");
     	
     	System.out.println("flush...");
-    	String identifier = "_downsampling-" + getSample().getRun().getPreprocessingParameters().getDownsamplingFactor() +
+    	String identifier = getSample().getName() + "_downsampling-" + getSample().getRun().getPreprocessingParameters().getDownsamplingFactor() +
     			"_anatomyCh-" + getSample().getRun().getPreprocessingParameters().getAnatomicChannel() + 
     			"_interestCh-" + getSample().getRun().getPreprocessingParameters().getChannelOfInterest() +
     			"_timeFrames-" + getSample().getRun().getClusteringParameters().getMinLength() +
-    			"_k-" + getSample().getRun().getClusteringParameters().getkMeansK();
+    			"_k-" + getSample().getRun().getClusteringParameters().getkMeansK() + "_";
     	getSample().getClusteredDataInterface().getClusterCenters().flush(identifier);
     	
 
     	Set<String> keys = getSample().getSubjects().keySet();
     	
-    	for (String key : keys) {
-    		MCATRunSampleSubject samp = getSample().getSubjects().get(key);
-    		
-    		Path storageFilePathClusteredImage = getSample().getClusteredDataInterface().getClusterImages().getStorageFilePath();
-    		String outNameClusteredImage = samp.getName() + "_clusteredImage.png";
-    		IJ.save(samp.getClusteredDataInterface().getSingleClusterImage().getData().getImage(), 
-    				storageFilePathClusteredImage.toString() + System.getProperty("file.separator") + outNameClusteredImage);
-    		
-    	}
+    	Path storageFilePathClusteredImage = getSample().getClusteredDataInterface().getClusterImages().getStorageFilePath();
     	
+    	for (String string : clustered.keySet()) {
+    		String outNameClusteredImage = string + "_" + identifier + "_clusteredImage.png";
+    		IJ.save(clustered.get(string), storageFilePathClusteredImage.toString() + System.getProperty("file.separator") + outNameClusteredImage);
+		}
     }
     
     @Override
     public void run() {
+    	
+    	//TODO implement clustering from derivative matrix, check which algorithm to use (from image or from matrix)
+    	
     	System.out.println("Starting " + getName());
 
     	k = getRun().getClusteringParameters().getkMeansK();

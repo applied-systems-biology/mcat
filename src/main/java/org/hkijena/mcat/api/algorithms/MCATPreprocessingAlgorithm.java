@@ -147,14 +147,14 @@ public class MCATPreprocessingAlgorithm extends MCATPerSubjectAlgorithm {
     
     private void saveTimeDerivativeMatrix(){
     	System.out.println("\tWriting time derivative matrix...");
-    	String identifier = "_roi-" + roiName + "_downsampling-" + downFactor + "_anatomyCh-" + channelAnatomy + "_interestCh-" + channelOfInterest;
+    	String identifier = getSubject().getName() + "_roi-" + roiName + "_downsampling-" + downFactor + "_anatomyCh-" + channelAnatomy + "_interestCh-" + channelOfInterest + "_";
     	getSubject().getPreprocessedDataInterface().getDerivativeMatrix().flush(identifier);
     }
     
     private void saveImage(ImagePlus imp) {
     	System.out.println("\tWriting pre-processed image...");
     	getSubject().getPreprocessedDataInterface().getPreprocessedImage().setData(new HyperstackData(imp));
-    	String identifier = "_roi-" + roiName + "_downsampling-" + downFactor + "_anatomyCh-" + channelAnatomy + "_interestCh-" + channelOfInterest;
+    	String identifier = getSubject().getName() + "_roi-" + roiName + "_downsampling-" + downFactor + "_anatomyCh-" + channelAnatomy + "_interestCh-" + channelOfInterest + "_";
     	getSubject().getPreprocessedDataInterface().getPreprocessedImage().flush(identifier);
     }
     
@@ -192,15 +192,15 @@ public class MCATPreprocessingAlgorithm extends MCATPerSubjectAlgorithm {
     	ImagePlus interest = channels[channelOfInterest - 1];
     	String transforms = System.getProperty("java.io.tmpdir") + "transform.txt";
     	
-//    	if(anatomyProvided) {
-//    		ImagePlus anatomy = channels[channelAnatomy - 1];
-//    		interest = registerImages(transforms, anatomy, interest);
-//    		anatomy.close();
-//    	}else{
-//    		System.out.println("WARNING: no anatomy channel provided for image registration. Will register channel of interest without anatomy information.");
-//    		interest = registerImages(transforms, interest);
-//    	}
-//    	
+    	if(anatomyProvided) {
+    		ImagePlus anatomy = channels[channelAnatomy - 1];
+    		interest = registerImages(transforms, anatomy, interest);
+    		anatomy.close();
+    	}else{
+    		System.out.println("WARNING: no anatomy channel provided for image registration. Will register channel of interest without anatomy information.");
+    		interest = registerImages(transforms, interest);
+    	}
+    	
     	/*
     	 * perform z-transformation on pixel values of channel of interest
     	 */
@@ -230,20 +230,24 @@ public class MCATPreprocessingAlgorithm extends MCATPerSubjectAlgorithm {
     	/*
     	 * construct time derivative matrix from pre-processed image
     	 */
-    	toTimeDerivativeMatrix(interest);
+//    	toTimeDerivativeMatrix(interest);
     	
     	/*
     	 * save time-derivative matrix
     	 */
-    	saveTimeDerivativeMatrix();
+//    	saveTimeDerivativeMatrix();
     	
     	if(saveRaw)
-    		getSubject().getRawDataInterface().getRawImage().flush("_" + getSubject().getName());
+    		getSubject().getRawDataInterface().getRawImage().flush(getSubject().getName() + "_");
     	if(saveRoi)
-    		getSubject().getRawDataInterface().getTissueROI().flush("_" + roiName);
+    		getSubject().getRawDataInterface().getTissueROI().flush(getSubject().getName() + "_" + roiName + "_");
     	
     	interest.close();
+    	
+    	getRawDataInterface().getRawImage().setData(null);
+    	
     	IJ.freeMemory();
+    	System.gc();
     	
     	System.out.println("Finished Preprocessing.");
     }

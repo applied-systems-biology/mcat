@@ -20,7 +20,7 @@ public class ROIData extends MCATData {
 
     @Override
     public void saveTo(Path folder, String name, String identifier) {
-        RoiEncoder re = new RoiEncoder(folder.resolve(name + identifier + ".roi").toString());
+        RoiEncoder re = new RoiEncoder(folder.resolve(identifier + name + ".roi").toString());
         try {
             re.write(getRoi());
         } catch (IOException e) {

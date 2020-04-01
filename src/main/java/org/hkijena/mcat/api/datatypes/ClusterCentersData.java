@@ -52,7 +52,7 @@ public class ClusterCentersData extends MCATData {
 		System.out.println("folder: " + folder + System.lineSeparator() + "name: " + name);
 		
 		try {
-			BufferedWriter bw = new BufferedWriter(new FileWriter(new File(folder.resolve(name + identifier + ".csv").toString())));
+			BufferedWriter bw = new BufferedWriter(new FileWriter(new File(folder.resolve(identifier + name + ".csv").toString())));
 			bw.write(this.toString());
 			bw.close();
 		} catch (IOException e) {

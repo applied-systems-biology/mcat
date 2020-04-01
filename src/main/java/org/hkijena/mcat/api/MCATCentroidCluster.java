@@ -10,11 +10,13 @@ public class MCATCentroidCluster<T extends Clusterable> extends Cluster<T> {
 	private static final long serialVersionUID = 2948234966776902823L;
 	private double cumSum;
 	private final Clusterable center;
+	private long abundance;
 	
     public MCATCentroidCluster(final Clusterable center) {
         super();
         this.center = center;
         setCumSum();
+        abundance = 0;
     }
 
     public Clusterable getCenter() {
@@ -24,12 +26,60 @@ public class MCATCentroidCluster<T extends Clusterable> extends Cluster<T> {
 	public void setCumSum() {
 		cumSum = 0;
 		double[] points = center.getPoint();
-		for (int j = 0; j < points.length; j++) {
-			cumSum += points[j];
+		for (int i = 0; i < points.length; i++) {
+			cumSum += points[i];
 		}
 	}
 
 	public double getCumSum() {
 		return this.cumSum;
+	}
+	
+	public long getAbundance() {
+		return abundance;
+	}
+
+	public void setAbundance(long abundance) {
+		this.abundance = abundance;
+	}
+	
+	public void addMembers(int num) {
+		this.abundance += num;
+	}
+	
+	public void addMember() {
+		this.abundance++;
+	}
+	
+	public double getMeanValue() {
+		double mean = 0;
+		double[] points = center.getPoint();
+		for (int i = 0; i < points.length; i++) {
+			mean += points[i];
+		}
+		
+		return mean/points.length;
+	}
+
+	public double getMaxValue() {
+		double max = 0;
+		double[] points = center.getPoint();
+		for (int i = 0; i < points.length; i++) {
+			if(max < points[i])
+				max = points[i];
+		}
+		
+		return max;
+	}
+	
+	public double getMinValue() {
+		double min = Double.MAX_VALUE;
+		double[] points = center.getPoint();
+		for (int i = 0; i < points.length; i++) {
+			if(min > points[i])
+				min = points[i];
+		}
+		
+		return min;
 	}
 }

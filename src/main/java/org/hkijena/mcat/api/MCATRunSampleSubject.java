@@ -16,7 +16,7 @@ public class MCATRunSampleSubject implements MCATDataInterface, Comparable<MCATR
     private MCATPreprocessedDataInterface preprocessedDataInterface;
     
     //added
-    private MCATClusteredDataInterface clusteredDataInterface;
+//    private MCATClusteredDataInterface clusteredDataInterface;
 
     public MCATRunSampleSubject(MCATRunSample sample, MCATProjectSample source) {
         this.sample = sample;
@@ -25,7 +25,7 @@ public class MCATRunSampleSubject implements MCATDataInterface, Comparable<MCATR
         this.preprocessedDataInterface = new MCATPreprocessedDataInterface(source.getPreprocessedDataInterface());
         
         //added
-        this.clusteredDataInterface = new MCATClusteredDataInterface(source.getClusteredDataInterface());
+ //       this.clusteredDataInterface = new MCATClusteredDataInterface(source.getClusteredDataInterface());
     }
 
     @Override
@@ -35,7 +35,7 @@ public class MCATRunSampleSubject implements MCATDataInterface, Comparable<MCATR
         result.addAll(preprocessedDataInterface.getSlots());
         
         //added TODO maybe only add clusteredImage Slot?
-        result.addAll(clusteredDataInterface.getSlots());
+//        result.addAll(clusteredDataInterface.getSlots());
         
         return result;
     }
@@ -56,10 +56,10 @@ public class MCATRunSampleSubject implements MCATDataInterface, Comparable<MCATR
         return preprocessedDataInterface;
     }
     
-    //added
-    public MCATClusteredDataInterface getClusteredDataInterface() {
-        return clusteredDataInterface;
-    }
+//    //added
+//    public MCATClusteredDataInterface getClusteredDataInterface() {
+//        return clusteredDataInterface;
+//    }
 
     public String getName() {
         return sample.getSubjects().inverse().get(this);
