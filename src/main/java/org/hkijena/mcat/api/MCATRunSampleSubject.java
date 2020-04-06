@@ -1,5 +1,6 @@
 package org.hkijena.mcat.api;
 
+import org.hkijena.mcat.api.datainterfaces.MCATClusterAbundanceDataInterface;
 import org.hkijena.mcat.api.datainterfaces.MCATClusteredDataInterface;
 import org.hkijena.mcat.api.datainterfaces.MCATPreprocessedDataInterface;
 import org.hkijena.mcat.api.datainterfaces.MCATRawDataInterface;
@@ -14,18 +15,14 @@ public class MCATRunSampleSubject implements MCATDataInterface, Comparable<MCATR
     private MCATSampleParameters parameters;
     private MCATRawDataInterface rawDataInterface;
     private MCATPreprocessedDataInterface preprocessedDataInterface;
-    
-    //added
-//    private MCATClusteredDataInterface clusteredDataInterface;
-
+    private MCATClusterAbundanceDataInterface clusterAbundanceDataInterface;
+   
     public MCATRunSampleSubject(MCATRunSample sample, MCATProjectSample source) {
         this.sample = sample;
         this.parameters = new MCATSampleParameters(source.getParameters());
         this.rawDataInterface = new MCATRawDataInterface(source.getRawDataInterface());
         this.preprocessedDataInterface = new MCATPreprocessedDataInterface(source.getPreprocessedDataInterface());
-        
-        //added
- //       this.clusteredDataInterface = new MCATClusteredDataInterface(source.getClusteredDataInterface());
+        this.clusterAbundanceDataInterface = new MCATClusterAbundanceDataInterface(source.getClusterAbundanceDataInterface());
     }
 
     @Override
@@ -33,9 +30,7 @@ public class MCATRunSampleSubject implements MCATDataInterface, Comparable<MCATR
         List<MCATDataSlot<?>> result = new ArrayList<>();
         result.addAll(rawDataInterface.getSlots());
         result.addAll(preprocessedDataInterface.getSlots());
-        
-        //added TODO maybe only add clusteredImage Slot?
-//        result.addAll(clusteredDataInterface.getSlots());
+        result.addAll(clusterAbundanceDataInterface.getSlots());
         
         return result;
     }
@@ -56,10 +51,9 @@ public class MCATRunSampleSubject implements MCATDataInterface, Comparable<MCATR
         return preprocessedDataInterface;
     }
     
-//    //added
-//    public MCATClusteredDataInterface getClusteredDataInterface() {
-//        return clusteredDataInterface;
-//    }
+    public MCATClusterAbundanceDataInterface getClusterAbundanceDataInterface() {
+        return clusterAbundanceDataInterface;
+    }
 
     public String getName() {
         return sample.getSubjects().inverse().get(this);

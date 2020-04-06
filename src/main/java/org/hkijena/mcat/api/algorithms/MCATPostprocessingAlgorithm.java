@@ -2,13 +2,18 @@ package org.hkijena.mcat.api.algorithms;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.math3.ml.clustering.DoublePoint;
 import org.hkijena.mcat.api.MCATCentroidCluster;
 import org.hkijena.mcat.api.MCATPerSampleAlgorithm;
 import org.hkijena.mcat.api.MCATRunSample;
+import org.hkijena.mcat.api.MCATRunSampleSubject;
 import org.hkijena.mcat.api.MCATValidityReport;
+import org.hkijena.mcat.api.datatypes.ClusterAbundanceData;
 import org.hkijena.mcat.api.datatypes.ClusterCentersData;
+
+import com.google.common.collect.BiMap;
 
 public class MCATPostprocessingAlgorithm extends MCATPerSampleAlgorithm {
 	
@@ -21,7 +26,7 @@ public class MCATPostprocessingAlgorithm extends MCATPerSampleAlgorithm {
 	private final int netIncrease = 8;
 	private int mode = 0;
 	
-	private final List<MCATCentroidCluster<DoublePoint>> clusterCenters = getSample().getClusteredDataInterface().getClusterCenters().getData().getCentroids();
+	private List<MCATCentroidCluster<DoublePoint>> clusterCenters;
 	
     public MCATPostprocessingAlgorithm(MCATRunSample sample) {
         super(sample);
@@ -133,12 +138,31 @@ public class MCATPostprocessingAlgorithm extends MCATPerSampleAlgorithm {
     
     public void getAUC(ArrayList<Integer> indices) {
     	//TODO get AUC for each animal -> implement data structure holding cluster abundance
+    	
+    	System.out.println("Getting AUCS...");
+    	
+    	Set<String> keys = getSample().getSubjects().keySet();
+    	
+    	for (String key : keys) {
+    		MCATRunSampleSubject samp = getSample().getSubjects().get(key);
+    		
+    		ClusterAbundanceData clusterAbundance = samp.getClusterAbundanceDataInterface().getClusterAbundance().getData();
+    		
+    		System.out.println(samp.getName());
+    		System.out.println(clusterAbundance + System.lineSeparator());
+    		
+    		for (Integer index : indices) {
+				System.out.println(clusterAbundance.getAbundance()[index] + ": " + clusterAbundance.getCentroids().get(index));
+			}
+    	}
     }
 
     @Override
     public void run() {
     	
     	System.out.println("Postprocessing: " + getSample().getName());
+    	
+    	 clusterCenters = getSample().getClusteredDataInterface().getClusterCenters().getData().getCentroids();
     	
     	if(getSample().getRun().getPostprocessingParameters().isAnalyzeMaxDecrease())
     		mode = mode | maxDecrease;

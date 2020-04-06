@@ -7,6 +7,8 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
+
+import org.hkijena.mcat.api.datainterfaces.MCATClusterAbundanceDataInterface;
 import org.hkijena.mcat.api.datainterfaces.MCATClusteredDataInterface;
 import org.hkijena.mcat.api.datainterfaces.MCATPostprocessedDataInterface;
 import org.hkijena.mcat.api.datainterfaces.MCATPreprocessedDataInterface;
@@ -33,6 +35,8 @@ public class MCATProjectSample implements Comparable<MCATProjectSample> {
     private MCATPreprocessedDataInterface preprocessedDataInterface = new MCATPreprocessedDataInterface();
 
     private MCATClusteredDataInterface clusteredDataInterface = new MCATClusteredDataInterface();
+    
+    private MCATClusterAbundanceDataInterface clusterAbundanceDataInterface = new MCATClusterAbundanceDataInterface();
 
     private MCATPostprocessedDataInterface postprocessedDataInterface = new MCATPostprocessedDataInterface();
 
@@ -80,6 +84,10 @@ public class MCATProjectSample implements Comparable<MCATProjectSample> {
     public MCATPostprocessedDataInterface getPostprocessedDataInterface() {
         return postprocessedDataInterface;
     }
+    
+    public MCATClusterAbundanceDataInterface getClusterAbundanceDataInterface() {
+		return clusterAbundanceDataInterface;
+	}
 
     public static class Serializer extends JsonSerializer<MCATProjectSample> {
         @Override

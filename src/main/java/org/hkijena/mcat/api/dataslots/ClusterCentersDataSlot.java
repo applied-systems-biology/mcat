@@ -1,9 +1,10 @@
 package org.hkijena.mcat.api.dataslots;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.hkijena.mcat.api.MCATDataSlot;
 import org.hkijena.mcat.api.dataproviders.ClusterCentersFromFileProvider;
 import org.hkijena.mcat.api.datatypes.ClusterCentersData;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
  * Slot for {@link ClusterCentersData}

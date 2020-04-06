@@ -21,6 +21,7 @@ import org.hkijena.mcat.api.MCATPerSampleAlgorithm;
 import org.hkijena.mcat.api.MCATRunSample;
 import org.hkijena.mcat.api.MCATRunSampleSubject;
 import org.hkijena.mcat.api.MCATValidityReport;
+import org.hkijena.mcat.api.datatypes.ClusterAbundanceData;
 import org.hkijena.mcat.api.datatypes.ClusterCentersData;
 import org.hkijena.mcat.api.datatypes.HyperstackData;
 
@@ -113,6 +114,8 @@ public class MCATClusteringAlgorithm extends MCATPerSampleAlgorithm {
     	for (String key : keys) {
     		MCATRunSampleSubject samp = getSample().getSubjects().get(key);
     		
+    		samp.getClusterAbundanceDataInterface().getClusterAbundance().setData(new ClusterAbundanceData(centroids, new int[centroids.size()]));
+    		
     		ImagePlus imp = samp.getPreprocessedDataInterface().getPreprocessedImage().getData().getImage();
 		
     		ImageStack is = imp.getStack();
@@ -143,6 +146,8 @@ public class MCATClusteringAlgorithm extends MCATPerSampleAlgorithm {
 					if(closestCluster == -1) {
 						System.err.println("No closest cluster found for this pixel position (x=" + x + "; y=" + y + ")");
 					}
+					
+					samp.getClusterAbundanceDataInterface().getClusterAbundance().getData().incrementAbundance(closestCluster);
 					centroids.get(closestCluster).addMember();
 					clusteredPixels[y*w+x] = Math.round(255/k) * closestCluster;
 				}
