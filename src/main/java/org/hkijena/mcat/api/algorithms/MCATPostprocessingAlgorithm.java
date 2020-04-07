@@ -137,7 +137,7 @@ public class MCATPostprocessingAlgorithm extends MCATPerSampleAlgorithm {
 	}
     
     public void getAUC(ArrayList<Integer> indices) {
-    	//TODO get AUC for each animal -> implement data structure holding cluster abundance
+    	//TODO check what is going wrong here with printing cluster centers
     	
     	System.out.println("Getting AUCS...");
     	
