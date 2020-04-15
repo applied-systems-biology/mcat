@@ -3,7 +3,7 @@ package org.hkijena.mcat.ui.registries;
 import org.hkijena.mcat.api.MCATDataProvider;
 import org.hkijena.mcat.api.MCATProjectSample;
 import org.hkijena.mcat.api.dataproviders.ClusterCentersFromFileProvider;
-import org.hkijena.mcat.api.dataproviders.DerivationMatrixFromFileProvider;
+import org.hkijena.mcat.api.dataproviders.DerivativeMatrixFromFileProvider;
 import org.hkijena.mcat.api.dataproviders.HyperstackFromTifDataProvider;
 import org.hkijena.mcat.api.dataproviders.ROIFromFileDataProvider;
 import org.hkijena.mcat.ui.MCATDataProviderUI;
@@ -28,7 +28,7 @@ public class MCATDataProviderUIRegistry {
         // Register here
         registry.put(HyperstackFromTifDataProvider.class, HyperstackFromTifDataProviderUI.class);
         registry.put(ROIFromFileDataProvider.class, ROIFromFileDataProviderUI.class);
-        registry.put(DerivationMatrixFromFileProvider.class, DerivationMatrixFromFileDataProviderUI.class);
+        registry.put(DerivativeMatrixFromFileProvider.class, DerivationMatrixFromFileDataProviderUI.class);
         registry.put(ClusterCentersFromFileProvider.class, ClusterCentersFromFileDataProviderUI.class);
     }
 

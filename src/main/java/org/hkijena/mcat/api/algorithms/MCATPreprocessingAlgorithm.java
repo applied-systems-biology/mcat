@@ -230,12 +230,12 @@ public class MCATPreprocessingAlgorithm extends MCATPerSubjectAlgorithm {
     	/*
     	 * construct time derivative matrix from pre-processed image
     	 */
-//    	toTimeDerivativeMatrix(interest);
+    	toTimeDerivativeMatrix(interest);
     	
     	/*
     	 * save time-derivative matrix
     	 */
-//    	saveTimeDerivativeMatrix();
+    	saveTimeDerivativeMatrix();
     	
     	if(saveRaw)
     		getSubject().getRawDataInterface().getRawImage().flush(getSubject().getName() + "_");

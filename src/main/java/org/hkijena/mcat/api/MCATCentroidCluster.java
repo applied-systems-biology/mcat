@@ -60,6 +60,26 @@ public class MCATCentroidCluster<T extends Clusterable> extends Cluster<T> {
 		
 		return mean/points.length;
 	}
+	
+	public double getMeanDifferenceFromZero() {
+		double diff = 0;
+		double[] points = center.getPoint();
+		for (int i = 0; i < points.length; i++) {
+			diff += Math.abs(points[i]);
+		}
+		
+		return diff/points.length;
+	}
+	
+	public double[] multiply(double scalar) {
+		double[] points = center.getPoint();
+		double[] res = new double[points.length];
+		for (int i = 0; i < points.length; i++) {
+			res[i] = points[i] * scalar;
+		}
+		
+		return res;
+	}
 
 	public double getMaxValue() {
 		double max = 0;

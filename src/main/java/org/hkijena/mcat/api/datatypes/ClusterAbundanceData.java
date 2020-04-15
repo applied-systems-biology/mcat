@@ -55,7 +55,7 @@ public class ClusterAbundanceData extends MCATData{
 		String abundanceString = "";
 		
 		for (int i = 0; i < clusterCenters.size(); i++) {
-			abundanceString = abundance[i] + ": " + clusterCenters.get(i).getCenter().toString() + System.lineSeparator();
+			abundanceString = abundanceString + abundance[i] + ": " + clusterCenters.get(i).getCenter().toString() + System.lineSeparator();
 		}
 		abundanceString = abundanceString.replace("[", "").replace("]", "");
 		

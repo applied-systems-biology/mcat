@@ -152,6 +152,16 @@ public class MCATClusteringAlgorithm extends MCATPerSampleAlgorithm {
 					clusteredPixels[y*w+x] = Math.round(255/k) * closestCluster;
 				}
 			}
+    		
+    		String identifier = samp.getName() + "_downsampling-" + getSample().getRun().getPreprocessingParameters().getDownsamplingFactor() +
+        			"_anatomyCh-" + getSample().getRun().getPreprocessingParameters().getAnatomicChannel() + 
+        			"_interestCh-" + getSample().getRun().getPreprocessingParameters().getChannelOfInterest() +
+        			"_timeFrames-" + getSample().getRun().getClusteringParameters().getMinLength() +
+        			"_k-" + getSample().getRun().getClusteringParameters().getkMeansK() + "_";
+    		
+    		
+    		samp.getClusterAbundanceDataInterface().getClusterAbundance().flush(identifier);
+    		
     		ImageStack clusteredStack = new ImageStack(w, h, 1);
     		clusteredStack.setPixels(clusteredPixels, 1);
     		
