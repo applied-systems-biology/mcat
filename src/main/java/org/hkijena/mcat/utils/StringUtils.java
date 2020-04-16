@@ -34,6 +34,16 @@ public class StringUtils {
         }
         return input + " " + index;
     }
+    
+    public static String makeUniqueString(String input, String spaceCharacter, Collection<String> existing) {
+        if (!existing.contains(input))
+            return input;
+        int index = 1;
+        while (existing.contains(input + spaceCharacter + index)) {
+            ++index;
+        }
+        return input + spaceCharacter + index;
+    }
 
     /**
      * Capitalizes the first letter in the string

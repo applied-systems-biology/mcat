@@ -1,19 +1,15 @@
 package org.hkijena.mcat.api.datatypes;
 
-import org.apache.commons.math3.ml.clustering.CentroidCluster;
-import org.apache.commons.math3.ml.clustering.DoublePoint;
-import org.hkijena.mcat.api.MCATCentroidCluster;
-import org.hkijena.mcat.api.MCATData;
-
-import ij.IJ;
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Locale;
+
+import org.apache.commons.math3.ml.clustering.DoublePoint;
+import org.hkijena.mcat.api.MCATCentroidCluster;
+import org.hkijena.mcat.api.MCATData;
 
 /**
  * Contains cluster centers

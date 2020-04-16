@@ -12,7 +12,6 @@ import java.util.stream.Stream;
 import org.apache.commons.math3.ml.clustering.DoublePoint;
 import org.hkijena.mcat.api.MCATCentroidCluster;
 import org.hkijena.mcat.api.datatypes.ClusterAbundanceData;
-import org.hkijena.mcat.api.datatypes.ClusterCentersData;
 
 /**
  * Loads a {@link ClusterAbundanceData} from a file

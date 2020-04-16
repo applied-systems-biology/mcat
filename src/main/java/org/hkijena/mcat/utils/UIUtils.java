@@ -28,6 +28,20 @@ public class UIUtils {
 
     public static final Insets UI_PADDING = new Insets(4,4,4,4);
 
+    
+    public static void addFillerGridBagComponent(Container component, int row, int column) {
+        component.add(new JPanel(), new GridBagConstraints() {
+            {
+                anchor = GridBagConstraints.PAGE_START;
+                gridx = column;
+                gridy = row;
+                fill = GridBagConstraints.HORIZONTAL | GridBagConstraints.VERTICAL;
+                weightx = 1;
+                weighty = 1;
+            }
+        });
+    }
+    
     /**
      * Adds a popup menu to a button component that will be opened next to it if the button is clicked
      * @param target

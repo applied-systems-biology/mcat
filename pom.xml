@@ -213,12 +213,21 @@ See the LICENSE file provided with this code for the full license.
         	<artifactId>MultiStackRegistration</artifactId>
         	<version>v1.46.2</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/net.sf.ij-plugins/ijp-toolkit -->
 		<dependency>
 		    <groupId>net.sf.ij-plugins</groupId>
 		    <artifactId>ijp-toolkit_2.10</artifactId>
 		    <version>2.1.2</version>
 		</dependency>
+		<dependency>
+            <groupId>org.jfree</groupId>
+            <artifactId>jfreechart</artifactId>
+            <version>1.5.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jfree</groupId>
+            <artifactId>jfreesvg</artifactId>
+            <version>3.4</version>
+        </dependency>
     </dependencies>
 
     <properties>
