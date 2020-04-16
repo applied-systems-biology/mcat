@@ -8,6 +8,8 @@ import java.util.Set;
 import org.apache.commons.math3.ml.clustering.DoublePoint;
 import org.hkijena.mcat.api.MCATCentroidCluster;
 import org.hkijena.mcat.api.MCATPerSampleAlgorithm;
+import org.hkijena.mcat.api.MCATPostprocessingMethod;
+import org.hkijena.mcat.api.MCATResultObject;
 import org.hkijena.mcat.api.MCATRunSample;
 import org.hkijena.mcat.api.MCATRunSampleSubject;
 import org.hkijena.mcat.api.MCATValidityReport;
@@ -105,7 +107,7 @@ public class MCATPostprocessingAlgorithm extends MCATPerSampleAlgorithm {
 		
 		indices.add(index);
 		
-		getAUC(indices);
+		getAUC(indices, MCATPostprocessingMethod.MaxDecrease);
 	}
     
     private void postProcessMaxIncrease(List<MCATCentroidCluster<DoublePoint>> clusterCenters) {
@@ -130,7 +132,7 @@ public class MCATPostprocessingAlgorithm extends MCATPerSampleAlgorithm {
 		
 		indices.add(index);
 		
-		getAUC(indices);
+		getAUC(indices, MCATPostprocessingMethod.MaxIncrease);
     }
     
     private void postProcessNetDecrease(List<MCATCentroidCluster<DoublePoint>> clusterCenters) {
@@ -151,7 +153,7 @@ public class MCATPostprocessingAlgorithm extends MCATPerSampleAlgorithm {
 	
 		System.out.println("net decrease curves: " + indices.size());
 		
-		getAUC(indices);
+		getAUC(indices, MCATPostprocessingMethod.NetDecrease);
     }
 
     private void postProcessNetIncrease(List<MCATCentroidCluster<DoublePoint>> clusterCenters) {
@@ -172,10 +174,10 @@ public class MCATPostprocessingAlgorithm extends MCATPerSampleAlgorithm {
 	
 		System.out.println("net increase curves: " + indices.size());
 		
-		getAUC(indices);
+		getAUC(indices, MCATPostprocessingMethod.NetIncrease);
 	}
     
-    private void getAUC(ArrayList<Integer> indices) {
+    private void getAUC(ArrayList<Integer> indices, MCATPostprocessingMethod postprocessingMethod) {
     	System.out.println("Getting AUCS...");
     	
     	Set<String> keys = getSample().getSubjects().keySet();
@@ -204,6 +206,14 @@ public class MCATPostprocessingAlgorithm extends MCATPerSampleAlgorithm {
     		System.out.println("    AUC: " + auc);
     		System.out.println("    AUC cum: " + aucCum);
     		
+    		getRun().addResultObject(new MCATResultObject(samp.getName(), 
+    				samp.getParameters().getTreatment(), 
+    				getRun().getPreprocessingParameters().getDownsamplingFactor(), 
+    				getRun().getPreprocessingParameters().getChannelOfInterest(), 
+    				getRun().getClusteringParameters().getClusteringHierarchy(), 
+    				getRun().getClusteringParameters().getkMeansK(), 
+    				postprocessingMethod, 
+    				auc));
     	}
     }
 
@@ -228,7 +238,6 @@ public class MCATPostprocessingAlgorithm extends MCATPerSampleAlgorithm {
     	
     	
     	postProcess();
-    	
     }
 
     @Override

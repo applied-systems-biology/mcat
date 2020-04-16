@@ -3,10 +3,15 @@ package org.hkijena.mcat.api;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableBiMap;
+
+import org.checkerframework.common.reflection.qual.GetMethod;
 import org.hkijena.mcat.api.parameters.MCATClusteringParameters;
 import org.hkijena.mcat.api.parameters.MCATPostprocessingParameters;
 import org.hkijena.mcat.api.parameters.MCATPreprocessingParameters;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -27,13 +32,15 @@ public class MCATRun implements MCATValidatable {
     private MCATPostprocessingParameters postprocessingParameters;
     private boolean isReady = false;
     private Path outputPath;
+    private List<MCATResultObject> resultObjects;
 
     public MCATRun(MCATProject project) {
         this.project = project;
         this.preprocessingParameters = new MCATPreprocessingParameters(project.getPreprocessingParameters());
         this.clusteringParameters = new MCATClusteringParameters(project.getClusteringParameters());
         this.postprocessingParameters = new MCATPostprocessingParameters(project.getPostprocessingParameters());
-
+        this.resultObjects = new ArrayList<MCATResultObject>();
+        
         switch (clusteringParameters.getClusteringHierarchy()) {
             case PerSubject:
                 for(Map.Entry<String, MCATProjectSample> kv : project.getSamples().entrySet()) {
@@ -72,6 +79,14 @@ public class MCATRun implements MCATValidatable {
 
     public MCATPostprocessingParameters getPostprocessingParameters() {
         return postprocessingParameters;
+    }
+    
+    public List<MCATResultObject> getResultObjects(){
+    	return resultObjects;
+    }
+    
+    public void addResultObject(MCATResultObject resultObject) {
+    	this.resultObjects.add(resultObject);
     }
 
     @Override
@@ -150,6 +165,23 @@ public class MCATRun implements MCATValidatable {
             ++counter;
             onProgress.accept(new Status(counter, graph.size(), algorithm.getName() + " done"));
         }
+        writeResults();
+    }
+    
+    public void writeResults() {
+    	File outputFile = new File(getOutputPath().toString() + File.separator + "ClusteringResults.csv");
+    	
+    	try {
+			BufferedWriter bw = new BufferedWriter(new FileWriter(outputFile));
+			bw.write("subject;treatment;downsamplingFactor;channelOfInterest;clusteringHierarchy;k;postprocessingMethod;auc");
+			for (MCATResultObject resultObject : resultObjects) {
+				bw.newLine();
+				bw.write(resultObject.toString());
+			}
+			bw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
     }
 
     public MCATProject getProject() {
