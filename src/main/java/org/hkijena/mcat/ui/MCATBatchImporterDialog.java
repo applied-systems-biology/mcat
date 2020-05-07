@@ -4,6 +4,7 @@ import org.hkijena.mcat.api.MCATBatchImporter;
 import org.hkijena.mcat.ui.components.DocumentChangeListener;
 import org.hkijena.mcat.ui.components.FileSelection;
 import org.hkijena.mcat.ui.components.FormPanel;
+import org.hkijena.mcat.ui.components.MarkdownDocument;
 import org.hkijena.mcat.utils.StringUtils;
 import org.hkijena.mcat.utils.UIUtils;
 
@@ -54,30 +55,27 @@ public class MCATBatchImporterDialog extends JDialog {
     private void addToggleForPattern(FormPanel formPanel, String name,
                               Supplier<Boolean> toggleGetter, Consumer<Boolean> toggleSetter,
                               Supplier<String> patternGetter, Consumer<String> patternSetter,
-                                     String documentationPath) {
-        formPanel.setCurrentGroup(null);
+                                     MarkdownDocument document) {
         JCheckBox toggle = formPanel.addToForm(new JCheckBox("Import " + name, toggleGetter.get()),
-                documentationPath);
+                document);
         toggle.addActionListener(e -> toggleSetter.accept(toggle.isSelected()));
-        formPanel.setCurrentGroup(name);
         JTextField textField = formPanel.addToForm(new JTextField(patternGetter.get()),
                 new JLabel(StringUtils.capitalizeFirstLetter(name) + " pattern"),
-                documentationPath);
+                document);
         textField.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
-        formPanel.addGroupToggle(toggle, name);
         textField.getDocument().addDocumentListener(new DocumentChangeListener() {
             @Override
             public void changed(DocumentEvent documentEvent) {
                 patternSetter.accept(textField.getText());
             }
         });
-        formPanel.setCurrentGroup(null);
     }
 
     private void initializeSettings() {
-        FormPanel formPanel = new FormPanel("documentation/batch_importer_default.md");
+        FormPanel formPanel = new FormPanel(MarkdownDocument.fromPluginResource("documentation/batch_importer_default.md"),
+                FormPanel.WITH_DOCUMENTATION | FormPanel.WITH_SCROLLING);
 
-        FileSelection fileSelection = formPanel.addToForm(new FileSelection(FileSelection.Mode.OPEN),
+        FileSelection fileSelection = formPanel.addToForm(new FileSelection(FileSelection.IOMode.Open, FileSelection.PathMode.DirectoriesOnly),
                 new JLabel("Input folder"),
                 null);
         fileSelection.getFileChooser().setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -86,12 +84,9 @@ public class MCATBatchImporterDialog extends JDialog {
         JCheckBox treatmentFolders = formPanel.addToForm(new JCheckBox("Subfolders are treatments", batchImporter.isSubfoldersAreTreatments()),
                 null);
         treatmentFolders.addActionListener(e -> batchImporter.setSubfoldersAreTreatments(treatmentFolders.isSelected()));
-        formPanel.setCurrentGroup("Subfolders are treatments");
         JCheckBox collapseTreatmentInName = formPanel.addToForm(new JCheckBox("Include treatment in name", batchImporter.isIncludeTreatmentInName()),
                 null);
         collapseTreatmentInName.addActionListener(e -> batchImporter.setIncludeTreatmentInName(collapseTreatmentInName.isSelected()));
-        formPanel.setCurrentGroup(null);
-        formPanel.addGroupToggle(treatmentFolders, "Subfolders are treatments");
 
         addToggleForPattern(formPanel,
                 "raw images",

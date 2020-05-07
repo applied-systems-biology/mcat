@@ -15,7 +15,7 @@ public class HyperstackFromTifDataProviderUI extends MCATDataProviderUI<Hypersta
         super(sample, dataProvider);
         setLayout(new BorderLayout());
 
-        FileSelection selection = new FileSelection(FileSelection.Mode.OPEN);
+        FileSelection selection = new FileSelection(FileSelection.IOMode.Open, FileSelection.PathMode.FilesOnly);
         selection.setPath(dataProvider.getFilePath());
         selection.addActionListener(e -> dataProvider.setFilePath(selection.getPath()));
         add(selection, BorderLayout.CENTER);

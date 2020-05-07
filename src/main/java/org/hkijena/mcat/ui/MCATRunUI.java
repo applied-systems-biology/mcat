@@ -4,6 +4,7 @@ import org.hkijena.mcat.api.MCATRun;
 import org.hkijena.mcat.api.MCATValidityReport;
 import org.hkijena.mcat.ui.components.FileSelection;
 import org.hkijena.mcat.ui.components.FormPanel;
+import org.hkijena.mcat.ui.components.MarkdownDocument;
 import org.hkijena.mcat.utils.UIUtils;
 
 import javax.swing.*;
@@ -41,9 +42,11 @@ public class MCATRunUI extends MCATUIPanel {
 
     private void initializeSetupGUI() {
         setupPanel = new JPanel(new BorderLayout());
-        FormPanel formPanel = new FormPanel("documentation/run.md");
+        FormPanel formPanel = new FormPanel(MarkdownDocument.fromPluginResource("documentation/run.md"),
+                FormPanel.WITH_SCROLLING | FormPanel.WITH_DOCUMENTATION);
 
-        FileSelection outputFolderSelection = formPanel.addToForm(new FileSelection(FileSelection.Mode.OPEN),
+        FileSelection outputFolderSelection = formPanel.addToForm(new FileSelection(FileSelection.IOMode.Open,
+                        FileSelection.PathMode.DirectoriesOnly),
                 new JLabel("Output folder"),
                 null);
         outputFolderSelection.getFileChooser().setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);

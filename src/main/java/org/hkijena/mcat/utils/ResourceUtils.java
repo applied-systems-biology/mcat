@@ -22,6 +22,7 @@ public class ResourceUtils {
 
     /**
      * Returns the resource path for this software
+     *
      * @return
      */
     public static String getResourceBasePath() {
@@ -30,17 +31,19 @@ public class ResourceUtils {
 
     /**
      * Returns the path of a resource within the getResourceBasePath()
+     *
      * @param internalResourcePath
      * @return
      */
     public static String getResourcePath(String internalResourcePath) {
-        if(internalResourcePath.startsWith("/"))
+        if (internalResourcePath.startsWith("/"))
             internalResourcePath = internalResourcePath.substring(1);
         return getResourceBasePath() + "/" + internalResourcePath;
     }
 
     /**
      * Returns a resource URL
+     *
      * @param internalResourcePath
      * @return
      */
@@ -50,6 +53,7 @@ public class ResourceUtils {
 
     /**
      * Returns a resource stream
+     *
      * @param internalResourcePath
      * @return
      */

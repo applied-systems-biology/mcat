@@ -3,7 +3,7 @@
  * Research Group Applied Systems Biology - Head: Prof. Dr. Marc Thilo Figge
  * https://www.leibniz-hki.de/en/applied-systems-biology.html
  * HKI-Center for Systems Biology of Infection
- * Leibniz Institute for Natural Product Research and Infection Biology - Hans Knöll Insitute (HKI)
+ * Leibniz Institute for Natural Product Research and Infection Biology - Hans Knöll Institute (HKI)
  * Adolf-Reichwein-Straße 23, 07745 Jena, Germany
  *
  * This code is licensed under BSD 2-Clause
@@ -13,17 +13,13 @@
 package org.hkijena.mcat.ui.components;
 
 import com.google.common.base.Charsets;
-import com.google.common.io.Resources;
-import com.vladsch.flexmark.ast.Node;
 import com.vladsch.flexmark.ext.autolink.AutolinkExtension;
 import com.vladsch.flexmark.ext.tables.TablesExtension;
 import com.vladsch.flexmark.ext.toc.TocExtension;
-import com.vladsch.flexmark.html.HtmlRenderer;
 import com.vladsch.flexmark.parser.Parser;
 import com.vladsch.flexmark.pdf.converter.PdfConverterExtension;
 import com.vladsch.flexmark.util.options.MutableDataHolder;
 import com.vladsch.flexmark.util.options.MutableDataSet;
-import org.hkijena.mcat.utils.ResourceUtils;
 import org.hkijena.mcat.utils.UIUtils;
 
 import javax.swing.*;
@@ -43,23 +39,34 @@ import java.util.Arrays;
  */
 public class MarkdownReader extends JPanel {
 
-    static final MutableDataHolder OPTIONS = new MutableDataSet()
-            .set(Parser.EXTENSIONS, Arrays.asList(TablesExtension.create(), AutolinkExtension.create(), TocExtension.create()));
-    static final String[] CSS_RULES = {"body { font-family: \"Sans-serif\"; }",
+    public static final String[] CSS_RULES = {"body { font-family: \"Sans-serif\"; }",
             "pre { background-color: #f5f2f0; border: 3px #f5f2f0 solid; }",
             "code { background-color: #f5f2f0; }",
             "h2 { padding-top: 30px; }",
             "h3 { padding-top: 30px; }",
             "th { border-bottom: 1px solid #c8c8c8; }",
             ".toc-list { list-style: none; }"};
-
+    static final MutableDataHolder OPTIONS = new MutableDataSet()
+            .set(Parser.EXTENSIONS, Arrays.asList(TablesExtension.create(), AutolinkExtension.create(), TocExtension.create()));
     private JScrollPane scrollPane;
     private JTextPane content;
-    private String markdown;
-    private String defaultDocumentMarkdown;
+    private MarkdownDocument document;
+    private MarkdownDocument temporaryDocument;
 
+    /**
+     * @param withToolbar if a toolbar should be shown
+     */
     public MarkdownReader(boolean withToolbar) {
         initialize(withToolbar);
+    }
+
+    /**
+     * @param withToolbar if a toolbar should be shown
+     * @param document    initialize with document
+     */
+    public MarkdownReader(boolean withToolbar, MarkdownDocument document) {
+        this(withToolbar);
+        this.setDocument(document);
     }
 
     private void initialize(boolean withToolbar) {
@@ -91,7 +98,7 @@ public class MarkdownReader extends JPanel {
         scrollPane = new JScrollPane(content);
         add(scrollPane, BorderLayout.CENTER);
 
-        if(withToolbar) {
+        if (withToolbar) {
             JToolBar toolBar = new JToolBar();
 
             JButton exportButton = new JButton("Export", UIUtils.getIconFromResources("save.png"));
@@ -103,7 +110,7 @@ public class MarkdownReader extends JPanel {
                 fileChooser.setDialogTitle("Save as Markdown");
                 if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
                     try {
-                        Files.write(fileChooser.getSelectedFile().toPath(), markdown.getBytes(Charsets.UTF_8));
+                        Files.write(fileChooser.getSelectedFile().toPath(), document.getMarkdown().getBytes(Charsets.UTF_8));
                     } catch (IOException e1) {
                         throw new RuntimeException(e1);
                     }
@@ -154,7 +161,7 @@ public class MarkdownReader extends JPanel {
     /**
      * Custom "scroll to reference"
      *
-     * @param var1
+     * @param var1 reference index
      */
     private void scrollToReference(String var1) {
         Document var2 = content.getDocument();
@@ -200,56 +207,42 @@ public class MarkdownReader extends JPanel {
         }
     }
 
-    public void setMarkdown(String markdown) {
-        if(markdown == null)
-            markdown = "";
-        if(markdown.equals(this.markdown))
-            return;
-        this.markdown = markdown;
-        Parser parser = Parser.builder(OPTIONS).build();
-        Node document = parser.parse(markdown);
-        HtmlRenderer renderer = HtmlRenderer.builder(OPTIONS).build();
-        String html = renderer.render(document);
-        content.setText(html);
+    public MarkdownDocument getDocument() {
+        return document;
+    }
+
+    public void setDocument(MarkdownDocument document) {
+        this.document = document;
+        if (document != null)
+            content.setText(document.getRenderedHTML());
+        else
+            content.setText("<html></html>");
         SwingUtilities.invokeLater(() -> scrollPane.getVerticalScrollBar().setValue(0));
     }
 
-    public void loadFromResource(String resourcePath) {
-        if(resourcePath == null) {
-            setMarkdown(defaultDocumentMarkdown);
-            return;
+    public JTextPane getContent() {
+        return content;
+    }
+
+    public MarkdownDocument getTemporaryDocument() {
+        return temporaryDocument;
+    }
+
+    /**
+     * Sets the document to some temporary one without changing the reference to the main document
+     *
+     * @param temporaryDocument if not null, render the temporary document. Otherwise render the main document
+     */
+    public void setTemporaryDocument(MarkdownDocument temporaryDocument) {
+        if (temporaryDocument == null) {
+            if (document != null)
+                content.setText(document.getRenderedHTML());
+            else
+                content.setText("<html></html>");
+        } else {
+            content.setText(temporaryDocument.getRenderedHTML());
         }
-        try {
-            String md = Resources.toString(ResourceUtils.getPluginResource(resourcePath), Charsets.UTF_8);
-            md = md.replace("image://", ResourceUtils.getPluginResource("").toString());
-            setMarkdown(md);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public String getMarkdown() {
-        return markdown;
-    }
-
-    public String getDefaultDocumentMarkdown() {
-        return defaultDocumentMarkdown;
-    }
-
-    public void setDefaultDocumentMarkdown(String defaultDocumentMarkdown) {
-        this.defaultDocumentMarkdown = defaultDocumentMarkdown;
-        setMarkdown(defaultDocumentMarkdown);
-    }
-
-    public void loadDefaultDocument(String resourcePath) {
-        if(resourcePath == null)
-            return;
-        try {
-            String md = Resources.toString(ResourceUtils.getPluginResource(resourcePath), Charsets.UTF_8);
-            md = md.replace("image://", ResourceUtils.getPluginResource("").toString());
-            setDefaultDocumentMarkdown(md);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        SwingUtilities.invokeLater(() -> scrollPane.getVerticalScrollBar().setValue(0));
+        this.temporaryDocument = temporaryDocument;
     }
 }

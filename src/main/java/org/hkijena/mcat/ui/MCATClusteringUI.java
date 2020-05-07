@@ -3,6 +3,7 @@ package org.hkijena.mcat.ui;
 import org.hkijena.mcat.api.MCATClusteringHierarchy;
 import org.hkijena.mcat.api.parameters.MCATClusteringParameters;
 import org.hkijena.mcat.ui.components.FormPanel;
+import org.hkijena.mcat.ui.components.MarkdownDocument;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,13 +19,13 @@ public class MCATClusteringUI extends MCATUIPanel {
 
     private void initialize() {
         setLayout(new BorderLayout());
-        FormPanel formPanel = new FormPanel();
+        FormPanel formPanel = new FormPanel(null, FormPanel.WITH_DOCUMENTATION | FormPanel.WITH_SCROLLING);
 
         MCATClusteringParameters parameters = getProject().getClusteringParameters();
 
         JComboBox<MCATClusteringHierarchy> clusteringHierarchyEditor = formPanel.addToForm(new JComboBox<>(MCATClusteringHierarchy.values()),
                 new JLabel("Clustering hierarchy"),
-                "documentation/parameter_clustering_hierarchy.md");
+                MarkdownDocument.fromPluginResource("documentation/parameter_clustering_hierarchy.md"));
         clusteringHierarchyEditor.setSelectedItem(parameters.getClusteringHierarchy());
         clusteringHierarchyEditor.addActionListener(e -> parameters.setClusteringHierarchy((MCATClusteringHierarchy) clusteringHierarchyEditor.getSelectedItem()));
 
