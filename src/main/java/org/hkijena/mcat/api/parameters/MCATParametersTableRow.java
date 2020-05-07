@@ -3,7 +3,9 @@ package org.hkijena.mcat.api.parameters;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
 import org.hkijena.mcat.utils.api.ACAQDocumentation;
+import org.hkijena.mcat.utils.api.events.ParameterChangedEvent;
 import org.hkijena.mcat.utils.api.parameters.ACAQParameter;
 import org.hkijena.mcat.utils.api.parameters.ACAQParameterCollection;
 
@@ -17,13 +19,18 @@ public class MCATParametersTableRow implements ACAQParameterCollection {
     private MCATClusteringParameters clusteringParameters = new MCATClusteringParameters();
 
     public MCATParametersTableRow() {
-
+        preprocessingParameters.getEventBus().register(this);
+        postprocessingParameters.getEventBus().register(this);
+        clusteringParameters.getEventBus().register(this);
     }
 
     public MCATParametersTableRow(MCATParametersTableRow other) {
         this.preprocessingParameters = new MCATPreprocessingParameters(other.preprocessingParameters);
         this.postprocessingParameters = new MCATPostprocessingParameters(other.postprocessingParameters);
         this.clusteringParameters = new MCATClusteringParameters(other.clusteringParameters);
+        preprocessingParameters.getEventBus().register(this);
+        postprocessingParameters.getEventBus().register(this);
+        clusteringParameters.getEventBus().register(this);
     }
 
     @ACAQDocumentation(name = "Preprocessing", description = "Following parameters apply to the preprocessing.")
@@ -65,5 +72,10 @@ public class MCATParametersTableRow implements ACAQParameterCollection {
     @Override
     public EventBus getEventBus() {
         return eventBus;
+    }
+
+    @Subscribe
+    public void onParameterChanged(ParameterChangedEvent event) {
+        eventBus.post(event);
     }
 }

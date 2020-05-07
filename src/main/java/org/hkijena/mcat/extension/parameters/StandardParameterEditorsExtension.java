@@ -1,9 +1,12 @@
 package org.hkijena.mcat.extension.parameters;
 
 
+import org.hkijena.mcat.api.MCATClusteringHierarchy;
+import org.hkijena.mcat.utils.api.ACAQDefaultDocumentation;
 import org.hkijena.mcat.utils.api.parameters.ParameterTable;
 import org.hkijena.mcat.extension.parameters.editors.*;
 import org.hkijena.mcat.extension.parameters.generators.*;
+import org.hkijena.mcat.utils.api.registries.ACAQUIParametertypeRegistry;
 import org.hkijena.mcat.utils.ui.parameters.ACAQParameterEditorUI;
 import org.hkijena.mcat.utils.ui.parameters.ACAQParameterGeneratorUI;
 
@@ -20,11 +23,12 @@ public class StandardParameterEditorsExtension {
     }
 
     private static void registerParameterType(Class<?> parameterClass, Class<? extends ACAQParameterEditorUI> uiClass, String name, String description) {
-
+        ACAQUIParametertypeRegistry.getInstance().registerParameterEditor(parameterClass, uiClass);
+        ACAQUIParametertypeRegistry.getInstance().registerDocumentation(parameterClass, new ACAQDefaultDocumentation(name, description));
     }
 
     private static void registerParameterGenerator(Class<?> parameterClass, Class<? extends ACAQParameterGeneratorUI> uiClass, String name, String description) {
-
+        ACAQUIParametertypeRegistry.getInstance().registerGenerator(parameterClass, uiClass, name, description);
     }
 
     public static void register() {
@@ -53,8 +57,8 @@ public class StandardParameterEditorsExtension {
         registerParameterType(Path.class, FilePathParameterEditorUI.class, "Filesystem path", "A path");
         registerParameterType(File.class, FileParameterEditorUI.class, "Filesystem path (legacy)", "A path (legacy)");
 
-        // Register custom ACAQ5 parameters
-        registerParameterType(ParameterTable.class, ParameterTableEditorUI.class, "Parameter table", "A table that contains parameters");
+        // Register MCAT parameters
+        registerParameterType(MCATClusteringHierarchy.class, EnumParameterEditorUI.class, "Clustering hierarchy", "Determines how data is organized for clustering");
 
         // Register generators
         registerParameterGenerator(byte.class, ByteParameterGenerator.class, "Generate 8-bit integral number sequence", "Generates 8-bit integral numbers");

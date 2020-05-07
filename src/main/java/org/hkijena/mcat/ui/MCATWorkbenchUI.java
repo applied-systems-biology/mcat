@@ -11,9 +11,12 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JToolBar;
 
+import org.hkijena.mcat.MCATCommand;
 import org.hkijena.mcat.api.MCATProject;
 import org.hkijena.mcat.ui.components.DocumentTabPane;
+import org.hkijena.mcat.ui.parameters.MCATParametersTableUI;
 import org.hkijena.mcat.utils.UIUtils;
+import org.scijava.Context;
 
 /**
  * Main MCAT window
@@ -21,10 +24,10 @@ import org.hkijena.mcat.utils.UIUtils;
 public class MCATWorkbenchUI extends JFrame {
 
     private MCATProject project;
-    private org.hkijena.mcat.MCATCommand command;
+    private MCATCommand command;
     private DocumentTabPane documentTabPane;
 
-    public MCATWorkbenchUI(org.hkijena.mcat.MCATCommand command, MCATProject project) {
+    public MCATWorkbenchUI(MCATCommand command, MCATProject project) {
         this.project = project;
         this.command = command;
         initialize();
@@ -42,6 +45,11 @@ public class MCATWorkbenchUI extends JFrame {
                 new MCATDataUI(this),
                 DocumentTabPane.CloseMode.withoutCloseButton,
                 false);
+        documentTabPane.addTab( "Parameters",
+        UIUtils.getIconFromResources("wrench.png"),
+        new MCATParametersTableUI(this),
+        DocumentTabPane.CloseMode.withoutCloseButton,
+        false);
 //        documentTabPane.addTab( "Preprocessing",
 //                UIUtils.getIconFromResources("wrench.png"),
 //                new MCATPreprocessingUI(this),
@@ -145,8 +153,12 @@ public class MCATWorkbenchUI extends JFrame {
         return project;
     }
 
-    public static void newWindow(org.hkijena.mcat.MCATCommand command, MCATProject project) {
-        org.hkijena.mcat.ui.MCATWorkbenchUI frame = new org.hkijena.mcat.ui.MCATWorkbenchUI(command, project);
+    public Context getContext() {
+        return command.getContext();
+    }
+
+    public static void newWindow(MCATCommand command, MCATProject project) {
+        MCATWorkbenchUI frame = new MCATWorkbenchUI(command, project);
         frame.pack();
         frame.setSize(1024, 768);
         frame.setVisible(true);

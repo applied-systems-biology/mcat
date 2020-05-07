@@ -11,7 +11,7 @@ import java.awt.*;
 /**
  * UI that contains a {@link MCATDataSetManagerUI} and allows changing sample settings
  */
-public class MCATDataUI extends MCATUIPanel {
+public class MCATDataUI extends MCATWorkbenchUIPanel {
 
     private MCATDataSetManagerUI sampleManagerUI;
     private MCATProjectDataSet currentlyDisplayedSample;

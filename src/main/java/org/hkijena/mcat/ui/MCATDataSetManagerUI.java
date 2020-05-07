@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 /**
  * UI that manages the samples in a {@link org.hkijena.mcat.api.MCATProject}
  */
-public class MCATDataSetManagerUI extends MCATUIPanel {
+public class MCATDataSetManagerUI extends MCATWorkbenchUIPanel {
 
     private JTree sampleTree;
 

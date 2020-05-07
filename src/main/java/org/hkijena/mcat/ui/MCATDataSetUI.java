@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * UI for a {@link MCATProjectDataSet}
  */
-public class MCATDataSetUI extends MCATUIPanel {
+public class MCATDataSetUI extends MCATWorkbenchUIPanel {
 
     private static final String COMPONENTS_GENERAL = "General";
     private static final String COMPONENTS_RAW_DATA = "Raw data input";

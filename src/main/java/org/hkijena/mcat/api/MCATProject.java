@@ -33,6 +33,7 @@ public class MCATProject {
     private BiMap<String, MCATProjectDataSet> samples = HashBiMap.create();
 
     public MCATProject() {
+        parametersTable.addRow();
     }
 
     public EventBus getEventBus() {

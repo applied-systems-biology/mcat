@@ -138,7 +138,7 @@ public class ParameterPanel extends FormPanel implements Contextual {
         ACAQDocumentation documentation = ACAQUIParametertypeRegistry.getInstance().getDocumentationFor(access.getFieldClass());
         if (documentation != null) {
             markdownString.append("<table><tr>");
-            markdownString.append("<td><img src=\"").append(ResourceUtils.getPluginResource("icons/data-types/data-type-parameters.png")).append("\" /></td>");
+            markdownString.append("<td><img src=\"").append(ResourceUtils.getPluginResource("icons/wrench.png")).append("\" /></td>");
             markdownString.append("<td><strong>").append(HtmlEscapers.htmlEscaper().escape(documentation.name())).append("</strong>: ");
             markdownString.append(HtmlEscapers.htmlEscaper().escape(documentation.description())).append("</td></tr></table>\n\n");
         }

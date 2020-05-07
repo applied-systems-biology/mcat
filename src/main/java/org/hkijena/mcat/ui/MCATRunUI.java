@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 
-public class MCATRunUI extends MCATUIPanel {
+public class MCATRunUI extends MCATWorkbenchUIPanel {
 
     private MCATRun run;
     private ACAQValidityReport validityReport = new ACAQValidityReport();

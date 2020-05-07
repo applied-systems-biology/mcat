@@ -7,11 +7,11 @@ import javax.swing.*;
 /**
  * {@link JPanel} that contains a reference to a {@link MCATWorkbenchUI}
  */
-public class MCATUIPanel extends JPanel {
+public class MCATWorkbenchUIPanel extends JPanel {
 
     private final MCATWorkbenchUI workbenchUI;
 
-    public MCATUIPanel(MCATWorkbenchUI workbenchUI) {
+    public MCATWorkbenchUIPanel(MCATWorkbenchUI workbenchUI) {
         this.workbenchUI = workbenchUI;
     }
 

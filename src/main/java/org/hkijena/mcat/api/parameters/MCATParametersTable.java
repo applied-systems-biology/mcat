@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.eventbus.Subscribe;
+import org.hkijena.mcat.utils.StringUtils;
 import org.hkijena.mcat.utils.api.events.ParameterChangedEvent;
 import org.hkijena.mcat.utils.api.parameters.ACAQTraversedParameterCollection;
 
@@ -46,7 +47,11 @@ public class MCATParametersTable implements TableModel {
         for (MCATParametersTableRow row : rows) {
             rowParameterAccessors.add(new ACAQTraversedParameterCollection(row));
         }
-        postChangedEvent();
+
+        // Post full change event
+        for (TableModelListener listener : listeners) {
+            listener.tableChanged(new TableModelEvent(this));
+        }
     }
 
     /**
@@ -65,6 +70,9 @@ public class MCATParametersTable implements TableModel {
         rows.add(row);
         rowParameterAccessors.add(new ACAQTraversedParameterCollection(row));
         row.getEventBus().register(this);
+        for (TableModelListener listener : listeners) {
+            listener.tableChanged(new TableModelEvent(this));
+        }
     }
 
     /**
@@ -75,10 +83,7 @@ public class MCATParametersTable implements TableModel {
         int index = rows.indexOf(row);
         if(index < 0)
             return;
-        rows.remove(index);
-        rowParameterAccessors.remove(index);
-        row.getEventBus().unregister(this);
-        postChangedEvent();
+       removeRowAt(index);
     }
 
     private void initializeColumns() {
@@ -87,13 +92,23 @@ public class MCATParametersTable implements TableModel {
         columnKeys = parameterCollection.getParameters().keySet().stream().sorted().collect(Collectors.toList());
         for (String key : columnKeys) {
             columnClasses.add(parameterCollection.getParameters().get(key).getFieldClass());
-            columnNames.add(key);
+            int slashIndex = key.indexOf('/');
+            String rootName = StringUtils.capitalizeFirstLetter(key.substring(0, slashIndex));
+            String parameterName = "<html>" + rootName + "<br/><strong>" + parameterCollection.getParameters().get(key).getName() + "</strong></html>";
+            columnNames.add(parameterName);
         }
     }
 
     @Subscribe
     public void onParameterChanged(ParameterChangedEvent event) {
-        postChangedEvent();
+        for (int i = 0; i < rows.size(); i++) {
+            if(rowParameterAccessors.get(i).getParameters().values().stream().anyMatch(a -> a.getSource() == event.getSource())) {
+                for (TableModelListener listener : listeners) {
+                    listener.tableChanged(new TableModelEvent(this, i));
+                }
+                return;
+            }
+        }
     }
 
     @Override
@@ -109,6 +124,10 @@ public class MCATParametersTable implements TableModel {
     @Override
     public String getColumnName(int columnIndex) {
         return columnNames.get(columnIndex);
+    }
+
+    public String getColumnKey(int columnIndex) {
+        return columnKeys.get(columnIndex);
     }
 
     @Override
@@ -129,12 +148,10 @@ public class MCATParametersTable implements TableModel {
 
     @Override
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-
-    }
-
-    private void postChangedEvent() {
+        String key = columnKeys.get(columnIndex);
+        rowParameterAccessors.get(rowIndex).getParameters().get(key).set(aValue);
         for (TableModelListener listener : listeners) {
-            listener.tableChanged(new TableModelEvent(this));
+            listener.tableChanged(new TableModelEvent(this, rowIndex));
         }
     }
 
@@ -146,5 +163,17 @@ public class MCATParametersTable implements TableModel {
     @Override
     public void removeTableModelListener(TableModelListener l) {
         listeners.remove(l);
+    }
+
+    public void removeRowAt(int index) {
+        MCATParametersTableRow row = rows.get(index);
+        rows.remove(index);
+        rowParameterAccessors.remove(index);
+        row.getEventBus().unregister(this);
+
+        // Post change event
+        for (TableModelListener listener : listeners) {
+            listener.tableChanged(new TableModelEvent(this, index));
+        }
     }
 }

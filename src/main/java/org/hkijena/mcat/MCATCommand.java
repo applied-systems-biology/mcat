@@ -5,6 +5,7 @@ import net.imagej.DatasetService;
 import net.imagej.ImageJ;
 import net.imagej.ops.OpService;
 import org.hkijena.mcat.api.MCATProject;
+import org.scijava.Context;
 import org.scijava.app.StatusService;
 import org.scijava.command.Command;
 import org.scijava.command.CommandService;
@@ -23,35 +24,9 @@ import javax.swing.*;
  */
 @Plugin(type = Command.class, menuPath = "Plugins>MSOT Cluster Analysis Tool (MCAT)")
 public class MCATCommand implements Command {
-    @Parameter
-    private OpService ops;
 
     @Parameter
-    private LogService log;
-
-    @Parameter
-    private UIService ui;
-
-    @Parameter
-    private CommandService cmd;
-
-    @Parameter
-    private StatusService status;
-
-    @Parameter
-    private ThreadService thread;
-
-    @Parameter
-    private DatasetIOService datasetIO;
-
-    @Parameter
-    private DisplayService display;
-
-    @Parameter
-    private DatasetService datasetService;
-
-    @Parameter
-    private PluginService pluginService;
+    private Context context;
 
     @Override
     public void run() {
@@ -62,36 +37,8 @@ public class MCATCommand implements Command {
         });
     }
 
-    public LogService getLogService() {
-        return log;
-    }
-
-    public StatusService getStatusService() {
-        return status;
-    }
-
-    public ThreadService getThreadService() {
-        return thread;
-    }
-
-    public UIService getUiService() {
-        return ui;
-    }
-
-    public DatasetIOService getDatasetIOService() {
-        return datasetIO;
-    }
-
-    public DisplayService getDisplayService() {
-        return display;
-    }
-
-    public DatasetService getDatasetService() {
-        return datasetService;
-    }
-
-    public PluginService getPluginService() {
-        return pluginService;
+    public Context getContext() {
+        return context;
     }
 
     public static void main(final String... args) {
