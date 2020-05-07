@@ -16,6 +16,7 @@ import org.hkijena.mcat.api.events.MCATSampleAddedEvent;
 import org.hkijena.mcat.api.events.MCATSampleRemovedEvent;
 import org.hkijena.mcat.api.events.MCATSampleRenamedEvent;
 import org.hkijena.mcat.api.parameters.MCATClusteringParameters;
+import org.hkijena.mcat.api.parameters.MCATParametersTable;
 import org.hkijena.mcat.api.parameters.MCATPostprocessingParameters;
 import org.hkijena.mcat.api.parameters.MCATPreprocessingParameters;
 import org.hkijena.mcat.utils.JsonUtils;
@@ -34,9 +35,7 @@ import java.util.*;
 public class MCATProject {
 
     private EventBus eventBus = new EventBus();
-    private MCATPreprocessingParameters preprocessingParameters = new MCATPreprocessingParameters();
-    private MCATClusteringParameters clusteringParameters = new MCATClusteringParameters();
-    private MCATPostprocessingParameters postprocessingParameters = new MCATPostprocessingParameters();
+    private MCATParametersTable parametersTable = new MCATParametersTable();
     private BiMap<String, MCATProjectSample> samples = HashBiMap.create();
 
     public MCATProject() {
@@ -115,21 +114,13 @@ public class MCATProject {
         return result;
     }
 
-    public MCATPreprocessingParameters getPreprocessingParameters() {
-        return preprocessingParameters;
-    }
-
-    public MCATClusteringParameters getClusteringParameters() {
-        return clusteringParameters;
-    }
-
-    public MCATPostprocessingParameters getPostprocessingParameters() {
-        return postprocessingParameters;
-    }
-
     public void saveProject(Path fileName) throws IOException {
         ObjectMapper mapper = JsonUtils.getObjectMapper();
         mapper.writerWithDefaultPrettyPrinter().writeValue(fileName.toFile(), this);
+    }
+
+    public MCATParametersTable getParametersTable() {
+        return parametersTable;
     }
 
     public static MCATProject loadProject(Path fileName) throws IOException {

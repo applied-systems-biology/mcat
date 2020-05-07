@@ -2,12 +2,17 @@ package org.hkijena.mcat.api.parameters;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
-import org.hkijena.mcat.api.MCATParameters;
+import com.google.common.eventbus.EventBus;
+import org.hkijena.mcat.utils.api.ACAQDocumentation;
+import org.hkijena.mcat.utils.api.events.ParameterChangedEvent;
+import org.hkijena.mcat.utils.api.parameters.ACAQParameter;
+import org.hkijena.mcat.utils.api.parameters.ACAQParameterCollection;
 
 /**
  * Contains postprocessing parameters
  */
-public class MCATPostprocessingParameters extends MCATParameters {
+public class MCATPostprocessingParameters implements ACAQParameterCollection {
+    private EventBus eventBus = new EventBus();
     private boolean analyzeNetIncrease = true;
     private boolean analyzeNetDecrease = false;
     private boolean analyzeMaxIncrease = false;
@@ -28,69 +33,92 @@ public class MCATPostprocessingParameters extends MCATParameters {
         this.cutoffValue = other.cutoffValue;
     }
 
+    @ACAQDocumentation(name = "Analyze net increase")
+    @ACAQParameter("analyze-net-increase")
     @JsonGetter("analyze-net-increase")
     public boolean isAnalyzeNetIncrease() {
         return analyzeNetIncrease;
     }
 
+    @ACAQParameter("analyze-net-increase")
     @JsonSetter("analyze-net-increase")
     public void setAnalyzeNetIncrease(boolean analyzeNetIncrease) {
         this.analyzeNetIncrease = analyzeNetIncrease;
-        postChangedEvent("analyze-net-increase");
+        eventBus.post(new ParameterChangedEvent(this ,"analyze-net-increase"));
     }
 
+    @ACAQDocumentation(name = "Analyze net decrease")
+    @ACAQParameter("analyze-net-decrease")
     @JsonGetter("analyze-net-decrease")
     public boolean isAnalyzeNetDecrease() {
         return analyzeNetDecrease;
     }
 
+    @ACAQParameter("analyze-net-decrease")
     @JsonSetter("analyze-net-decrease")
     public void setAnalyzeNetDecrease(boolean analyzeNetDecrease) {
         this.analyzeNetDecrease = analyzeNetDecrease;
-        postChangedEvent("analyze-net-decrease");
+        eventBus.post(new ParameterChangedEvent(this ,"analyze-net-decrease"));
     }
 
+    @ACAQDocumentation(name = "Analyze max increase")
+    @ACAQParameter("analyze-max-increase")
     @JsonGetter("analyze-max-increase")
     public boolean isAnalyzeMaxIncrease() {
         return analyzeMaxIncrease;
     }
 
+    @ACAQParameter("analyze-max-increase")
     @JsonSetter("analyze-max-increase")
     public void setAnalyzeMaxIncrease(boolean analyzeMaxIncrease) {
         this.analyzeMaxIncrease = analyzeMaxIncrease;
-        postChangedEvent("analyze-max-increase");
+        eventBus.post(new ParameterChangedEvent(this ,"analyze-max-increase"));
     }
 
+    @ACAQDocumentation(name = "Analyze max decrease")
+    @ACAQParameter("analyze-max-decrease")
     @JsonGetter("analyze-max-decrease")
     public boolean isAnalyzeMaxDecrease() {
         return analyzeMaxDecrease;
     }
 
+    @ACAQParameter("analyze-max-decrease")
     @JsonSetter("analyze-max-decrease")
     public void setAnalyzeMaxDecrease(boolean analyzeMaxDecrease) {
         this.analyzeMaxDecrease = analyzeMaxDecrease;
-        postChangedEvent("analyze-max-decrease");
+        eventBus.post(new ParameterChangedEvent(this ,"analyze-max-decrease"));
     }
 
+    @ACAQDocumentation(name = "Perform cluster morphology analysis")
+    @ACAQParameter("perform-cluster-morphology-analysis")
     @JsonGetter("perform-cluster-morphology-analysis")
     public boolean isPerformClusterMorphologyAnalysis() {
         return performClusterMorphologyAnalysis;
     }
 
+    @ACAQParameter("perform-cluster-morphology-analysis")
     @JsonSetter("perform-cluster-morphology-analysis")
     public void setPerformClusterMorphologyAnalysis(boolean performClusterMorphologyAnalysis) {
         this.performClusterMorphologyAnalysis = performClusterMorphologyAnalysis;
-        postChangedEvent("perform-morphology-analysis");
+        eventBus.post(new ParameterChangedEvent(this , "perform-morphology-analysis"));
     }
-    
-    @JsonGetter("cutoffValue")
+
+    @ACAQDocumentation(name = "Cutoff value")
+    @ACAQParameter("cutoff-value")
+    @JsonGetter("cutoff-value")
     public double getCutoffValue() {
         return cutoffValue;
     }
 
-    @JsonSetter("cutoffValue")
+    @ACAQParameter("cutoff-value")
+    @JsonSetter("cutoff-value")
     public void setCutoffValue(double cutoffValue) {
         this.cutoffValue = cutoffValue;
-        postChangedEvent("cutoffValue");
+        eventBus.post(new ParameterChangedEvent(this ,"cutoff-value"));
+    }
+
+    @Override
+    public EventBus getEventBus() {
+        return eventBus;
     }
 }

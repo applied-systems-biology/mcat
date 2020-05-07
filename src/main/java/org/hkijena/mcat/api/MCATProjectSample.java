@@ -88,18 +88,4 @@ public class MCATProjectSample implements Comparable<MCATProjectSample> {
     public MCATClusterAbundanceDataInterface getClusterAbundanceDataInterface() {
 		return clusterAbundanceDataInterface;
 	}
-
-    public static class Serializer extends JsonSerializer<MCATProjectSample> {
-        @Override
-        public void serialize(MCATProjectSample sample, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException, JsonProcessingException {
-            jsonGenerator.writeObject(sample.getParameters());
-        }
-    }
-
-    public static class Deserializer extends JsonDeserializer<MCATProjectSample> {
-        @Override
-        public MCATProjectSample deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
-            return null;
-        }
-    }
 }
