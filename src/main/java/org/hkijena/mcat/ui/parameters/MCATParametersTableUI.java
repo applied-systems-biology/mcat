@@ -36,6 +36,9 @@ public class MCATParametersTableUI extends MCATWorkbenchUIPanel {
         initialize();
         reloadGeneratePopupMenu();
         reloadReplacePopupMenu();
+
+        // Select first cell
+        table.changeSelection(0,0, false, false);
     }
 
     private void initialize() {
@@ -230,16 +233,18 @@ public class MCATParametersTableUI extends MCATWorkbenchUIPanel {
         int col = table.getSelectedColumn();
         boolean hasColumnEntries = false;
 
-        for (Class<? extends ACAQParameterGeneratorUI> generator : ACAQUIParametertypeRegistry.getInstance()
-                .getGeneratorsFor(getWorkbenchUI().getProject().getParametersTable().getColumnClass(col))) {
-            ACAQDocumentation documentation = ACAQUIParametertypeRegistry.getInstance().getGeneratorDocumentationFor(generator);
-            JMenuItem replaceCellItem = new JMenuItem(documentation.name());
-            replaceCellItem.setToolTipText(documentation.description());
-            replaceCellItem.setIcon(UIUtils.getIconFromResources("edit.png"));
-            replaceCellItem.addActionListener(e -> replaceColumnValues(col, generator));
+        if(col != -1) {
+            for (Class<? extends ACAQParameterGeneratorUI> generator : ACAQUIParametertypeRegistry.getInstance()
+                    .getGeneratorsFor(getWorkbenchUI().getProject().getParametersTable().getColumnClass(col))) {
+                ACAQDocumentation documentation = ACAQUIParametertypeRegistry.getInstance().getGeneratorDocumentationFor(generator);
+                JMenuItem replaceCellItem = new JMenuItem(documentation.name());
+                replaceCellItem.setToolTipText(documentation.description());
+                replaceCellItem.setIcon(UIUtils.getIconFromResources("edit.png"));
+                replaceCellItem.addActionListener(e -> replaceColumnValues(col, generator));
 
-            replacePopupMenu.add(replaceCellItem);
-            hasColumnEntries = true;
+                replacePopupMenu.add(replaceCellItem);
+                hasColumnEntries = true;
+            }
         }
 
         if (!hasColumnEntries) {
