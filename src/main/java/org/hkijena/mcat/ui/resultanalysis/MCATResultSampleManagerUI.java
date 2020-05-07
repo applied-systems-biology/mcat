@@ -1,4 +1,4 @@
-package org.hkijena.mcat.ui;
+package org.hkijena.mcat.ui.resultanalysis;
 
 import org.hkijena.mcat.api.MCATRun;
 import org.hkijena.mcat.ui.components.MCATRunSampleTreeCellRenderer;
@@ -33,25 +33,25 @@ public class MCATResultSampleManagerUI extends JPanel {
     }
 
     private void rebuildSampleListTree() {
-        String rootNodeName = "Samples";
-        if(getRun().getSamples().isEmpty()) {
-            rootNodeName = "No samples";
-        }
-
-        DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(rootNodeName);
-
-        for(MCATRunSample sample : getRun().getSamples().values().stream().sorted().collect(Collectors.toList())) {
-            DefaultMutableTreeNode sampleNode = new DefaultMutableTreeNode(sample, true);
-            for(MCATRunSampleSubject subject : sample.getSubjects().values().stream().sorted().collect(Collectors.toList())) {
-                DefaultMutableTreeNode subjectNode = new DefaultMutableTreeNode(subject);
-                sampleNode.add(subjectNode);
-            }
-            rootNode.add(sampleNode);
-        }
-
-        DefaultTreeModel model = new DefaultTreeModel(rootNode);
-        sampleTree.setModel(model);
-        UIUtils.expandAllTree(sampleTree);
+//        String rootNodeName = "Samples";
+//        if(getRun().getSamples().isEmpty()) {
+//            rootNodeName = "No samples";
+//        }
+//
+//        DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(rootNodeName);
+//
+//        for(MCATRunSample sample : getRun().getSamples().values().stream().sorted().collect(Collectors.toList())) {
+//            DefaultMutableTreeNode sampleNode = new DefaultMutableTreeNode(sample, true);
+//            for(MCATRunSampleSubject subject : sample.getSubjects().values().stream().sorted().collect(Collectors.toList())) {
+//                DefaultMutableTreeNode subjectNode = new DefaultMutableTreeNode(subject);
+//                sampleNode.add(subjectNode);
+//            }
+//            rootNode.add(sampleNode);
+//        }
+//
+//        DefaultTreeModel model = new DefaultTreeModel(rootNode);
+//        sampleTree.setModel(model);
+//        UIUtils.expandAllTree(sampleTree);
     }
 
 

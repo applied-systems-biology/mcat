@@ -2,7 +2,7 @@ package org.hkijena.mcat.ui.dataslots;
 
 import org.hkijena.mcat.api.MCATDataSlot;
 import org.hkijena.mcat.extension.dataproviders.api.FileDataProvider;
-import org.hkijena.mcat.ui.MCATResultDataSlotUI;
+import org.hkijena.mcat.ui.resultanalysis.MCATResultDataSlotUI;
 import org.hkijena.mcat.utils.UIUtils;
 
 import javax.swing.*;

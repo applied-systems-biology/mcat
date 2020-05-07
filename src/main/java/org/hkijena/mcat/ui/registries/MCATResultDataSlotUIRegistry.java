@@ -1,7 +1,7 @@
 package org.hkijena.mcat.ui.registries;
 
 import org.hkijena.mcat.api.MCATDataSlot;
-import org.hkijena.mcat.ui.MCATResultDataSlotUI;
+import org.hkijena.mcat.ui.resultanalysis.MCATResultDataSlotUI;
 import org.hkijena.mcat.ui.dataslots.MCATDefaultDataSlotResultUI;
 
 import java.lang.reflect.InvocationTargetException;

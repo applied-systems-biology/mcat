@@ -1,6 +1,6 @@
 package org.hkijena.mcat.ui.components;
 
-import org.hkijena.mcat.ui.MCATResultSampleManagerUI;
+import org.hkijena.mcat.ui.resultanalysis.MCATResultSampleManagerUI;
 import org.hkijena.mcat.utils.UIUtils;
 
 import javax.swing.*;
@@ -24,21 +24,21 @@ public class MCATRunSampleTreeCellRenderer extends JLabel implements TreeCellRen
             setFont(tree.getFont());
         }
 
-        Object o = ((DefaultMutableTreeNode)value).getUserObject();
-        if(o instanceof MCATRunSample) {
-            MCATRunSample sample = (MCATRunSample)o;
-            setText(sample.getName());
-            setIcon(UIUtils.getIconFromResources("object.png"));
-        }
-        else if(o instanceof MCATRunSampleSubject) {
-            MCATRunSampleSubject subject = (MCATRunSampleSubject)o;
-            setText(subject.getName());
-            setIcon(UIUtils.getIconFromResources("sample.png"));
-        }
-        else {
-            setText(o.toString());
-            setIcon(null);
-        }
+//        Object o = ((DefaultMutableTreeNode)value).getUserObject();
+//        if(o instanceof MCATRunSample) {
+//            MCATRunSample sample = (MCATRunSample)o;
+//            setText(sample.getName());
+//            setIcon(UIUtils.getIconFromResources("object.png"));
+//        }
+//        else if(o instanceof MCATRunSampleSubject) {
+//            MCATRunSampleSubject subject = (MCATRunSampleSubject)o;
+//            setText(subject.getName());
+//            setIcon(UIUtils.getIconFromResources("sample.png"));
+//        }
+//        else {
+//            setText(o.toString());
+//            setIcon(null);
+//        }
 
         // Update status
         // Update status

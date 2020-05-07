@@ -91,25 +91,25 @@ public class MCATDataSetUI extends MCATUIPanel {
     }
 
     private void initializeClusteredDataSettings() {
-        MCATDataSlotUI clusterCentersEditor = formPanel.addToForm(new MCATDataSlotUI(sample, sample.getClusteredDataInterface().getClusterCenters()),
-                new JLabel("Cluster centers"),
-                MarkdownDocument.fromPluginResource("documentation/parameter_sample_cluster_centers.md"));
-        slotUIList.add(clusterCentersEditor);
-        MCATDataSlotUI clusterImageEditor = formPanel.addToForm(new MCATDataSlotUI(sample, sample.getClusteredDataInterface().getClusterImages()),
-                new JLabel("Cluster image"),
-                MarkdownDocument.fromPluginResource("documentation/parameter_sample_cluster_image.md"));
-        slotUIList.add(clusterImageEditor);
+//        MCATDataSlotUI clusterCentersEditor = formPanel.addToForm(new MCATDataSlotUI(sample, sample.getClusteredDataInterface().getClusterCenters()),
+//                new JLabel("Cluster centers"),
+//                MarkdownDocument.fromPluginResource("documentation/parameter_sample_cluster_centers.md"));
+//        slotUIList.add(clusterCentersEditor);
+//        MCATDataSlotUI clusterImageEditor = formPanel.addToForm(new MCATDataSlotUI(sample, sample.getClusteredDataInterface().getClusterImages()),
+//                new JLabel("Cluster image"),
+//                MarkdownDocument.fromPluginResource("documentation/parameter_sample_cluster_image.md"));
+//        slotUIList.add(clusterImageEditor);
     }
 
     private void initializePreprocessedDataSettings() {
-        MCATDataSlotUI preprocessedImageEditor = formPanel.addToForm(new MCATDataSlotUI(sample, sample.getPreprocessedDataInterface().getPreprocessedImage()),
-                new JLabel("Preprocessed image"),
-                MarkdownDocument.fromPluginResource("documentation/parameter_sample_preprocessed_image.md"));
-        slotUIList.add(preprocessedImageEditor);
-        MCATDataSlotUI derivativeMatrixEditor = formPanel.addToForm(new MCATDataSlotUI(sample, sample.getPreprocessedDataInterface().getDerivativeMatrix()),
-                new JLabel("Derivative matrix"),
-                MarkdownDocument.fromPluginResource("documentation/parameter_sample_derivative_matrix.md"));
-        slotUIList.add(derivativeMatrixEditor);
+//        MCATDataSlotUI preprocessedImageEditor = formPanel.addToForm(new MCATDataSlotUI(sample, sample.getPreprocessedDataInterface().getPreprocessedImage()),
+//                new JLabel("Preprocessed image"),
+//                MarkdownDocument.fromPluginResource("documentation/parameter_sample_preprocessed_image.md"));
+//        slotUIList.add(preprocessedImageEditor);
+//        MCATDataSlotUI derivativeMatrixEditor = formPanel.addToForm(new MCATDataSlotUI(sample, sample.getPreprocessedDataInterface().getDerivativeMatrix()),
+//                new JLabel("Derivative matrix"),
+//                MarkdownDocument.fromPluginResource("documentation/parameter_sample_derivative_matrix.md"));
+//        slotUIList.add(derivativeMatrixEditor);
     }
 
     private void initializeRawDataSettings() {

@@ -20,8 +20,6 @@ public class MCATProjectDataSet implements Comparable<MCATProjectDataSet> {
 
     private MCATRawDataInterface rawDataInterface = new MCATRawDataInterface();
 
-    private MCATPreprocessedDataInterface preprocessedDataInterface = new MCATPreprocessedDataInterface();
-
     public MCATProjectDataSet(MCATProject project) {
         this.project = project;
     }
@@ -53,9 +51,5 @@ public class MCATProjectDataSet implements Comparable<MCATProjectDataSet> {
 
     public MCATRawDataInterface getRawDataInterface() {
         return rawDataInterface;
-    }
-
-    public MCATPreprocessedDataInterface getPreprocessedDataInterface() {
-        return preprocessedDataInterface;
     }
 }

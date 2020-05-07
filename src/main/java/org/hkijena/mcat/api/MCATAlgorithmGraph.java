@@ -19,51 +19,8 @@ public class MCATAlgorithmGraph implements ACAQValidatable {
 
     private DefaultDirectedGraph<MCATAlgorithm, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
     private Set<MCATAlgorithm> algorithms = new HashSet<>();
-    private MCATRun run;
-    private MCATAlgorithm rootNode;
 
-    public MCATAlgorithmGraph(MCATRun run) {
-        this.run = run;
-        initialize();
-    }
-
-    private void initialize() {
-        rootNode = new MCATAlgorithm(null, null, null, null) {
-
-            @Override
-            public void reportValidity(ACAQValidityReport report) {
-            }
-
-            @Override
-            public void run() {
-            }
-
-            @Override
-            public String getName() {
-                return "Root";
-            }
-        };
-        insertNode(rootNode);
-        for(MCATRunSample sample : run.getSamples().values()) {
-            initializeSample(sample);
-        }
-    }
-
-    private void initializeSample(MCATRunSample sample) {
-        MCATClusteringAlgorithm clusteringAlgorithm = new MCATClusteringAlgorithm(sample);
-        MCATPostprocessingAlgorithm postprocessingAlgorithm = new MCATPostprocessingAlgorithm(sample);
-
-        insertNode(clusteringAlgorithm);
-        insertNode(postprocessingAlgorithm);
-
-        for(MCATRunSampleSubject subject : sample.getSubjects().values()) {
-            MCATPreprocessingAlgorithm preprocessingAlgorithm = new MCATPreprocessingAlgorithm(subject);
-            insertNode(preprocessingAlgorithm);
-
-            connect(rootNode, preprocessingAlgorithm); // Should be the first algorithm in the chain
-            connect(preprocessingAlgorithm, clusteringAlgorithm);
-            connect(clusteringAlgorithm, postprocessingAlgorithm);
-        }
+    public MCATAlgorithmGraph() {
     }
 
     public void insertNode(MCATAlgorithm algorithm) {

@@ -1,4 +1,4 @@
-package org.hkijena.mcat.ui;
+package org.hkijena.mcat.ui.resultanalysis;
 
 import org.hkijena.mcat.api.MCATDataSlot;
 

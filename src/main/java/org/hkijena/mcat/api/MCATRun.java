@@ -1,93 +1,78 @@
 package org.hkijena.mcat.api;
 
-import java.awt.Dimension;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
-import javax.swing.JFrame;
-
+import org.hkijena.mcat.api.algorithms.MCATPreprocessingAlgorithm;
+import org.hkijena.mcat.api.datainterfaces.MCATPreprocessedDataInterface;
+import org.hkijena.mcat.api.datainterfaces.MCATRawDataInterface;
 import org.hkijena.mcat.api.parameters.MCATClusteringParameters;
 import org.hkijena.mcat.api.parameters.MCATParametersTable;
-import org.hkijena.mcat.api.parameters.MCATPostprocessingParameters;
+import org.hkijena.mcat.api.parameters.MCATParametersTableRow;
 import org.hkijena.mcat.api.parameters.MCATPreprocessingParameters;
 import org.hkijena.mcat.utils.api.ACAQValidatable;
 import org.hkijena.mcat.utils.api.ACAQValidityReport;
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartPanel;
-import org.jfree.chart.JFreeChart;
-import org.jfree.chart.axis.CategoryAxis;
-import org.jfree.chart.axis.NumberAxis;
-import org.jfree.chart.labels.BoxAndWhiskerToolTipGenerator;
-import org.jfree.chart.plot.CategoryPlot;
-import org.jfree.chart.renderer.category.BoxAndWhiskerRenderer;
-import org.jfree.data.statistics.BoxAndWhiskerXYDataset;
-import org.jfree.data.statistics.DefaultBoxAndWhiskerCategoryDataset;
-
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
-import com.google.common.collect.ImmutableBiMap;
 
 public class MCATRun implements ACAQValidatable {
     private MCATProject project;
     private MCATAlgorithmGraph graph;
-    private BiMap<String, MCATRunSample> samples = HashBiMap.create();
 
     private MCATParametersTable parametersTable;
     private boolean isReady = false;
     private Path outputPath;
-    private List<MCATResultObject> resultObjects;
 
     public MCATRun(MCATProject project) {
         this.project = project;
         this.parametersTable = new MCATParametersTable(project.getParametersTable());
-        this.resultObjects = new ArrayList<>();
+        this.graph = new MCATAlgorithmGraph();
 
-        // TODO: Implement per-parameter set
-//        switch (clusteringParameters.getClusteringHierarchy()) {
-//            case PerSubject:
-//                for(Map.Entry<String, MCATProjectSample> kv : project.getSamples().entrySet()) {
-//                    MCATRunSample sample = new MCATRunSample(this, Arrays.asList(kv.getValue()));
-//                    samples.put(kv.getKey(), sample);
-//                }
-//                break;
-//            case PerTreatment: {
-//                for(Map.Entry<String, List<MCATProjectSample>> kv : project.getSamplesByTreatment().entrySet()) {
-//                    MCATRunSample sample = new MCATRunSample(this, kv.getValue());
-//                    samples.put(kv.getKey(), sample);
+        // Iterate through unique preprocessing parameters
+        Set<MCATPreprocessingParameters> uniquePreprocessingParameters =
+                parametersTable.getRows().stream().map(MCATParametersTableRow::getPreprocessingParameters).collect(Collectors.toSet());
+        for (MCATPreprocessingParameters preprocessingParameters : uniquePreprocessingParameters) {
+            initializePreprocessing(preprocessingParameters);
+        }
+
+    }
+
+    /**
+     * Creates the algorithm graph and data interfaces for preprocessing
+     * @param preprocessingParameters the parameters
+     */
+    private void initializePreprocessing(MCATPreprocessingParameters preprocessingParameters) {
+        List<MCATRawDataInterface> rawDataInterfaceList = new ArrayList<>();
+        List<MCATPreprocessedDataInterface> preprocessedDataInterfaceList = new ArrayList<>();
+
+        for (Map.Entry<String, MCATProjectDataSet> entry : project.getSamples().entrySet()) {
+            MCATRawDataInterface rawDataInterface = new MCATRawDataInterface(entry.getValue().getRawDataInterface());
+            MCATPreprocessedDataInterface preprocessedDataInterface = new MCATPreprocessedDataInterface();
+            rawDataInterfaceList.add(rawDataInterface);
+            preprocessedDataInterfaceList.add(preprocessedDataInterface);
+        }
+
+        // Find all unique clustering parameters with prepending preprocessing
+//            Set<MCATClusteringParameters> uniqueClusteringParameters = new HashSet<>();
+//            for (MCATParametersTableRow row : parametersTable.getRows()) {
+//                if(row.getPreprocessingParameters().equals(preprocessingParameters)) {
+//                    uniqueClusteringParameters.add(row.getClusteringParameters());
 //                }
 //            }
-//                break;
-//            case AllInOne: {
-//                MCATRunSample sample = new MCATRunSample(this, new ArrayList<>(project.getSamples().values()));
-//                samples.put("all-in-one", sample);
+//
+//            // Go through unique clustering parameters
+//            for (MCATClusteringParameters clusteringParameters : uniqueClusteringParameters) {
+//                initializeClustering(rawDataInterface, preprocessedDataInterface, preprocessingParameters, clusteringParameters);
 //            }
-//            break;
-//        }
-
-        this.graph = new MCATAlgorithmGraph(this);
     }
 
-    public BiMap<String, MCATRunSample> getSamples() {
-        return ImmutableBiMap.copyOf(samples);
-    }
-    
-    public List<MCATResultObject> getResultObjects(){
-    	return resultObjects;
-    }
-    
-    public void addResultObject(MCATResultObject resultObject) {
-    	this.resultObjects.add(resultObject);
+    private void initializeClustering(MCATRawDataInterface rawDataInterface,
+                                      MCATPreprocessedDataInterface preprocessedDataInterface,
+                                      MCATPreprocessingParameters preprocessingParameters,
+                                      MCATClusteringParameters clusteringParameters) {
     }
 
     public boolean isReady() {
@@ -119,35 +104,35 @@ public class MCATRun implements ACAQValidatable {
             }
         }
 
-        // Apply output path to the data slots
-        for (Map.Entry<String, MCATRunSample> kv : samples.entrySet()) {
-
-            // Apply output path to the data slots
-            for (MCATDataSlot slot : kv.getValue().getSlots()) {
-                slot.setStorageFilePath(outputPath.resolve(kv.getKey()).resolve(slot.getName()));
-                if (!Files.exists(slot.getStorageFilePath())) {
-                    try {
-                        Files.createDirectories(slot.getStorageFilePath());
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-            }
-
-            // Do the same for the subjects
-            for (Map.Entry<String, MCATRunSampleSubject> kv2 : kv.getValue().getSubjects().entrySet()) {
-                for (MCATDataSlot slot : kv2.getValue().getSlots()) {
-                    slot.setStorageFilePath(outputPath.resolve(kv.getKey()).resolve(kv2.getKey()).resolve(slot.getName()));
-                    if (!Files.exists(slot.getStorageFilePath())) {
-                        try {
-                            Files.createDirectories(slot.getStorageFilePath());
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-                }
-            }
-        }
+//        // Apply output path to the data slots
+//        for (Map.Entry<String, MCATRunSample> kv : samples.entrySet()) {
+//
+//            // Apply output path to the data slots
+//            for (MCATDataSlot slot : kv.getValue().getSlots()) {
+//                slot.setStorageFilePath(outputPath.resolve(kv.getKey()).resolve(slot.getName()));
+//                if (!Files.exists(slot.getStorageFilePath())) {
+//                    try {
+//                        Files.createDirectories(slot.getStorageFilePath());
+//                    } catch (IOException e) {
+//                        throw new RuntimeException(e);
+//                    }
+//                }
+//            }
+//
+//            // Do the same for the subjects
+//            for (Map.Entry<String, MCATRunSampleSubject> kv2 : kv.getValue().getSubjects().entrySet()) {
+//                for (MCATDataSlot slot : kv2.getValue().getSlots()) {
+//                    slot.setStorageFilePath(outputPath.resolve(kv.getKey()).resolve(kv2.getKey()).resolve(slot.getName()));
+//                    if (!Files.exists(slot.getStorageFilePath())) {
+//                        try {
+//                            Files.createDirectories(slot.getStorageFilePath());
+//                        } catch (IOException e) {
+//                            throw new RuntimeException(e);
+//                        }
+//                    }
+//                }
+//            }
+//        }
     }
 
     public void run(Consumer<Status> onProgress, Supplier<Boolean> isCancelled) {
@@ -161,80 +146,7 @@ public class MCATRun implements ACAQValidatable {
             ++counter;
             onProgress.accept(new Status(counter, graph.size(), algorithm.getName() + " done"));
         }
-        writeResults();
-        
-        boxplotResult();
     }
-    
-    public void writeResults() {
-    	File outputFile = new File(getOutputPath().toString() + File.separator + "ClusteringResults.csv");
-    	
-    	try {
-    		BufferedWriter bw;
-    		
-    		if(outputFile.exists()) {
-    			bw = new BufferedWriter(new FileWriter(outputFile, true));
-    		}else {
-    			bw = new BufferedWriter(new FileWriter(outputFile));
-    			bw.write("subject;treatment;roi;downsamplingFactor;channelOfInterest;clusteringHierarchy;k;postprocessingMethod;auc");
-    		}
-			for (MCATResultObject resultObject : resultObjects) {
-				bw.newLine();
-				bw.write(resultObject.toString());
-			}
-			bw.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-    }
-    
-    private void boxplotResult() {
-    	  
-    	DefaultBoxAndWhiskerCategoryDataset dataset = new DefaultBoxAndWhiskerCategoryDataset();
-
-    	HashMap<String, ArrayList<Double>> entries = new HashMap<String, ArrayList<Double>>(); 
-
-    	for (MCATResultObject obj : resultObjects) {
-    		if(entries.get(obj.getTreatment()) == null)
-    			entries.put(obj.getTreatment(), new ArrayList<Double>(Arrays.asList(obj.getAuc())));
-    		else
-    			entries.get(obj.getTreatment()).add(obj.getAuc());
-    	}
-
-    	for (String key : entries.keySet()) {
-			dataset.add(entries.get(key), key, key);
-		}
-    	
-    	final CategoryAxis xAxis = new CategoryAxis("Treatment");
-        final NumberAxis yAxis = new NumberAxis("AUC");
-        yAxis.setAutoRangeIncludesZero(false);
-        final BoxAndWhiskerRenderer renderer = new BoxAndWhiskerRenderer();
-        renderer.setFillBox(false);
-        renderer.setMeanVisible(true);
-        renderer.setUseOutlinePaintForWhiskers(false);
-        final CategoryPlot plot = new CategoryPlot(dataset, xAxis, yAxis, renderer);
-        
-
-       
-        JFrame f = new JFrame("BoxPlot");
-        f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        
-        JFreeChart chart = new JFreeChart("", plot);
-//        		ChartFactory.createBoxAndWhiskerChart("Box and Whisker Chart", "Treatment", "AUC", dataset, false);
-        	
-        chart.removeLegend();
-
-        f.add(new ChartPanel(chart) {
-            @Override
-            public Dimension getPreferredSize() {
-                return new Dimension(320, 480);
-            }
-        });
-        f.pack();
-        f.setLocationRelativeTo(null);
-        f.setVisible(true);
-    }
-    	
 
     public MCATProject getProject() {
         return project;

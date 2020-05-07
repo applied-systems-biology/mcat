@@ -4,6 +4,7 @@ import org.hkijena.mcat.api.MCATRun;
 import org.hkijena.mcat.ui.components.FileSelection;
 import org.hkijena.mcat.ui.components.FormPanel;
 import org.hkijena.mcat.ui.components.MarkdownDocument;
+import org.hkijena.mcat.ui.resultanalysis.MCATResultUI;
 import org.hkijena.mcat.utils.UIUtils;
 import org.hkijena.mcat.utils.api.ACAQValidityReport;
 
