@@ -1,14 +1,6 @@
 package org.hkijena.mcat.api;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
-import com.google.common.collect.ImmutableBiMap;
-
-import org.checkerframework.common.reflection.qual.GetMethod;
-import org.hkijena.mcat.api.parameters.MCATClusteringParameters;
-import org.hkijena.mcat.api.parameters.MCATPostprocessingParameters;
-import org.hkijena.mcat.api.parameters.MCATPreprocessingParameters;
-
+import java.awt.Dimension;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -17,10 +9,31 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+
+import javax.swing.JFrame;
+
+import org.hkijena.mcat.api.parameters.MCATClusteringParameters;
+import org.hkijena.mcat.api.parameters.MCATPostprocessingParameters;
+import org.hkijena.mcat.api.parameters.MCATPreprocessingParameters;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.CategoryAxis;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.labels.BoxAndWhiskerToolTipGenerator;
+import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.renderer.category.BoxAndWhiskerRenderer;
+import org.jfree.data.statistics.BoxAndWhiskerXYDataset;
+import org.jfree.data.statistics.DefaultBoxAndWhiskerCategoryDataset;
+
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+import com.google.common.collect.ImmutableBiMap;
 
 public class MCATRun implements MCATValidatable {
     private MCATProject project;
@@ -166,14 +179,22 @@ public class MCATRun implements MCATValidatable {
             onProgress.accept(new Status(counter, graph.size(), algorithm.getName() + " done"));
         }
         writeResults();
+        
+        boxplotResult();
     }
     
     public void writeResults() {
     	File outputFile = new File(getOutputPath().toString() + File.separator + "ClusteringResults.csv");
     	
     	try {
-			BufferedWriter bw = new BufferedWriter(new FileWriter(outputFile));
-			bw.write("subject;treatment;downsamplingFactor;channelOfInterest;clusteringHierarchy;k;postprocessingMethod;auc");
+    		BufferedWriter bw;
+    		
+    		if(outputFile.exists()) {
+    			bw = new BufferedWriter(new FileWriter(outputFile, true));
+    		}else {
+    			bw = new BufferedWriter(new FileWriter(outputFile));
+    			bw.write("subject;treatment;roi;downsamplingFactor;channelOfInterest;clusteringHierarchy;k;postprocessingMethod;auc");
+    		}
 			for (MCATResultObject resultObject : resultObjects) {
 				bw.newLine();
 				bw.write(resultObject.toString());
@@ -183,6 +204,54 @@ public class MCATRun implements MCATValidatable {
 			e.printStackTrace();
 		}
     }
+    
+    private void boxplotResult() {
+    	  
+    	DefaultBoxAndWhiskerCategoryDataset dataset = new DefaultBoxAndWhiskerCategoryDataset();
+
+    	HashMap<String, ArrayList<Double>> entries = new HashMap<String, ArrayList<Double>>(); 
+
+    	for (MCATResultObject obj : resultObjects) {
+    		if(entries.get(obj.getTreatment()) == null)
+    			entries.put(obj.getTreatment(), new ArrayList<Double>(Arrays.asList(obj.getAuc())));
+    		else
+    			entries.get(obj.getTreatment()).add(obj.getAuc());
+    	}
+
+    	for (String key : entries.keySet()) {
+			dataset.add(entries.get(key), key, key);
+		}
+    	
+    	final CategoryAxis xAxis = new CategoryAxis("Treatment");
+        final NumberAxis yAxis = new NumberAxis("AUC");
+        yAxis.setAutoRangeIncludesZero(false);
+        final BoxAndWhiskerRenderer renderer = new BoxAndWhiskerRenderer();
+        renderer.setFillBox(false);
+        renderer.setMeanVisible(true);
+        renderer.setUseOutlinePaintForWhiskers(false);
+        final CategoryPlot plot = new CategoryPlot(dataset, xAxis, yAxis, renderer);
+        
+
+       
+        JFrame f = new JFrame("BoxPlot");
+        f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        
+        JFreeChart chart = new JFreeChart("", plot);
+//        		ChartFactory.createBoxAndWhiskerChart("Box and Whisker Chart", "Treatment", "AUC", dataset, false);
+        	
+        chart.removeLegend();
+
+        f.add(new ChartPanel(chart) {
+            @Override
+            public Dimension getPreferredSize() {
+                return new Dimension(320, 480);
+            }
+        });
+        f.pack();
+        f.setLocationRelativeTo(null);
+        f.setVisible(true);
+    }
+    	
 
     public MCATProject getProject() {
         return project;

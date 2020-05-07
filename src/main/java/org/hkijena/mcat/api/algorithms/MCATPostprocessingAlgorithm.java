@@ -190,17 +190,31 @@ public class MCATPostprocessingAlgorithm extends MCATPerSampleAlgorithm {
     		System.out.println(samp.getName());
     		
     		int sumAbundance = 0;
+    		for (int i = 0; i < clusterAbundance.getAbundance().length; i++) {
+				sumAbundance += clusterAbundance.getAbundance()[i];
+			}
+    		
     		double[] weightedAverage = new double[getRun().getClusteringParameters().getMinLength() - 1];
     		for (Integer index : indices) {
     			int abun = clusterAbundance.getAbundance()[index];
-				sumAbundance += abun;
+				
+				System.out.println("abun: " + abun + " sumAbun: " + sumAbundance);
 				
 				double[] weighted = clusterAbundance.getCentroids().get(index).multiply(abun);
 				weightedAverage = addDoubleArrays(weightedAverage, weighted);
+				
+				System.out.println(Arrays.toString(weighted));
+				System.out.println(Arrays.toString(weightedAverage));
     		}
     		
     		weightedAverage = divideDoubleArray(weightedAverage, sumAbundance);
+    		
+    		System.out.println(Arrays.toString(weightedAverage));
+    		
     		double[] cumCurve = getCumulativeCurve(weightedAverage);
+    		
+    		System.out.println(Arrays.toString(cumCurve));
+    		
     		double auc = getAucValue(weightedAverage);
     		double aucCum = getAucValue(cumCurve);
     		System.out.println("    AUC: " + auc);
@@ -208,6 +222,7 @@ public class MCATPostprocessingAlgorithm extends MCATPerSampleAlgorithm {
     		
     		getRun().addResultObject(new MCATResultObject(samp.getName(), 
     				samp.getParameters().getTreatment(), 
+    				samp.getRawDataInterface().getTissueROI().getData().getRoi().getName(),
     				getRun().getPreprocessingParameters().getDownsamplingFactor(), 
     				getRun().getPreprocessingParameters().getChannelOfInterest(), 
     				getRun().getClusteringParameters().getClusteringHierarchy(), 

@@ -4,6 +4,7 @@ public class MCATResultObject {
 	
 	private String subject;
 	private String treatment;
+	private String roi;
 	private int downsamplingFactor;
 	private int channelOfInterest;
 	private MCATClusteringHierarchy hierarchy;
@@ -14,11 +15,12 @@ public class MCATResultObject {
 	
 	public MCATResultObject() {}
 	
-	public MCATResultObject(String subject, String treatment, int downsamplingFactor, int channelOfInterest,
+	public MCATResultObject(String subject, String treatment, String roi, int downsamplingFactor, int channelOfInterest,
 			MCATClusteringHierarchy hierarchy, int k, MCATPostprocessingMethod postprocessingMethod, double auc) {
 		super();
 		this.subject = subject;
 		this.treatment = treatment;
+		this.roi = roi;
 		this.downsamplingFactor = downsamplingFactor;
 		this.channelOfInterest = channelOfInterest;
 		this.hierarchy = hierarchy;
@@ -43,6 +45,14 @@ public class MCATResultObject {
 
 	public void setTreatment(String treatment) {
 		this.treatment = treatment;
+	}
+
+	public String getRoi() {
+		return roi;
+	}
+
+	public void setRoi(String roi) {
+		this.roi = roi;
 	}
 
 	public int getDownsamplingFactor() {
@@ -95,8 +105,9 @@ public class MCATResultObject {
 	
 	@Override
 	public String toString() {
-		return this.subject + ";" + this.treatment + ";" + this.downsamplingFactor + ";" +
-				this.channelOfInterest + ";" + this.hierarchy + ";" + this.k + ";" + 
+		return this.subject + ";" + this.treatment + ";" + this.roi + ";" + 
+				this.downsamplingFactor + ";" +	this.channelOfInterest + ";" + 
+				this.hierarchy + ";" + this.k + ";" + 
 				this.postprocessingMethod + ";" + this.auc;
 	}
 }

@@ -73,18 +73,22 @@ public class MCATPreprocessingAlgorithm extends MCATPerSubjectAlgorithm {
     private ImagePlus setOuterPixels(ImagePlus imp) {
     	System.out.println("\tSetting pixels outside ROI to zero...");
     	Roi r = getRawDataInterface().getTissueROI().getCurrentProvider().get().getRoi();
-    	getRawDataInterface().getTissueROI().setData(new ROIData(r));
-    	if(r != null) {
-    		roiName = r.getName();
-	    	imp.setRoi(r);
-	    	IJ.run(imp, "Make Inverse", "");
-	    	IJ.run(imp,"Set...", "value=0 stack");
-	    	imp.setRoi(r);
-	    	IJ.run(imp,"Crop","");
-	    	IJ.run(imp,"Select None","");
-    	}else{
+    	if(r == null) {
     		System.out.println("WARNING: no ROI specified, background will not be set to zero!");
+    		return imp;
     	}
+    	
+    	System.out.println("\t\tRoi name: " + r.getName());
+    	getRawDataInterface().getTissueROI().setData(new ROIData(r));
+    	
+    	roiName = r.getName();
+	    imp.setRoi(r);
+	    IJ.run(imp, "Make Inverse", "");
+	    IJ.run(imp,"Set...", "value=0 stack");
+	    imp.setRoi(r);
+	    IJ.run(imp,"Crop","");
+	    IJ.run(imp,"Select None","");
+    	
     	return imp;
     }
     
@@ -192,14 +196,16 @@ public class MCATPreprocessingAlgorithm extends MCATPerSubjectAlgorithm {
     	ImagePlus interest = channels[channelOfInterest - 1];
     	String transforms = System.getProperty("java.io.tmpdir") + "transform.txt";
     	
-    	if(anatomyProvided) {
-    		ImagePlus anatomy = channels[channelAnatomy - 1];
-    		interest = registerImages(transforms, anatomy, interest);
-    		anatomy.close();
-    	}else{
-    		System.out.println("WARNING: no anatomy channel provided for image registration. Will register channel of interest without anatomy information.");
-    		interest = registerImages(transforms, interest);
-    	}
+//    	commented to save time when testing
+//    	
+//    	if(anatomyProvided) {
+//    		ImagePlus anatomy = channels[channelAnatomy - 1];
+//    		interest = registerImages(transforms, anatomy, interest);
+//    		anatomy.close();
+//    	}else{
+//    		System.out.println("WARNING: no anatomy channel provided for image registration. Will register channel of interest without anatomy information.");
+//    		interest = registerImages(transforms, interest);
+//    	}
     	
     	/*
     	 * perform z-transformation on pixel values of channel of interest
