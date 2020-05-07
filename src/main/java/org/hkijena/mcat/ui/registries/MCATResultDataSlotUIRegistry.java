@@ -1,8 +1,8 @@
 package org.hkijena.mcat.ui.registries;
 
 import org.hkijena.mcat.api.MCATDataSlot;
-import org.hkijena.mcat.ui.resultanalysis.MCATResultDataSlotUI;
 import org.hkijena.mcat.ui.dataslots.MCATDefaultDataSlotResultUI;
+import org.hkijena.mcat.ui.resultanalysis.MCATResultDataSlotUI;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
@@ -18,20 +18,19 @@ public class MCATResultDataSlotUIRegistry {
 
     public MCATResultDataSlotUI getUIFor(MCATDataSlot slot) {
         Class<? extends MCATResultDataSlotUI> uiClass = registry.getOrDefault(slot.getClass(), null);
-        if(uiClass != null) {
+        if (uiClass != null) {
             try {
                 return uiClass.getConstructor(slot.getClass()).newInstance(slot);
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
                 throw new RuntimeException(e);
             }
-        }
-        else {
+        } else {
             return new MCATDefaultDataSlotResultUI(slot);
         }
     }
 
     public static MCATResultDataSlotUIRegistry getInstance() {
-        if(instance == null)
+        if (instance == null)
             instance = new MCATResultDataSlotUIRegistry();
         return instance;
     }

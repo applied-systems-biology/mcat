@@ -2,7 +2,6 @@ package org.hkijena.mcat.api.parameters;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.eventbus.Subscribe;
 import org.hkijena.mcat.utils.StringUtils;
 import org.hkijena.mcat.utils.api.events.ParameterChangedEvent;
@@ -31,7 +30,7 @@ public class MCATParametersTable implements TableModel {
     public MCATParametersTable(MCATParametersTable other) {
         initializeColumns();
         for (MCATParametersTableRow row : other.rows) {
-           addRow(new MCATParametersTableRow(row));
+            addRow(new MCATParametersTableRow(row));
         }
     }
 
@@ -64,6 +63,7 @@ public class MCATParametersTable implements TableModel {
     /**
      * Adds an existing row.
      * The row is not copied, so create a copy if its from another table.
+     *
      * @param row the row
      */
     public void addRow(MCATParametersTableRow row) {
@@ -77,13 +77,14 @@ public class MCATParametersTable implements TableModel {
 
     /**
      * Removes an existing row. Silently fails of row does not exist.
+     *
      * @param row the row
      */
     public void removeRow(MCATParametersTableRow row) {
         int index = rows.indexOf(row);
-        if(index < 0)
+        if (index < 0)
             return;
-       removeRowAt(index);
+        removeRowAt(index);
     }
 
     private void initializeColumns() {
@@ -102,7 +103,7 @@ public class MCATParametersTable implements TableModel {
     @Subscribe
     public void onParameterChanged(ParameterChangedEvent event) {
         for (int i = 0; i < rows.size(); i++) {
-            if(rowParameterAccessors.get(i).getParameters().values().stream().anyMatch(a -> a.getSource() == event.getSource())) {
+            if (rowParameterAccessors.get(i).getParameters().values().stream().anyMatch(a -> a.getSource() == event.getSource())) {
                 for (TableModelListener listener : listeners) {
                     listener.tableChanged(new TableModelEvent(this, i));
                 }
@@ -132,7 +133,7 @@ public class MCATParametersTable implements TableModel {
 
     @Override
     public Class<?> getColumnClass(int columnIndex) {
-        return  columnClasses.get(columnIndex);
+        return columnClasses.get(columnIndex);
     }
 
     @Override

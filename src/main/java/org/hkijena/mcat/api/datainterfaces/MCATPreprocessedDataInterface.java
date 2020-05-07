@@ -5,9 +5,7 @@ import org.hkijena.mcat.api.MCATDataSlot;
 import org.hkijena.mcat.extension.datatypes.DerivativeMatrixData;
 import org.hkijena.mcat.extension.datatypes.HyperstackData;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**

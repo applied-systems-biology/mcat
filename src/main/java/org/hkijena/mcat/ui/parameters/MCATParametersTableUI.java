@@ -1,13 +1,12 @@
 package org.hkijena.mcat.ui.parameters;
 
 import org.hkijena.mcat.api.parameters.MCATParametersTable;
-import org.hkijena.mcat.ui.MCATWorkbenchUIPanel;
 import org.hkijena.mcat.ui.MCATWorkbenchUI;
+import org.hkijena.mcat.ui.MCATWorkbenchUIPanel;
 import org.hkijena.mcat.ui.components.MarkdownDocument;
 import org.hkijena.mcat.ui.components.MarkdownReader;
 import org.hkijena.mcat.utils.UIUtils;
 import org.hkijena.mcat.utils.api.ACAQDocumentation;
-import org.hkijena.mcat.utils.api.parameters.ACAQParameterAccess;
 import org.hkijena.mcat.utils.api.parameters.ACAQParameterCollection;
 import org.hkijena.mcat.utils.api.registries.ACAQUIParametertypeRegistry;
 import org.hkijena.mcat.utils.ui.parameters.ACAQParameterGeneratorUI;
@@ -38,7 +37,7 @@ public class MCATParametersTableUI extends MCATWorkbenchUIPanel {
         reloadReplacePopupMenu();
 
         // Select first cell
-        table.changeSelection(0,0, false, false);
+        table.changeSelection(0, 0, false, false);
     }
 
     private void initialize() {
@@ -169,8 +168,7 @@ public class MCATParametersTableUI extends MCATWorkbenchUIPanel {
             if (selectedRow == null) {
                 splitPane.setRightComponent(new MarkdownReader(false, MarkdownDocument.fromPluginResource("documentation/parameters.md")));
                 currentEditor = null;
-            }
-            else if(currentEditor == null || currentEditor.getParameterCollection() != selectedRow) {
+            } else if (currentEditor == null || currentEditor.getParameterCollection() != selectedRow) {
                 currentEditor = new ParameterPanel(getWorkbenchUI().getContext(),
                         selectedRow,
                         MarkdownDocument.fromPluginResource("documentation/parameters.md"),
@@ -233,7 +231,7 @@ public class MCATParametersTableUI extends MCATWorkbenchUIPanel {
         int col = table.getSelectedColumn();
         boolean hasColumnEntries = false;
 
-        if(col != -1) {
+        if (col != -1) {
             for (Class<? extends ACAQParameterGeneratorUI> generator : ACAQUIParametertypeRegistry.getInstance()
                     .getGeneratorsFor(getWorkbenchUI().getProject().getParametersTable().getColumnClass(col))) {
                 ACAQDocumentation documentation = ACAQUIParametertypeRegistry.getInstance().getGeneratorDocumentationFor(generator);

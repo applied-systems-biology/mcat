@@ -3,9 +3,7 @@ package org.hkijena.mcat.api.datainterfaces;
 import org.hkijena.mcat.api.MCATDataInterface;
 import org.hkijena.mcat.api.MCATDataSlot;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -41,6 +39,7 @@ public class MCATClusteringInput implements MCATDataInterface {
     /**
      * Discriminator used for grouping the data set entries together. Can be null.
      * This discriminator is derived from the data set name
+     *
      * @return Discriminator used for grouping the data set entries together. Can be null.
      */
     public String getGroupSubject() {
@@ -50,6 +49,7 @@ public class MCATClusteringInput implements MCATDataInterface {
     /**
      * Discriminator used for grouping the data set entries together. Can be null.
      * This discriminator is derived from the data set's treatment parameter
+     *
      * @return Discriminator used for grouping the data set entries together. Can be null.
      */
     public String getGroupTreatment() {

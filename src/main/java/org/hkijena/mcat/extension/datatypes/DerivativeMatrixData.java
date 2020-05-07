@@ -14,42 +14,42 @@ import java.nio.file.Path;
  */
 @ACAQDocumentation(name = "Derivative matrix")
 public class DerivativeMatrixData implements MCATData {
-	
-	private double[][] derivativeMatrix;
 
-	public DerivativeMatrixData(double[][] derivativeMatrix) {
-		super();
-		this.derivativeMatrix = derivativeMatrix;
-	}
+    private double[][] derivativeMatrix;
 
-	public double[][] getDerivativeMatrix() {
-		return derivativeMatrix;
-	}
+    public DerivativeMatrixData(double[][] derivativeMatrix) {
+        super();
+        this.derivativeMatrix = derivativeMatrix;
+    }
 
-	public void setDerivativeMatrix(double[][] derivativeMatrix) {
-		this.derivativeMatrix = derivativeMatrix;
-	}
+    public double[][] getDerivativeMatrix() {
+        return derivativeMatrix;
+    }
+
+    public void setDerivativeMatrix(double[][] derivativeMatrix) {
+        this.derivativeMatrix = derivativeMatrix;
+    }
 
 
-	@Override
+    @Override
     public void saveTo(Path folder, String name, String identifier) {
-		try {
-			BufferedWriter bw = new BufferedWriter(new FileWriter(new File(folder.resolve(identifier + name + ".csv").toString())));
-			
-			for (int i = 0; i < derivativeMatrix.length; i++) {
-				String out = "";
-				double[] line = derivativeMatrix[i];
-				for (int j = 0; j < line.length; j++) {
-					out += j==0 ? String.valueOf(line[j]) : ";" + String.valueOf(line[j]);
-				}
-				
-				bw.write(out);
-				bw.newLine();
-			}
-			bw.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
+        try {
+            BufferedWriter bw = new BufferedWriter(new FileWriter(new File(folder.resolve(identifier + name + ".csv").toString())));
+
+            for (int i = 0; i < derivativeMatrix.length; i++) {
+                String out = "";
+                double[] line = derivativeMatrix[i];
+                for (int j = 0; j < line.length; j++) {
+                    out += j == 0 ? String.valueOf(line[j]) : ";" + String.valueOf(line[j]);
+                }
+
+                bw.write(out);
+                bw.newLine();
+            }
+            bw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 }

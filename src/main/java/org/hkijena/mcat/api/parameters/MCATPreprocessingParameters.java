@@ -10,13 +10,13 @@ import org.hkijena.mcat.utils.api.parameters.ACAQParameterCollection;
 
 /**
  * Contains preprocessing parameters
- *
+ * <p>
  * To create a parameter, create a a private field with getter & setter.
  * Annotate the getter with {@link JsonGetter}, {@link ACAQParameter}, and {@link ACAQDocumentation}
  * Annotate the setter with {@link ACAQParameter} and {@link JsonSetter}
- *
+ * <p>
  * Post an event {@link ParameterChangedEvent} when a value is set.
- *
+ * <p>
  * Add the variable to getHashCode() and equals()
  */
 public class MCATPreprocessingParameters implements ACAQParameterCollection {

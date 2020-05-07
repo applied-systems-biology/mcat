@@ -1,12 +1,6 @@
 package org.hkijena.mcat.ui.resultanalysis;
 
-import org.hkijena.mcat.api.MCATDataSlot;
-import org.hkijena.mcat.ui.components.FormPanel;
-import org.hkijena.mcat.ui.components.MarkdownDocument;
-import org.hkijena.mcat.ui.registries.MCATResultDataSlotUIRegistry;
-
 import javax.swing.*;
-import java.awt.*;
 
 public class MCATResultSampleUI extends JPanel {
 //    private MCATRunSample sample;

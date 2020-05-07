@@ -5,7 +5,6 @@ import org.hkijena.mcat.api.MCATDataSlot;
 import org.hkijena.mcat.extension.datatypes.HyperstackData;
 import org.hkijena.mcat.extension.datatypes.ROIData;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 

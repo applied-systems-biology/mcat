@@ -1,8 +1,5 @@
 package org.hkijena.mcat.api;
 
-import org.hkijena.mcat.api.algorithms.MCATClusteringAlgorithm;
-import org.hkijena.mcat.api.algorithms.MCATPostprocessingAlgorithm;
-import org.hkijena.mcat.api.algorithms.MCATPreprocessingAlgorithm;
 import org.hkijena.mcat.utils.api.ACAQValidatable;
 import org.hkijena.mcat.utils.api.ACAQValidityReport;
 import org.jgrapht.graph.DefaultDirectedGraph;
@@ -43,7 +40,7 @@ public class MCATAlgorithmGraph implements ACAQValidatable {
     public List<MCATAlgorithm> traverse() {
         GraphIterator<MCATAlgorithm, DefaultEdge> iterator = new TopologicalOrderIterator<>(graph);
         List<MCATAlgorithm> result = new ArrayList<>();
-        while(iterator.hasNext()) {
+        while (iterator.hasNext()) {
             MCATAlgorithm algorithm = iterator.next();
             result.add(algorithm);
         }

@@ -68,11 +68,11 @@ public class MCATAddProjectDataSetsDialog extends JDialog implements WindowListe
     }
 
     private void addFromInput() {
-        if(samplesInput.getText() != null && !samplesInput.getText().isEmpty()) {
-            for(String line : samplesInput.getText().split("\n")) {
+        if (samplesInput.getText() != null && !samplesInput.getText().isEmpty()) {
+            for (String line : samplesInput.getText().split("\n")) {
                 String modified = line.trim();
-                if(!modified.isEmpty()) {
-                    if(!workbenchUI.getProject().getSamples().containsKey(modified)) {
+                if (!modified.isEmpty()) {
+                    if (!workbenchUI.getProject().getSamples().containsKey(modified)) {
                         workbenchUI.getProject().addSample(modified);
                     }
                 }

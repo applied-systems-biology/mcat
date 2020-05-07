@@ -1,13 +1,5 @@
 package org.hkijena.mcat.api;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.*;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
-
 import org.hkijena.mcat.api.algorithms.MCATClusteringAlgorithm;
 import org.hkijena.mcat.api.algorithms.MCATPostprocessingAlgorithm;
 import org.hkijena.mcat.api.algorithms.MCATPreprocessingAlgorithm;
@@ -15,6 +7,14 @@ import org.hkijena.mcat.api.datainterfaces.*;
 import org.hkijena.mcat.api.parameters.*;
 import org.hkijena.mcat.utils.api.ACAQValidatable;
 import org.hkijena.mcat.utils.api.ACAQValidityReport;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 public class MCATRun implements ACAQValidatable {
     private MCATProject project;
@@ -40,6 +40,7 @@ public class MCATRun implements ACAQValidatable {
 
     /**
      * Creates the algorithm graph and data interfaces for preprocessing
+     *
      * @param preprocessingParameters the parameters
      */
     private void initializePreprocessing(MCATPreprocessingParameters preprocessingParameters) {
@@ -58,7 +59,7 @@ public class MCATRun implements ACAQValidatable {
         // Find all unique clustering parameters with prepending preprocessing
         Set<MCATClusteringParameters> uniqueClusteringParameters = new HashSet<>();
         for (MCATParametersTableRow row : parametersTable.getRows()) {
-            if(row.getPreprocessingParameters().equals(preprocessingParameters)) {
+            if (row.getPreprocessingParameters().equals(preprocessingParameters)) {
                 uniqueClusteringParameters.add(row.getClusteringParameters());
             }
         }
@@ -89,21 +90,21 @@ public class MCATRun implements ACAQValidatable {
             String groupSubject = projectDataSet.getName();
             String groupTreatment = projectDataSet.getParameters().getTreatment();
 
-            if(noSubject)
-                groupSubject ="";
-            if(noTreatment)
+            if (noSubject)
+                groupSubject = "";
+            if (noTreatment)
                 groupTreatment = "";
 
             // Add new entry into clustering input
             {
                 Map<String, MCATClusteringInput> subjectMap = inputGroups.getOrDefault(groupSubject, null);
-                if(subjectMap == null) {
+                if (subjectMap == null) {
                     subjectMap = new HashMap<>();
                     inputGroups.put(groupSubject, subjectMap);
                 }
 
                 MCATClusteringInput clusteringInput = subjectMap.getOrDefault(groupTreatment, null);
-                if(clusteringInput == null) {
+                if (clusteringInput == null) {
                     clusteringInput = new MCATClusteringInput(groupSubject, groupTreatment);
                     subjectMap.put(groupTreatment, clusteringInput);
                 }
@@ -116,13 +117,13 @@ public class MCATRun implements ACAQValidatable {
             // Add new entry into clustering output
             {
                 Map<String, MCATClusteringOutput> subjectMap = outputGroups.getOrDefault(groupSubject, null);
-                if(subjectMap == null) {
+                if (subjectMap == null) {
                     subjectMap = new HashMap<>();
                     outputGroups.put(groupSubject, subjectMap);
                 }
 
                 MCATClusteringOutput clusteringOutput = subjectMap.getOrDefault(groupTreatment, null);
-                if(clusteringOutput == null) {
+                if (clusteringOutput == null) {
                     clusteringOutput = new MCATClusteringOutput(groupSubject, groupTreatment);
                     subjectMap.put(groupTreatment, clusteringOutput);
                 }
@@ -135,8 +136,8 @@ public class MCATRun implements ACAQValidatable {
         // Find all unique postprocessing parameters with prepending preprocessing
         Set<MCATPostprocessingParameters> uniquePostProcessingParameters = new HashSet<>();
         for (MCATParametersTableRow row : parametersTable.getRows()) {
-            if(row.getPreprocessingParameters().equals(preprocessingParameters) &&
-            row.getClusteringParameters().equals(clusteringParameters)) {
+            if (row.getPreprocessingParameters().equals(preprocessingParameters) &&
+                    row.getClusteringParameters().equals(clusteringParameters)) {
                 uniquePostProcessingParameters.add(row.getPostprocessingParameters());
             }
         }

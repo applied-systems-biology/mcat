@@ -1,10 +1,8 @@
 package org.hkijena.mcat.ui.components;
 
 import org.hkijena.mcat.ui.resultanalysis.MCATResultSampleManagerUI;
-import org.hkijena.mcat.utils.UIUtils;
 
 import javax.swing.*;
-import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeCellRenderer;
 import java.awt.*;
 
@@ -20,7 +18,7 @@ public class MCATRunSampleTreeCellRenderer extends JLabel implements TreeCellRen
 
     @Override
     public Component getTreeCellRendererComponent(JTree tree, Object value, boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus) {
-        if(tree.getFont() != null) {
+        if (tree.getFont() != null) {
             setFont(tree.getFont());
         }
 
@@ -42,11 +40,10 @@ public class MCATRunSampleTreeCellRenderer extends JLabel implements TreeCellRen
 
         // Update status
         // Update status
-        if(selected) {
+        if (selected) {
             setBackground(new Color(184, 207, 229));
-        }
-        else {
-            setBackground(new Color(255,255,255));
+        } else {
+            setBackground(new Color(255, 255, 255));
         }
 
         return this;

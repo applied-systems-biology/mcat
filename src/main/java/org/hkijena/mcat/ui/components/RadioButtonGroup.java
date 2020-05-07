@@ -8,6 +8,7 @@ import java.util.Map;
 
 /**
  * A group of multiple radio button options
+ *
  * @param <T>
  */
 public class RadioButtonGroup<T> extends JPanel {
@@ -20,7 +21,7 @@ public class RadioButtonGroup<T> extends JPanel {
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-        for(T option : options) {
+        for (T option : options) {
             JRadioButton radioButton = new JRadioButton(option.toString(), option.equals(selected));
             add(radioButton);
             buttons.put(option, radioButton);
@@ -33,8 +34,8 @@ public class RadioButtonGroup<T> extends JPanel {
     }
 
     public T getSelected() {
-        for(Map.Entry<T, JRadioButton> kv : buttons.entrySet()) {
-            if(kv.getValue().isSelected())
+        for (Map.Entry<T, JRadioButton> kv : buttons.entrySet()) {
+            if (kv.getValue().isSelected())
                 return kv.getKey();
         }
         return null;

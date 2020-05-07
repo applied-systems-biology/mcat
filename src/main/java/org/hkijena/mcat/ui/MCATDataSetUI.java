@@ -52,10 +52,10 @@ public class MCATDataSetUI extends MCATWorkbenchUIPanel {
 
     private void resizeSlotButtons() {
         int buttonSize = 0;
-        for(MCATDataSlotUI ui : slotUIList) {
+        for (MCATDataSlotUI ui : slotUIList) {
             buttonSize = Math.max(buttonSize, ui.getSelectionButton().getPreferredSize().width);
         }
-        for(MCATDataSlotUI ui : slotUIList) {
+        for (MCATDataSlotUI ui : slotUIList) {
             ui.getSelectionButton().setPreferredSize(new Dimension(buttonSize, ui.getSelectionButton().getPreferredSize().height));
         }
     }
@@ -124,8 +124,8 @@ public class MCATDataSetUI extends MCATWorkbenchUIPanel {
     }
 
     private void renameSample() {
-        String newName = JOptionPane.showInputDialog(this,"Please input a new name", sample.getName());
-        if(newName != null && !newName.isEmpty() && !newName.equals(sample.getName())) {
+        String newName = JOptionPane.showInputDialog(this, "Please input a new name", sample.getName());
+        if (newName != null && !newName.isEmpty() && !newName.equals(sample.getName())) {
             getProject().renameSample(sample, newName);
         }
     }
@@ -136,7 +136,7 @@ public class MCATDataSetUI extends MCATWorkbenchUIPanel {
 
     @Subscribe
     public void onSampleRenamed(MCATDataSetRenamedEvent event) {
-        if(event.getSample() == sample) {
+        if (event.getSample() == sample) {
             sampleTitle.setText(sample.getName());
         }
     }

@@ -1,6 +1,5 @@
 package org.hkijena.mcat.api;
 
-import org.hkijena.mcat.api.datainterfaces.MCATPreprocessedDataInterface;
 import org.hkijena.mcat.api.datainterfaces.MCATRawDataInterface;
 import org.hkijena.mcat.api.parameters.MCATSampleParameters;
 import org.hkijena.mcat.ui.components.MonochromeColorIcon;
@@ -33,11 +32,11 @@ public class MCATProjectDataSet implements Comparable<MCATProjectDataSet> {
     }
 
     public String getName() {
-        return  getProject().getSamples().inverse().get(this);
+        return getProject().getSamples().inverse().get(this);
     }
 
     public Color getTreatmentColor() {
-       return UIUtils.stringToColor(getParameters().getTreatment(), 0.8f, 0.8f);
+        return UIUtils.stringToColor(getParameters().getTreatment(), 0.8f, 0.8f);
     }
 
     public Icon getIcon() {

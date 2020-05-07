@@ -68,7 +68,8 @@ public class MCATDataSetManagerUI extends MCATWorkbenchUIPanel {
         toolBar.add(changeTreatmentButton);
 
         JButton removeButton = new JButton(UIUtils.getIconFromResources("delete.png"));
-        removeButton.setToolTipText("Remove selected data sets");;
+        removeButton.setToolTipText("Remove selected data sets");
+        ;
         removeButton.addActionListener(e -> removeSelectedSamples());
         toolBar.add(removeButton);
 
@@ -77,21 +78,21 @@ public class MCATDataSetManagerUI extends MCATWorkbenchUIPanel {
     private void relabelSelectedSamples() {
         Set<MCATProjectDataSet> toRelabel = new HashSet<>();
         Set<String> treatments = new HashSet<>();
-        if(getSampleTree().getSelectionPaths() != null) {
-            for(TreePath path : getSampleTree().getSelectionPaths()) {
-                DefaultMutableTreeNode nd = (DefaultMutableTreeNode)path.getLastPathComponent();
-                if(nd.getUserObject() instanceof MCATProjectDataSet) {
-                    toRelabel.add((MCATProjectDataSet)nd.getUserObject());
-                    treatments.add(((MCATProjectDataSet)(nd.getUserObject())).getParameters().getTreatment());
+        if (getSampleTree().getSelectionPaths() != null) {
+            for (TreePath path : getSampleTree().getSelectionPaths()) {
+                DefaultMutableTreeNode nd = (DefaultMutableTreeNode) path.getLastPathComponent();
+                if (nd.getUserObject() instanceof MCATProjectDataSet) {
+                    toRelabel.add((MCATProjectDataSet) nd.getUserObject());
+                    treatments.add(((MCATProjectDataSet) (nd.getUserObject())).getParameters().getTreatment());
                 }
             }
         }
 
-        if(!toRelabel.isEmpty()) {
+        if (!toRelabel.isEmpty()) {
             String suggestion = String.join("_", treatments);
-            String newName = JOptionPane.showInputDialog(this,"Please input a new treatment", suggestion);
-            if(newName != null && !newName.isEmpty()) {
-                for(MCATProjectDataSet sample : toRelabel) {
+            String newName = JOptionPane.showInputDialog(this, "Please input a new treatment", suggestion);
+            if (newName != null && !newName.isEmpty()) {
+                for (MCATProjectDataSet sample : toRelabel) {
                     sample.getParameters().setTreatment(newName);
                 }
             }
@@ -100,15 +101,15 @@ public class MCATDataSetManagerUI extends MCATWorkbenchUIPanel {
 
     private void removeSelectedSamples() {
         Set<MCATProjectDataSet> toRemove = new HashSet<>();
-        if(getSampleTree().getSelectionPaths() != null) {
-            for(TreePath path : getSampleTree().getSelectionPaths()) {
-                DefaultMutableTreeNode nd = (DefaultMutableTreeNode)path.getLastPathComponent();
-                if(nd.getUserObject() instanceof MCATProjectDataSet) {
-                    toRemove.add((MCATProjectDataSet)nd.getUserObject());
+        if (getSampleTree().getSelectionPaths() != null) {
+            for (TreePath path : getSampleTree().getSelectionPaths()) {
+                DefaultMutableTreeNode nd = (DefaultMutableTreeNode) path.getLastPathComponent();
+                if (nd.getUserObject() instanceof MCATProjectDataSet) {
+                    toRemove.add((MCATProjectDataSet) nd.getUserObject());
                 }
             }
         }
-        for(MCATProjectDataSet sample : toRemove) {
+        for (MCATProjectDataSet sample : toRemove) {
             getProject().removeSample(sample);
         }
     }
@@ -117,7 +118,7 @@ public class MCATDataSetManagerUI extends MCATWorkbenchUIPanel {
         MCATAddProjectDataSetsDialog dialog = new MCATAddProjectDataSetsDialog(getWorkbenchUI());
         dialog.setModal(true);
         dialog.pack();
-        dialog.setSize(new Dimension(500,400));
+        dialog.setSize(new Dimension(500, 400));
         dialog.setLocationRelativeTo(this);
         dialog.setVisible(true);
     }
@@ -126,7 +127,7 @@ public class MCATDataSetManagerUI extends MCATWorkbenchUIPanel {
         MCATBatchImporterDialog dialog = new MCATBatchImporterDialog(getWorkbenchUI());
         dialog.setModal(true);
         dialog.pack();
-        dialog.setSize(new Dimension(800,600));
+        dialog.setSize(new Dimension(800, 600));
         dialog.setLocationRelativeTo(this);
         dialog.setVisible(true);
     }
@@ -134,27 +135,27 @@ public class MCATDataSetManagerUI extends MCATWorkbenchUIPanel {
     public void rebuildSampleListTree() {
 
         MCATProjectDataSet selectedSample = null;
-        if(sampleTree.getLastSelectedPathComponent() != null) {
+        if (sampleTree.getLastSelectedPathComponent() != null) {
             DefaultMutableTreeNode nd = (DefaultMutableTreeNode) sampleTree.getLastSelectedPathComponent();
-            if(nd.getUserObject() instanceof MCATProjectDataSet) {
-                selectedSample = (MCATProjectDataSet)nd.getUserObject();
+            if (nd.getUserObject() instanceof MCATProjectDataSet) {
+                selectedSample = (MCATProjectDataSet) nd.getUserObject();
             }
         }
 
         DefaultMutableTreeNode toSelect = null;
 
         String rootNodeName = "Data sets";
-        if(getProject().getSamples().isEmpty()) {
+        if (getProject().getSamples().isEmpty()) {
             rootNodeName = "No data sets";
         }
         DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(rootNodeName);
         Map<String, Set<MCATProjectDataSet>> groupedSamples = getProject().getSamplesGroupedByTreatment();
-        for(Map.Entry<String, Set<MCATProjectDataSet>> kv : groupedSamples.entrySet()) {
+        for (Map.Entry<String, Set<MCATProjectDataSet>> kv : groupedSamples.entrySet()) {
             DefaultMutableTreeNode groupNode = new DefaultMutableTreeNode(kv.getValue());
-            for(MCATProjectDataSet sample : kv.getValue().stream().sorted().collect(Collectors.toList())) {
+            for (MCATProjectDataSet sample : kv.getValue().stream().sorted().collect(Collectors.toList())) {
                 sample.getParameters().getEventBus().register(this);
                 DefaultMutableTreeNode sampleNode = new DefaultMutableTreeNode(sample);
-                if(sample == selectedSample) {
+                if (sample == selectedSample) {
                     toSelect = sampleNode;
                 }
                 groupNode.add(sampleNode);
@@ -165,7 +166,7 @@ public class MCATDataSetManagerUI extends MCATWorkbenchUIPanel {
         DefaultTreeModel model = new DefaultTreeModel(rootNode);
         getSampleTree().setModel(model);
         UIUtils.expandAllTree(getSampleTree());
-        if(toSelect != null) {
+        if (toSelect != null) {
             getSampleTree().setSelectionPath(new TreePath(model.getPathToRoot(toSelect)));
         }
 
@@ -188,7 +189,7 @@ public class MCATDataSetManagerUI extends MCATWorkbenchUIPanel {
 
     @Subscribe
     public void onDataSetTreatmentChanged(ParameterChangedEvent event) {
-        if(event.getSource() instanceof MCATSampleParameters && event.getKey().equals("treatment")) {
+        if (event.getSource() instanceof MCATSampleParameters && event.getKey().equals("treatment")) {
             rebuildSampleListTree();
         }
     }

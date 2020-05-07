@@ -12,13 +12,13 @@ import java.util.Objects;
 
 /**
  * Contains postprocessing parameters
- * 
+ * <p>
  * To create a parameter, create a a private field with getter & setter.
  * Annotate the getter with {@link JsonGetter}, {@link ACAQParameter}, and {@link ACAQDocumentation}
  * Annotate the setter with {@link ACAQParameter} and {@link JsonSetter}
- * 
+ * <p>
  * Post an event {@link ParameterChangedEvent} when a value is set.
- * 
+ * <p>
  * Add the variable to getHashCode() and equals()
  */
 public class MCATPostprocessingParameters implements ACAQParameterCollection {
@@ -54,7 +54,7 @@ public class MCATPostprocessingParameters implements ACAQParameterCollection {
     @JsonSetter("analyze-net-increase")
     public void setAnalyzeNetIncrease(boolean analyzeNetIncrease) {
         this.analyzeNetIncrease = analyzeNetIncrease;
-        eventBus.post(new ParameterChangedEvent(this ,"analyze-net-increase"));
+        eventBus.post(new ParameterChangedEvent(this, "analyze-net-increase"));
     }
 
     @ACAQDocumentation(name = "Analyze net decrease")
@@ -68,7 +68,7 @@ public class MCATPostprocessingParameters implements ACAQParameterCollection {
     @JsonSetter("analyze-net-decrease")
     public void setAnalyzeNetDecrease(boolean analyzeNetDecrease) {
         this.analyzeNetDecrease = analyzeNetDecrease;
-        eventBus.post(new ParameterChangedEvent(this ,"analyze-net-decrease"));
+        eventBus.post(new ParameterChangedEvent(this, "analyze-net-decrease"));
     }
 
     @ACAQDocumentation(name = "Analyze max increase")
@@ -82,7 +82,7 @@ public class MCATPostprocessingParameters implements ACAQParameterCollection {
     @JsonSetter("analyze-max-increase")
     public void setAnalyzeMaxIncrease(boolean analyzeMaxIncrease) {
         this.analyzeMaxIncrease = analyzeMaxIncrease;
-        eventBus.post(new ParameterChangedEvent(this ,"analyze-max-increase"));
+        eventBus.post(new ParameterChangedEvent(this, "analyze-max-increase"));
     }
 
     @ACAQDocumentation(name = "Analyze max decrease")
@@ -96,7 +96,7 @@ public class MCATPostprocessingParameters implements ACAQParameterCollection {
     @JsonSetter("analyze-max-decrease")
     public void setAnalyzeMaxDecrease(boolean analyzeMaxDecrease) {
         this.analyzeMaxDecrease = analyzeMaxDecrease;
-        eventBus.post(new ParameterChangedEvent(this ,"analyze-max-decrease"));
+        eventBus.post(new ParameterChangedEvent(this, "analyze-max-decrease"));
     }
 
     @ACAQDocumentation(name = "Perform cluster morphology analysis")
@@ -110,7 +110,7 @@ public class MCATPostprocessingParameters implements ACAQParameterCollection {
     @JsonSetter("perform-cluster-morphology-analysis")
     public void setPerformClusterMorphologyAnalysis(boolean performClusterMorphologyAnalysis) {
         this.performClusterMorphologyAnalysis = performClusterMorphologyAnalysis;
-        eventBus.post(new ParameterChangedEvent(this , "perform-morphology-analysis"));
+        eventBus.post(new ParameterChangedEvent(this, "perform-morphology-analysis"));
     }
 
     @ACAQDocumentation(name = "Cutoff value")
@@ -124,7 +124,7 @@ public class MCATPostprocessingParameters implements ACAQParameterCollection {
     @JsonSetter("cutoff-value")
     public void setCutoffValue(double cutoffValue) {
         this.cutoffValue = cutoffValue;
-        eventBus.post(new ParameterChangedEvent(this ,"cutoff-value"));
+        eventBus.post(new ParameterChangedEvent(this, "cutoff-value"));
     }
 
     @Override

@@ -25,15 +25,7 @@ import java.util.stream.Collectors;
  * Provides a tabbed interface
  */
 public class DocumentTabPane extends JTabbedPane {
-    public enum CloseMode {
-        withSilentCloseButton,
-        withAskOnCloseButton,
-        withoutCloseButton,
-        withDisabledCloseButton
-    }
-
     private List<DocumentTab> tabs = new ArrayList<>();
-
     /**
      * Contains tabs that can be closed, but opened again
      */
@@ -50,6 +42,7 @@ public class DocumentTabPane extends JTabbedPane {
 
     /**
      * Adds a document tab
+     *
      * @param title
      * @param icon
      * @param component
@@ -62,7 +55,7 @@ public class DocumentTabPane extends JTabbedPane {
 
         // Create tab panel
         JPanel tabPanel = new JPanel();
-        tabPanel.setBorder(BorderFactory.createEmptyBorder(4,0,4,0));
+        tabPanel.setBorder(BorderFactory.createEmptyBorder(4, 0, 4, 0));
         tabPanel.setOpaque(false);
         tabPanel.setLayout(new BoxLayout(tabPanel, BoxLayout.LINE_AXIS));
         JLabel titleLabel = new JLabel(title, icon, JLabel.LEFT);
@@ -71,13 +64,13 @@ public class DocumentTabPane extends JTabbedPane {
 
         DocumentTab tab = new DocumentTab(title, icon, tabPanel, component);
 
-        if(allowRename) {
+        if (allowRename) {
             JButton renameButton = new JButton(UIUtils.getIconFromResources("label.png"));
             renameButton.setToolTipText("Rename tab");
             UIUtils.makeFlatWithoutMargin(renameButton);
             renameButton.addActionListener(e -> {
                 String newName = JOptionPane.showInputDialog(this, "Rename tab '" + titleLabel.getText() + "' to ...", titleLabel.getText());
-                if(newName != null && !newName.isEmpty()) {
+                if (newName != null && !newName.isEmpty()) {
                     titleLabel.setText(newName);
                     tab.setTitle(newName);
                 }
@@ -85,7 +78,7 @@ public class DocumentTabPane extends JTabbedPane {
             tabPanel.add(Box.createHorizontalStrut(8));
             tabPanel.add(renameButton);
         }
-        if(closeMode != CloseMode.withoutCloseButton) {
+        if (closeMode != CloseMode.withoutCloseButton) {
             JButton closeButton = new JButton(UIUtils.getIconFromResources("remove.png"));
             closeButton.setToolTipText("Close tab");
             closeButton.setBorder(null);
@@ -93,7 +86,7 @@ public class DocumentTabPane extends JTabbedPane {
             closeButton.setOpaque(false);
             closeButton.setEnabled(closeMode != CloseMode.withDisabledCloseButton);
             closeButton.addActionListener(e -> {
-                if(closeMode == CloseMode.withAskOnCloseButton &&
+                if (closeMode == CloseMode.withAskOnCloseButton &&
                         JOptionPane.showConfirmDialog(component, "Do you really want to close this?",
                                 "Close tab", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) != JOptionPane.YES_OPTION) {
                     return;
@@ -114,13 +107,14 @@ public class DocumentTabPane extends JTabbedPane {
     }
 
     public void switchToLastTab() {
-        if(getTabCount() > 0) {
+        if (getTabCount() > 0) {
             setSelectedIndex(getTabCount() - 1);
         }
     }
 
     /**
      * Adds a tab that can be silently closed and brought up again
+     *
      * @param title
      * @param icon
      * @param component
@@ -128,7 +122,7 @@ public class DocumentTabPane extends JTabbedPane {
     public void addSingletonTab(String id, String title, Icon icon, Component component, boolean hidden) {
         DocumentTab tab = addTab(title, icon, component, CloseMode.withSilentCloseButton);
         singletonTabs.put(id, tab);
-        if(hidden) {
+        if (hidden) {
             remove(tab.getContent());
         }
     }
@@ -138,8 +132,8 @@ public class DocumentTabPane extends JTabbedPane {
      */
     public void selectSingletonTab(String id) {
         DocumentTab tab = singletonTabs.get(id);
-        for(int i = 0; i < getTabCount(); ++i) {
-            if(getTabComponentAt(i) == tab.getTabComponent()) {
+        for (int i = 0; i < getTabCount(); ++i) {
+            if (getTabComponentAt(i) == tab.getTabComponent()) {
                 setSelectedComponent(tab.getContent());
                 return;
             }
@@ -154,6 +148,13 @@ public class DocumentTabPane extends JTabbedPane {
         addTab(tab.getTitle(), tab.getIcon(), tab.getContent());
         setTabComponentAt(getTabCount() - 1, tab.getTabComponent());
         tabs.add(tab);
+    }
+
+    public enum CloseMode {
+        withSilentCloseButton,
+        withAskOnCloseButton,
+        withoutCloseButton,
+        withDisabledCloseButton
     }
 
     public static class DocumentTab {
@@ -173,6 +174,10 @@ public class DocumentTabPane extends JTabbedPane {
             return title;
         }
 
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
         public Icon getIcon() {
             return icon;
         }
@@ -183,10 +188,6 @@ public class DocumentTabPane extends JTabbedPane {
 
         public Component getContent() {
             return content;
-        }
-
-        public void setTitle(String title) {
-            this.title = title;
         }
     }
 

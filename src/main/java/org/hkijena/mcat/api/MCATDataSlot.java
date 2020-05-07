@@ -1,17 +1,6 @@
 package org.hkijena.mcat.api;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonSerializer;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
-import java.io.IOException;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * A slot holds data and also have the capability to load data from an MCATDataProvider if data is requested, but not set
@@ -36,7 +25,7 @@ public class MCATDataSlot {
     public MCATDataSlot(MCATDataSlot other) {
         this.name = other.name;
         this.acceptedDataType = other.acceptedDataType;
-        if(other.dataProvider != null) {
+        if (other.dataProvider != null) {
             this.dataProvider = other.dataProvider.duplicate();
         }
     }
@@ -48,19 +37,20 @@ public class MCATDataSlot {
     /**
      * Gets the data stored within this slot.
      * If not data is loaded, but an {@link MCATDataProvider} is set, the data is automatically set to the {@link MCATDataProvider} result.
+     *
      * @param klass target class
-     * @param <T> target class
+     * @param <T>   target class
      * @return data already stored within this slot or result of getCurrentProvider().get()
      */
     public <T extends MCATData> T getData(Class<T> klass) {
         // Automatically load data if available
-        if(data == null && dataProvider != null) {
-            if(!dataProvider.isValid()) {
+        if (data == null && dataProvider != null) {
+            if (!dataProvider.isValid()) {
                 throw new RuntimeException("Data provider is invalid!");
             }
             data = dataProvider.get();
         }
-        return (T)data;
+        return (T) data;
     }
 
     public void setData(MCATData data) {
@@ -78,6 +68,7 @@ public class MCATDataSlot {
      * Returns the currently selected data provider.
      * Please do not run getCurrentProvider().get() to get data from this slot. getData() automatically calls
      * the provider's method
+     *
      * @return the currently selected data provider
      */
     public MCATDataProvider getCurrentProvider() {

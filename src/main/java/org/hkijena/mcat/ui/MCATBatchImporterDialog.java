@@ -53,8 +53,8 @@ public class MCATBatchImporterDialog extends JDialog {
     }
 
     private void addToggleForPattern(FormPanel formPanel, String name,
-                              Supplier<Boolean> toggleGetter, Consumer<Boolean> toggleSetter,
-                              Supplier<String> patternGetter, Consumer<String> patternSetter,
+                                     Supplier<Boolean> toggleGetter, Consumer<Boolean> toggleSetter,
+                                     Supplier<String> patternGetter, Consumer<String> patternSetter,
                                      MarkdownDocument document) {
         JCheckBox toggle = formPanel.addToForm(new JCheckBox("Import " + name, toggleGetter.get()),
                 document);

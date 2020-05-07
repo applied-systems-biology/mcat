@@ -18,13 +18,12 @@ public class MCATDefaultDataSlotResultUI extends MCATResultDataSlotUI {
     }
 
     private Path getStoragePath() {
-        if(getSlot().getCurrentProvider() != null && getSlot().getCurrentProvider().isValid()) {
-            if(getSlot().getCurrentProvider() instanceof FileDataProvider) {
-                FileDataProvider provider = (FileDataProvider)getSlot().getCurrentProvider();
+        if (getSlot().getCurrentProvider() != null && getSlot().getCurrentProvider().isValid()) {
+            if (getSlot().getCurrentProvider() instanceof FileDataProvider) {
+                FileDataProvider provider = (FileDataProvider) getSlot().getCurrentProvider();
                 return provider.getFilePath().getParent();
             }
-        }
-        else if(getSlot().getStorageFilePath() != null) {
+        } else if (getSlot().getStorageFilePath() != null) {
             return getSlot().getStorageFilePath();
         }
 
@@ -33,7 +32,7 @@ public class MCATDefaultDataSlotResultUI extends MCATResultDataSlotUI {
 
     private void initialize() {
         setLayout(new BorderLayout());
-        if(getStoragePath() != null) {
+        if (getStoragePath() != null) {
             JButton openFolderButton = new JButton("Open folder", UIUtils.getIconFromResources("open.png"));
             openFolderButton.setToolTipText(getStoragePath().toString());
             add(openFolderButton, BorderLayout.EAST);

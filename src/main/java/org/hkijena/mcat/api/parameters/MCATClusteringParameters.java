@@ -13,20 +13,20 @@ import java.util.Objects;
 
 /**
  * Class that contains all clustering parameters.
- *
+ * <p>
  * To create a parameter, create a a private field with getter & setter.
  * Annotate the getter with {@link JsonGetter}, {@link ACAQParameter}, and {@link ACAQDocumentation}
  * Annotate the setter with {@link ACAQParameter} and {@link JsonSetter}
- *
+ * <p>
  * Post an event {@link ParameterChangedEvent} when a value is set.
- *
+ * <p>
  * Add the variable to getHashCode() and equals()
  */
 public class MCATClusteringParameters implements ACAQParameterCollection {
     private EventBus eventBus = new EventBus();
     private int kMeansK = 5;
     private int minLength = Integer.MAX_VALUE;
-    
+
     private MCATClusteringHierarchy clusteringHierarchy = MCATClusteringHierarchy.PerTreatment;
 
     public MCATClusteringParameters() {
@@ -70,16 +70,16 @@ public class MCATClusteringParameters implements ACAQParameterCollection {
     @ACAQDocumentation(name = "Minimum length")
     @ACAQParameter("min-length")
     @JsonGetter("min-length")
-	public int getMinLength() {
-		return minLength;
-	}
+    public int getMinLength() {
+        return minLength;
+    }
 
     @ACAQParameter("min-length")
     @JsonSetter("min-length")
-	public void setMinLength(int minLength) {
-		this.minLength = minLength;
+    public void setMinLength(int minLength) {
+        this.minLength = minLength;
         eventBus.post(new ParameterChangedEvent(this, "min-length"));
-	}
+    }
 
     @Override
     public boolean equals(Object o) {

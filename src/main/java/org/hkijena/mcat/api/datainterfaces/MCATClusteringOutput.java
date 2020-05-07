@@ -5,7 +5,8 @@ import org.hkijena.mcat.api.MCATDataSlot;
 import org.hkijena.mcat.extension.datatypes.ClusterCentersData;
 import org.hkijena.mcat.extension.datatypes.HyperstackData;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A data interface that contains the input of an {@link org.hkijena.mcat.api.algorithms.MCATClusteringAlgorithm}
@@ -58,6 +59,7 @@ public class MCATClusteringOutput implements MCATDataInterface {
     /**
      * Discriminator used for grouping the data set entries together. Can be null.
      * This discriminator is derived from the data set name
+     *
      * @return Discriminator used for grouping the data set entries together. Can be null.
      */
     public String getGroupSubject() {
@@ -67,6 +69,7 @@ public class MCATClusteringOutput implements MCATDataInterface {
     /**
      * Discriminator used for grouping the data set entries together. Can be null.
      * This discriminator is derived from the data set's treatment parameter
+     *
      * @return Discriminator used for grouping the data set entries together. Can be null.
      */
     public String getGroupTreatment() {

@@ -4,9 +4,7 @@ import org.hkijena.mcat.api.MCATDataInterface;
 import org.hkijena.mcat.api.MCATDataSlot;
 import org.hkijena.mcat.extension.datatypes.ClusterAbundanceData;
 
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class MCATClusteringOutputDataSetEntry implements MCATDataInterface {

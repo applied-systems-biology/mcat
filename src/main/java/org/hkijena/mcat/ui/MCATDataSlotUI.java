@@ -36,19 +36,18 @@ public class MCATDataSlotUI extends JPanel {
     }
 
     public void refreshSelectionButton() {
-        if(slot.getCurrentProvider() != null) {
+        if (slot.getCurrentProvider() != null) {
             ACAQDocumentation documentation = slot.getClass().getAnnotation(ACAQDocumentation.class);
             selectionButton.setText(documentation.name());
             selectionButton.setIcon(UIUtils.getIconFromResources("database.png"));
             selectionButton.setToolTipText(documentation.description());
-        }
-        else {
+        } else {
             selectionButton.setText("None selected");
             selectionButton.setIcon(UIUtils.getIconFromResources("error.png"));
         }
 
         JPopupMenu menu = UIUtils.addPopupMenuToComponent(selectionButton);
-        for(Class<? extends MCATDataProvider> providerClass : MCATDataTypeRegistry.getInstance().getProvidersFor(slot.getAcceptedDataType())) {
+        for (Class<? extends MCATDataProvider> providerClass : MCATDataTypeRegistry.getInstance().getProvidersFor(slot.getAcceptedDataType())) {
             ACAQDocumentation documentation = providerClass.getAnnotation(ACAQDocumentation.class);
             JMenuItem item = new JMenuItem(documentation.name(), UIUtils.getIconFromResources("database.png"));
             item.setToolTipText(documentation.description());
@@ -67,7 +66,7 @@ public class MCATDataSlotUI extends JPanel {
     }
 
     private void createDataProviderUI() {
-        if(currentProviderUI != null)
+        if (currentProviderUI != null)
             remove(currentProviderUI);
 
         currentProviderUI = MCATDataProviderUIRegistry.getInstance().getUIFor(sample, slot.getCurrentProvider());

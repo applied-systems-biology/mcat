@@ -4,7 +4,6 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import org.hkijena.mcat.api.MCATData;
 import org.hkijena.mcat.api.MCATDataProvider;
-import org.hkijena.mcat.api.MCATDataSlot;
 import org.hkijena.mcat.extension.dataproviders.StandardDataProvidersExtension;
 import org.hkijena.mcat.extension.datatypes.StandardDataTypeExtension;
 
@@ -25,7 +24,8 @@ public class MCATDataTypeRegistry {
 
     /**
      * Registers a data type
-     * @param id unique ID
+     *
+     * @param id    unique ID
      * @param klass data class
      */
     public void registerDataType(String id, Class<? extends MCATData> klass) {
@@ -34,14 +34,15 @@ public class MCATDataTypeRegistry {
 
     /**
      * Registers a data provider
-     * @param id unique id
+     *
+     * @param id            unique id
      * @param providerClass provider class
-     * @param dataClass data that is generated
+     * @param dataClass     data that is generated
      */
     public void registerDataProvider(String id, Class<? extends MCATDataProvider> providerClass, Class<? extends MCATData> dataClass) {
         registeredDataProviders.put(id, providerClass);
         Set<Class<? extends MCATDataProvider>> forData = providersForData.getOrDefault(dataClass, null);
-        if(forData == null) {
+        if (forData == null) {
             forData = new HashSet<>();
             providersForData.put(dataClass, forData);
         }
@@ -50,6 +51,7 @@ public class MCATDataTypeRegistry {
 
     /**
      * Returns providers for the specified data class
+     *
      * @param dataClass the data class
      * @return providers for the specified data class. Always return a non-null list.
      */
@@ -58,7 +60,7 @@ public class MCATDataTypeRegistry {
     }
 
     public static MCATDataTypeRegistry getInstance() {
-        if(instance == null) {
+        if (instance == null) {
             instance = new MCATDataTypeRegistry();
             StandardDataTypeExtension.register();
             StandardDataProvidersExtension.register();

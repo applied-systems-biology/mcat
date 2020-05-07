@@ -18,15 +18,14 @@ import java.util.concurrent.ExecutionException;
 
 public class MCATRunUI extends MCATWorkbenchUIPanel {
 
-    private MCATRun run;
-    private ACAQValidityReport validityReport = new ACAQValidityReport();
-    private Worker worker;
-
     JPanel setupPanel;
     JButton cancelButton;
     JButton runButton;
     JProgressBar progressBar;
     JPanel buttonPanel;
+    private MCATRun run;
+    private ACAQValidityReport validityReport = new ACAQValidityReport();
+    private Worker worker;
 
     public MCATRunUI(MCATWorkbenchUI workbenchUI) {
         super(workbenchUI);
@@ -63,7 +62,7 @@ public class MCATRunUI extends MCATWorkbenchUIPanel {
 
     private void initializeButtons() {
         buttonPanel = new JPanel();
-        buttonPanel.setBorder(BorderFactory.createEmptyBorder(0,8,8,8));
+        buttonPanel.setBorder(BorderFactory.createEmptyBorder(0, 8, 8, 8));
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
 
         progressBar = new JProgressBar();
@@ -97,22 +96,20 @@ public class MCATRunUI extends MCATWorkbenchUIPanel {
             worker.cancel(true);
         });
         worker.addPropertyChangeListener(p -> {
-            if("state".equals(p.getPropertyName())) {
-                switch ((SwingWorker.StateValue)p.getNewValue()) {
+            if ("state".equals(p.getPropertyName())) {
+                switch ((SwingWorker.StateValue) p.getNewValue()) {
                     case DONE:
                         cancelButton.setEnabled(false);
-                        if(!worker.isCancelled()) {
+                        if (!worker.isCancelled()) {
                             cancelButton.setVisible(false);
                         }
                         try {
-                            if(worker.isCancelled()) {
+                            if (worker.isCancelled()) {
                                 SwingUtilities.invokeLater(() -> openError(new RuntimeException("Execution was cancelled by user!")));
-                            }
-                            else if(worker.get() != null) {
+                            } else if (worker.get() != null) {
                                 final Exception e = worker.get();
                                 SwingUtilities.invokeLater(() -> openError(e));
-                            }
-                            else {
+                            } else {
                                 openResults();
                             }
                         } catch (InterruptedException | ExecutionException | CancellationException e) {
@@ -163,8 +160,7 @@ public class MCATRunUI extends MCATWorkbenchUIPanel {
         protected Exception doInBackground() throws Exception {
             try {
                 run.run(this::onStatus, this::isCancelled);
-            }
-            catch(Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 return e;
             }
@@ -175,11 +171,10 @@ public class MCATRunUI extends MCATWorkbenchUIPanel {
         @Override
         protected void process(List<Object> chunks) {
             super.process(chunks);
-            for(Object chunk : chunks) {
-                if(chunk instanceof Integer) {
-                    progressBar.setValue((Integer)chunk);
-                }
-                else if(chunk instanceof String) {
+            for (Object chunk : chunks) {
+                if (chunk instanceof Integer) {
+                    progressBar.setValue((Integer) chunk);
+                } else if (chunk instanceof String) {
                     progressBar.setString("(" + progressBar.getValue() + "/" + progressBar.getMaximum() + ") " + chunk);
                 }
             }

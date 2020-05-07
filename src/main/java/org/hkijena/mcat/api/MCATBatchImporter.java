@@ -155,24 +155,24 @@ public class MCATBatchImporter {
 
     private MCATProjectDataSet importSample(Path folder, String treatment) throws IOException {
         String name = folder.getFileName().toString();
-        if(treatment != null && includeTreatmentInName) {
+        if (treatment != null && includeTreatmentInName) {
             name = treatment + "_" + name;
         }
-        
+
         MCATProjectDataSet sample = getProject().addSample(name);
         sample.getParameters().setTreatment(treatment);
 
-        if(importRawImages) {
+        if (importRawImages) {
             Path matched = matchFile(folder, rawImagesPattern);
-            if(matched != null) {
+            if (matched != null) {
                 HyperstackFromTifDataProvider provider = new HyperstackFromTifDataProvider();
                 provider.setFilePath(matched);
                 sample.getRawDataInterface().getRawImage().setCurrentProvider(provider);
             }
         }
-        if(importROI) {
+        if (importROI) {
             Path matched = matchFile(folder, roiPattern);
-            if(matched != null) {
+            if (matched != null) {
                 ROIFromFileDataProvider provider = new ROIFromFileDataProvider();
                 provider.setFilePath(matched);
                 sample.getRawDataInterface().getTissueROI().setCurrentProvider(provider);
@@ -186,16 +186,15 @@ public class MCATBatchImporter {
         Set<MCATProjectDataSet> result = new HashSet<>();
         List<Path> treatmentPaths;
 
-        if(subfoldersAreTreatments) {
-           treatmentPaths = Files.list(inputFolder).filter(d -> Files.isDirectory(d)).collect(Collectors.toList());
-        }
-        else {
+        if (subfoldersAreTreatments) {
+            treatmentPaths = Files.list(inputFolder).filter(d -> Files.isDirectory(d)).collect(Collectors.toList());
+        } else {
             treatmentPaths = Arrays.asList(inputFolder);
         }
 
-        for(Path treatmentPath : treatmentPaths) {
+        for (Path treatmentPath : treatmentPaths) {
             String treatmentName = treatmentPath.equals(inputFolder) ? null : treatmentPath.getFileName().toString();
-            for(Path samplePath : Files.list(treatmentPath).filter(d -> Files.isDirectory(d)).collect(Collectors.toList())) {
+            for (Path samplePath : Files.list(treatmentPath).filter(d -> Files.isDirectory(d)).collect(Collectors.toList())) {
                 result.add(importSample(samplePath, treatmentName));
             }
         }

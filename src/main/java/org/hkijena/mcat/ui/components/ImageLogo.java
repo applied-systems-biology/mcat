@@ -22,7 +22,7 @@ public class ImageLogo extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        if(image != null) {
+        if (image != null) {
             drawScaledImage(image, this, g);
         }
     }
@@ -45,7 +45,7 @@ public class ImageLogo extends JPanel {
 
         if (imgWidth < canvasWidth && imgHeight < canvasHeight) {
             // the image is smaller than the canvas
-            x1 = (canvasWidth - imgWidth)  / 2;
+            x1 = (canvasWidth - imgWidth) / 2;
             y1 = (canvasHeight - imgHeight) / 2;
             x2 = imgWidth + x1;
             y2 = imgHeight + y1;

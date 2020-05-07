@@ -6,7 +6,6 @@ import org.hkijena.mcat.api.parameters.MCATPreprocessingParameters;
 import org.hkijena.mcat.utils.api.ACAQValidatable;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * Base class for an algorithm node

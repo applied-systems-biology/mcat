@@ -11,7 +11,7 @@ public enum MCATClusteringHierarchy {
 
     @Override
     public String toString() {
-        switch(this) {
+        switch (this) {
             case AllInOne:
                 return "All in one";
             case PerTreatment:

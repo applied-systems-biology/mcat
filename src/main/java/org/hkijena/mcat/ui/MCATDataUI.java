@@ -31,11 +31,11 @@ public class MCATDataUI extends MCATWorkbenchUIPanel {
 
         sampleManagerUI.getSampleTree().addTreeSelectionListener(e -> {
             Object pathComponent = e.getPath().getLastPathComponent();
-            if(pathComponent != null) {
+            if (pathComponent != null) {
                 DefaultMutableTreeNode nd = (DefaultMutableTreeNode) pathComponent;
-                if(nd.getUserObject() instanceof MCATProjectDataSet) {
-                    if(currentlyDisplayedSample != nd.getUserObject()) {
-                        setCurrentlyDisplayedSample((MCATProjectDataSet)nd.getUserObject());
+                if (nd.getUserObject() instanceof MCATProjectDataSet) {
+                    if (currentlyDisplayedSample != nd.getUserObject()) {
+                        setCurrentlyDisplayedSample((MCATProjectDataSet) nd.getUserObject());
                     }
                 }
             }
@@ -43,20 +43,19 @@ public class MCATDataUI extends MCATWorkbenchUIPanel {
     }
 
     private void setCurrentlyDisplayedSample(MCATProjectDataSet sample) {
-        if(currentlyDisplayedSample == sample)
+        if (currentlyDisplayedSample == sample)
             return;
         currentlyDisplayedSample = sample;
-        if(sample != null) {
+        if (sample != null) {
             splitPane.setRightComponent(new MCATDataSetUI(getWorkbenchUI(), sample));
-        }
-        else {
+        } else {
             splitPane.setRightComponent(new JPanel());
         }
     }
 
     @Subscribe
     public void onCurrentlyDisplayedSampleDeleted(MCATDataSetRemovedEvent event) {
-        if(event.getSample() == currentlyDisplayedSample) {
+        if (event.getSample() == currentlyDisplayedSample) {
             setCurrentlyDisplayedSample(null);
         }
     }

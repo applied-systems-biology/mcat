@@ -1,7 +1,6 @@
 package org.hkijena.mcat.extension.datatypes;
 
 import org.hkijena.mcat.api.MCATData;
-import org.hkijena.mcat.api.MCATDataSlot;
 import org.hkijena.mcat.api.registries.MCATDataTypeRegistry;
 
 public class StandardDataTypeExtension {

@@ -16,7 +16,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-public abstract class FileDataProvider implements ACAQParameterCollection, MCATDataProvider  {
+public abstract class FileDataProvider implements ACAQParameterCollection, MCATDataProvider {
     private EventBus eventBus = new EventBus();
     private Path filePath;
 
@@ -33,7 +33,7 @@ public abstract class FileDataProvider implements ACAQParameterCollection, MCATD
         try {
             return getClass().getConstructor(getClass()).newInstance(this);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-           throw new RuntimeException(e);
+            throw new RuntimeException(e);
         }
     }
 
@@ -59,7 +59,7 @@ public abstract class FileDataProvider implements ACAQParameterCollection, MCATD
 
     @Override
     public void reportValidity(ACAQValidityReport report) {
-        if(!Files.exists(filePath)) {
+        if (!Files.exists(filePath)) {
             report.forCategory("File path").reportIsInvalid("File path is invalid!",
                     "The selected file '" + filePath + "' does not exist!",
                     "Please select a valid file.",

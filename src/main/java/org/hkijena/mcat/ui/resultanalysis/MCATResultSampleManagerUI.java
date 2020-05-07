@@ -2,13 +2,9 @@ package org.hkijena.mcat.ui.resultanalysis;
 
 import org.hkijena.mcat.api.MCATRun;
 import org.hkijena.mcat.ui.components.MCATRunSampleTreeCellRenderer;
-import org.hkijena.mcat.utils.UIUtils;
 
 import javax.swing.*;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
 import java.awt.*;
-import java.util.stream.Collectors;
 
 public class MCATResultSampleManagerUI extends JPanel {
     private MCATResultUI resultUI;

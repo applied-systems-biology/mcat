@@ -2,9 +2,9 @@ package org.hkijena.mcat.extension.parameters;
 
 
 import org.hkijena.mcat.api.MCATClusteringHierarchy;
-import org.hkijena.mcat.utils.api.ACAQDefaultDocumentation;
 import org.hkijena.mcat.extension.parameters.editors.*;
 import org.hkijena.mcat.extension.parameters.generators.*;
+import org.hkijena.mcat.utils.api.ACAQDefaultDocumentation;
 import org.hkijena.mcat.utils.api.registries.ACAQUIParametertypeRegistry;
 import org.hkijena.mcat.utils.ui.parameters.ACAQParameterEditorUI;
 import org.hkijena.mcat.utils.ui.parameters.ACAQParameterGeneratorUI;

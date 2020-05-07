@@ -1,22 +1,15 @@
 package org.hkijena.mcat.ui;
 
-import java.awt.BorderLayout;
-import java.io.IOException;
-
-import javax.swing.Box;
-import javax.swing.JButton;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
-import javax.swing.JToolBar;
-
 import org.hkijena.mcat.MCATCommand;
 import org.hkijena.mcat.api.MCATProject;
 import org.hkijena.mcat.ui.components.DocumentTabPane;
 import org.hkijena.mcat.ui.parameters.MCATParametersTableUI;
 import org.hkijena.mcat.utils.UIUtils;
 import org.scijava.Context;
+
+import javax.swing.*;
+import java.awt.*;
+import java.io.IOException;
 
 /**
  * Main MCAT window
@@ -40,16 +33,16 @@ public class MCATWorkbenchUI extends JFrame {
         UIUtils.setToAskOnClose(this, "Do you really want to close MCAT?", "Close window");
 
         documentTabPane = new DocumentTabPane();
-        documentTabPane.addTab( "Data",
+        documentTabPane.addTab("Data",
                 UIUtils.getIconFromResources("sample.png"),
                 new MCATDataUI(this),
                 DocumentTabPane.CloseMode.withoutCloseButton,
                 false);
-        documentTabPane.addTab( "Parameters",
-        UIUtils.getIconFromResources("wrench.png"),
-        new MCATParametersTableUI(this),
-        DocumentTabPane.CloseMode.withoutCloseButton,
-        false);
+        documentTabPane.addTab("Parameters",
+                UIUtils.getIconFromResources("wrench.png"),
+                new MCATParametersTableUI(this),
+                DocumentTabPane.CloseMode.withoutCloseButton,
+                false);
 //        documentTabPane.addTab( "Preprocessing",
 //                UIUtils.getIconFromResources("wrench.png"),
 //                new MCATPreprocessingUI(this),
@@ -65,7 +58,7 @@ public class MCATWorkbenchUI extends JFrame {
 //                new MCATPostprocessingUI(this),
 //                DocumentTabPane.CloseMode.withoutCloseButton,
 //                false);
-        
+
         add(documentTabPane, BorderLayout.CENTER);
 
         initializeToolbar();
@@ -105,7 +98,7 @@ public class MCATWorkbenchUI extends JFrame {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         fileChooser.setDialogTitle("Open project (*.json");
-        if(fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+        if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
             try {
                 newWindow(command, MCATProject.loadProject(fileChooser.getSelectedFile().toPath()));
             } catch (IOException e) {
@@ -118,7 +111,7 @@ public class MCATWorkbenchUI extends JFrame {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         fileChooser.setDialogTitle("Save project (*.json");
-        if(fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+        if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
             try {
                 getProject().saveProject(fileChooser.getSelectedFile().toPath());
             } catch (IOException e) {
@@ -146,7 +139,7 @@ public class MCATWorkbenchUI extends JFrame {
     }
 
     public DocumentTabPane getDocumentTabPane() {
-        return  documentTabPane;
+        return documentTabPane;
     }
 
     public MCATProject getProject() {

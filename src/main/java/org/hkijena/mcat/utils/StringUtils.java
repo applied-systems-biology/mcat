@@ -234,14 +234,14 @@ public class StringUtils {
 
     /**
      * Capitalizes the first letter in the string
+     *
      * @param input
      * @return
      */
     public static String capitalizeFirstLetter(String input) {
-        if(input == null || input.length() < 2) {
+        if (input == null || input.length() < 2) {
             return input;
-        }
-        else {
+        } else {
             return input.substring(0, 1).toUpperCase() + input.substring(1);
         }
     }

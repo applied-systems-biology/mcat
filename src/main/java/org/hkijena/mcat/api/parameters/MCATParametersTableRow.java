@@ -40,6 +40,11 @@ public class MCATParametersTableRow implements ACAQParameterCollection {
         return preprocessingParameters;
     }
 
+    @JsonSetter("preprocessing")
+    public void setPreprocessingParameters(MCATPreprocessingParameters preprocessingParameters) {
+        this.preprocessingParameters = preprocessingParameters;
+    }
+
     @ACAQDocumentation(name = "Postprocessing", description = "Following parameters apply to the postprocessing.")
     @ACAQParameter("postprocessing")
     @JsonGetter("postprocessing")
@@ -47,21 +52,16 @@ public class MCATParametersTableRow implements ACAQParameterCollection {
         return postprocessingParameters;
     }
 
+    @JsonSetter("postprocessing")
+    public void setPostprocessingParameters(MCATPostprocessingParameters postprocessingParameters) {
+        this.postprocessingParameters = postprocessingParameters;
+    }
+
     @ACAQDocumentation(name = "Clustering", description = "Following parameters apply to the clustering.")
     @ACAQParameter("clustering")
     @JsonGetter("clustering")
     public MCATClusteringParameters getClusteringParameters() {
         return clusteringParameters;
-    }
-
-    @JsonSetter("preprocessing")
-    public void setPreprocessingParameters(MCATPreprocessingParameters preprocessingParameters) {
-        this.preprocessingParameters = preprocessingParameters;
-    }
-
-    @JsonSetter("postprocessing")
-    public void setPostprocessingParameters(MCATPostprocessingParameters postprocessingParameters) {
-        this.postprocessingParameters = postprocessingParameters;
     }
 
     @JsonSetter("clustering")
