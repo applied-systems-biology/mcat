@@ -3,7 +3,6 @@ package org.hkijena.mcat.api.algorithms;
 import java.awt.Color;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -16,10 +15,16 @@ import org.apache.commons.math3.ml.clustering.KMeansPlusPlusClusterer;
 import org.apache.commons.math3.ml.clustering.KMeansPlusPlusClusterer.EmptyClusterStrategy;
 import org.apache.commons.math3.ml.distance.EuclideanDistance;
 import org.apache.commons.math3.random.JDKRandomGenerator;
+import org.hkijena.mcat.api.MCATAlgorithm;
 import org.hkijena.mcat.api.MCATCentroidCluster;
-import org.hkijena.mcat.api.MCATPerSampleAlgorithm;
-import org.hkijena.mcat.api.MCATRunSample;
-import org.hkijena.mcat.api.MCATRunSampleSubject;
+import org.hkijena.mcat.api.MCATRun;
+import org.hkijena.mcat.api.datainterfaces.MCATClusteringInput;
+import org.hkijena.mcat.api.datainterfaces.MCATClusteringInputDataSetEntry;
+import org.hkijena.mcat.api.datainterfaces.MCATClusteringOutput;
+import org.hkijena.mcat.api.datainterfaces.MCATClusteringOutputDataSetEntry;
+import org.hkijena.mcat.api.parameters.MCATClusteringParameters;
+import org.hkijena.mcat.api.parameters.MCATPostprocessingParameters;
+import org.hkijena.mcat.api.parameters.MCATPreprocessingParameters;
 import org.hkijena.mcat.extension.datatypes.ClusterAbundanceData;
 import org.hkijena.mcat.extension.datatypes.ClusterCentersData;
 import org.hkijena.mcat.extension.datatypes.HyperstackData;
@@ -31,7 +36,7 @@ import ij.plugin.SubstackMaker;
 import org.hkijena.mcat.extension.datatypes.ROIData;
 import org.hkijena.mcat.utils.api.ACAQValidityReport;
 
-public class MCATClusteringAlgorithm extends MCATPerSampleAlgorithm {
+public class MCATClusteringAlgorithm extends MCATAlgorithm {
 	
 	private static final String[] colors = new String[] {
 			"#BEBD7F","#C2B078","#C6A664","#E5BE01","#CDA434","#A98307","#E4A010","#DC9D00","#8A6642","#C7B446","#EAE6CA",
@@ -55,19 +60,27 @@ public class MCATClusteringAlgorithm extends MCATPerSampleAlgorithm {
 			"#763C28","#FDF4E3","#E7EBDA","#F4F4F4","#282828","#0A0A0A","#A5A5A5","#8F8F8F","#FFFFFF","#1C1C1C","#F6F6F6",
 			"#1E1E1E","#D7D7D7","#9C9C9C","#828282"
 	};
-	
-	private int nSeeds = 50;
+
+	private MCATClusteringInput clusteringInput;
+	private MCATClusteringOutput clusteringOutput;
+
 	private int minLength, k;
-	private String[] names;
-	private ImagePlus[] imps;
 	private HashMap<String, ImagePlus> clustered = new HashMap<String, ImagePlus>();
 	private List<DoublePoint> points = new ArrayList<DoublePoint>();
-	
-    public MCATClusteringAlgorithm(MCATRunSample sample) {
-        super(sample);
-    }
-    
-    private int hexToRGB(String hex) {
+
+	public MCATClusteringAlgorithm(MCATRun run,
+								   MCATPreprocessingParameters preprocessingParameters,
+								   MCATPostprocessingParameters postprocessingParameters,
+								   MCATClusteringParameters clusteringParameters,
+								   MCATClusteringInput clusteringInput,
+								   MCATClusteringOutput clusteringOutput) {
+		super(run, preprocessingParameters, postprocessingParameters, clusteringParameters);
+		this.clusteringInput = clusteringInput;
+		this.clusteringOutput = clusteringOutput;
+	}
+
+
+	private int hexToRGB(String hex) {
     	Color col = Color.decode(hex);
     	int rgb = (col.getRed() << 16)  | (col.getGreen() << 8)  | col.getBlue();
         return rgb;
@@ -75,14 +88,14 @@ public class MCATClusteringAlgorithm extends MCATPerSampleAlgorithm {
     
     private void loadImages(){
     	System.out.println("\tLoading images...");
-    	Set<String> keys = getSample().getSubjects().keySet();
-    	names = new String[keys.size()];
-    	imps = new ImagePlus[keys.size()];
+    	List<String> keys = new ArrayList<>(clusteringInput.getDataSetEntries().keySet());
+		String[] names = new String[keys.size()];
+		ImagePlus[] imps = new ImagePlus[keys.size()];
     	
     	for (int i = 0; i < keys.size(); i++) {
-    		MCATRunSampleSubject samp = getSample().getSubjects().get(keys.toArray()[i]);
-    		System.out.println("\t\tSubject: " + samp.getName());
-    		names[i] = samp.getName();
+			MCATClusteringInputDataSetEntry samp = clusteringInput.getDataSetEntries().get(keys.get(i));
+    		System.out.println("\t\tSubject: " + samp.getDataSetName());
+    		names[i] = samp.getDataSetName();
 
     		ImagePlus imp = samp.getPreprocessedDataInterface().getPreprocessedImage().getData(HyperstackData.class).getImage();
     		ImageStack is = imp.getStack();
@@ -90,7 +103,7 @@ public class MCATClusteringAlgorithm extends MCATPerSampleAlgorithm {
     		int width = imp.getWidth();
     		int height = imp.getHeight();
     		
-    		float[] tmp = new float[minLength];
+    		float[] tmp;
     		
     		for (int x = 0; x < width; x++) {
 				for (int y = 0; y < height; y++) {
@@ -104,9 +117,9 @@ public class MCATClusteringAlgorithm extends MCATPerSampleAlgorithm {
 				}
 			}
     			
-    		imp.setTitle(samp.getName());
+    		imp.setTitle(samp.getDataSetName());
     		imps[i] = new SubstackMaker().makeSubstack(imp, "1-" + minLength);
-    		imps[i].setTitle(samp.getName());
+    		imps[i].setTitle(samp.getDataSetName());
     		
     		samp.getPreprocessedDataInterface().getPreprocessedImage().setData(new HyperstackData(imps[i]));
     	}
@@ -115,37 +128,34 @@ public class MCATClusteringAlgorithm extends MCATPerSampleAlgorithm {
     private void runKMeans(){
     	
     	System.out.println("\tPerforming k-means algorithm...");
-    	
-    	KMeansPlusPlusClusterer<DoublePoint> kmpp = new KMeansPlusPlusClusterer<DoublePoint>(k, 50, new EuclideanDistance(), new JDKRandomGenerator(nSeeds), EmptyClusterStrategy.FARTHEST_POINT);
+
+		int nSeeds = 50;
+		KMeansPlusPlusClusterer<DoublePoint> kmpp = new KMeansPlusPlusClusterer<DoublePoint>(k, 50, new EuclideanDistance(), new JDKRandomGenerator(nSeeds), EmptyClusterStrategy.FARTHEST_POINT);
     	
     	List<CentroidCluster<DoublePoint>> tmpCentroidCluster = kmpp.cluster(points);
     	
     	List<MCATCentroidCluster<DoublePoint>> centroids = new ArrayList<MCATCentroidCluster<DoublePoint>>();
     	for (CentroidCluster<DoublePoint> centroidCluster : tmpCentroidCluster) {
-			centroids.add(new MCATCentroidCluster<DoublePoint>(centroidCluster.getCenter()));
+			centroids.add(new MCATCentroidCluster<>(centroidCluster.getCenter()));
 		}
     	
-    	Collections.sort(centroids, new Comparator<MCATCentroidCluster<DoublePoint>>() {
-			@Override
-			public int compare(MCATCentroidCluster<DoublePoint> o1, MCATCentroidCluster<DoublePoint> o2) {
-				return Double.compare(o1.getCumSum(), o2.getCumSum());
-			}
-		});
+    	centroids.sort(Comparator.comparingDouble(MCATCentroidCluster::getCumSum));
     	
     	
-    	getSample().getClusteredDataInterface().getClusterCenters().setData(new ClusterCentersData(centroids));
+    	getClusteringOutput().getClusterCenters().setData(new ClusterCentersData(centroids));
     	
     	
     	//TODO assign colors according to cluster center 
     	
-    	Set<String> keys = getSample().getSubjects().keySet();
+    	Set<String> keys = getClusteringInput().getDataSetEntries().keySet();
     	
     	for (String key : keys) {
-    		MCATRunSampleSubject samp = getSample().getSubjects().get(key);
+    		MCATClusteringInputDataSetEntry inputEntry = getClusteringInput().getDataSetEntries().get(key);
+    		MCATClusteringOutputDataSetEntry outputEntry = getClusteringOutput().getDataSetEntries().get(key);
     		
-    		samp.getClusterAbundanceDataInterface().getClusterAbundance().setData(new ClusterAbundanceData(centroids, new int[centroids.size()]));
+    		outputEntry.getClusterAbundance().setData(new ClusterAbundanceData(centroids, new int[centroids.size()]));
     		
-    		ImagePlus imp = samp.getPreprocessedDataInterface().getPreprocessedImage().getData(HyperstackData.class).getImage();
+    		ImagePlus imp = inputEntry.getPreprocessedDataInterface().getPreprocessedImage().getData(HyperstackData.class).getImage();
 		
     		ImageStack is = imp.getStack();
     		int w = imp.getWidth();
@@ -176,15 +186,15 @@ public class MCATClusteringAlgorithm extends MCATPerSampleAlgorithm {
 						System.err.println("No closest cluster found for this pixel position (x=" + x + "; y=" + y + ")");
 					}
 					
-					samp.getClusterAbundanceDataInterface().getClusterAbundance().getData(ClusterAbundanceData.class).incrementAbundance(closestCluster);
+					outputEntry.getClusterAbundance().getData(ClusterAbundanceData.class).incrementAbundance(closestCluster);
 					centroids.get(closestCluster).addMember();
 					int colIndex = Math.round(colors.length/k) * closestCluster;
 					clusteredPixels[y*w+x] = hexToRGB(colors[colIndex]);
 				}
 			}
     		
-    		String identifier = samp.getName() + "_roi-" + 
-    				samp.getRawDataInterface().getTissueROI().getData(ROIData.class).getRoi().getName() +
+    		String identifier = outputEntry.getDataSetName() + "_roi-" +
+    				inputEntry.getRawDataInterface().getTissueROI().getData(ROIData.class).getRoi().getName() +
     				"_downsampling-" + getPreprocessingParameters().getDownsamplingFactor() +
         			"_anatomyCh-" + getPreprocessingParameters().getAnatomicChannel() +
         			"_interestCh-" + getPreprocessingParameters().getChannelOfInterest() +
@@ -192,13 +202,13 @@ public class MCATClusteringAlgorithm extends MCATPerSampleAlgorithm {
         			"_k-" + getClusteringParameters().getkMeansK() + "_";
     		
     		
-    		samp.getClusterAbundanceDataInterface().getClusterAbundance().flush(identifier);
+    		outputEntry.getClusterAbundance().flush(identifier);
     		
     		ImagePlus clusteredImage = IJ.createImage(imp.getTitle() + "_clusteredImage", "RGB white", w, h, 1);
     		clusteredImage.getProcessor().setPixels(clusteredPixels);
     		
     		
-    		clustered.put(samp.getName(), clusteredImage);
+    		clustered.put(outputEntry.getDataSetName(), clusteredImage);
 //    		samp.getClusteredDataInterface().getSingleClusterImage().setData(new HyperstackData(clusteredImage));
 		}
     }
@@ -210,17 +220,15 @@ public class MCATClusteringAlgorithm extends MCATPerSampleAlgorithm {
     	System.out.println("\tSaving clustering results...");
     	
     	System.out.println("flush...");
-    	String identifier = getSample().getName() + "_downsampling-" + getPreprocessingParameters().getDownsamplingFactor() +
+    	String identifier = "_downsampling-" + getPreprocessingParameters().getDownsamplingFactor() +
     			"_anatomyCh-" + getPreprocessingParameters().getAnatomicChannel() +
     			"_interestCh-" + getPreprocessingParameters().getChannelOfInterest() +
     			"_timeFrames-" + getClusteringParameters().getMinLength() +
     			"_k-" + getClusteringParameters().getkMeansK() + "_";
-    	getSample().getClusteredDataInterface().getClusterCenters().flush(identifier);
-    	
+    	getClusteringOutput().getClusterCenters().flush(identifier);
 
-    	Set<String> keys = getSample().getSubjects().keySet();
-    	
-    	Path storageFilePathClusteredImage = getSample().getClusteredDataInterface().getClusterImages().getStorageFilePath();
+
+		Path storageFilePathClusteredImage = getClusteringOutput().getClusterImages().getStorageFilePath();
     	
     	for (String string : clustered.keySet()) {
     		String outNameClusteredImage = string + "_" + identifier + "_clusteredImage.png";
@@ -248,11 +256,19 @@ public class MCATClusteringAlgorithm extends MCATPerSampleAlgorithm {
 
     @Override
     public String getName() {
-        return "Clustering " + getSample().getName();
+        return "Clustering";
     }
 
 	@Override
 	public void reportValidity(ACAQValidityReport report) {
 
+	}
+
+	public MCATClusteringInput getClusteringInput() {
+		return clusteringInput;
+	}
+
+	public MCATClusteringOutput getClusteringOutput() {
+		return clusteringOutput;
 	}
 }

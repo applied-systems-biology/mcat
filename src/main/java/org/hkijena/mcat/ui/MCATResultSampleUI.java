@@ -1,8 +1,6 @@
 package org.hkijena.mcat.ui;
 
 import org.hkijena.mcat.api.MCATDataSlot;
-import org.hkijena.mcat.api.MCATRunSample;
-import org.hkijena.mcat.api.MCATRunSampleSubject;
 import org.hkijena.mcat.ui.components.FormPanel;
 import org.hkijena.mcat.ui.components.MarkdownDocument;
 import org.hkijena.mcat.ui.registries.MCATResultDataSlotUIRegistry;

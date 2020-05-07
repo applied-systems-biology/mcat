@@ -1,6 +1,6 @@
 package org.hkijena.mcat.extension.dataproviders.ui;
 
-import org.hkijena.mcat.api.MCATProjectSample;
+import org.hkijena.mcat.api.MCATProjectDataSet;
 import org.hkijena.mcat.extension.dataproviders.api.HyperstackFromTifDataProvider;
 import org.hkijena.mcat.ui.MCATDataProviderUI;
 import org.hkijena.mcat.ui.components.FileSelection;
@@ -11,7 +11,7 @@ import java.awt.*;
  * UI for {@link HyperstackFromTifDataProvider}
  */
 public class HyperstackFromTifDataProviderUI extends MCATDataProviderUI {
-    public HyperstackFromTifDataProviderUI(MCATProjectSample sample, HyperstackFromTifDataProvider dataProvider) {
+    public HyperstackFromTifDataProviderUI(MCATProjectDataSet sample, HyperstackFromTifDataProvider dataProvider) {
         super(sample, dataProvider);
         setLayout(new BorderLayout());
 

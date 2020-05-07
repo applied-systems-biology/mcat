@@ -1,16 +1,5 @@
 package org.hkijena.mcat.api;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.fasterxml.jackson.databind.JsonSerializer;
-import com.fasterxml.jackson.databind.SerializerProvider;
-
-import org.hkijena.mcat.api.datainterfaces.MCATClusterAbundanceDataInterface;
-import org.hkijena.mcat.api.datainterfaces.MCATClusteredDataInterface;
-import org.hkijena.mcat.api.datainterfaces.MCATPostprocessedDataInterface;
 import org.hkijena.mcat.api.datainterfaces.MCATPreprocessedDataInterface;
 import org.hkijena.mcat.api.datainterfaces.MCATRawDataInterface;
 import org.hkijena.mcat.api.parameters.MCATSampleParameters;
@@ -19,12 +8,11 @@ import org.hkijena.mcat.utils.UIUtils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.IOException;
 
 /**
  * Manages one sample/subject
  */
-public class MCATProjectSample implements Comparable<MCATProjectSample> {
+public class MCATProjectDataSet implements Comparable<MCATProjectDataSet> {
 
     private MCATProject project;
 
@@ -34,13 +22,7 @@ public class MCATProjectSample implements Comparable<MCATProjectSample> {
 
     private MCATPreprocessedDataInterface preprocessedDataInterface = new MCATPreprocessedDataInterface();
 
-    private MCATClusteredDataInterface clusteredDataInterface = new MCATClusteredDataInterface();
-    
-    private MCATClusterAbundanceDataInterface clusterAbundanceDataInterface = new MCATClusterAbundanceDataInterface();
-
-    private MCATPostprocessedDataInterface postprocessedDataInterface = new MCATPostprocessedDataInterface();
-
-    public MCATProjectSample(MCATProject project) {
+    public MCATProjectDataSet(MCATProject project) {
         this.project = project;
     }
 
@@ -65,7 +47,7 @@ public class MCATProjectSample implements Comparable<MCATProjectSample> {
     }
 
     @Override
-    public int compareTo(MCATProjectSample other) {
+    public int compareTo(MCATProjectDataSet other) {
         return getName().compareTo(other.getName());
     }
 
@@ -76,16 +58,4 @@ public class MCATProjectSample implements Comparable<MCATProjectSample> {
     public MCATPreprocessedDataInterface getPreprocessedDataInterface() {
         return preprocessedDataInterface;
     }
-
-    public MCATClusteredDataInterface getClusteredDataInterface() {
-        return clusteredDataInterface;
-    }
-
-    public MCATPostprocessedDataInterface getPostprocessedDataInterface() {
-        return postprocessedDataInterface;
-    }
-    
-    public MCATClusterAbundanceDataInterface getClusterAbundanceDataInterface() {
-		return clusterAbundanceDataInterface;
-	}
 }

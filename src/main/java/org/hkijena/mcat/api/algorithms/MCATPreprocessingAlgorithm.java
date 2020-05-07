@@ -2,8 +2,13 @@ package org.hkijena.mcat.api.algorithms;
 
 
 
-import org.hkijena.mcat.api.MCATPerSubjectAlgorithm;
-import org.hkijena.mcat.api.MCATRunSampleSubject;
+import org.hkijena.mcat.api.MCATAlgorithm;
+import org.hkijena.mcat.api.MCATRun;
+import org.hkijena.mcat.api.datainterfaces.MCATPreprocessedDataInterface;
+import org.hkijena.mcat.api.datainterfaces.MCATRawDataInterface;
+import org.hkijena.mcat.api.parameters.MCATClusteringParameters;
+import org.hkijena.mcat.api.parameters.MCATPostprocessingParameters;
+import org.hkijena.mcat.api.parameters.MCATPreprocessingParameters;
 import org.hkijena.mcat.extension.datatypes.DerivativeMatrixData;
 import org.hkijena.mcat.extension.datatypes.HyperstackData;
 import org.hkijena.mcat.extension.datatypes.ROIData;
@@ -17,18 +22,31 @@ import ij.plugin.ImageCalculator;
 import ij.process.ImageStatistics;
 import org.hkijena.mcat.utils.api.ACAQValidityReport;
 
-public class MCATPreprocessingAlgorithm extends MCATPerSubjectAlgorithm {
+public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
+
+	private String sampleName;
+	private MCATRawDataInterface rawDataInterface;
+	private MCATPreprocessedDataInterface preprocessedDataInterface;
 	
 	private boolean saveRaw = false, saveRoi = false;
 	private int downFactor = 1;
 	private int channelAnatomy, channelOfInterest = -1;
 	private String roiName = "noROI";
 
-    public MCATPreprocessingAlgorithm(MCATRunSampleSubject subject) {
-        super(subject);
-    }
-    
-    private ImagePlus registerImages(String transformFile, ImagePlus... imps) {
+	public MCATPreprocessingAlgorithm(MCATRun run,
+									  MCATPreprocessingParameters preprocessingParameters,
+									  MCATPostprocessingParameters postprocessingParameters,
+									  MCATClusteringParameters clusteringParameters,
+									  String sampleName,
+									  MCATRawDataInterface rawDataInterface,
+									  MCATPreprocessedDataInterface preprocessedDataInterface) {
+		super(run, preprocessingParameters, postprocessingParameters, clusteringParameters);
+		this.sampleName = sampleName;
+		this.rawDataInterface = rawDataInterface;
+		this.preprocessedDataInterface = preprocessedDataInterface;
+	}
+
+	private ImagePlus registerImages(String transformFile, ImagePlus... imps) {
     	System.out.println("\tRegistering channels...");
     	MultiStackReg_ msr = new MultiStackReg_();
     	
@@ -143,20 +161,20 @@ public class MCATPreprocessingAlgorithm extends MCATPerSubjectAlgorithm {
 				derivativeMatrix[y * width + x] = pixels;
 			}
 		}
-		getSubject().getPreprocessedDataInterface().getDerivativeMatrix().setData(new DerivativeMatrixData(derivativeMatrix));
+		getPreprocessedDataInterface().getDerivativeMatrix().setData(new DerivativeMatrixData(derivativeMatrix));
     }
     
     private void saveTimeDerivativeMatrix(){
     	System.out.println("\tWriting time derivative matrix...");
-    	String identifier = getSubject().getName() + "_roi-" + roiName + "_downsampling-" + downFactor + "_anatomyCh-" + channelAnatomy + "_interestCh-" + channelOfInterest + "_";
-    	getSubject().getPreprocessedDataInterface().getDerivativeMatrix().flush(identifier);
+    	String identifier = getName() + "_roi-" + roiName + "_downsampling-" + downFactor + "_anatomyCh-" + channelAnatomy + "_interestCh-" + channelOfInterest + "_";
+    	getPreprocessedDataInterface().getDerivativeMatrix().flush(identifier);
     }
     
     private void saveImage(ImagePlus imp) {
     	System.out.println("\tWriting pre-processed image...");
-    	getSubject().getPreprocessedDataInterface().getPreprocessedImage().setData(new HyperstackData(imp));
-    	String identifier = getSubject().getName() + "_roi-" + roiName + "_downsampling-" + downFactor + "_anatomyCh-" + channelAnatomy + "_interestCh-" + channelOfInterest + "_";
-    	getSubject().getPreprocessedDataInterface().getPreprocessedImage().flush(identifier);
+    	getPreprocessedDataInterface().getPreprocessedImage().setData(new HyperstackData(imp));
+    	String identifier = getName() + "_roi-" + roiName + "_downsampling-" + downFactor + "_anatomyCh-" + channelAnatomy + "_interestCh-" + channelOfInterest + "_";
+    	getPreprocessedDataInterface().getPreprocessedImage().flush(identifier);
     }
     
     @Override
@@ -241,9 +259,9 @@ public class MCATPreprocessingAlgorithm extends MCATPerSubjectAlgorithm {
     	saveTimeDerivativeMatrix();
     	
     	if(saveRaw)
-    		getSubject().getRawDataInterface().getRawImage().flush(getSubject().getName() + "_");
+    		getRawDataInterface().getRawImage().flush(getName() + "_");
     	if(saveRoi)
-    		getSubject().getRawDataInterface().getTissueROI().flush(getSubject().getName() + "_" + roiName + "_");
+    		getRawDataInterface().getTissueROI().flush(getName() + "_" + roiName + "_");
     	
     	interest.close();
     	
@@ -257,11 +275,19 @@ public class MCATPreprocessingAlgorithm extends MCATPerSubjectAlgorithm {
 
     @Override
     public String getName() {
-        return "Preprocessing " + getSample().getName() + "/" + getSubject().getName();
+        return sampleName;
     }
 
 	@Override
 	public void reportValidity(ACAQValidityReport report) {
 
+	}
+
+	public MCATRawDataInterface getRawDataInterface() {
+		return rawDataInterface;
+	}
+
+	public MCATPreprocessedDataInterface getPreprocessedDataInterface() {
+		return preprocessedDataInterface;
 	}
 }

@@ -6,18 +6,17 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.math3.ml.clustering.DoublePoint;
-import org.hkijena.mcat.api.MCATCentroidCluster;
-import org.hkijena.mcat.api.MCATPerSampleAlgorithm;
-import org.hkijena.mcat.api.MCATPostprocessingMethod;
-import org.hkijena.mcat.api.MCATResultObject;
-import org.hkijena.mcat.api.MCATRunSample;
-import org.hkijena.mcat.api.MCATRunSampleSubject;
+import org.hkijena.mcat.api.*;
+import org.hkijena.mcat.api.datainterfaces.MCATClusteringOutput;
+import org.hkijena.mcat.api.datainterfaces.MCATClusteringOutputDataSetEntry;
+import org.hkijena.mcat.api.parameters.MCATClusteringParameters;
+import org.hkijena.mcat.api.parameters.MCATPostprocessingParameters;
+import org.hkijena.mcat.api.parameters.MCATPreprocessingParameters;
 import org.hkijena.mcat.extension.datatypes.ClusterAbundanceData;
 import org.hkijena.mcat.extension.datatypes.ClusterCentersData;
-import org.hkijena.mcat.extension.datatypes.ROIData;
 import org.hkijena.mcat.utils.api.ACAQValidityReport;
 
-public class MCATPostprocessingAlgorithm extends MCATPerSampleAlgorithm {
+public class MCATPostprocessingAlgorithm extends MCATAlgorithm {
 	
 	// compensate for rounding errors when checking which curves have net decrease/increase; omit zero line
 	private final double epsilon = 0.1;
@@ -29,12 +28,19 @@ public class MCATPostprocessingAlgorithm extends MCATPerSampleAlgorithm {
 	private int mode = 0;
 	
 	private List<MCATCentroidCluster<DoublePoint>> clusterCenters;
-	
-    public MCATPostprocessingAlgorithm(MCATRunSample sample) {
-        super(sample);
-    }
-    
-    private double[] addDoubleArrays(double[] a1, double[] a2) {
+
+	private MCATClusteringOutput clusteringOutput;
+
+	public MCATPostprocessingAlgorithm(MCATRun run,
+									   MCATPreprocessingParameters preprocessingParameters,
+									   MCATPostprocessingParameters postprocessingParameters,
+									   MCATClusteringParameters clusteringParameters, MCATClusteringOutput clusteringOutput) {
+		super(run, preprocessingParameters, postprocessingParameters, clusteringParameters);
+		this.clusteringOutput = clusteringOutput;
+	}
+
+
+	private double[] addDoubleArrays(double[] a1, double[] a2) {
     	if(a1.length != a2.length)
     		throw new IllegalArgumentException("Error in addDoubleArrays: lengths differ!");
     	
@@ -179,15 +185,12 @@ public class MCATPostprocessingAlgorithm extends MCATPerSampleAlgorithm {
     private void getAUC(ArrayList<Integer> indices, MCATPostprocessingMethod postprocessingMethod) {
     	System.out.println("Getting AUCS...");
     	
-    	Set<String> keys = getSample().getSubjects().keySet();
+    	Set<String> keys = getClusteringOutput().getDataSetEntries().keySet();
     	
     	for (String key : keys) {
-    		MCATRunSampleSubject samp = getSample().getSubjects().get(key);
+    		MCATClusteringOutputDataSetEntry samp = getClusteringOutput().getDataSetEntries().get(key);
     		
-    		ClusterAbundanceData clusterAbundance = samp.getClusterAbundanceDataInterface()
-					.getClusterAbundance().getData(ClusterAbundanceData.class);
-    		
-    		System.out.println(samp.getName());
+    		ClusterAbundanceData clusterAbundance = samp.getClusterAbundance().getData(ClusterAbundanceData.class);
     		
     		int sumAbundance = 0;
     		for (int i = 0; i < clusterAbundance.getAbundance().length; i++) {
@@ -220,24 +223,22 @@ public class MCATPostprocessingAlgorithm extends MCATPerSampleAlgorithm {
     		System.out.println("    AUC: " + auc);
     		System.out.println("    AUC cum: " + aucCum);
     		
-    		getRun().addResultObject(new MCATResultObject(samp.getName(), 
-    				samp.getParameters().getTreatment(), 
-    				samp.getRawDataInterface().getTissueROI().getData(ROIData.class).getRoi().getName(),
-    				getPreprocessingParameters().getDownsamplingFactor(),
-    				getPreprocessingParameters().getChannelOfInterest(),
-    				getClusteringParameters().getClusteringHierarchy(),
-    				getClusteringParameters().getkMeansK(),
-    				postprocessingMethod, 
-    				auc));
+//    		getRun().addResultObject(new MCATResultObject(samp.getName(),
+//    				samp.getParameters().getTreatment(),
+//    				samp.getRawDataInterface().getTissueROI().getData(ROIData.class).getRoi().getName(),
+//    				getPreprocessingParameters().getDownsamplingFactor(),
+//    				getPreprocessingParameters().getChannelOfInterest(),
+//    				getClusteringParameters().getClusteringHierarchy(),
+//    				getClusteringParameters().getkMeansK(),
+//    				postprocessingMethod,
+//    				auc));
     	}
     }
 
     @Override
     public void run() {
     	
-    	System.out.println("Postprocessing: " + getSample().getName());
-    	
-    	 clusterCenters = getSample().getClusteredDataInterface().getClusterCenters()
+    	 clusterCenters = getClusteringOutput().getClusterCenters()
 				 .getData(ClusterCentersData.class).getCentroids();
     	
     	if(getPostprocessingParameters().isAnalyzeMaxDecrease())
@@ -258,11 +259,15 @@ public class MCATPostprocessingAlgorithm extends MCATPerSampleAlgorithm {
 
     @Override
     public String getName() {
-        return "Postprocessing " + getSample().getName();
+        return "Postprocessing";
     }
 
 	@Override
 	public void reportValidity(ACAQValidityReport report) {
 
+	}
+
+	public MCATClusteringOutput getClusteringOutput() {
+		return clusteringOutput;
 	}
 }

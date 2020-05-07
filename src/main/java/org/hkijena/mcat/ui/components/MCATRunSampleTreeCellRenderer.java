@@ -1,7 +1,5 @@
 package org.hkijena.mcat.ui.components;
 
-import org.hkijena.mcat.api.MCATRunSample;
-import org.hkijena.mcat.api.MCATRunSampleSubject;
 import org.hkijena.mcat.ui.MCATResultSampleManagerUI;
 import org.hkijena.mcat.utils.UIUtils;
 

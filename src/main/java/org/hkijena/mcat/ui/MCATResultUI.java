@@ -1,12 +1,9 @@
 package org.hkijena.mcat.ui;
 
 import org.hkijena.mcat.api.MCATRun;
-import org.hkijena.mcat.api.MCATRunSample;
-import org.hkijena.mcat.api.MCATRunSampleSubject;
 import org.hkijena.mcat.utils.UIUtils;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.*;
 import java.io.IOException;

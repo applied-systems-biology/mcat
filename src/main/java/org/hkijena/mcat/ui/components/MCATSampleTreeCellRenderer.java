@@ -1,6 +1,7 @@
 package org.hkijena.mcat.ui.components;
 
-import org.hkijena.mcat.api.MCATProjectSample;
+import org.hkijena.mcat.api.MCATProjectDataSet;
+import org.hkijena.mcat.ui.MCATDataSetManagerUI;
 import org.hkijena.mcat.utils.UIUtils;
 
 import javax.swing.*;
@@ -10,7 +11,7 @@ import java.awt.*;
 import java.util.Collection;
 
 /**
- * Renders a sample in the {@link org.hkijena.mcat.ui.MCATSampleManagerUI}
+ * Renders a sample in the {@link MCATDataSetManagerUI}
  */
 public class MCATSampleTreeCellRenderer extends JLabel implements TreeCellRenderer {
 
@@ -26,13 +27,13 @@ public class MCATSampleTreeCellRenderer extends JLabel implements TreeCellRender
         }
 
         Object o = ((DefaultMutableTreeNode)value).getUserObject();
-        if(o instanceof MCATProjectSample) {
-            MCATProjectSample sample = (MCATProjectSample)o;
+        if(o instanceof MCATProjectDataSet) {
+            MCATProjectDataSet sample = (MCATProjectDataSet)o;
             setText(sample.getName());
             setIcon(new MonochromeColorIcon(UIUtils.getIconFromResources("sample-template.png"), sample.getTreatmentColor()));
         }
         else if(o instanceof Collection) {
-            Collection<MCATProjectSample> samples = (Collection<MCATProjectSample>)o;
+            Collection<MCATProjectDataSet> samples = (Collection<MCATProjectDataSet>)o;
             String treatment = samples.iterator().next().getParameters().getTreatment();
             if(treatment == null || treatment.isEmpty())
                 treatment = "<No treatment>";

@@ -1,5 +1,6 @@
 package org.hkijena.mcat.api;
 
+@Deprecated
 public class MCATResultObject {
 	
 	private String subject;

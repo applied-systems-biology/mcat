@@ -22,12 +22,12 @@ import java.awt.event.WindowListener;
 /**
  * Allows adding one or multiple samples manually by providing name(s)
  */
-public class MCATAddSamplesDialog extends JDialog implements WindowListener {
+public class MCATAddProjectDataSetsDialog extends JDialog implements WindowListener {
 
     private MCATWorkbenchUI workbenchUI;
     private JTextArea samplesInput;
 
-    public MCATAddSamplesDialog(MCATWorkbenchUI workbenchUI) {
+    public MCATAddProjectDataSetsDialog(MCATWorkbenchUI workbenchUI) {
         super(workbenchUI);
         this.workbenchUI = workbenchUI;
         initialize();
@@ -37,10 +37,10 @@ public class MCATAddSamplesDialog extends JDialog implements WindowListener {
     private void initialize() {
         setSize(400, 300);
         getContentPane().setLayout(new BorderLayout(8, 8));
-        setTitle("Add samples");
+        setTitle("Add data sets");
         setIconImage(UIUtils.getIconFromResources("module.png").getImage());
 
-        JTextArea infoArea = new JTextArea("Please insert the name of the sample. You can also add multiple samples at once by writing multiple lines. Each line represents one sample.");
+        JTextArea infoArea = new JTextArea("Please insert the name of the data set. You can also add multiple data sets at once by writing multiple lines. Each line represents one data set.");
         infoArea.setEditable(false);
         infoArea.setOpaque(false);
         infoArea.setBorder(null);

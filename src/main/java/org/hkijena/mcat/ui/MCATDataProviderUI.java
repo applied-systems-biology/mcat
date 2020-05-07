@@ -1,7 +1,7 @@
 package org.hkijena.mcat.ui;
 
 import org.hkijena.mcat.api.MCATDataProvider;
-import org.hkijena.mcat.api.MCATProjectSample;
+import org.hkijena.mcat.api.MCATProjectDataSet;
 
 import javax.swing.*;
 
@@ -9,15 +9,15 @@ import javax.swing.*;
  * Base class for any {@link MCATDataProvider} UI
  */
 public abstract class MCATDataProviderUI extends JPanel {
-    private MCATProjectSample sample;
+    private MCATProjectDataSet sample;
     private MCATDataProvider dataProvider;
 
-    protected MCATDataProviderUI(MCATProjectSample sample, MCATDataProvider dataProvider) {
+    protected MCATDataProviderUI(MCATProjectDataSet sample, MCATDataProvider dataProvider) {
         this.sample = sample;
         this.dataProvider = dataProvider;
     }
 
-    public MCATProjectSample getSample() {
+    public MCATProjectDataSet getSample() {
         return sample;
     }
 

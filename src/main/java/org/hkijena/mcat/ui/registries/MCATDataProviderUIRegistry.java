@@ -1,7 +1,7 @@
 package org.hkijena.mcat.ui.registries;
 
 import org.hkijena.mcat.api.MCATDataProvider;
-import org.hkijena.mcat.api.MCATProjectSample;
+import org.hkijena.mcat.api.MCATProjectDataSet;
 import org.hkijena.mcat.api.registries.MCATDataTypeRegistry;
 import org.hkijena.mcat.extension.dataproviders.api.ClusterCentersFromFileProvider;
 import org.hkijena.mcat.extension.dataproviders.api.DerivativeMatrixFromFileProvider;
@@ -33,10 +33,10 @@ public class MCATDataProviderUIRegistry {
         registry.put(ClusterCentersFromFileProvider.class, ClusterCentersFromFileDataProviderUI.class);
     }
 
-    public <T extends MCATDataProviderUI> T getUIFor(MCATProjectSample sample, MCATDataProvider provider) {
+    public <T extends MCATDataProviderUI> T getUIFor(MCATProjectDataSet sample, MCATDataProvider provider) {
         Class<? extends MCATDataProviderUI> uiClass = registry.get(provider.getClass());
         try {
-            return (T)uiClass.getConstructor(MCATProjectSample.class, provider.getClass()).newInstance(sample, provider);
+            return (T)uiClass.getConstructor(MCATProjectDataSet.class, provider.getClass()).newInstance(sample, provider);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             throw new RuntimeException(e);
         }

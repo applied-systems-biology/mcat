@@ -1,8 +1,8 @@
 package org.hkijena.mcat.ui;
 
 import com.google.common.eventbus.Subscribe;
-import org.hkijena.mcat.api.MCATProjectSample;
-import org.hkijena.mcat.api.events.MCATSampleRenamedEvent;
+import org.hkijena.mcat.api.MCATProjectDataSet;
+import org.hkijena.mcat.api.events.MCATDataSetRenamedEvent;
 import org.hkijena.mcat.ui.components.FormPanel;
 import org.hkijena.mcat.ui.components.MarkdownDocument;
 import org.hkijena.mcat.utils.UIUtils;
@@ -13,22 +13,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * UI for a {@link MCATProjectSample}
+ * UI for a {@link MCATProjectDataSet}
  */
-public class MCATSampleUI extends MCATUIPanel {
+public class MCATDataSetUI extends MCATUIPanel {
 
     private static final String COMPONENTS_GENERAL = "General";
     private static final String COMPONENTS_RAW_DATA = "Raw data input";
     private static final String COMPONENTS_PREPROCESSED_DATA = "Preprocessed data input";
     private static final String COMPONENTS_CLUSTERED_DATA = "Clustered data input";
 
-    private MCATProjectSample sample;
+    private MCATProjectDataSet sample;
     private JLabel sampleTitle;
     private FormPanel formPanel;
 
     private List<MCATDataSlotUI> slotUIList = new ArrayList<>();
 
-    public MCATSampleUI(MCATWorkbenchUI workbenchUI, MCATProjectSample sample) {
+    public MCATDataSetUI(MCATWorkbenchUI workbenchUI, MCATProjectDataSet sample) {
         super(workbenchUI);
         this.sample = sample;
         initialize();
@@ -135,13 +135,13 @@ public class MCATSampleUI extends MCATUIPanel {
     }
 
     @Subscribe
-    public void onSampleRenamed(MCATSampleRenamedEvent event) {
+    public void onSampleRenamed(MCATDataSetRenamedEvent event) {
         if(event.getSample() == sample) {
             sampleTitle.setText(sample.getName());
         }
     }
 
-    public MCATProjectSample getSample() {
+    public MCATProjectDataSet getSample() {
         return sample;
     }
 }

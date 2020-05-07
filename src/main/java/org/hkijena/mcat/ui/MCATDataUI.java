@@ -1,25 +1,25 @@
 package org.hkijena.mcat.ui;
 
 import com.google.common.eventbus.Subscribe;
-import org.hkijena.mcat.api.MCATProjectSample;
-import org.hkijena.mcat.api.events.MCATSampleRemovedEvent;
+import org.hkijena.mcat.api.MCATProjectDataSet;
+import org.hkijena.mcat.api.events.MCATDataSetRemovedEvent;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.*;
 
 /**
- * UI that contains a {@link MCATSampleManagerUI} and allows changing sample settings
+ * UI that contains a {@link MCATDataSetManagerUI} and allows changing sample settings
  */
 public class MCATDataUI extends MCATUIPanel {
 
-    private MCATSampleManagerUI sampleManagerUI;
-    private MCATProjectSample currentlyDisplayedSample;
+    private MCATDataSetManagerUI sampleManagerUI;
+    private MCATProjectDataSet currentlyDisplayedSample;
     private JSplitPane splitPane;
 
     public MCATDataUI(MCATWorkbenchUI workbenchUI) {
         super(workbenchUI);
-        sampleManagerUI = new MCATSampleManagerUI(workbenchUI);
+        sampleManagerUI = new MCATDataSetManagerUI(workbenchUI);
         initialize();
         getProject().getEventBus().register(this);
     }
@@ -33,21 +33,21 @@ public class MCATDataUI extends MCATUIPanel {
             Object pathComponent = e.getPath().getLastPathComponent();
             if(pathComponent != null) {
                 DefaultMutableTreeNode nd = (DefaultMutableTreeNode) pathComponent;
-                if(nd.getUserObject() instanceof MCATProjectSample) {
+                if(nd.getUserObject() instanceof MCATProjectDataSet) {
                     if(currentlyDisplayedSample != nd.getUserObject()) {
-                        setCurrentlyDisplayedSample((MCATProjectSample)nd.getUserObject());
+                        setCurrentlyDisplayedSample((MCATProjectDataSet)nd.getUserObject());
                     }
                 }
             }
         });
     }
 
-    private void setCurrentlyDisplayedSample(MCATProjectSample sample) {
+    private void setCurrentlyDisplayedSample(MCATProjectDataSet sample) {
         if(currentlyDisplayedSample == sample)
             return;
         currentlyDisplayedSample = sample;
         if(sample != null) {
-            splitPane.setRightComponent(new MCATSampleUI(getWorkbenchUI(), sample));
+            splitPane.setRightComponent(new MCATDataSetUI(getWorkbenchUI(), sample));
         }
         else {
             splitPane.setRightComponent(new JPanel());
@@ -55,7 +55,7 @@ public class MCATDataUI extends MCATUIPanel {
     }
 
     @Subscribe
-    public void onCurrentlyDisplayedSampleDeleted(MCATSampleRemovedEvent event) {
+    public void onCurrentlyDisplayedSampleDeleted(MCATDataSetRemovedEvent event) {
         if(event.getSample() == currentlyDisplayedSample) {
             setCurrentlyDisplayedSample(null);
         }

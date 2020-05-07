@@ -10,9 +10,9 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableBiMap;
 import com.google.common.eventbus.EventBus;
-import org.hkijena.mcat.api.events.MCATSampleAddedEvent;
-import org.hkijena.mcat.api.events.MCATSampleRemovedEvent;
-import org.hkijena.mcat.api.events.MCATSampleRenamedEvent;
+import org.hkijena.mcat.api.events.MCATDataSetAddedEvent;
+import org.hkijena.mcat.api.events.MCATDataSetRemovedEvent;
+import org.hkijena.mcat.api.events.MCATDataSetRenamedEvent;
 import org.hkijena.mcat.api.parameters.MCATParametersTable;
 import org.hkijena.mcat.utils.JsonUtils;
 
@@ -30,7 +30,7 @@ public class MCATProject {
 
     private EventBus eventBus = new EventBus();
     private MCATParametersTable parametersTable = new MCATParametersTable();
-    private BiMap<String, MCATProjectSample> samples = HashBiMap.create();
+    private BiMap<String, MCATProjectDataSet> samples = HashBiMap.create();
 
     public MCATProject() {
     }
@@ -39,13 +39,13 @@ public class MCATProject {
         return eventBus;
     }
 
-    public BiMap<String, MCATProjectSample> getSamples() {
+    public BiMap<String, MCATProjectDataSet> getSamples() {
         return ImmutableBiMap.copyOf(samples);
     }
 
-    public Map<String, List<MCATProjectSample>> getSamplesByTreatment() {
-        Map<String, List<MCATProjectSample>> result = new HashMap<>();
-        for(MCATProjectSample sample : samples.values()) {
+    public Map<String, List<MCATProjectDataSet>> getSamplesByTreatment() {
+        Map<String, List<MCATProjectDataSet>> result = new HashMap<>();
+        for(MCATProjectDataSet sample : samples.values()) {
             if(!result.containsKey(sample.getParameters().getTreatment())) {
                 result.put(sample.getParameters().getTreatment(), new ArrayList<>());
             }
@@ -54,9 +54,9 @@ public class MCATProject {
         return result;
     }
 
-    public Map<String, Set<MCATProjectSample>> getSamplesGroupedByTreatment() {
-        Map<String, Set<MCATProjectSample>> result = new HashMap<>();
-        for(MCATProjectSample sample : samples.values()) {
+    public Map<String, Set<MCATProjectDataSet>> getSamplesGroupedByTreatment() {
+        Map<String, Set<MCATProjectDataSet>> result = new HashMap<>();
+        for(MCATProjectDataSet sample : samples.values()) {
             if(!result.containsKey(sample.getParameters().getTreatment())) {
                 result.put(sample.getParameters().getTreatment(), new HashSet<>());
             }
@@ -65,29 +65,29 @@ public class MCATProject {
         return result;
     }
 
-    public MCATProjectSample addSample(String sampleName) {
+    public MCATProjectDataSet addSample(String sampleName) {
         if(samples.containsKey(sampleName)) {
             return samples.get(sampleName);
         }
         else {
-            MCATProjectSample sample = new MCATProjectSample(this);
+            MCATProjectDataSet sample = new MCATProjectDataSet(this);
             samples.put(sampleName, sample);
-            eventBus.post(new MCATSampleAddedEvent(sample));
+            eventBus.post(new MCATDataSetAddedEvent(sample));
             return sample;
         }
     }
 
-    public boolean removeSample(MCATProjectSample sample) {
+    public boolean removeSample(MCATProjectDataSet sample) {
         String name = sample.getName();
         if(samples.containsKey(name)) {
             samples.remove(name);
-            eventBus.post(new MCATSampleRemovedEvent(sample));
+            eventBus.post(new MCATDataSetRemovedEvent(sample));
             return true;
         }
         return false;
     }
 
-    public boolean renameSample(MCATProjectSample sample, String name) {
+    public boolean renameSample(MCATProjectDataSet sample, String name) {
         if(name == null)
             return false;
         name = name.trim();
@@ -95,13 +95,13 @@ public class MCATProject {
             return false;
         samples.remove(sample.getName());
         samples.put(name, sample);
-        eventBus.post(new MCATSampleRenamedEvent(sample));
+        eventBus.post(new MCATDataSetRenamedEvent(sample));
         return true;
     }
 
     public Set<String> getKnownTreatments() {
         Set<String> result = new HashSet<>();
-        for(MCATProjectSample sample : samples.values()) {
+        for(MCATProjectDataSet sample : samples.values()) {
             if(sample.getParameters().getTreatment() != null)
                 result.add(sample.getParameters().getTreatment());
         }
