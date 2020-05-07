@@ -2,8 +2,8 @@ package org.hkijena.mcat.api.datainterfaces;
 
 import org.hkijena.mcat.api.MCATDataInterface;
 import org.hkijena.mcat.api.MCATDataSlot;
-import org.hkijena.mcat.api.dataslots.ClusterCentersDataSlot;
-import org.hkijena.mcat.api.dataslots.HyperstackDataSlot;
+import org.hkijena.mcat.extension.datatypes.ClusterCentersData;
+import org.hkijena.mcat.extension.datatypes.HyperstackData;
 
 import java.util.Arrays;
 import java.util.List;
@@ -12,39 +12,34 @@ import java.util.List;
  * Organizes clustered data
  */
 public class MCATClusteredDataInterface implements MCATDataInterface {
-    private ClusterCentersDataSlot clusterCenters = new ClusterCentersDataSlot("cluster-centers");
-    private HyperstackDataSlot clusterImages = new HyperstackDataSlot("cluster-image");
-    
-    //added
-    private HyperstackDataSlot singleClusterImage = new HyperstackDataSlot("single-cluster-image");
+    private MCATDataSlot clusterCenters = new MCATDataSlot("cluster-centers", ClusterCentersData.class);
+    private MCATDataSlot clusterImages = new MCATDataSlot("cluster-image", HyperstackData.class);
+    private MCATDataSlot singleClusterImage = new MCATDataSlot("single-cluster-image", HyperstackData.class);
 
     public MCATClusteredDataInterface() {
 
     }
 
     public MCATClusteredDataInterface(MCATClusteredDataInterface other) {
-        this.clusterCenters = new ClusterCentersDataSlot(other.getClusterCenters());
-        this.clusterImages = new HyperstackDataSlot(other.getClusterImages());
-        
-        //added
-        this.singleClusterImage = new HyperstackDataSlot(other.getSingleClusterImage());
+        this.clusterCenters = new MCATDataSlot(other.getClusterCenters());
+        this.clusterImages = new MCATDataSlot(other.getClusterImages());
+        this.singleClusterImage = new MCATDataSlot(other.getSingleClusterImage());
     }
 
-    public ClusterCentersDataSlot getClusterCenters() {
+    public MCATDataSlot getClusterCenters() {
         return clusterCenters;
     }
 
-    public HyperstackDataSlot getClusterImages() {
+    public MCATDataSlot getClusterImages() {
         return clusterImages;
     }
-    
-    //added
-    public HyperstackDataSlot getSingleClusterImage() {
+
+    public MCATDataSlot getSingleClusterImage() {
     	return singleClusterImage;
     }
 
     @Override
-    public List<MCATDataSlot<?>> getSlots() {
-        return Arrays.asList(clusterCenters, clusterImages);
+    public List<MCATDataSlot> getSlots() {
+        return Arrays.asList(clusterCenters, clusterImages, singleClusterImage);
     }
 }

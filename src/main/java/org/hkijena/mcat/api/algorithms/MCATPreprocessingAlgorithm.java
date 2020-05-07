@@ -2,16 +2,11 @@ package org.hkijena.mcat.api.algorithms;
 
 
 
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
-import java.util.stream.IntStream;
-
 import org.hkijena.mcat.api.MCATPerSubjectAlgorithm;
 import org.hkijena.mcat.api.MCATRunSampleSubject;
-import org.hkijena.mcat.api.MCATValidityReport;
-import org.hkijena.mcat.api.datatypes.DerivativeMatrixData;
-import org.hkijena.mcat.api.datatypes.HyperstackData;
-import org.hkijena.mcat.api.datatypes.ROIData;
+import org.hkijena.mcat.extension.datatypes.DerivativeMatrixData;
+import org.hkijena.mcat.extension.datatypes.HyperstackData;
+import org.hkijena.mcat.extension.datatypes.ROIData;
 
 import de.embl.cmci.registration.MultiStackReg_;
 import ij.IJ;
@@ -20,6 +15,7 @@ import ij.ImageStack;
 import ij.gui.Roi;
 import ij.plugin.ImageCalculator;
 import ij.process.ImageStatistics;
+import org.hkijena.mcat.utils.api.ACAQValidityReport;
 
 public class MCATPreprocessingAlgorithm extends MCATPerSubjectAlgorithm {
 	
@@ -72,7 +68,8 @@ public class MCATPreprocessingAlgorithm extends MCATPerSubjectAlgorithm {
     
     private ImagePlus setOuterPixels(ImagePlus imp) {
     	System.out.println("\tSetting pixels outside ROI to zero...");
-    	Roi r = getRawDataInterface().getTissueROI().getCurrentProvider().get().getRoi();
+    	getRawDataInterface().getTissueROI().resetFromCurrentProvider();
+    	Roi r = getRawDataInterface().getTissueROI().getData(ROIData.class).getRoi();
     	if(r == null) {
     		System.out.println("WARNING: no ROI specified, background will not be set to zero!");
     		return imp;
@@ -164,8 +161,8 @@ public class MCATPreprocessingAlgorithm extends MCATPerSubjectAlgorithm {
     
     @Override
     public void run() {
-    	ImagePlus imp = getRawDataInterface().getRawImage().getCurrentProvider().get().getImage();
-    	getRawDataInterface().getRawImage().setData(new HyperstackData(imp));
+		getRawDataInterface().getRawImage().resetFromCurrentProvider();
+    	ImagePlus imp = getRawDataInterface().getRawImage().getData(HyperstackData.class).getImage();
     	
     	saveRaw = getSample().getRun().getPreprocessingParameters().isSaveRawImage();
     	saveRoi = getSample().getRun().getPreprocessingParameters().isSaveRoi();
@@ -263,8 +260,8 @@ public class MCATPreprocessingAlgorithm extends MCATPerSubjectAlgorithm {
         return "Preprocessing " + getSample().getName() + "/" + getSubject().getName();
     }
 
-    @Override
-    public MCATValidityReport getValidityReport() {
-        return new MCATValidityReport(this, "Preprocessing", true, "");
-    }
+	@Override
+	public void reportValidity(ACAQValidityReport report) {
+
+	}
 }

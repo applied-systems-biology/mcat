@@ -1,7 +1,7 @@
 package org.hkijena.mcat.ui.dataproviders;
 
 import org.hkijena.mcat.api.MCATProjectSample;
-import org.hkijena.mcat.api.dataproviders.DerivativeMatrixFromFileProvider;
+import org.hkijena.mcat.extension.dataproviders.DerivativeMatrixFromFileProvider;
 import org.hkijena.mcat.ui.MCATDataProviderUI;
 import org.hkijena.mcat.ui.components.FileSelection;
 

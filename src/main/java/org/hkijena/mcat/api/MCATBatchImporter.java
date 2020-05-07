@@ -1,7 +1,7 @@
 package org.hkijena.mcat.api;
 
-import org.hkijena.mcat.api.dataproviders.HyperstackFromTifDataProvider;
-import org.hkijena.mcat.api.dataproviders.ROIFromFileDataProvider;
+import org.hkijena.mcat.extension.dataproviders.HyperstackFromTifDataProvider;
+import org.hkijena.mcat.extension.dataproviders.ROIFromFileDataProvider;
 
 import java.io.IOException;
 import java.nio.file.Files;

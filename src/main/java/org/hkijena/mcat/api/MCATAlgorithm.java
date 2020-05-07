@@ -1,10 +1,12 @@
 package org.hkijena.mcat.api;
 
+import org.hkijena.mcat.utils.api.ACAQValidatable;
+
 /**
  * Base class for an algorithm node
  * Please use the provided properties to access data and parameters to later allow easy extension to hyperparameters
  */
-public abstract class MCATAlgorithm implements MCATValidatable, Runnable {
+public abstract class MCATAlgorithm implements ACAQValidatable, Runnable {
 
     private MCATRun run;
 

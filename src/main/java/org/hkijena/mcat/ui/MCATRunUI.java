@@ -1,7 +1,6 @@
 package org.hkijena.mcat.ui;
 
 import org.hkijena.mcat.api.MCATRun;
-import org.hkijena.mcat.api.MCATValidityReport;
 import org.hkijena.mcat.ui.components.FileSelection;
 import org.hkijena.mcat.ui.components.FormPanel;
 import org.hkijena.mcat.ui.components.MarkdownDocument;

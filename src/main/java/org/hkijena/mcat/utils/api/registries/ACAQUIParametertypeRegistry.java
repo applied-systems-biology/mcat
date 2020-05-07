@@ -3,7 +3,7 @@ package org.hkijena.mcat.utils.api.registries;
 import org.hkijena.mcat.utils.api.ACAQDefaultDocumentation;
 import org.hkijena.mcat.utils.api.ACAQDocumentation;
 import org.hkijena.mcat.utils.api.parameters.ACAQParameterAccess;
-import org.hkijena.mcat.utils.extension.parameters.StandardParameterEditorsExtension;
+import org.hkijena.mcat.extension.parameters.StandardParameterEditorsExtension;
 import org.hkijena.mcat.utils.ui.parameters.ACAQParameterEditorUI;
 import org.hkijena.mcat.utils.ui.parameters.ACAQParameterGeneratorUI;
 import org.scijava.Context;
@@ -27,7 +27,7 @@ public class ACAQUIParametertypeRegistry {
     /**
      * New instance
      */
-    public ACAQUIParametertypeRegistry() {
+    private ACAQUIParametertypeRegistry() {
 
     }
 

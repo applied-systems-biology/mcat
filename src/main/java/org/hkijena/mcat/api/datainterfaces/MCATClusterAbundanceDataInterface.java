@@ -5,25 +5,25 @@ import java.util.List;
 
 import org.hkijena.mcat.api.MCATDataInterface;
 import org.hkijena.mcat.api.MCATDataSlot;
-import org.hkijena.mcat.api.dataslots.ClusterAbundanceDataSlot;
+import org.hkijena.mcat.extension.datatypes.ClusterAbundanceData;
 
 public class MCATClusterAbundanceDataInterface implements MCATDataInterface  {
-	private ClusterAbundanceDataSlot clusterAbundance = new ClusterAbundanceDataSlot("cluster-abundance");
+	private MCATDataSlot clusterAbundance = new MCATDataSlot("cluster-abundance", ClusterAbundanceData.class);
 	
 	public MCATClusterAbundanceDataInterface() {
 
 	}
 
 	public MCATClusterAbundanceDataInterface(MCATClusterAbundanceDataInterface other) {
-		this.clusterAbundance = new ClusterAbundanceDataSlot(other.getClusterAbundance());
+		this.clusterAbundance = new MCATDataSlot(other.getClusterAbundance());
 	}
 
-	public ClusterAbundanceDataSlot getClusterAbundance() {
+	public MCATDataSlot getClusterAbundance() {
 		return clusterAbundance;
 	}
 
 	@Override
-	public List<MCATDataSlot<?>> getSlots() {
+	public List<MCATDataSlot> getSlots() {
 		return Arrays.asList(clusterAbundance);
 	}
 }

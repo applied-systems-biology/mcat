@@ -2,8 +2,8 @@ package org.hkijena.mcat.api.datainterfaces;
 
 import org.hkijena.mcat.api.MCATDataInterface;
 import org.hkijena.mcat.api.MCATDataSlot;
-import org.hkijena.mcat.api.dataslots.HyperstackDataSlot;
-import org.hkijena.mcat.api.dataslots.ROIDataSlot;
+import org.hkijena.mcat.extension.datatypes.HyperstackData;
+import org.hkijena.mcat.extension.datatypes.ROIData;
 
 import java.util.Arrays;
 import java.util.List;
@@ -13,28 +13,28 @@ import java.util.List;
  */
 public class MCATRawDataInterface implements MCATDataInterface {
 
-    private HyperstackDataSlot rawImage = new HyperstackDataSlot("raw-image");
-    private ROIDataSlot tissueROI = new ROIDataSlot("tissue-roi");
+    private MCATDataSlot rawImage = new MCATDataSlot("raw-image", HyperstackData.class);
+    private MCATDataSlot tissueROI = new MCATDataSlot("tissue-roi", ROIData.class);
 
     public MCATRawDataInterface() {
 
     }
 
     public MCATRawDataInterface(MCATRawDataInterface other) {
-        this.rawImage = new HyperstackDataSlot(other.rawImage);
-        this.tissueROI = new ROIDataSlot(other.tissueROI);
+        this.rawImage = new MCATDataSlot(other.rawImage);
+        this.tissueROI = new MCATDataSlot(other.tissueROI);
     }
 
-    public HyperstackDataSlot getRawImage() {
+    public MCATDataSlot getRawImage() {
         return rawImage;
     }
 
-    public ROIDataSlot getTissueROI() {
+    public MCATDataSlot getTissueROI() {
         return tissueROI;
     }
 
     @Override
-    public List<MCATDataSlot<?>> getSlots() {
+    public List<MCATDataSlot> getSlots() {
         return Arrays.asList(rawImage, tissueROI);
     }
 }

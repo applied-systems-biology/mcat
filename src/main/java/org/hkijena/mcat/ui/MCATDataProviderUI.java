@@ -9,7 +9,7 @@ import javax.swing.*;
  * Base class for any {@link MCATDataProvider} UI
  * @param <T>
  */
-public abstract class MCATDataProviderUI <T extends MCATDataProvider<?>> extends JPanel {
+public abstract class MCATDataProviderUI <T extends MCATDataProvider> extends JPanel {
     private MCATProjectSample sample;
     private T dataProvider;
 

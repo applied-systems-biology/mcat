@@ -2,10 +2,10 @@ package org.hkijena.mcat.ui.registries;
 
 import org.hkijena.mcat.api.MCATDataProvider;
 import org.hkijena.mcat.api.MCATProjectSample;
-import org.hkijena.mcat.api.dataproviders.ClusterCentersFromFileProvider;
-import org.hkijena.mcat.api.dataproviders.DerivativeMatrixFromFileProvider;
-import org.hkijena.mcat.api.dataproviders.HyperstackFromTifDataProvider;
-import org.hkijena.mcat.api.dataproviders.ROIFromFileDataProvider;
+import org.hkijena.mcat.extension.dataproviders.ClusterCentersFromFileProvider;
+import org.hkijena.mcat.extension.dataproviders.DerivativeMatrixFromFileProvider;
+import org.hkijena.mcat.extension.dataproviders.HyperstackFromTifDataProvider;
+import org.hkijena.mcat.extension.dataproviders.ROIFromFileDataProvider;
 import org.hkijena.mcat.ui.MCATDataProviderUI;
 import org.hkijena.mcat.ui.dataproviders.ClusterCentersFromFileDataProviderUI;
 import org.hkijena.mcat.ui.dataproviders.DerivationMatrixFromFileDataProviderUI;
@@ -22,7 +22,7 @@ import java.util.Map;
 public class MCATDataProviderUIRegistry {
 
     private static MCATDataProviderUIRegistry instance;
-    private Map<Class<? extends MCATDataProvider<?>>, Class<? extends MCATDataProviderUI<?>>> registry = new HashMap<>();
+    private Map<Class<? extends MCATDataProvider>, Class<? extends MCATDataProviderUI<?>>> registry = new HashMap<>();
 
     private MCATDataProviderUIRegistry() {
         // Register here
@@ -32,7 +32,7 @@ public class MCATDataProviderUIRegistry {
         registry.put(ClusterCentersFromFileProvider.class, ClusterCentersFromFileDataProviderUI.class);
     }
 
-    public <T extends MCATDataProviderUI<?>> T getUIFor(MCATProjectSample sample, MCATDataProvider<?> provider) {
+    public <T extends MCATDataProviderUI<?>> T getUIFor(MCATProjectSample sample, MCATDataProvider provider) {
         Class<? extends MCATDataProviderUI<?>> uiClass = registry.get(provider.getClass());
         try {
             return (T)uiClass.getConstructor(MCATProjectSample.class, provider.getClass()).newInstance(sample, provider);

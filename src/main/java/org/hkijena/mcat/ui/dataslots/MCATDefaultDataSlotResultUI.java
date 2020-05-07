@@ -1,7 +1,7 @@
 package org.hkijena.mcat.ui.dataslots;
 
 import org.hkijena.mcat.api.MCATDataSlot;
-import org.hkijena.mcat.api.dataproviders.FileDataProvider;
+import org.hkijena.mcat.extension.dataproviders.FileDataProvider;
 import org.hkijena.mcat.ui.MCATResultDataSlotUI;
 import org.hkijena.mcat.utils.UIUtils;
 
@@ -18,7 +18,7 @@ public class MCATDefaultDataSlotResultUI extends MCATResultDataSlotUI<MCATDataSl
     }
 
     private Path getStoragePath() {
-        if(getSlot().getCurrentProvider() != null && getSlot().getCurrentProvider().providesData()) {
+        if(getSlot().getCurrentProvider() != null && getSlot().getCurrentProvider().isValid()) {
             if(getSlot().getCurrentProvider() instanceof FileDataProvider<?>) {
                 FileDataProvider<?> provider = (FileDataProvider<?>)getSlot().getCurrentProvider();
                 return provider.getFilePath().getParent();

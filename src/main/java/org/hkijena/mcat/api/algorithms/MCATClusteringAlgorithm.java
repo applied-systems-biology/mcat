@@ -3,7 +3,6 @@ package org.hkijena.mcat.api.algorithms;
 import java.awt.Color;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -21,16 +20,16 @@ import org.hkijena.mcat.api.MCATCentroidCluster;
 import org.hkijena.mcat.api.MCATPerSampleAlgorithm;
 import org.hkijena.mcat.api.MCATRunSample;
 import org.hkijena.mcat.api.MCATRunSampleSubject;
-import org.hkijena.mcat.api.MCATValidityReport;
-import org.hkijena.mcat.api.datatypes.ClusterAbundanceData;
-import org.hkijena.mcat.api.datatypes.ClusterCentersData;
-import org.hkijena.mcat.api.datatypes.HyperstackData;
+import org.hkijena.mcat.extension.datatypes.ClusterAbundanceData;
+import org.hkijena.mcat.extension.datatypes.ClusterCentersData;
+import org.hkijena.mcat.extension.datatypes.HyperstackData;
 
 import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.plugin.SubstackMaker;
-import ij.process.ImageConverter;
+import org.hkijena.mcat.extension.datatypes.ROIData;
+import org.hkijena.mcat.utils.api.ACAQValidityReport;
 
 public class MCATClusteringAlgorithm extends MCATPerSampleAlgorithm {
 	
@@ -85,7 +84,7 @@ public class MCATClusteringAlgorithm extends MCATPerSampleAlgorithm {
     		System.out.println("\t\tSubject: " + samp.getName());
     		names[i] = samp.getName();
 
-    		ImagePlus imp = samp.getPreprocessedDataInterface().getPreprocessedImage().getData().getImage();
+    		ImagePlus imp = samp.getPreprocessedDataInterface().getPreprocessedImage().getData(HyperstackData.class).getImage();
     		ImageStack is = imp.getStack();
     		
     		int width = imp.getWidth();
@@ -146,7 +145,7 @@ public class MCATClusteringAlgorithm extends MCATPerSampleAlgorithm {
     		
     		samp.getClusterAbundanceDataInterface().getClusterAbundance().setData(new ClusterAbundanceData(centroids, new int[centroids.size()]));
     		
-    		ImagePlus imp = samp.getPreprocessedDataInterface().getPreprocessedImage().getData().getImage();
+    		ImagePlus imp = samp.getPreprocessedDataInterface().getPreprocessedImage().getData(HyperstackData.class).getImage();
 		
     		ImageStack is = imp.getStack();
     		int w = imp.getWidth();
@@ -177,7 +176,7 @@ public class MCATClusteringAlgorithm extends MCATPerSampleAlgorithm {
 						System.err.println("No closest cluster found for this pixel position (x=" + x + "; y=" + y + ")");
 					}
 					
-					samp.getClusterAbundanceDataInterface().getClusterAbundance().getData().incrementAbundance(closestCluster);
+					samp.getClusterAbundanceDataInterface().getClusterAbundance().getData(ClusterAbundanceData.class).incrementAbundance(closestCluster);
 					centroids.get(closestCluster).addMember();
 					int colIndex = Math.round(colors.length/k) * closestCluster;
 					clusteredPixels[y*w+x] = hexToRGB(colors[colIndex]);
@@ -185,7 +184,7 @@ public class MCATClusteringAlgorithm extends MCATPerSampleAlgorithm {
 			}
     		
     		String identifier = samp.getName() + "_roi-" + 
-    				samp.getRawDataInterface().getTissueROI().getData().getRoi().getName() + 
+    				samp.getRawDataInterface().getTissueROI().getData(ROIData.class).getRoi().getName() +
     				"_downsampling-" + getSample().getRun().getPreprocessingParameters().getDownsamplingFactor() +
         			"_anatomyCh-" + getSample().getRun().getPreprocessingParameters().getAnatomicChannel() + 
         			"_interestCh-" + getSample().getRun().getPreprocessingParameters().getChannelOfInterest() +
@@ -252,8 +251,8 @@ public class MCATClusteringAlgorithm extends MCATPerSampleAlgorithm {
         return "Clustering " + getSample().getName();
     }
 
-    @Override
-    public MCATValidityReport getValidityReport() {
-        return new MCATValidityReport(this, "Clustering", true, "");
-    }
+	@Override
+	public void reportValidity(ACAQValidityReport report) {
+
+	}
 }

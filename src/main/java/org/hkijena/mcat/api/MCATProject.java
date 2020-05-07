@@ -11,14 +11,11 @@ import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.eventbus.EventBus;
-import org.hkijena.mcat.api.dataproviders.FileDataProvider;
+import org.hkijena.mcat.extension.dataproviders.FileDataProvider;
 import org.hkijena.mcat.api.events.MCATSampleAddedEvent;
 import org.hkijena.mcat.api.events.MCATSampleRemovedEvent;
 import org.hkijena.mcat.api.events.MCATSampleRenamedEvent;
-import org.hkijena.mcat.api.parameters.MCATClusteringParameters;
 import org.hkijena.mcat.api.parameters.MCATParametersTable;
-import org.hkijena.mcat.api.parameters.MCATPostprocessingParameters;
-import org.hkijena.mcat.api.parameters.MCATPreprocessingParameters;
 import org.hkijena.mcat.utils.JsonUtils;
 
 import java.io.IOException;
