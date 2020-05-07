@@ -7,7 +7,7 @@ public abstract class MCATPerSampleAlgorithm extends MCATAlgorithm {
     private MCATRunSample sample;
 
     public MCATPerSampleAlgorithm(MCATRunSample sample) {
-        super(sample.getRun());
+        super(sample.getRun(), preprocessingParameters, postprocessingParameters, clusteringParameters);
         this.sample = sample;
     }
 

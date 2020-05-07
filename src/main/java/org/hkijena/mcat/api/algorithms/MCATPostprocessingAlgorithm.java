@@ -194,7 +194,7 @@ public class MCATPostprocessingAlgorithm extends MCATPerSampleAlgorithm {
 				sumAbundance += clusterAbundance.getAbundance()[i];
 			}
     		
-    		double[] weightedAverage = new double[getRun().getClusteringParameters().getMinLength() - 1];
+    		double[] weightedAverage = new double[getClusteringParameters().getMinLength() - 1];
     		for (Integer index : indices) {
     			int abun = clusterAbundance.getAbundance()[index];
 				
@@ -223,10 +223,10 @@ public class MCATPostprocessingAlgorithm extends MCATPerSampleAlgorithm {
     		getRun().addResultObject(new MCATResultObject(samp.getName(), 
     				samp.getParameters().getTreatment(), 
     				samp.getRawDataInterface().getTissueROI().getData(ROIData.class).getRoi().getName(),
-    				getRun().getPreprocessingParameters().getDownsamplingFactor(), 
-    				getRun().getPreprocessingParameters().getChannelOfInterest(), 
-    				getRun().getClusteringParameters().getClusteringHierarchy(), 
-    				getRun().getClusteringParameters().getkMeansK(), 
+    				getPreprocessingParameters().getDownsamplingFactor(),
+    				getPreprocessingParameters().getChannelOfInterest(),
+    				getClusteringParameters().getClusteringHierarchy(),
+    				getClusteringParameters().getkMeansK(),
     				postprocessingMethod, 
     				auc));
     	}
@@ -240,16 +240,16 @@ public class MCATPostprocessingAlgorithm extends MCATPerSampleAlgorithm {
     	 clusterCenters = getSample().getClusteredDataInterface().getClusterCenters()
 				 .getData(ClusterCentersData.class).getCentroids();
     	
-    	if(getSample().getRun().getPostprocessingParameters().isAnalyzeMaxDecrease())
+    	if(getPostprocessingParameters().isAnalyzeMaxDecrease())
     		mode = mode | maxDecrease;
     	
-    	if(getSample().getRun().getPostprocessingParameters().isAnalyzeMaxIncrease())
+    	if(getPostprocessingParameters().isAnalyzeMaxIncrease())
     		mode = mode | maxIncrease;
     	
-    	if(getSample().getRun().getPostprocessingParameters().isAnalyzeNetDecrease())
+    	if(getPostprocessingParameters().isAnalyzeNetDecrease())
     		mode = mode | netDecrease;
     	
-    	if(getSample().getRun().getPostprocessingParameters().isAnalyzeNetIncrease())
+    	if(getPostprocessingParameters().isAnalyzeNetIncrease())
     		mode = mode | netIncrease;
     	
     	

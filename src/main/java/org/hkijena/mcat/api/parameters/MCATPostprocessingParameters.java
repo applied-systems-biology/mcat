@@ -8,8 +8,18 @@ import org.hkijena.mcat.utils.api.events.ParameterChangedEvent;
 import org.hkijena.mcat.utils.api.parameters.ACAQParameter;
 import org.hkijena.mcat.utils.api.parameters.ACAQParameterCollection;
 
+import java.util.Objects;
+
 /**
  * Contains postprocessing parameters
+ * 
+ * To create a parameter, create a a private field with getter & setter.
+ * Annotate the getter with {@link JsonGetter}, {@link ACAQParameter}, and {@link ACAQDocumentation}
+ * Annotate the setter with {@link ACAQParameter} and {@link JsonSetter}
+ * 
+ * Post an event {@link ParameterChangedEvent} when a value is set.
+ * 
+ * Add the variable to getHashCode() and equals()
  */
 public class MCATPostprocessingParameters implements ACAQParameterCollection {
     private EventBus eventBus = new EventBus();
@@ -115,6 +125,24 @@ public class MCATPostprocessingParameters implements ACAQParameterCollection {
     public void setCutoffValue(double cutoffValue) {
         this.cutoffValue = cutoffValue;
         eventBus.post(new ParameterChangedEvent(this ,"cutoff-value"));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MCATPostprocessingParameters that = (MCATPostprocessingParameters) o;
+        return analyzeNetIncrease == that.analyzeNetIncrease &&
+                analyzeNetDecrease == that.analyzeNetDecrease &&
+                analyzeMaxIncrease == that.analyzeMaxIncrease &&
+                analyzeMaxDecrease == that.analyzeMaxDecrease &&
+                performClusterMorphologyAnalysis == that.performClusterMorphologyAnalysis &&
+                Double.compare(that.cutoffValue, cutoffValue) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(analyzeNetIncrease, analyzeNetDecrease, analyzeMaxIncrease, analyzeMaxDecrease, performClusterMorphologyAnalysis, cutoffValue);
     }
 
     @Override

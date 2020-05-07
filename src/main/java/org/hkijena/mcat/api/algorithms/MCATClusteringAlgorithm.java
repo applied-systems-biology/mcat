@@ -185,11 +185,11 @@ public class MCATClusteringAlgorithm extends MCATPerSampleAlgorithm {
     		
     		String identifier = samp.getName() + "_roi-" + 
     				samp.getRawDataInterface().getTissueROI().getData(ROIData.class).getRoi().getName() +
-    				"_downsampling-" + getSample().getRun().getPreprocessingParameters().getDownsamplingFactor() +
-        			"_anatomyCh-" + getSample().getRun().getPreprocessingParameters().getAnatomicChannel() + 
-        			"_interestCh-" + getSample().getRun().getPreprocessingParameters().getChannelOfInterest() +
-        			"_timeFrames-" + getSample().getRun().getClusteringParameters().getMinLength() +
-        			"_k-" + getSample().getRun().getClusteringParameters().getkMeansK() + "_";
+    				"_downsampling-" + getPreprocessingParameters().getDownsamplingFactor() +
+        			"_anatomyCh-" + getPreprocessingParameters().getAnatomicChannel() +
+        			"_interestCh-" + getPreprocessingParameters().getChannelOfInterest() +
+        			"_timeFrames-" + getClusteringParameters().getMinLength() +
+        			"_k-" + getClusteringParameters().getkMeansK() + "_";
     		
     		
     		samp.getClusterAbundanceDataInterface().getClusterAbundance().flush(identifier);
@@ -210,11 +210,11 @@ public class MCATClusteringAlgorithm extends MCATPerSampleAlgorithm {
     	System.out.println("\tSaving clustering results...");
     	
     	System.out.println("flush...");
-    	String identifier = getSample().getName() + "_downsampling-" + getSample().getRun().getPreprocessingParameters().getDownsamplingFactor() +
-    			"_anatomyCh-" + getSample().getRun().getPreprocessingParameters().getAnatomicChannel() + 
-    			"_interestCh-" + getSample().getRun().getPreprocessingParameters().getChannelOfInterest() +
-    			"_timeFrames-" + getSample().getRun().getClusteringParameters().getMinLength() +
-    			"_k-" + getSample().getRun().getClusteringParameters().getkMeansK() + "_";
+    	String identifier = getSample().getName() + "_downsampling-" + getPreprocessingParameters().getDownsamplingFactor() +
+    			"_anatomyCh-" + getPreprocessingParameters().getAnatomicChannel() +
+    			"_interestCh-" + getPreprocessingParameters().getChannelOfInterest() +
+    			"_timeFrames-" + getClusteringParameters().getMinLength() +
+    			"_k-" + getClusteringParameters().getkMeansK() + "_";
     	getSample().getClusteredDataInterface().getClusterCenters().flush(identifier);
     	
 
@@ -235,8 +235,8 @@ public class MCATClusteringAlgorithm extends MCATPerSampleAlgorithm {
     	
     	System.out.println("Starting " + getName());
 
-    	k = getRun().getClusteringParameters().getkMeansK();
-    	minLength = getRun().getClusteringParameters().getMinLength() - 1; //subtract one because of differences in indexing and slice number measurement
+    	k = getClusteringParameters().getkMeansK();
+    	minLength = getClusteringParameters().getMinLength() - 1; //subtract one because of differences in indexing and slice number measurement
 
     	loadImages();
     	

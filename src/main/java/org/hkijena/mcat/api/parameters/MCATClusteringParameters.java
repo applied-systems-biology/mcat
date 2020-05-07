@@ -9,8 +9,18 @@ import org.hkijena.mcat.utils.api.events.ParameterChangedEvent;
 import org.hkijena.mcat.utils.api.parameters.ACAQParameter;
 import org.hkijena.mcat.utils.api.parameters.ACAQParameterCollection;
 
+import java.util.Objects;
+
 /**
- * Data class that contains all clustering parameters
+ * Class that contains all clustering parameters.
+ *
+ * To create a parameter, create a a private field with getter & setter.
+ * Annotate the getter with {@link JsonGetter}, {@link ACAQParameter}, and {@link ACAQDocumentation}
+ * Annotate the setter with {@link ACAQParameter} and {@link JsonSetter}
+ *
+ * Post an event {@link ParameterChangedEvent} when a value is set.
+ *
+ * Add the variable to getHashCode() and equals()
  */
 public class MCATClusteringParameters implements ACAQParameterCollection {
     private EventBus eventBus = new EventBus();
@@ -71,6 +81,20 @@ public class MCATClusteringParameters implements ACAQParameterCollection {
         eventBus.post(new ParameterChangedEvent(this, "min-length"));
 	}
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MCATClusteringParameters that = (MCATClusteringParameters) o;
+        return kMeansK == that.kMeansK &&
+                minLength == that.minLength &&
+                clusteringHierarchy == that.clusteringHierarchy;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(kMeansK, minLength, clusteringHierarchy);
+    }
 
     @Override
     public EventBus getEventBus() {

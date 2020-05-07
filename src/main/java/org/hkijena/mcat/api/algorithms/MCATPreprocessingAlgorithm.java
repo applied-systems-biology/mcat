@@ -90,7 +90,7 @@ public class MCATPreprocessingAlgorithm extends MCATPerSubjectAlgorithm {
     }
     
     private ImagePlus downsample(ImagePlus imp) {
-    	downFactor = getSample().getRun().getPreprocessingParameters().getDownsamplingFactor();
+    	downFactor = getPreprocessingParameters().getDownsamplingFactor();
     	System.out.println("\tPerforming downsampling by factor " + downFactor + "...");
     	if(downFactor < 0)
     		throw new IllegalArgumentException("Downsampling factor must be specified and > 0!");
@@ -100,9 +100,9 @@ public class MCATPreprocessingAlgorithm extends MCATPerSubjectAlgorithm {
     	}
     	//check if minimum number of time frames has to be updated
     	int slices = imp.getNSlices();
-    	int minLength = getRun().getClusteringParameters().getMinLength();
+    	int minLength = getClusteringParameters().getMinLength();
     	if(slices < minLength)
-    		getRun().getClusteringParameters().setMinLength(slices);
+    		getClusteringParameters().setMinLength(slices);
     	
     	return imp;
     }
@@ -164,8 +164,8 @@ public class MCATPreprocessingAlgorithm extends MCATPerSubjectAlgorithm {
 		getRawDataInterface().getRawImage().resetFromCurrentProvider();
     	ImagePlus imp = getRawDataInterface().getRawImage().getData(HyperstackData.class).getImage();
     	
-    	saveRaw = getSample().getRun().getPreprocessingParameters().isSaveRawImage();
-    	saveRoi = getSample().getRun().getPreprocessingParameters().isSaveRoi();
+    	saveRaw = getPreprocessingParameters().isSaveRawImage();
+    	saveRoi = getPreprocessingParameters().isSaveRoi();
 
     	System.out.println("Start pre-processing for " + imp.getTitle() + 
     			" width " + imp.getWidth() +
@@ -175,8 +175,8 @@ public class MCATPreprocessingAlgorithm extends MCATPerSubjectAlgorithm {
 
     	ImagePlus[] channels = ij.plugin.ChannelSplitter.split(imp.duplicate());
 
-    	channelAnatomy = getSample().getRun().getPreprocessingParameters().getAnatomicChannel();
-    	channelOfInterest = getSample().getRun().getPreprocessingParameters().getChannelOfInterest();
+    	channelAnatomy = getPreprocessingParameters().getAnatomicChannel();
+    	channelOfInterest = getPreprocessingParameters().getChannelOfInterest();
 
 
     	/*

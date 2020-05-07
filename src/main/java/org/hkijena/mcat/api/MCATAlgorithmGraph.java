@@ -7,12 +7,9 @@ import org.hkijena.mcat.utils.api.ACAQValidatable;
 import org.hkijena.mcat.utils.api.ACAQValidityReport;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
-import org.jgrapht.io.DOTExporter;
 import org.jgrapht.traverse.GraphIterator;
 import org.jgrapht.traverse.TopologicalOrderIterator;
 
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.*;
 
 /**
@@ -31,7 +28,7 @@ public class MCATAlgorithmGraph implements ACAQValidatable {
     }
 
     private void initialize() {
-        rootNode = new MCATAlgorithm(null) {
+        rootNode = new MCATAlgorithm(null, null, null, null) {
 
             @Override
             public void reportValidity(ACAQValidityReport report) {

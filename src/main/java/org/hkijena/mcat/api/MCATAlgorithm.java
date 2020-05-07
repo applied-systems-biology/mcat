@@ -1,5 +1,8 @@
 package org.hkijena.mcat.api;
 
+import org.hkijena.mcat.api.parameters.MCATClusteringParameters;
+import org.hkijena.mcat.api.parameters.MCATPostprocessingParameters;
+import org.hkijena.mcat.api.parameters.MCATPreprocessingParameters;
 import org.hkijena.mcat.utils.api.ACAQValidatable;
 
 /**
@@ -9,9 +12,15 @@ import org.hkijena.mcat.utils.api.ACAQValidatable;
 public abstract class MCATAlgorithm implements ACAQValidatable, Runnable {
 
     private MCATRun run;
+    private MCATPreprocessingParameters preprocessingParameters;
+    private MCATPostprocessingParameters postprocessingParameters;
+    private MCATClusteringParameters clusteringParameters;
 
-    public MCATAlgorithm(MCATRun run) {
+    public MCATAlgorithm(MCATRun run, MCATPreprocessingParameters preprocessingParameters, MCATPostprocessingParameters postprocessingParameters, MCATClusteringParameters clusteringParameters) {
         this.run = run;
+        this.preprocessingParameters = preprocessingParameters;
+        this.postprocessingParameters = postprocessingParameters;
+        this.clusteringParameters = clusteringParameters;
     }
 
     public abstract void run();
@@ -20,5 +29,17 @@ public abstract class MCATAlgorithm implements ACAQValidatable, Runnable {
 
     public MCATRun getRun() {
         return run;
+    }
+
+    public MCATPreprocessingParameters getPreprocessingParameters() {
+        return preprocessingParameters;
+    }
+
+    public MCATPostprocessingParameters getPostprocessingParameters() {
+        return postprocessingParameters;
+    }
+
+    public MCATClusteringParameters getClusteringParameters() {
+        return clusteringParameters;
     }
 }
