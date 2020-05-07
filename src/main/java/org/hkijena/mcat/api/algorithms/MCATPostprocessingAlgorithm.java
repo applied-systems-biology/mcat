@@ -9,6 +9,7 @@ import org.apache.commons.math3.ml.clustering.DoublePoint;
 import org.hkijena.mcat.api.*;
 import org.hkijena.mcat.api.datainterfaces.MCATClusteringOutput;
 import org.hkijena.mcat.api.datainterfaces.MCATClusteringOutputDataSetEntry;
+import org.hkijena.mcat.api.datainterfaces.MCATPostprocessingDataInterface;
 import org.hkijena.mcat.api.parameters.MCATClusteringParameters;
 import org.hkijena.mcat.api.parameters.MCATPostprocessingParameters;
 import org.hkijena.mcat.api.parameters.MCATPreprocessingParameters;
@@ -30,13 +31,17 @@ public class MCATPostprocessingAlgorithm extends MCATAlgorithm {
 	private List<MCATCentroidCluster<DoublePoint>> clusterCenters;
 
 	private MCATClusteringOutput clusteringOutput;
+	private final MCATPostprocessingDataInterface postprocessingDataInterface;
 
 	public MCATPostprocessingAlgorithm(MCATRun run,
 									   MCATPreprocessingParameters preprocessingParameters,
 									   MCATPostprocessingParameters postprocessingParameters,
-									   MCATClusteringParameters clusteringParameters, MCATClusteringOutput clusteringOutput) {
+									   MCATClusteringParameters clusteringParameters,
+									   MCATClusteringOutput clusteringOutput,
+									   MCATPostprocessingDataInterface postprocessingDataInterface) {
 		super(run, preprocessingParameters, postprocessingParameters, clusteringParameters);
 		this.clusteringOutput = clusteringOutput;
+		this.postprocessingDataInterface = postprocessingDataInterface;
 	}
 
 
@@ -269,5 +274,9 @@ public class MCATPostprocessingAlgorithm extends MCATAlgorithm {
 
 	public MCATClusteringOutput getClusteringOutput() {
 		return clusteringOutput;
+	}
+
+	public MCATPostprocessingDataInterface getPostprocessingDataInterface() {
+		return postprocessingDataInterface;
 	}
 }

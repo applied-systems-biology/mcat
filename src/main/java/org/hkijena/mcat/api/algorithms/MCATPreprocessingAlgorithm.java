@@ -24,7 +24,6 @@ import org.hkijena.mcat.utils.api.ACAQValidityReport;
 
 public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
 
-	private String sampleName;
 	private MCATRawDataInterface rawDataInterface;
 	private MCATPreprocessedDataInterface preprocessedDataInterface;
 	
@@ -37,11 +36,9 @@ public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
 									  MCATPreprocessingParameters preprocessingParameters,
 									  MCATPostprocessingParameters postprocessingParameters,
 									  MCATClusteringParameters clusteringParameters,
-									  String sampleName,
 									  MCATRawDataInterface rawDataInterface,
 									  MCATPreprocessedDataInterface preprocessedDataInterface) {
 		super(run, preprocessingParameters, postprocessingParameters, clusteringParameters);
-		this.sampleName = sampleName;
 		this.rawDataInterface = rawDataInterface;
 		this.preprocessedDataInterface = preprocessedDataInterface;
 	}
@@ -275,7 +272,7 @@ public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
 
     @Override
     public String getName() {
-        return sampleName;
+        return "Preprocessing";
     }
 
 	@Override

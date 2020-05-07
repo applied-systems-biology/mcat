@@ -12,14 +12,16 @@ import java.util.*;
  */
 public class MCATClusteringOutput implements MCATDataInterface {
 
-    private Set<String> sourceDataSetNames;
+    private final String groupSubject;
+    private final String groupTreatment;
     private Map<String, MCATClusteringOutputDataSetEntry> dataSetEntries = new HashMap<>();
     private MCATDataSlot clusterCenters = new MCATDataSlot("cluster-centers", ClusterCentersData.class);
     private MCATDataSlot clusterImages = new MCATDataSlot("cluster-image", HyperstackData.class);
     private MCATDataSlot singleClusterImage = new MCATDataSlot("single-cluster-image", HyperstackData.class);
 
-    public MCATClusteringOutput(Set<String> sourceDataSetNames) {
-        this.sourceDataSetNames = sourceDataSetNames;
+    public MCATClusteringOutput(String groupSubject, String groupTreatment) {
+        this.groupSubject = groupSubject;
+        this.groupTreatment = groupTreatment;
     }
 
     public MCATDataSlot getClusterCenters() {
@@ -43,11 +45,25 @@ public class MCATClusteringOutput implements MCATDataInterface {
         return result;
     }
 
-    public Set<String> getSourceDataSetNames() {
-        return sourceDataSetNames;
-    }
-
     public Map<String, MCATClusteringOutputDataSetEntry> getDataSetEntries() {
         return dataSetEntries;
+    }
+
+    /**
+     * Discriminator used for grouping the data set entries together. Can be null.
+     * This discriminator is derived from the data set name
+     * @return Discriminator used for grouping the data set entries together. Can be null.
+     */
+    public String getGroupSubject() {
+        return groupSubject;
+    }
+
+    /**
+     * Discriminator used for grouping the data set entries together. Can be null.
+     * This discriminator is derived from the data set's treatment parameter
+     * @return Discriminator used for grouping the data set entries together. Can be null.
+     */
+    public String getGroupTreatment() {
+        return groupTreatment;
     }
 }

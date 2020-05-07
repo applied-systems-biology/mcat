@@ -8,13 +8,11 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import org.hkijena.mcat.api.algorithms.MCATClusteringAlgorithm;
+import org.hkijena.mcat.api.algorithms.MCATPostprocessingAlgorithm;
 import org.hkijena.mcat.api.algorithms.MCATPreprocessingAlgorithm;
-import org.hkijena.mcat.api.datainterfaces.MCATPreprocessedDataInterface;
-import org.hkijena.mcat.api.datainterfaces.MCATRawDataInterface;
-import org.hkijena.mcat.api.parameters.MCATClusteringParameters;
-import org.hkijena.mcat.api.parameters.MCATParametersTable;
-import org.hkijena.mcat.api.parameters.MCATParametersTableRow;
-import org.hkijena.mcat.api.parameters.MCATPreprocessingParameters;
+import org.hkijena.mcat.api.datainterfaces.*;
+import org.hkijena.mcat.api.parameters.*;
 import org.hkijena.mcat.utils.api.ACAQValidatable;
 import org.hkijena.mcat.utils.api.ACAQValidityReport;
 
@@ -45,35 +43,171 @@ public class MCATRun implements ACAQValidatable {
      * @param preprocessingParameters the parameters
      */
     private void initializePreprocessing(MCATPreprocessingParameters preprocessingParameters) {
+        List<MCATProjectDataSet> dataSetList = new ArrayList<>();
         List<MCATRawDataInterface> rawDataInterfaceList = new ArrayList<>();
         List<MCATPreprocessedDataInterface> preprocessedDataInterfaceList = new ArrayList<>();
 
         for (Map.Entry<String, MCATProjectDataSet> entry : project.getSamples().entrySet()) {
             MCATRawDataInterface rawDataInterface = new MCATRawDataInterface(entry.getValue().getRawDataInterface());
             MCATPreprocessedDataInterface preprocessedDataInterface = new MCATPreprocessedDataInterface();
+            dataSetList.add(entry.getValue());
             rawDataInterfaceList.add(rawDataInterface);
             preprocessedDataInterfaceList.add(preprocessedDataInterface);
         }
 
         // Find all unique clustering parameters with prepending preprocessing
-//            Set<MCATClusteringParameters> uniqueClusteringParameters = new HashSet<>();
-//            for (MCATParametersTableRow row : parametersTable.getRows()) {
-//                if(row.getPreprocessingParameters().equals(preprocessingParameters)) {
-//                    uniqueClusteringParameters.add(row.getClusteringParameters());
-//                }
-//            }
-//
-//            // Go through unique clustering parameters
-//            for (MCATClusteringParameters clusteringParameters : uniqueClusteringParameters) {
-//                initializeClustering(rawDataInterface, preprocessedDataInterface, preprocessingParameters, clusteringParameters);
-//            }
+        Set<MCATClusteringParameters> uniqueClusteringParameters = new HashSet<>();
+        for (MCATParametersTableRow row : parametersTable.getRows()) {
+            if(row.getPreprocessingParameters().equals(preprocessingParameters)) {
+                uniqueClusteringParameters.add(row.getClusteringParameters());
+            }
+        }
+
+        // Go through unique clustering parameters
+        for (MCATClusteringParameters clusteringParameters : uniqueClusteringParameters) {
+            initializeClustering(dataSetList, rawDataInterfaceList, preprocessedDataInterfaceList, preprocessingParameters, clusteringParameters);
+        }
     }
 
-    private void initializeClustering(MCATRawDataInterface rawDataInterface,
-                                      MCATPreprocessedDataInterface preprocessedDataInterface,
+    private void initializeClustering(List<MCATProjectDataSet> dataSetList,
+                                      List<MCATRawDataInterface> rawDataInterfaceList,
+                                      List<MCATPreprocessedDataInterface> preprocessedDataInterfaceList,
                                       MCATPreprocessingParameters preprocessingParameters,
                                       MCATClusteringParameters clusteringParameters) {
+        boolean noTreatment = clusteringParameters.getClusteringHierarchy() != MCATClusteringHierarchy.PerTreatment;
+        boolean noSubject = clusteringParameters.getClusteringHierarchy() != MCATClusteringHierarchy.PerSubject;
+
+        // Map from dataset (subject) -> treatment -> input
+        Map<String, Map<String, MCATClusteringInput>> inputGroups = new HashMap<>();
+        Map<String, Map<String, MCATClusteringOutput>> outputGroups = new HashMap<>();
+
+        for (int i = 0; i < dataSetList.size(); i++) {
+            MCATProjectDataSet projectDataSet = dataSetList.get(i);
+            MCATRawDataInterface rawDataInterface = rawDataInterfaceList.get(i);
+            MCATPreprocessedDataInterface preprocessedDataInterface = preprocessedDataInterfaceList.get(i);
+
+            String groupSubject = projectDataSet.getName();
+            String groupTreatment = projectDataSet.getParameters().getTreatment();
+
+            if(noSubject)
+                groupSubject ="";
+            if(noTreatment)
+                groupTreatment = "";
+
+            // Add new entry into clustering input
+            {
+                Map<String, MCATClusteringInput> subjectMap = inputGroups.getOrDefault(groupSubject, null);
+                if(subjectMap == null) {
+                    subjectMap = new HashMap<>();
+                    inputGroups.put(groupSubject, subjectMap);
+                }
+
+                MCATClusteringInput clusteringInput = subjectMap.getOrDefault(groupTreatment, null);
+                if(clusteringInput == null) {
+                    clusteringInput = new MCATClusteringInput(groupSubject, groupTreatment);
+                    subjectMap.put(groupTreatment, clusteringInput);
+                }
+
+                clusteringInput.getDataSetEntries().put(projectDataSet.getName(),
+                        new MCATClusteringInputDataSetEntry(projectDataSet.getName(),
+                                rawDataInterface,
+                                preprocessedDataInterface));
+            }
+            // Add new entry into clustering output
+            {
+                Map<String, MCATClusteringOutput> subjectMap = outputGroups.getOrDefault(groupSubject, null);
+                if(subjectMap == null) {
+                    subjectMap = new HashMap<>();
+                    outputGroups.put(groupSubject, subjectMap);
+                }
+
+                MCATClusteringOutput clusteringOutput = subjectMap.getOrDefault(groupTreatment, null);
+                if(clusteringOutput == null) {
+                    clusteringOutput = new MCATClusteringOutput(groupSubject, groupTreatment);
+                    subjectMap.put(groupTreatment, clusteringOutput);
+                }
+
+                clusteringOutput.getDataSetEntries().put(projectDataSet.getName(),
+                        new MCATClusteringOutputDataSetEntry(projectDataSet.getName()));
+            }
+        }
+
+        // Find all unique postprocessing parameters with prepending preprocessing
+        Set<MCATPostprocessingParameters> uniquePostProcessingParameters = new HashSet<>();
+        for (MCATParametersTableRow row : parametersTable.getRows()) {
+            if(row.getPreprocessingParameters().equals(preprocessingParameters) &&
+            row.getClusteringParameters().equals(clusteringParameters)) {
+                uniquePostProcessingParameters.add(row.getPostprocessingParameters());
+            }
+        }
+
+        for (MCATPostprocessingParameters postprocessingParameters : uniquePostProcessingParameters) {
+            initializePostprocessing(dataSetList,
+                    rawDataInterfaceList,
+                    preprocessedDataInterfaceList,
+                    inputGroups,
+                    outputGroups,
+                    preprocessingParameters,
+                    clusteringParameters,
+                    postprocessingParameters);
+        }
     }
+
+    private void initializePostprocessing(List<MCATProjectDataSet> dataSetList,
+                                          List<MCATRawDataInterface> rawDataInterfaceList,
+                                          List<MCATPreprocessedDataInterface> preprocessedDataInterfaceList,
+                                          Map<String, Map<String, MCATClusteringInput>> clusteringInputGroups,
+                                          Map<String, Map<String, MCATClusteringOutput>> clusteringOutputGroups,
+                                          MCATPreprocessingParameters preprocessingParameters,
+                                          MCATClusteringParameters clusteringParameters,
+                                          MCATPostprocessingParameters postprocessingParameters) {
+
+        List<MCATPreprocessingAlgorithm> preprocessingAlgorithmList = new ArrayList<>();
+        for (int i = 0; i < dataSetList.size(); i++) {
+            // Preprocessing
+            MCATPreprocessingAlgorithm preprocessingAlgorithm = new MCATPreprocessingAlgorithm(this,
+                    preprocessingParameters,
+                    postprocessingParameters,
+                    clusteringParameters,
+                    rawDataInterfaceList.get(i),
+                    preprocessedDataInterfaceList.get(i));
+            graph.insertNode(preprocessingAlgorithm);
+            preprocessingAlgorithmList.add(preprocessingAlgorithm);
+        }
+
+        for (String subject : clusteringInputGroups.keySet()) {
+            for (String treatment : clusteringInputGroups.get(subject).keySet()) {
+                // Clustering
+                MCATClusteringInput clusteringInput = clusteringInputGroups.get(subject).get(treatment);
+                MCATClusteringOutput clusteringOutput = clusteringOutputGroups.get(subject).get(treatment);
+
+                MCATClusteringAlgorithm clusteringAlgorithm = new MCATClusteringAlgorithm(this,
+                        preprocessingParameters,
+                        postprocessingParameters,
+                        clusteringParameters,
+                        clusteringInput,
+                        clusteringOutput);
+
+                // Insert into the graph and connect
+                graph.insertNode(clusteringAlgorithm);
+                for (MCATPreprocessingAlgorithm preprocessingAlgorithm : preprocessingAlgorithmList) {
+                    graph.connect(preprocessingAlgorithm, clusteringAlgorithm);
+                }
+
+                // Postprocessing
+                MCATPostprocessingDataInterface postprocessingDataInterface = new MCATPostprocessingDataInterface();
+                MCATPostprocessingAlgorithm postprocessingAlgorithm = new MCATPostprocessingAlgorithm(this,
+                        preprocessingParameters,
+                        postprocessingParameters,
+                        clusteringParameters,
+                        clusteringOutput,
+                        postprocessingDataInterface);
+                graph.insertNode(postprocessingAlgorithm);
+                graph.connect(clusteringAlgorithm, postprocessingAlgorithm);
+            }
+        }
+    }
+
 
     public boolean isReady() {
         return isReady;

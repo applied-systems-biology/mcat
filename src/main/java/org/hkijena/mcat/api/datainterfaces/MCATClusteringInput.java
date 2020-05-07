@@ -13,10 +13,13 @@ import java.util.Map;
  */
 public class MCATClusteringInput implements MCATDataInterface {
 
+    private final String groupSubject;
+    private final String groupTreatment;
     private Map<String, MCATClusteringInputDataSetEntry> dataSetEntries = new HashMap<>();
 
-    public MCATClusteringInput() {
-
+    public MCATClusteringInput(String groupSubject, String groupTreatment) {
+        this.groupSubject = groupSubject;
+        this.groupTreatment = groupTreatment;
     }
 
     @Override
@@ -30,5 +33,23 @@ public class MCATClusteringInput implements MCATDataInterface {
 
     public Map<String, MCATClusteringInputDataSetEntry> getDataSetEntries() {
         return dataSetEntries;
+    }
+
+    /**
+     * Discriminator used for grouping the data set entries together. Can be null.
+     * This discriminator is derived from the data set name
+     * @return Discriminator used for grouping the data set entries together. Can be null.
+     */
+    public String getGroupSubject() {
+        return groupSubject;
+    }
+
+    /**
+     * Discriminator used for grouping the data set entries together. Can be null.
+     * This discriminator is derived from the data set's treatment parameter
+     * @return Discriminator used for grouping the data set entries together. Can be null.
+     */
+    public String getGroupTreatment() {
+        return groupTreatment;
     }
 }
