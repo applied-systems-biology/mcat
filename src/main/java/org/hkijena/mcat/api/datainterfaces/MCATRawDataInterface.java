@@ -6,7 +6,8 @@ import org.hkijena.mcat.extension.datatypes.HyperstackData;
 import org.hkijena.mcat.extension.datatypes.ROIData;
 
 import java.util.Arrays;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Organizes raw data
@@ -34,7 +35,10 @@ public class MCATRawDataInterface implements MCATDataInterface {
     }
 
     @Override
-    public List<MCATDataSlot> getSlots() {
-        return Arrays.asList(rawImage, tissueROI);
+    public Map<String, MCATDataSlot> getSlots() {
+        Map<String, MCATDataSlot> result = new HashMap<>();
+        result.put(rawImage.getName(), rawImage);
+        result.put(tissueROI.getName(), tissueROI);
+        return result;
     }
 }

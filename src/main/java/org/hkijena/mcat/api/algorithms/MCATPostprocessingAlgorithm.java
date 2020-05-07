@@ -264,8 +264,18 @@ public class MCATPostprocessingAlgorithm extends MCATAlgorithm {
 
     @Override
     public String getName() {
-        return "Postprocessing";
+        return "postprocessing";
     }
+
+	@Override
+	public List<MCATDataInterface> getInputDataInterfaces() {
+		return Arrays.asList(clusteringOutput);
+	}
+
+	@Override
+	public List<MCATDataInterface> getOutputDataInterfaces() {
+		return Arrays.asList(postprocessingDataInterface);
+	}
 
 	@Override
 	public void reportValidity(ACAQValidityReport report) {

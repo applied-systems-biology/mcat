@@ -3,6 +3,7 @@ package org.hkijena.mcat.api.algorithms;
 
 
 import org.hkijena.mcat.api.MCATAlgorithm;
+import org.hkijena.mcat.api.MCATDataInterface;
 import org.hkijena.mcat.api.MCATRun;
 import org.hkijena.mcat.api.datainterfaces.MCATPreprocessedDataInterface;
 import org.hkijena.mcat.api.datainterfaces.MCATRawDataInterface;
@@ -21,6 +22,9 @@ import ij.gui.Roi;
 import ij.plugin.ImageCalculator;
 import ij.process.ImageStatistics;
 import org.hkijena.mcat.utils.api.ACAQValidityReport;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
 
@@ -272,8 +276,18 @@ public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
 
     @Override
     public String getName() {
-        return "Preprocessing";
+        return "preprocessing";
     }
+
+	@Override
+	public List<MCATDataInterface> getInputDataInterfaces() {
+		return Arrays.asList(rawDataInterface);
+	}
+
+	@Override
+	public List<MCATDataInterface> getOutputDataInterfaces() {
+		return Arrays.asList(preprocessedDataInterface);
+	}
 
 	@Override
 	public void reportValidity(ACAQValidityReport report) {

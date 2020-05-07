@@ -37,10 +37,16 @@ public class MCATClusteringOutput implements MCATDataInterface {
     }
 
     @Override
-    public List<MCATDataSlot> getSlots() {
-        List<MCATDataSlot> result = Arrays.asList(clusterCenters, clusterImages, singleClusterImage);
-        for (MCATClusteringOutputDataSetEntry value : dataSetEntries.values()) {
-            result.addAll(value.getSlots());
+    public Map<String, MCATDataSlot> getSlots() {
+        Map<String, MCATDataSlot> result = new HashMap<>();
+        result.put(clusterCenters.getName(), clusterCenters);
+        result.put(clusterImages.getName(), clusterImages);
+        result.put(singleClusterImage.getName(), singleClusterImage);
+        for (Map.Entry<String, MCATClusteringOutputDataSetEntry> entry : dataSetEntries.entrySet()) {
+            Map<String, MCATDataSlot> slots = entry.getValue().getSlots();
+            for (Map.Entry<String, MCATDataSlot> slotEntry : slots.entrySet()) {
+                result.put("entries/" + entry.getKey() + "/" + slotEntry.getKey(), slotEntry.getValue());
+            }
         }
         return result;
     }

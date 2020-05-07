@@ -23,10 +23,13 @@ public class MCATClusteringInput implements MCATDataInterface {
     }
 
     @Override
-    public List<MCATDataSlot> getSlots() {
-        List<MCATDataSlot> result = new ArrayList<>();
-        for (MCATClusteringInputDataSetEntry value : dataSetEntries.values()) {
-            result.addAll(value.getSlots());
+    public Map<String, MCATDataSlot> getSlots() {
+        Map<String, MCATDataSlot> result = new HashMap<>();
+        for (Map.Entry<String, MCATClusteringInputDataSetEntry> entry : dataSetEntries.entrySet()) {
+            Map<String, MCATDataSlot> slots = entry.getValue().getSlots();
+            for (Map.Entry<String, MCATDataSlot> slotEntry : slots.entrySet()) {
+                result.put("entries/" + entry.getKey() + "/" + slotEntry.getKey(), slotEntry.getValue());
+            }
         }
         return result;
     }

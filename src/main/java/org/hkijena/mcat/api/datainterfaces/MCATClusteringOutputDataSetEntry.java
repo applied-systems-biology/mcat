@@ -5,7 +5,9 @@ import org.hkijena.mcat.api.MCATDataSlot;
 import org.hkijena.mcat.extension.datatypes.ClusterAbundanceData;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MCATClusteringOutputDataSetEntry implements MCATDataInterface {
     private String dataSetName;
@@ -24,7 +26,9 @@ public class MCATClusteringOutputDataSetEntry implements MCATDataInterface {
     }
 
     @Override
-    public List<MCATDataSlot> getSlots() {
-        return Collections.singletonList(clusterAbundance);
+    public Map<String, MCATDataSlot> getSlots() {
+        Map<String, MCATDataSlot> result = new HashMap<>();
+        result.put(clusterAbundance.getName(), clusterAbundance);
+        return result;
     }
 }

@@ -4,11 +4,11 @@ import org.hkijena.mcat.api.MCATDataInterface;
 import org.hkijena.mcat.api.MCATDataSlot;
 
 import java.util.Collections;
-import java.util.List;
+import java.util.Map;
 
 public class MCATPostprocessingDataInterface implements MCATDataInterface {
     @Override
-    public List<MCATDataSlot> getSlots() {
-        return Collections.emptyList();
+    public Map<String, MCATDataSlot> getSlots() {
+        return Collections.emptyMap();
     }
 }

@@ -3,7 +3,7 @@ package org.hkijena.mcat.api.datainterfaces;
 import org.hkijena.mcat.api.MCATDataInterface;
 import org.hkijena.mcat.api.MCATDataSlot;
 
-import java.util.List;
+import java.util.Map;
 
 /**
  * A data interface that contains the input of an {@link org.hkijena.mcat.api.algorithms.MCATClusteringAlgorithm}
@@ -21,7 +21,7 @@ public class MCATClusteringInputDataSetEntry implements MCATDataInterface {
     }
 
     @Override
-    public List<MCATDataSlot> getSlots() {
+    public Map<String, MCATDataSlot> getSlots() {
         return preprocessedDataInterface.getSlots();
     }
 

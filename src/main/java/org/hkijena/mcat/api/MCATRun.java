@@ -238,35 +238,16 @@ public class MCATRun implements ACAQValidatable {
             }
         }
 
-//        // Apply output path to the data slots
-//        for (Map.Entry<String, MCATRunSample> kv : samples.entrySet()) {
-//
-//            // Apply output path to the data slots
-//            for (MCATDataSlot slot : kv.getValue().getSlots()) {
-//                slot.setStorageFilePath(outputPath.resolve(kv.getKey()).resolve(slot.getName()));
-//                if (!Files.exists(slot.getStorageFilePath())) {
-//                    try {
-//                        Files.createDirectories(slot.getStorageFilePath());
-//                    } catch (IOException e) {
-//                        throw new RuntimeException(e);
-//                    }
-//                }
-//            }
-//
-//            // Do the same for the subjects
-//            for (Map.Entry<String, MCATRunSampleSubject> kv2 : kv.getValue().getSubjects().entrySet()) {
-//                for (MCATDataSlot slot : kv2.getValue().getSlots()) {
-//                    slot.setStorageFilePath(outputPath.resolve(kv.getKey()).resolve(kv2.getKey()).resolve(slot.getName()));
-//                    if (!Files.exists(slot.getStorageFilePath())) {
-//                        try {
-//                            Files.createDirectories(slot.getStorageFilePath());
-//                        } catch (IOException e) {
-//                            throw new RuntimeException(e);
-//                        }
-//                    }
-//                }
-//            }
-//        }
+        for (MCATAlgorithm node : graph.getNodes()) {
+            for (MCATDataInterface outputDataInterface : node.getOutputDataInterfaces()) {
+                for (Map.Entry<String, MCATDataSlot> entry : outputDataInterface.getSlots().entrySet()) {
+                    Path storagePath = outputPath.resolve(node.getName()).resolve(entry.getKey()); //TODO: Identifier for parameters
+                }
+            }
+        }
+
+        // TODO: Write parameters + association into storage roots
+
     }
 
     public void run(Consumer<Status> onProgress, Supplier<Boolean> isCancelled) {

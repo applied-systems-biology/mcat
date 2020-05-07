@@ -1,7 +1,12 @@
 package org.hkijena.mcat.api;
 
 import java.util.List;
+import java.util.Map;
 
 public interface MCATDataInterface {
-    List<MCATDataSlot> getSlots();
+    /**
+     * Gets each slot including an unique ID
+     * @return Map from unique ID to slot
+     */
+    Map<String, MCATDataSlot> getSlots();
 }

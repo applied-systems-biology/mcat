@@ -2,11 +2,7 @@ package org.hkijena.mcat.api.algorithms;
 
 import java.awt.Color;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.IntStream;
 
 import org.apache.commons.math3.ml.clustering.CentroidCluster;
@@ -17,6 +13,7 @@ import org.apache.commons.math3.ml.distance.EuclideanDistance;
 import org.apache.commons.math3.random.JDKRandomGenerator;
 import org.hkijena.mcat.api.MCATAlgorithm;
 import org.hkijena.mcat.api.MCATCentroidCluster;
+import org.hkijena.mcat.api.MCATDataInterface;
 import org.hkijena.mcat.api.MCATRun;
 import org.hkijena.mcat.api.datainterfaces.MCATClusteringInput;
 import org.hkijena.mcat.api.datainterfaces.MCATClusteringInputDataSetEntry;
@@ -256,7 +253,7 @@ public class MCATClusteringAlgorithm extends MCATAlgorithm {
 
     @Override
     public String getName() {
-        return "Clustering";
+        return "clustering";
     }
 
 	@Override
@@ -270,5 +267,15 @@ public class MCATClusteringAlgorithm extends MCATAlgorithm {
 
 	public MCATClusteringOutput getClusteringOutput() {
 		return clusteringOutput;
+	}
+
+	@Override
+	public List<MCATDataInterface> getInputDataInterfaces() {
+		return Arrays.asList(clusteringInput);
+	}
+
+	@Override
+	public List<MCATDataInterface> getOutputDataInterfaces() {
+		return Arrays.asList(clusteringOutput);
 	}
 }

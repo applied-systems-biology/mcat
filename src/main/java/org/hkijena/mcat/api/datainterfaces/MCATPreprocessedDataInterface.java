@@ -6,7 +6,9 @@ import org.hkijena.mcat.extension.datatypes.DerivativeMatrixData;
 import org.hkijena.mcat.extension.datatypes.HyperstackData;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Organizes preprocessed data
@@ -33,7 +35,10 @@ public class MCATPreprocessedDataInterface implements MCATDataInterface {
     }
 
     @Override
-    public List<MCATDataSlot> getSlots() {
-        return Arrays.asList(preprocessedImage, derivativeMatrix);
+    public Map<String, MCATDataSlot> getSlots() {
+        Map<String, MCATDataSlot> result = new HashMap<>();
+        result.put(preprocessedImage.getName(), preprocessedImage);
+        result.put(derivativeMatrix.getName(), derivativeMatrix);
+        return result;
     }
 }
