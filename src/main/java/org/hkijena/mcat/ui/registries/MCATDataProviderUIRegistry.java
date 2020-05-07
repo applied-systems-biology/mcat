@@ -2,15 +2,16 @@ package org.hkijena.mcat.ui.registries;
 
 import org.hkijena.mcat.api.MCATDataProvider;
 import org.hkijena.mcat.api.MCATProjectSample;
-import org.hkijena.mcat.extension.dataproviders.ClusterCentersFromFileProvider;
-import org.hkijena.mcat.extension.dataproviders.DerivativeMatrixFromFileProvider;
-import org.hkijena.mcat.extension.dataproviders.HyperstackFromTifDataProvider;
-import org.hkijena.mcat.extension.dataproviders.ROIFromFileDataProvider;
+import org.hkijena.mcat.api.registries.MCATDataTypeRegistry;
+import org.hkijena.mcat.extension.dataproviders.api.ClusterCentersFromFileProvider;
+import org.hkijena.mcat.extension.dataproviders.api.DerivativeMatrixFromFileProvider;
+import org.hkijena.mcat.extension.dataproviders.api.HyperstackFromTifDataProvider;
+import org.hkijena.mcat.extension.dataproviders.api.ROIFromFileDataProvider;
 import org.hkijena.mcat.ui.MCATDataProviderUI;
-import org.hkijena.mcat.ui.dataproviders.ClusterCentersFromFileDataProviderUI;
-import org.hkijena.mcat.ui.dataproviders.DerivationMatrixFromFileDataProviderUI;
-import org.hkijena.mcat.ui.dataproviders.HyperstackFromTifDataProviderUI;
-import org.hkijena.mcat.ui.dataproviders.ROIFromFileDataProviderUI;
+import org.hkijena.mcat.extension.dataproviders.ui.ClusterCentersFromFileDataProviderUI;
+import org.hkijena.mcat.extension.dataproviders.ui.DerivationMatrixFromFileDataProviderUI;
+import org.hkijena.mcat.extension.dataproviders.ui.HyperstackFromTifDataProviderUI;
+import org.hkijena.mcat.extension.dataproviders.ui.ROIFromFileDataProviderUI;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
@@ -22,7 +23,7 @@ import java.util.Map;
 public class MCATDataProviderUIRegistry {
 
     private static MCATDataProviderUIRegistry instance;
-    private Map<Class<? extends MCATDataProvider>, Class<? extends MCATDataProviderUI<?>>> registry = new HashMap<>();
+    private Map<Class<? extends MCATDataProvider>, Class<? extends MCATDataProviderUI>> registry = new HashMap<>();
 
     private MCATDataProviderUIRegistry() {
         // Register here
@@ -32,8 +33,8 @@ public class MCATDataProviderUIRegistry {
         registry.put(ClusterCentersFromFileProvider.class, ClusterCentersFromFileDataProviderUI.class);
     }
 
-    public <T extends MCATDataProviderUI<?>> T getUIFor(MCATProjectSample sample, MCATDataProvider provider) {
-        Class<? extends MCATDataProviderUI<?>> uiClass = registry.get(provider.getClass());
+    public <T extends MCATDataProviderUI> T getUIFor(MCATProjectSample sample, MCATDataProvider provider) {
+        Class<? extends MCATDataProviderUI> uiClass = registry.get(provider.getClass());
         try {
             return (T)uiClass.getConstructor(MCATProjectSample.class, provider.getClass()).newInstance(sample, provider);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
@@ -41,9 +42,15 @@ public class MCATDataProviderUIRegistry {
         }
     }
 
+    public void register(Class<? extends MCATDataProvider> providerClass, Class<? extends MCATDataProviderUI> providerUIClass) {
+        registry.put(providerClass, providerUIClass);
+    }
+
     public static MCATDataProviderUIRegistry getInstance() {
-        if(instance == null)
+        if(instance == null) {
             instance = new MCATDataProviderUIRegistry();
+            MCATDataTypeRegistry.getInstance();
+        }
         return instance;
     }
 }

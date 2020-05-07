@@ -4,14 +4,14 @@ import org.hkijena.mcat.api.MCATDataSlot;
 
 import javax.swing.*;
 
-public class MCATResultDataSlotUI<T extends MCATDataSlot> extends JPanel {
-    private T slot;
+public class MCATResultDataSlotUI extends JPanel {
+    private MCATDataSlot slot;
 
-    public MCATResultDataSlotUI(T slot) {
+    public MCATResultDataSlotUI(MCATDataSlot slot) {
         this.slot = slot;
     }
 
-    public T getSlot() {
+    public MCATDataSlot getSlot() {
         return slot;
     }
 }

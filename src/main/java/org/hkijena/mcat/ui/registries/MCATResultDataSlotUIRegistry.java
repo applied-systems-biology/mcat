@@ -10,14 +10,14 @@ import java.util.Map;
 
 public class MCATResultDataSlotUIRegistry {
     private static MCATResultDataSlotUIRegistry instance;
-    private Map<Class<? extends MCATDataSlot<?>>, Class<? extends MCATResultDataSlotUI<?>>> registry = new HashMap<>();
+    private Map<Class<? extends MCATDataSlot>, Class<? extends MCATResultDataSlotUI>> registry = new HashMap<>();
 
     private MCATResultDataSlotUIRegistry() {
         // Register here
     }
 
-    public MCATResultDataSlotUI<?> getUIFor(MCATDataSlot<?> slot) {
-        Class<? extends MCATResultDataSlotUI<?>> uiClass = registry.getOrDefault(slot.getClass(), null);
+    public MCATResultDataSlotUI getUIFor(MCATDataSlot slot) {
+        Class<? extends MCATResultDataSlotUI> uiClass = registry.getOrDefault(slot.getClass(), null);
         if(uiClass != null) {
             try {
                 return uiClass.getConstructor(slot.getClass()).newInstance(slot);

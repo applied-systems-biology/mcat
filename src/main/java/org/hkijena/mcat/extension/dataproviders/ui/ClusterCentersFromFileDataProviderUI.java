@@ -1,7 +1,7 @@
-package org.hkijena.mcat.ui.dataproviders;
+package org.hkijena.mcat.extension.dataproviders.ui;
 
 import org.hkijena.mcat.api.MCATProjectSample;
-import org.hkijena.mcat.extension.dataproviders.ClusterCentersFromFileProvider;
+import org.hkijena.mcat.extension.dataproviders.api.ClusterCentersFromFileProvider;
 import org.hkijena.mcat.ui.MCATDataProviderUI;
 import org.hkijena.mcat.ui.components.FileSelection;
 
@@ -10,7 +10,7 @@ import java.awt.*;
 /**
  * UI for {@link ClusterCentersFromFileProvider}
  */
-public class ClusterCentersFromFileDataProviderUI extends MCATDataProviderUI<ClusterCentersFromFileProvider> {
+public class ClusterCentersFromFileDataProviderUI extends MCATDataProviderUI {
     public ClusterCentersFromFileDataProviderUI(MCATProjectSample sample, ClusterCentersFromFileProvider dataProvider) {
         super(sample, dataProvider);
         setLayout(new BorderLayout());

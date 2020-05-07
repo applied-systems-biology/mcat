@@ -18,8 +18,11 @@ import java.util.function.Supplier;
 import javax.swing.JFrame;
 
 import org.hkijena.mcat.api.parameters.MCATClusteringParameters;
+import org.hkijena.mcat.api.parameters.MCATParametersTable;
 import org.hkijena.mcat.api.parameters.MCATPostprocessingParameters;
 import org.hkijena.mcat.api.parameters.MCATPreprocessingParameters;
+import org.hkijena.mcat.utils.api.ACAQValidatable;
+import org.hkijena.mcat.utils.api.ACAQValidityReport;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -35,63 +38,48 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableBiMap;
 
-public class MCATRun implements MCATValidatable {
+public class MCATRun implements ACAQValidatable {
     private MCATProject project;
     private MCATAlgorithmGraph graph;
     private BiMap<String, MCATRunSample> samples = HashBiMap.create();
 
-    private MCATPreprocessingParameters preprocessingParameters;
-    private MCATClusteringParameters clusteringParameters;
-    private MCATPostprocessingParameters postprocessingParameters;
+    private MCATParametersTable parametersTable;
     private boolean isReady = false;
     private Path outputPath;
     private List<MCATResultObject> resultObjects;
 
     public MCATRun(MCATProject project) {
         this.project = project;
-        this.preprocessingParameters = new MCATPreprocessingParameters(project.getPreprocessingParameters());
-        this.clusteringParameters = new MCATClusteringParameters(project.getClusteringParameters());
-        this.postprocessingParameters = new MCATPostprocessingParameters(project.getPostprocessingParameters());
-        this.resultObjects = new ArrayList<MCATResultObject>();
-        
-        switch (clusteringParameters.getClusteringHierarchy()) {
-            case PerSubject:
-                for(Map.Entry<String, MCATProjectSample> kv : project.getSamples().entrySet()) {
-                    MCATRunSample sample = new MCATRunSample(this, Arrays.asList(kv.getValue()));
-                    samples.put(kv.getKey(), sample);
-                }
-                break;
-            case PerTreatment: {
-                for(Map.Entry<String, List<MCATProjectSample>> kv : project.getSamplesByTreatment().entrySet()) {
-                    MCATRunSample sample = new MCATRunSample(this, kv.getValue());
-                    samples.put(kv.getKey(), sample);
-                }
-            }
-                break;
-            case AllInOne: {
-                MCATRunSample sample = new MCATRunSample(this, new ArrayList<>(project.getSamples().values()));
-                samples.put("all-in-one", sample);
-            }
-            break;
-        }
+        this.parametersTable = new MCATParametersTable(project.getParametersTable());
+        this.resultObjects = new ArrayList<>();
+
+        // TODO: Implement per-parameter set
+//        switch (clusteringParameters.getClusteringHierarchy()) {
+//            case PerSubject:
+//                for(Map.Entry<String, MCATProjectSample> kv : project.getSamples().entrySet()) {
+//                    MCATRunSample sample = new MCATRunSample(this, Arrays.asList(kv.getValue()));
+//                    samples.put(kv.getKey(), sample);
+//                }
+//                break;
+//            case PerTreatment: {
+//                for(Map.Entry<String, List<MCATProjectSample>> kv : project.getSamplesByTreatment().entrySet()) {
+//                    MCATRunSample sample = new MCATRunSample(this, kv.getValue());
+//                    samples.put(kv.getKey(), sample);
+//                }
+//            }
+//                break;
+//            case AllInOne: {
+//                MCATRunSample sample = new MCATRunSample(this, new ArrayList<>(project.getSamples().values()));
+//                samples.put("all-in-one", sample);
+//            }
+//            break;
+//        }
 
         this.graph = new MCATAlgorithmGraph(this);
     }
 
     public BiMap<String, MCATRunSample> getSamples() {
         return ImmutableBiMap.copyOf(samples);
-    }
-
-    public MCATPreprocessingParameters getPreprocessingParameters() {
-        return preprocessingParameters;
-    }
-
-    public MCATClusteringParameters getClusteringParameters() {
-        return clusteringParameters;
-    }
-
-    public MCATPostprocessingParameters getPostprocessingParameters() {
-        return postprocessingParameters;
     }
     
     public List<MCATResultObject> getResultObjects(){
@@ -100,11 +88,6 @@ public class MCATRun implements MCATValidatable {
     
     public void addResultObject(MCATResultObject resultObject) {
     	this.resultObjects.add(resultObject);
-    }
-
-    @Override
-    public MCATValidityReport getValidityReport() {
-        return graph.getValidityReport();
     }
 
     public boolean isReady() {
@@ -140,7 +123,7 @@ public class MCATRun implements MCATValidatable {
         for (Map.Entry<String, MCATRunSample> kv : samples.entrySet()) {
 
             // Apply output path to the data slots
-            for (MCATDataSlot<?> slot : kv.getValue().getSlots()) {
+            for (MCATDataSlot slot : kv.getValue().getSlots()) {
                 slot.setStorageFilePath(outputPath.resolve(kv.getKey()).resolve(slot.getName()));
                 if (!Files.exists(slot.getStorageFilePath())) {
                     try {
@@ -153,7 +136,7 @@ public class MCATRun implements MCATValidatable {
 
             // Do the same for the subjects
             for (Map.Entry<String, MCATRunSampleSubject> kv2 : kv.getValue().getSubjects().entrySet()) {
-                for (MCATDataSlot<?> slot : kv2.getValue().getSlots()) {
+                for (MCATDataSlot slot : kv2.getValue().getSlots()) {
                     slot.setStorageFilePath(outputPath.resolve(kv.getKey()).resolve(kv2.getKey()).resolve(slot.getName()));
                     if (!Files.exists(slot.getStorageFilePath())) {
                         try {
@@ -259,6 +242,11 @@ public class MCATRun implements MCATValidatable {
 
     public MCATAlgorithmGraph getGraph() {
         return graph;
+    }
+
+    @Override
+    public void reportValidity(ACAQValidityReport report) {
+        report.forCategory("Algorithm graph").report(graph);
     }
 
     public static class Status {

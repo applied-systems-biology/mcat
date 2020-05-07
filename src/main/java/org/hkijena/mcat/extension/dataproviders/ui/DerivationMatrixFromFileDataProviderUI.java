@@ -1,17 +1,17 @@
-package org.hkijena.mcat.ui.dataproviders;
+package org.hkijena.mcat.extension.dataproviders.ui;
 
 import org.hkijena.mcat.api.MCATProjectSample;
-import org.hkijena.mcat.extension.dataproviders.ROIFromFileDataProvider;
+import org.hkijena.mcat.extension.dataproviders.api.DerivativeMatrixFromFileProvider;
 import org.hkijena.mcat.ui.MCATDataProviderUI;
 import org.hkijena.mcat.ui.components.FileSelection;
 
 import java.awt.*;
 
 /**
- * UI for {@link ROIFromFileDataProvider}
+ * UI for {@link DerivativeMatrixFromFileProvider}
  */
-public class ROIFromFileDataProviderUI extends MCATDataProviderUI<ROIFromFileDataProvider> {
-    public ROIFromFileDataProviderUI(MCATProjectSample sample, ROIFromFileDataProvider dataProvider) {
+public class DerivationMatrixFromFileDataProviderUI extends MCATDataProviderUI {
+    public DerivationMatrixFromFileDataProviderUI(MCATProjectSample sample, DerivativeMatrixFromFileProvider dataProvider) {
         super(sample, dataProvider);
         setLayout(new BorderLayout());
 

@@ -59,8 +59,8 @@ public class MCATRunSample implements MCATDataInterface, Comparable<MCATRunSampl
     }
 
     @Override
-    public List<MCATDataSlot<?>> getSlots() {
-        List<MCATDataSlot<?>> result = new ArrayList<>();
+    public List<MCATDataSlot> getSlots() {
+        List<MCATDataSlot> result = new ArrayList<>();
         result.addAll(clusteredDataInterface.getSlots());
         result.addAll(postprocessedDataInterface.getSlots());
         return result;

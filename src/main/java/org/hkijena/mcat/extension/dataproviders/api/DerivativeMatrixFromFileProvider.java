@@ -1,4 +1,4 @@
-package org.hkijena.mcat.extension.dataproviders;
+package org.hkijena.mcat.extension.dataproviders.api;
 
 import java.io.BufferedReader;
 import java.io.File;

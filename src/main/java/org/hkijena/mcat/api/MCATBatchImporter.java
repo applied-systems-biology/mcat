@@ -1,7 +1,7 @@
 package org.hkijena.mcat.api;
 
-import org.hkijena.mcat.extension.dataproviders.HyperstackFromTifDataProvider;
-import org.hkijena.mcat.extension.dataproviders.ROIFromFileDataProvider;
+import org.hkijena.mcat.extension.dataproviders.api.HyperstackFromTifDataProvider;
+import org.hkijena.mcat.extension.dataproviders.api.ROIFromFileDataProvider;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -165,15 +165,17 @@ public class MCATBatchImporter {
         if(importRawImages) {
             Path matched = matchFile(folder, rawImagesPattern);
             if(matched != null) {
-                sample.getRawDataInterface().getRawImage().getProvider(HyperstackFromTifDataProvider.class).setFilePath(matched);
-                sample.getRawDataInterface().getRawImage().setCurrentProvider(HyperstackFromTifDataProvider.class);
+                HyperstackFromTifDataProvider provider = new HyperstackFromTifDataProvider();
+                provider.setFilePath(matched);
+                sample.getRawDataInterface().getRawImage().setCurrentProvider(provider);
             }
         }
         if(importROI) {
             Path matched = matchFile(folder, roiPattern);
             if(matched != null) {
-                sample.getRawDataInterface().getTissueROI().getProvider(ROIFromFileDataProvider.class).setFilePath(matched);
-                sample.getRawDataInterface().getTissueROI().setCurrentProvider(ROIFromFileDataProvider.class);
+                ROIFromFileDataProvider provider = new ROIFromFileDataProvider();
+                provider.setFilePath(matched);
+                sample.getRawDataInterface().getTissueROI().setCurrentProvider(provider);
             }
         }
 

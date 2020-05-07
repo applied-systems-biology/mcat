@@ -26,8 +26,8 @@ public class MCATRunSampleSubject implements MCATDataInterface, Comparable<MCATR
     }
 
     @Override
-    public List<MCATDataSlot<?>> getSlots() {
-        List<MCATDataSlot<?>> result = new ArrayList<>();
+    public List<MCATDataSlot> getSlots() {
+        List<MCATDataSlot> result = new ArrayList<>();
         result.addAll(rawDataInterface.getSlots());
         result.addAll(preprocessedDataInterface.getSlots());
         result.addAll(clusterAbundanceDataInterface.getSlots());

@@ -22,7 +22,7 @@ public class MCATResultSampleUI extends JPanel {
         initialize();
     }
 
-    private void addSlotToForm(String name, MCATDataSlot<?> slot, MarkdownDocument documentation) {
+    private void addSlotToForm(String name, MCATDataSlot slot, MarkdownDocument documentation) {
         Component ui = MCATResultDataSlotUIRegistry.getInstance().getUIFor(slot);
         formPanel.addToForm(ui,
                 new JLabel(name),

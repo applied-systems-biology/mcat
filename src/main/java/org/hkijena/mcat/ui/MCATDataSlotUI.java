@@ -3,8 +3,10 @@ package org.hkijena.mcat.ui;
 import org.hkijena.mcat.api.MCATDataProvider;
 import org.hkijena.mcat.api.MCATDataSlot;
 import org.hkijena.mcat.api.MCATProjectSample;
+import org.hkijena.mcat.api.registries.MCATDataTypeRegistry;
 import org.hkijena.mcat.ui.registries.MCATDataProviderUIRegistry;
 import org.hkijena.mcat.utils.UIUtils;
+import org.hkijena.mcat.utils.api.ACAQDocumentation;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,29 +16,54 @@ import java.awt.*;
  */
 public class MCATDataSlotUI extends JPanel {
     private MCATProjectSample sample;
-    private MCATDataSlot<?> slot;
-    private MCATDataProviderUI<?> currentProviderUI = null;
+    private MCATDataSlot slot;
+    private MCATDataProviderUI currentProviderUI = null;
     private JButton selectionButton;
 
-    public MCATDataSlotUI(MCATProjectSample sample, MCATDataSlot<?> slot) {
+    public MCATDataSlotUI(MCATProjectSample sample, MCATDataSlot slot) {
         this.sample = sample;
         this.slot = slot;
-        slot.ensureDataProvider();
         setLayout(new BorderLayout());
         initializeDataProviderSelection();
         createDataProviderUI();
+        refreshSelectionButton();
     }
 
     private void initializeDataProviderSelection() {
-        selectionButton = new JButton(slot.getCurrentProvider().getName(), UIUtils.getIconFromResources("database.png"));
+        selectionButton = new JButton();
         selectionButton.setHorizontalAlignment(SwingConstants.LEFT);
-        JPopupMenu menu = UIUtils.addPopupMenuToComponent(selectionButton);
-        for(MCATDataProvider provider : slot.getAvailableProviders()) {
-            JMenuItem item = new JMenuItem(provider.getName(), UIUtils.getIconFromResources("database.png"));
-            menu.add(item);
+        add(selectionButton, BorderLayout.EAST);
+    }
+
+    public void refreshSelectionButton() {
+        if(slot.getCurrentProvider() != null) {
+            ACAQDocumentation documentation = slot.getClass().getAnnotation(ACAQDocumentation.class);
+            selectionButton.setText(documentation.name());
+            selectionButton.setIcon(UIUtils.getIconFromResources("database.png"));
+            selectionButton.setToolTipText(documentation.description());
+        }
+        else {
+            selectionButton.setText("None selected");
+            selectionButton.setIcon(UIUtils.getIconFromResources("error.png"));
         }
 
-        add(selectionButton, BorderLayout.EAST);
+        JPopupMenu menu = UIUtils.addPopupMenuToComponent(selectionButton);
+        for(Class<? extends MCATDataProvider> providerClass : MCATDataTypeRegistry.getInstance().getProvidersFor(slot.getAcceptedDataType())) {
+            ACAQDocumentation documentation = providerClass.getAnnotation(ACAQDocumentation.class);
+            JMenuItem item = new JMenuItem(documentation.name(), UIUtils.getIconFromResources("database.png"));
+            item.setToolTipText(documentation.description());
+
+            item.addActionListener(e -> {
+                try {
+                    slot.setCurrentProvider(providerClass.newInstance());
+                    refreshSelectionButton();
+                } catch (InstantiationException | IllegalAccessException exception) {
+                    throw new RuntimeException(exception);
+                }
+            });
+
+            menu.add(item);
+        }
     }
 
     private void createDataProviderUI() {

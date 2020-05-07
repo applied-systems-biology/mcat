@@ -7,13 +7,12 @@ import javax.swing.*;
 
 /**
  * Base class for any {@link MCATDataProvider} UI
- * @param <T>
  */
-public abstract class MCATDataProviderUI <T extends MCATDataProvider> extends JPanel {
+public abstract class MCATDataProviderUI extends JPanel {
     private MCATProjectSample sample;
-    private T dataProvider;
+    private MCATDataProvider dataProvider;
 
-    protected MCATDataProviderUI(MCATProjectSample sample, T dataProvider) {
+    protected MCATDataProviderUI(MCATProjectSample sample, MCATDataProvider dataProvider) {
         this.sample = sample;
         this.dataProvider = dataProvider;
     }
@@ -22,7 +21,7 @@ public abstract class MCATDataProviderUI <T extends MCATDataProvider> extends JP
         return sample;
     }
 
-    public T getDataProvider() {
+    public MCATDataProvider getDataProvider() {
         return dataProvider;
     }
 }

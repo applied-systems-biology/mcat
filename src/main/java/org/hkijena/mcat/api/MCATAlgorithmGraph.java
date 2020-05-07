@@ -3,6 +3,8 @@ package org.hkijena.mcat.api;
 import org.hkijena.mcat.api.algorithms.MCATClusteringAlgorithm;
 import org.hkijena.mcat.api.algorithms.MCATPostprocessingAlgorithm;
 import org.hkijena.mcat.api.algorithms.MCATPreprocessingAlgorithm;
+import org.hkijena.mcat.utils.api.ACAQValidatable;
+import org.hkijena.mcat.utils.api.ACAQValidityReport;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.io.DOTExporter;
@@ -16,7 +18,7 @@ import java.util.*;
 /**
  * Manages multiple {@link MCATAlgorithm} instances as graph
  */
-public class MCATAlgorithmGraph implements MCATValidatable {
+public class MCATAlgorithmGraph implements ACAQValidatable {
 
     private DefaultDirectedGraph<MCATAlgorithm, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
     private Set<MCATAlgorithm> algorithms = new HashSet<>();
@@ -30,9 +32,9 @@ public class MCATAlgorithmGraph implements MCATValidatable {
 
     private void initialize() {
         rootNode = new MCATAlgorithm(null) {
+
             @Override
-            public MCATValidityReport getValidityReport() {
-                return new MCATValidityReport(this, "root", true, "");
+            public void reportValidity(ACAQValidityReport report) {
             }
 
             @Override
@@ -84,15 +86,6 @@ public class MCATAlgorithmGraph implements MCATValidatable {
         return Collections.unmodifiableSet(algorithms);
     }
 
-    @Override
-    public MCATValidityReport getValidityReport() {
-        MCATValidityReport report = new MCATValidityReport(this, "Algorithm graph", true, "");
-        for(MCATAlgorithm algorithm : algorithms) {
-            report.merge(algorithm.getValidityReport(), "Algorithm graph", "Node");
-        }
-        return report;
-    }
-
     public List<MCATAlgorithm> traverse() {
         GraphIterator<MCATAlgorithm, DefaultEdge> iterator = new TopologicalOrderIterator<>(graph);
         List<MCATAlgorithm> result = new ArrayList<>();
@@ -105,5 +98,12 @@ public class MCATAlgorithmGraph implements MCATValidatable {
 
     public int size() {
         return graph.vertexSet().size();
+    }
+
+    @Override
+    public void reportValidity(ACAQValidityReport report) {
+        for (MCATAlgorithm algorithm : algorithms) {
+            report.forCategory(algorithm.toString()).report(algorithm);
+        }
     }
 }

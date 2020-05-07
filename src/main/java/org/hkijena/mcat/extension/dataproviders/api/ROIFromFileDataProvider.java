@@ -1,4 +1,4 @@
-package org.hkijena.mcat.extension.dataproviders;
+package org.hkijena.mcat.extension.dataproviders.api;
 
 import ij.io.Opener;
 import org.hkijena.mcat.extension.datatypes.ROIData;

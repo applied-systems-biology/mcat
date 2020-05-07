@@ -8,10 +8,7 @@ import org.hkijena.mcat.api.MCATDataSlot;
 import org.hkijena.mcat.extension.dataproviders.StandardDataProvidersExtension;
 import org.hkijena.mcat.extension.datatypes.StandardDataTypeExtension;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Manages {@link org.hkijena.mcat.api.MCATDataSlot} and {@link org.hkijena.mcat.api.MCATDataProvider} types
@@ -49,6 +46,15 @@ public class MCATDataTypeRegistry {
             providersForData.put(dataClass, forData);
         }
         forData.add(providerClass);
+    }
+
+    /**
+     * Returns providers for the specified data class
+     * @param dataClass the data class
+     * @return providers for the specified data class. Always return a non-null list.
+     */
+    public Set<Class<? extends MCATDataProvider>> getProvidersFor(Class<? extends MCATData> dataClass) {
+        return providersForData.getOrDefault(dataClass, Collections.emptySet());
     }
 
     public static MCATDataTypeRegistry getInstance() {

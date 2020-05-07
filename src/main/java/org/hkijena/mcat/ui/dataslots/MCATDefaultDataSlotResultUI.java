@@ -1,7 +1,7 @@
 package org.hkijena.mcat.ui.dataslots;
 
 import org.hkijena.mcat.api.MCATDataSlot;
-import org.hkijena.mcat.extension.dataproviders.FileDataProvider;
+import org.hkijena.mcat.extension.dataproviders.api.FileDataProvider;
 import org.hkijena.mcat.ui.MCATResultDataSlotUI;
 import org.hkijena.mcat.utils.UIUtils;
 
@@ -11,16 +11,16 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Objects;
 
-public class MCATDefaultDataSlotResultUI extends MCATResultDataSlotUI<MCATDataSlot<?>> {
-    public MCATDefaultDataSlotResultUI(MCATDataSlot<?> slot) {
+public class MCATDefaultDataSlotResultUI extends MCATResultDataSlotUI {
+    public MCATDefaultDataSlotResultUI(MCATDataSlot slot) {
         super(slot);
         initialize();
     }
 
     private Path getStoragePath() {
         if(getSlot().getCurrentProvider() != null && getSlot().getCurrentProvider().isValid()) {
-            if(getSlot().getCurrentProvider() instanceof FileDataProvider<?>) {
-                FileDataProvider<?> provider = (FileDataProvider<?>)getSlot().getCurrentProvider();
+            if(getSlot().getCurrentProvider() instanceof FileDataProvider) {
+                FileDataProvider provider = (FileDataProvider)getSlot().getCurrentProvider();
                 return provider.getFilePath().getParent();
             }
         }

@@ -5,6 +5,7 @@ import org.hkijena.mcat.ui.components.FileSelection;
 import org.hkijena.mcat.ui.components.FormPanel;
 import org.hkijena.mcat.ui.components.MarkdownDocument;
 import org.hkijena.mcat.utils.UIUtils;
+import org.hkijena.mcat.utils.api.ACAQValidityReport;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,7 +18,7 @@ import java.util.concurrent.ExecutionException;
 public class MCATRunUI extends MCATUIPanel {
 
     private MCATRun run;
-    private MCATValidityReport validityReport;
+    private ACAQValidityReport validityReport = new ACAQValidityReport();
     private Worker worker;
 
     JPanel setupPanel;
@@ -29,7 +30,7 @@ public class MCATRunUI extends MCATUIPanel {
     public MCATRunUI(MCATWorkbenchUI workbenchUI) {
         super(workbenchUI);
         run = new MCATRun(workbenchUI.getProject());
-        validityReport = run.getValidityReport();
+        run.reportValidity(validityReport);
         initialize();
     }
 
