@@ -24,28 +24,30 @@ public class MCATRunSampleTreeCellRenderer extends JLabel implements TreeCellRen
             setFont(tree.getFont());
         }
 
-        Object o = ((DefaultMutableTreeNode)value).getUserObject();
-        if(o instanceof MCATResultDataInterfaces.SlotEntry) {
-            MCATResultDataInterfaces.SlotEntry slotEntry = (MCATResultDataInterfaces.SlotEntry) o;
-            setText(slotEntry.getName());
-            setIcon(UIUtils.getIconFromResources("database.png"));
+        if(value instanceof MCATResultTreeNode) {
+
+            MCATResultTreeNode treeNode = (MCATResultTreeNode) value;
+            setText("" + treeNode.getUserObject());
+            switch (treeNode.getNodeType()) {
+                case RootGroup:
+                    setIcon(UIUtils.getIconFromResources("run.png"));
+                    break;
+                case DataInterfaceGroup:
+                    setIcon(UIUtils.getIconFromResources("database.png"));
+                    break;
+                case ParameterGroup:
+                    setIcon(UIUtils.getIconFromResources("cog.png"));
+                    break;
+                case DataSetGroup:
+                    setIcon(UIUtils.getIconFromResources("sample.png"));
+                    break;
+                case Slot:
+                    setIcon(UIUtils.getIconFromResources("database.png"));
+                    break;
+            }
         }
         else {
-            String content = "" + o;
-            if(content.startsWith("Name:")) {
-                content = content.substring("Name:".length());
-                setIcon(UIUtils.getIconFromResources("database.png"));
-            }
-            else if(content.startsWith("Parameter:")) {
-                content = content.substring("Parameter:".length());
-                setIcon(UIUtils.getIconFromResources("cog.png"));
-            }
-            else if(content.startsWith("DataSet:")) {
-                content = content.substring("DataSet:".length());
-                setIcon(UIUtils.getIconFromResources("sample.png"));
-            }
-
-            setText(content);
+            setText("<Invalid>");
         }
 
         // Update status

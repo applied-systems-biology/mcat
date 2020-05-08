@@ -1,9 +1,11 @@
 package org.hkijena.mcat.ui.resultanalysis;
 
 import org.hkijena.mcat.api.MCATResult;
+import org.hkijena.mcat.api.MCATResultDataInterfaces;
 import org.hkijena.mcat.utils.UIUtils;
 
 import javax.swing.*;
+import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -34,18 +36,13 @@ public class MCATResultUI extends JPanel {
         });
         add(splitPane, BorderLayout.CENTER);
 
-//        sampleManagerUI.getSampleTree().addTreeSelectionListener(e -> {
-//            Object pathComponent = e.getPath().getLastPathComponent();
-//            if(pathComponent != null) {
-//                DefaultMutableTreeNode nd = (DefaultMutableTreeNode) pathComponent;
-//                if(nd.getUserObject() instanceof MCATRunSample) {
-//                   setCurrentDisplayed((MCATRunSample)nd.getUserObject());
-//                }
-//                else if(nd.getUserObject() instanceof MCATRunSampleSubject) {
-//                    setCurrentDisplayed((MCATRunSampleSubject)nd.getUserObject());
-//                }
-//            }
-//        });
+        sampleManagerUI.getSampleTree().addTreeSelectionListener(e -> {
+            Object pathComponent = e.getPath().getLastPathComponent();
+            if(pathComponent != null) {
+                MCATResultTreeNode treeNode = (MCATResultTreeNode) pathComponent;
+                splitPane.setRightComponent(new MCATResultSlotListUI(treeNode.getSlotEntries()));
+            }
+        });
 
         initializeToolbar();
     }
@@ -69,12 +66,4 @@ public class MCATResultUI extends JPanel {
     public MCATResult getResult() {
         return result;
     }
-
-    //    private void setCurrentDisplayed(MCATRunSample sample) {
-//        splitPane.setRightComponent(new MCATResultSampleUI(sample, null));
-//    }
-//
-//    private void setCurrentDisplayed(MCATRunSampleSubject subject) {
-//        splitPane.setRightComponent(new MCATResultSampleUI(subject.getSample(), subject));
-//    }
 }
