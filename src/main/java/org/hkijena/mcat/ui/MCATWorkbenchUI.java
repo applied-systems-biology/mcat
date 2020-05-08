@@ -2,8 +2,10 @@ package org.hkijena.mcat.ui;
 
 import org.hkijena.mcat.MCATCommand;
 import org.hkijena.mcat.api.MCATProject;
+import org.hkijena.mcat.api.MCATResult;
 import org.hkijena.mcat.ui.components.DocumentTabPane;
 import org.hkijena.mcat.ui.parameters.MCATParametersTableUI;
+import org.hkijena.mcat.ui.resultanalysis.MCATResultUI;
 import org.hkijena.mcat.utils.UIUtils;
 import org.scijava.Context;
 
@@ -43,21 +45,6 @@ public class MCATWorkbenchUI extends JFrame {
                 new MCATParametersTableUI(this),
                 DocumentTabPane.CloseMode.withoutCloseButton,
                 false);
-//        documentTabPane.addTab( "Preprocessing",
-//                UIUtils.getIconFromResources("wrench.png"),
-//                new MCATPreprocessingUI(this),
-//                DocumentTabPane.CloseMode.withoutCloseButton,
-//                false);
-//        documentTabPane.addTab( "Clustering",
-//                UIUtils.getIconFromResources("clustering.png"),
-//                new MCATClusteringUI(this),
-//                DocumentTabPane.CloseMode.withoutCloseButton,
-//                false);
-//        documentTabPane.addTab( "Postprocessing",
-//                UIUtils.getIconFromResources("statistics.png"),
-//                new MCATPostprocessingUI(this),
-//                DocumentTabPane.CloseMode.withoutCloseButton,
-//                false);
 
         add(documentTabPane, BorderLayout.CENTER);
 
@@ -82,6 +69,11 @@ public class MCATWorkbenchUI extends JFrame {
         saveProjectButton.addActionListener(e -> saveProject());
         toolBar.add(saveProjectButton);
 
+        // "Open project" entry
+        JButton importButton = new JButton("Open result ...", UIUtils.getIconFromResources("import.png"));
+        importButton.addActionListener(e -> openResult());
+        toolBar.add(importButton);
+
         toolBar.add(Box.createHorizontalGlue());
 
         // "Run" entry
@@ -94,10 +86,23 @@ public class MCATWorkbenchUI extends JFrame {
         add(toolBar, BorderLayout.NORTH);
     }
 
+    private void openResult() {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        fileChooser.setDialogTitle("Open result directory");
+        if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+            MCATResult result = new MCATResult(fileChooser.getSelectedFile().toPath());
+            MCATWorkbenchUI workbenchUI = newWindow(command, result.getProject());
+            MCATResultUI resultUI = new MCATResultUI(result);
+            workbenchUI.documentTabPane.addTab("Result", UIUtils.getIconFromResources("run.png"),
+                    resultUI, DocumentTabPane.CloseMode.withAskOnCloseButton, true);
+        }
+    }
+
     private void openProject() {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        fileChooser.setDialogTitle("Open project (*.json");
+        fileChooser.setDialogTitle("Open project (*.json)");
         if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
             try {
                 newWindow(command, MCATProject.loadProject(fileChooser.getSelectedFile().toPath()));
@@ -110,7 +115,7 @@ public class MCATWorkbenchUI extends JFrame {
     private void saveProject() {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        fileChooser.setDialogTitle("Save project (*.json");
+        fileChooser.setDialogTitle("Save project (*.json)");
         if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
             try {
                 getProject().saveProject(fileChooser.getSelectedFile().toPath());
@@ -150,12 +155,13 @@ public class MCATWorkbenchUI extends JFrame {
         return command.getContext();
     }
 
-    public static void newWindow(MCATCommand command, MCATProject project) {
+    public static MCATWorkbenchUI newWindow(MCATCommand command, MCATProject project) {
         MCATWorkbenchUI frame = new MCATWorkbenchUI(command, project);
         frame.pack();
         frame.setSize(1024, 768);
         frame.setVisible(true);
 //        frame.setExtendedState(frame.getExtendedState() | JFrame.MAXIMIZED_BOTH);
+        return frame;
     }
 
 

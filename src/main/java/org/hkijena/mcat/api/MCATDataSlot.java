@@ -1,10 +1,21 @@
 package org.hkijena.mcat.api;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.hkijena.mcat.api.registries.MCATDataTypeRegistry;
+import org.hkijena.mcat.utils.StringUtils;
+
+import java.io.IOException;
 import java.nio.file.Path;
 
 /**
  * A slot holds data and also have the capability to load data from an MCATDataProvider if data is requested, but not set
  */
+@JsonSerialize(using = MCATDataSlot.Serializer.class)
 public class MCATDataSlot {
 
     private String name;
@@ -109,5 +120,37 @@ public class MCATDataSlot {
 
     public String getName() {
         return name;
+    }
+
+    /**
+     * Loads the provider from a JSON node
+     * @param jsonNode
+     */
+    public void fromJson(JsonNode jsonNode) {
+        String providerId = jsonNode.get("current-provider-type-id").textValue();
+        if(!StringUtils.isNullOrEmpty(providerId)) {
+            Class<? extends MCATDataProvider> providerClass = MCATDataTypeRegistry.getInstance().getRegisteredDataProviders().get(providerId);
+            try {
+                setCurrentProvider(providerClass.newInstance());
+            } catch (InstantiationException | IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    public static class Serializer extends JsonSerializer<MCATDataSlot> {
+        @Override
+        public void serialize(MCATDataSlot value, JsonGenerator gen, SerializerProvider serializers) throws IOException, JsonProcessingException {
+            gen.writeStartObject();
+            if(value.getCurrentProvider() != null) {
+                String providerId = MCATDataTypeRegistry.getInstance().getProviderId(value.getCurrentProvider().getClass());
+                gen.writeStringField("current-provider-type-id", providerId);
+                gen.writeObjectField("current-provider", value.getCurrentProvider());
+            }
+            else {
+                gen.writeStringField("current-provider-type-id", "");
+            }
+            gen.writeEndObject();
+        }
     }
 }

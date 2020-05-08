@@ -59,6 +59,18 @@ public class MCATDataTypeRegistry {
         return providersForData.getOrDefault(dataClass, Collections.emptySet());
     }
 
+    public String getProviderId(Class<? extends MCATDataProvider> klass) {
+        return registeredDataProviders.inverse().get(klass);
+    }
+
+    public BiMap<String, Class<? extends MCATData>> getRegisteredDataTypes() {
+        return registeredDataTypes;
+    }
+
+    public BiMap<String, Class<? extends MCATDataProvider>> getRegisteredDataProviders() {
+        return registeredDataProviders;
+    }
+
     public static MCATDataTypeRegistry getInstance() {
         if (instance == null) {
             instance = new MCATDataTypeRegistry();

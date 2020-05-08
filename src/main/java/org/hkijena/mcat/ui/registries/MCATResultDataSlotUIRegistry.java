@@ -1,6 +1,6 @@
 package org.hkijena.mcat.ui.registries;
 
-import org.hkijena.mcat.api.MCATDataSlot;
+import org.hkijena.mcat.api.MCATResultDataInterfaces;
 import org.hkijena.mcat.ui.dataslots.MCATDefaultDataSlotResultUI;
 import org.hkijena.mcat.ui.resultanalysis.MCATResultDataSlotUI;
 
@@ -10,17 +10,17 @@ import java.util.Map;
 
 public class MCATResultDataSlotUIRegistry {
     private static MCATResultDataSlotUIRegistry instance;
-    private Map<Class<? extends MCATDataSlot>, Class<? extends MCATResultDataSlotUI>> registry = new HashMap<>();
+    private Map<String, Class<? extends MCATResultDataSlotUI>> registry = new HashMap<>();
 
     private MCATResultDataSlotUIRegistry() {
         // Register here
     }
 
-    public MCATResultDataSlotUI getUIFor(MCATDataSlot slot) {
-        Class<? extends MCATResultDataSlotUI> uiClass = registry.getOrDefault(slot.getClass(), null);
+    public MCATResultDataSlotUI getUIFor(MCATResultDataInterfaces.SlotEntry slot) {
+        Class<? extends MCATResultDataSlotUI> uiClass = registry.getOrDefault(slot.getName(), null);
         if (uiClass != null) {
             try {
-                return uiClass.getConstructor(slot.getClass()).newInstance(slot);
+                return uiClass.getConstructor(MCATResultDataInterfaces.SlotEntry.class).newInstance(slot);
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
                 throw new RuntimeException(e);
             }

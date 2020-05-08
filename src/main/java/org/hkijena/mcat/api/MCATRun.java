@@ -8,6 +8,7 @@ import org.hkijena.mcat.api.algorithms.MCATPostprocessingAlgorithm;
 import org.hkijena.mcat.api.algorithms.MCATPreprocessingAlgorithm;
 import org.hkijena.mcat.api.datainterfaces.*;
 import org.hkijena.mcat.api.parameters.*;
+import org.hkijena.mcat.utils.JsonUtils;
 import org.hkijena.mcat.utils.api.ACAQValidatable;
 import org.hkijena.mcat.utils.api.ACAQValidityReport;
 import org.hkijena.mcat.utils.api.events.ParameterChangedEvent;
@@ -330,12 +331,27 @@ public class MCATRun implements ACAQValidatable {
             }
         }
 
+        try {
+            JsonUtils.getObjectMapper().writerWithDefaultPrettyPrinter().writeValue(outputPath.resolve("project.json").toFile(), project);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        MCATResultDataInterfaces exportedSavedInterfaces = new MCATResultDataInterfaces();
         for (MCATDataInterfaceKey key : savedDataInterfaces) {
-            setDataInterfaceStoragePath(key, uniqueDataInterfaces.get(key));
+            MCATResultDataInterfaces.DataInterfaceEntry dataInterfaceEntry = setDataInterfaceStoragePath(key, uniqueDataInterfaces.get(key));
+            exportedSavedInterfaces.getEntries().add(dataInterfaceEntry);
+        }
+        try {
+            JsonUtils.getObjectMapper().writerWithDefaultPrettyPrinter().writeValue(outputPath.resolve("data.json").toFile(), exportedSavedInterfaces);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
-    private void setDataInterfaceStoragePath(MCATDataInterfaceKey key, MCATDataInterface dataInterface) {
+    private MCATResultDataInterfaces.DataInterfaceEntry setDataInterfaceStoragePath(MCATDataInterfaceKey key, MCATDataInterface dataInterface) {
+        MCATResultDataInterfaces.DataInterfaceEntry result = new MCATResultDataInterfaces.DataInterfaceEntry(key);
+
         String interfaceType = key.getDataInterfaceName();
         String dataSetString = key.getDataSetNames().stream().sorted().collect(Collectors.joining(","));
         Set<ACAQParameterAccess> parameterAccesses = new HashSet<>();
@@ -343,6 +359,7 @@ public class MCATRun implements ACAQValidatable {
             parameterAccesses.addAll((new ACAQTraversedParameterCollection(parameterCollection)).getParameters().values());
         }
         String parameterString = ACAQCustomParameterCollection.parametersToString(parameterAccesses, ",", "=");
+        result.setParameterString(parameterString);
 
         for (Map.Entry<String, MCATDataSlot> slotEntry : dataInterface.getSlots().entrySet()) {
             Path slotPath = outputPath.resolve(interfaceType).resolve(parameterString).resolve(dataSetString).resolve(slotEntry.getValue().getName());
@@ -354,7 +371,12 @@ public class MCATRun implements ACAQValidatable {
                 }
             }
             slotEntry.getValue().setStorageFilePath(slotPath);
+
+            MCATResultDataInterfaces.SlotEntry exportedSlotEntry = new MCATResultDataInterfaces.SlotEntry(slotEntry.getKey(), outputPath.relativize(slotPath));
+            result.getSlots().add(exportedSlotEntry);
         }
+
+        return result;
     }
 
     public void run(Consumer<Status> onProgress, Supplier<Boolean> isCancelled) {

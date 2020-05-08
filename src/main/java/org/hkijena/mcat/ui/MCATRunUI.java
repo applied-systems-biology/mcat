@@ -1,5 +1,6 @@
 package org.hkijena.mcat.ui;
 
+import org.hkijena.mcat.api.MCATResult;
 import org.hkijena.mcat.api.MCATRun;
 import org.hkijena.mcat.ui.components.FileSelection;
 import org.hkijena.mcat.ui.components.FormPanel;
@@ -132,7 +133,7 @@ public class MCATRunUI extends MCATWorkbenchUIPanel {
     }
 
     private void openResults() {
-        MCATResultUI resultUI = new MCATResultUI(run);
+        MCATResultUI resultUI = new MCATResultUI(new MCATResult(run.getOutputPath()));
         add(resultUI, BorderLayout.CENTER);
         buttonPanel.setVisible(false);
         revalidate();

@@ -2,7 +2,7 @@ package org.hkijena.mcat.ui.resultanalysis;
 
 import javax.swing.*;
 
-public class MCATResultSampleUI extends JPanel {
+public class MCATResultSlotUI extends JPanel {
 //    private MCATRunSample sample;
 //    private MCATRunSampleSubject subject;
 //    private FormPanel formPanel;

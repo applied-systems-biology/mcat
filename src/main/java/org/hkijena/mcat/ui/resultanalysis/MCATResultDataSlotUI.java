@@ -1,17 +1,17 @@
 package org.hkijena.mcat.ui.resultanalysis;
 
-import org.hkijena.mcat.api.MCATDataSlot;
+import org.hkijena.mcat.api.MCATResultDataInterfaces;
 
 import javax.swing.*;
 
 public class MCATResultDataSlotUI extends JPanel {
-    private MCATDataSlot slot;
+    private MCATResultDataInterfaces.SlotEntry slot;
 
-    public MCATResultDataSlotUI(MCATDataSlot slot) {
+    public MCATResultDataSlotUI(MCATResultDataInterfaces.SlotEntry slot) {
         this.slot = slot;
     }
 
-    public MCATDataSlot getSlot() {
+    public MCATResultDataInterfaces.SlotEntry getSlot() {
         return slot;
     }
 }
