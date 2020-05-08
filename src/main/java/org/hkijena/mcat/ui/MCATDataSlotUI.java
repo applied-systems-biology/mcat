@@ -31,13 +31,14 @@ public class MCATDataSlotUI extends JPanel {
 
     private void initializeDataProviderSelection() {
         selectionButton = new JButton();
+        UIUtils.makeFlat(selectionButton);
         selectionButton.setHorizontalAlignment(SwingConstants.LEFT);
         add(selectionButton, BorderLayout.EAST);
     }
 
     public void refreshSelectionButton() {
         if (slot.getCurrentProvider() != null) {
-            ACAQDocumentation documentation = slot.getClass().getAnnotation(ACAQDocumentation.class);
+            ACAQDocumentation documentation = slot.getAcceptedDataType().getAnnotation(ACAQDocumentation.class);
             selectionButton.setText(documentation.name());
             selectionButton.setIcon(UIUtils.getIconFromResources("database.png"));
             selectionButton.setToolTipText(documentation.description());
@@ -56,6 +57,7 @@ public class MCATDataSlotUI extends JPanel {
                 try {
                     slot.setCurrentProvider(providerClass.newInstance());
                     refreshSelectionButton();
+                    createDataProviderUI();
                 } catch (InstantiationException | IllegalAccessException exception) {
                     throw new RuntimeException(exception);
                 }
@@ -66,11 +68,15 @@ public class MCATDataSlotUI extends JPanel {
     }
 
     private void createDataProviderUI() {
-        if (currentProviderUI != null)
+        if (currentProviderUI != null) {
             remove(currentProviderUI);
+            currentProviderUI = null;
+        }
 
-        currentProviderUI = MCATDataProviderUIRegistry.getInstance().getUIFor(sample, slot.getCurrentProvider());
-        add(currentProviderUI, BorderLayout.CENTER);
+        if(slot.getCurrentProvider() != null) {
+            currentProviderUI = MCATDataProviderUIRegistry.getInstance().getUIFor(sample, slot.getCurrentProvider());
+            add(currentProviderUI, BorderLayout.CENTER);
+        }
     }
 
 

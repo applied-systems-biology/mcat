@@ -287,7 +287,7 @@ public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
 
     @Override
     public List<MCATDataInterface> getOutputDataInterfaces() {
-        return Arrays.asList(preprocessedDataInterface);
+        return Arrays.asList(rawDataInterface, preprocessedDataInterface);
     }
 
     @Override

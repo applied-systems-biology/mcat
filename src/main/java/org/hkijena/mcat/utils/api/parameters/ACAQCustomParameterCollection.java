@@ -26,7 +26,7 @@ public interface ACAQCustomParameterCollection extends ACAQParameterCollection {
         StringBuilder stringBuilder = new StringBuilder();
         boolean first = true;
         for (ACAQParameterAccess access : parameters.stream().sorted(Comparator.comparing(ACAQParameterAccess::getShortKey)).collect(Collectors.toList())) {
-            if(first)
+            if(!first)
                 stringBuilder.append(separator);
             first = false;
             stringBuilder.append(access.getShortKey()).append(equals).append(("" + (Object)access.get()));

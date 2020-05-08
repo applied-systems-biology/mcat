@@ -195,6 +195,7 @@ public class ACAQTraversedParameterCollection implements ACAQParameterCollection
                 parameterAccess.setKey(entry.getKey());
                 parameterAccess.setGetter(pair.getter);
                 parameterAccess.setSetter(pair.setter);
+                parameterAccess.setShortKey(pair.getShortKey());
                 parameterAccess.setDocumentation(pair.getDocumentation());
                 parameterAccess.setVisibility(pair.getVisibility());
                 parameterAccess.setPriority(pair.getPriority());
