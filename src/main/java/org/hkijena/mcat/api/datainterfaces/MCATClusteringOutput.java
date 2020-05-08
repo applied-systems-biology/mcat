@@ -20,6 +20,8 @@ public class MCATClusteringOutput implements MCATDataInterface {
     private MCATDataSlot clusterImages = new MCATDataSlot("cluster-image", HyperstackData.class);
     private MCATDataSlot singleClusterImage = new MCATDataSlot("single-cluster-image", HyperstackData.class);
 
+    private int minLength = -1;
+
     public MCATClusteringOutput(String groupSubject, String groupTreatment) {
         this.groupSubject = groupSubject;
         this.groupTreatment = groupTreatment;
@@ -74,5 +76,13 @@ public class MCATClusteringOutput implements MCATDataInterface {
      */
     public String getGroupTreatment() {
         return groupTreatment;
+    }
+
+    public int getMinLength() {
+        return minLength;
+    }
+
+    public void setMinLength(int minLength) {
+        this.minLength = minLength;
     }
 }

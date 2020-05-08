@@ -11,8 +11,8 @@ import ij.process.ImageStatistics;
 import org.hkijena.mcat.api.MCATAlgorithm;
 import org.hkijena.mcat.api.MCATDataInterface;
 import org.hkijena.mcat.api.MCATRun;
-import org.hkijena.mcat.api.datainterfaces.MCATPreprocessedDataInterface;
-import org.hkijena.mcat.api.datainterfaces.MCATRawDataInterface;
+import org.hkijena.mcat.api.datainterfaces.MCATPreprocessingOutput;
+import org.hkijena.mcat.api.datainterfaces.MCATPreprocessingInput;
 import org.hkijena.mcat.api.parameters.MCATClusteringParameters;
 import org.hkijena.mcat.api.parameters.MCATPostprocessingParameters;
 import org.hkijena.mcat.api.parameters.MCATPreprocessingParameters;
@@ -26,8 +26,8 @@ import java.util.List;
 
 public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
 
-    private MCATRawDataInterface rawDataInterface;
-    private MCATPreprocessedDataInterface preprocessedDataInterface;
+    private MCATPreprocessingInput preprocessingInput;
+    private MCATPreprocessingOutput preprocessingOutput;
 
     private boolean saveRaw = false, saveRoi = false;
     private int downFactor = 1;
@@ -38,11 +38,11 @@ public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
                                       MCATPreprocessingParameters preprocessingParameters,
                                       MCATPostprocessingParameters postprocessingParameters,
                                       MCATClusteringParameters clusteringParameters,
-                                      MCATRawDataInterface rawDataInterface,
-                                      MCATPreprocessedDataInterface preprocessedDataInterface) {
+                                      MCATPreprocessingInput preprocessingInput,
+                                      MCATPreprocessingOutput preprocessingOutput) {
         super(run, preprocessingParameters, postprocessingParameters, clusteringParameters);
-        this.rawDataInterface = rawDataInterface;
-        this.preprocessedDataInterface = preprocessedDataInterface;
+        this.preprocessingInput = preprocessingInput;
+        this.preprocessingOutput = preprocessingOutput;
     }
 
     private ImagePlus registerImages(String transformFile, ImagePlus... imps) {
@@ -88,15 +88,15 @@ public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
 
     private ImagePlus setOuterPixels(ImagePlus imp) {
         System.out.println("\tSetting pixels outside ROI to zero...");
-        getRawDataInterface().getTissueROI().resetFromCurrentProvider();
-        Roi r = getRawDataInterface().getTissueROI().getData(ROIData.class).getRoi();
+        getPreprocessingInput().getTissueROI().resetFromCurrentProvider();
+        Roi r = getPreprocessingInput().getTissueROI().getData(ROIData.class).getRoi();
         if (r == null) {
             System.out.println("WARNING: no ROI specified, background will not be set to zero!");
             return imp;
         }
 
         System.out.println("\t\tRoi name: " + r.getName());
-        getRawDataInterface().getTissueROI().setData(new ROIData(r));
+        getPreprocessingInput().getTissueROI().setData(new ROIData(r));
 
         roiName = r.getName();
         imp.setRoi(r);
@@ -125,6 +125,8 @@ public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
         // Setting parameters during runtime is not allowed
 //        if (slices < minLength)
 //            getClusteringParameters().setMinLength(slices);
+        // Use the data interface instead (just create a variable)
+        getPreprocessingOutput().setMinLength(Math.min(slices, minLength));
 
         return imp;
     }
@@ -165,26 +167,26 @@ public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
                 derivativeMatrix[y * width + x] = pixels;
             }
         }
-        getPreprocessedDataInterface().getDerivativeMatrix().setData(new DerivativeMatrixData(derivativeMatrix));
+        getPreprocessingOutput().getDerivativeMatrix().setData(new DerivativeMatrixData(derivativeMatrix));
     }
 
     private void saveTimeDerivativeMatrix() {
         System.out.println("\tWriting time derivative matrix...");
         String identifier = getName() + "_roi-" + roiName + "_downsampling-" + downFactor + "_anatomyCh-" + channelAnatomy + "_interestCh-" + channelOfInterest + "_";
-        getPreprocessedDataInterface().getDerivativeMatrix().flush(identifier);
+        getPreprocessingOutput().getDerivativeMatrix().flush(identifier);
     }
 
     private void saveImage(ImagePlus imp) {
         System.out.println("\tWriting pre-processed image...");
-        getPreprocessedDataInterface().getPreprocessedImage().setData(new HyperstackData(imp));
+        getPreprocessingOutput().getPreprocessedImage().setData(new HyperstackData(imp));
         String identifier = getName() + "_roi-" + roiName + "_downsampling-" + downFactor + "_anatomyCh-" + channelAnatomy + "_interestCh-" + channelOfInterest + "_";
-        getPreprocessedDataInterface().getPreprocessedImage().flush(identifier);
+        getPreprocessingOutput().getPreprocessedImage().flush(identifier);
     }
 
     @Override
     public void run() {
-        getRawDataInterface().getRawImage().resetFromCurrentProvider();
-        ImagePlus imp = getRawDataInterface().getRawImage().getData(HyperstackData.class).getImage();
+        getPreprocessingInput().getRawImage().resetFromCurrentProvider();
+        ImagePlus imp = getPreprocessingInput().getRawImage().getData(HyperstackData.class).getImage();
 
         saveRaw = getPreprocessingParameters().isSaveRawImage();
         saveRoi = getPreprocessingParameters().isSaveRoi();
@@ -263,13 +265,13 @@ public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
         saveTimeDerivativeMatrix();
 
         if (saveRaw)
-            getRawDataInterface().getRawImage().flush(getName() + "_");
+            getPreprocessingInput().getRawImage().flush(getName() + "_");
         if (saveRoi)
-            getRawDataInterface().getTissueROI().flush(getName() + "_" + roiName + "_");
+            getPreprocessingInput().getTissueROI().flush(getName() + "_" + roiName + "_");
 
         interest.close();
 
-        getRawDataInterface().getRawImage().setData(null);
+        getPreprocessingInput().getRawImage().setData(null);
 
         IJ.freeMemory();
         System.gc();
@@ -284,12 +286,12 @@ public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
 
     @Override
     public List<MCATDataInterface> getInputDataInterfaces() {
-        return Arrays.asList(rawDataInterface);
+        return Arrays.asList(preprocessingInput);
     }
 
     @Override
     public List<MCATDataInterface> getOutputDataInterfaces() {
-        return Arrays.asList(rawDataInterface, preprocessedDataInterface);
+        return Arrays.asList(preprocessingInput, preprocessingOutput);
     }
 
     @Override
@@ -297,11 +299,11 @@ public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
 
     }
 
-    public MCATRawDataInterface getRawDataInterface() {
-        return rawDataInterface;
+    public MCATPreprocessingInput getPreprocessingInput() {
+        return preprocessingInput;
     }
 
-    public MCATPreprocessedDataInterface getPreprocessedDataInterface() {
-        return preprocessedDataInterface;
+    public MCATPreprocessingOutput getPreprocessingOutput() {
+        return preprocessingOutput;
     }
 }

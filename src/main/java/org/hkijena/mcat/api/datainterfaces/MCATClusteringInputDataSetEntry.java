@@ -11,10 +11,10 @@ import java.util.Map;
 public class MCATClusteringInputDataSetEntry implements MCATDataInterface {
 
     private String dataSetName;
-    private MCATRawDataInterface rawDataInterface;
-    private MCATPreprocessedDataInterface preprocessedDataInterface;
+    private MCATPreprocessingInput rawDataInterface;
+    private MCATPreprocessingOutput preprocessedDataInterface;
 
-    public MCATClusteringInputDataSetEntry(String dataSetName, MCATRawDataInterface rawDataInterface, MCATPreprocessedDataInterface preprocessedDataInterface) {
+    public MCATClusteringInputDataSetEntry(String dataSetName, MCATPreprocessingInput rawDataInterface, MCATPreprocessingOutput preprocessedDataInterface) {
         this.dataSetName = dataSetName;
         this.rawDataInterface = rawDataInterface;
         this.preprocessedDataInterface = preprocessedDataInterface;
@@ -29,11 +29,11 @@ public class MCATClusteringInputDataSetEntry implements MCATDataInterface {
         return dataSetName;
     }
 
-    public MCATPreprocessedDataInterface getPreprocessedDataInterface() {
+    public MCATPreprocessingOutput getPreprocessedDataInterface() {
         return preprocessedDataInterface;
     }
 
-    public MCATRawDataInterface getRawDataInterface() {
+    public MCATPreprocessingInput getRawDataInterface() {
         return rawDataInterface;
     }
 }

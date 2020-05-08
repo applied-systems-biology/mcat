@@ -11,16 +11,16 @@ import java.util.Map;
 /**
  * Organizes raw data
  */
-public class MCATRawDataInterface implements MCATDataInterface {
+public class MCATPreprocessingInput implements MCATDataInterface {
 
     private MCATDataSlot rawImage = new MCATDataSlot("raw-image", HyperstackData.class);
     private MCATDataSlot tissueROI = new MCATDataSlot("tissue-roi", ROIData.class);
 
-    public MCATRawDataInterface() {
+    public MCATPreprocessingInput() {
 
     }
 
-    public MCATRawDataInterface(MCATRawDataInterface other) {
+    public MCATPreprocessingInput(MCATPreprocessingInput other) {
         this.rawImage = new MCATDataSlot(other.rawImage);
         this.tissueROI = new MCATDataSlot(other.tissueROI);
     }

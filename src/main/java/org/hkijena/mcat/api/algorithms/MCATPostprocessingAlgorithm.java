@@ -4,7 +4,7 @@ import org.apache.commons.math3.ml.clustering.DoublePoint;
 import org.hkijena.mcat.api.*;
 import org.hkijena.mcat.api.datainterfaces.MCATClusteringOutput;
 import org.hkijena.mcat.api.datainterfaces.MCATClusteringOutputDataSetEntry;
-import org.hkijena.mcat.api.datainterfaces.MCATPostprocessingDataInterface;
+import org.hkijena.mcat.api.datainterfaces.MCATPostprocessingOutput;
 import org.hkijena.mcat.api.parameters.MCATClusteringParameters;
 import org.hkijena.mcat.api.parameters.MCATPostprocessingParameters;
 import org.hkijena.mcat.api.parameters.MCATPreprocessingParameters;
@@ -26,7 +26,7 @@ public class MCATPostprocessingAlgorithm extends MCATAlgorithm {
     private final int maxIncrease = 2;
     private final int netDecrease = 4;
     private final int netIncrease = 8;
-    private final MCATPostprocessingDataInterface postprocessingDataInterface;
+    private final MCATPostprocessingOutput postprocessingOutput;
     private int mode = 0;
     private List<MCATCentroidCluster<DoublePoint>> clusterCenters;
     private MCATClusteringOutput clusteringOutput;
@@ -36,10 +36,10 @@ public class MCATPostprocessingAlgorithm extends MCATAlgorithm {
                                        MCATPostprocessingParameters postprocessingParameters,
                                        MCATClusteringParameters clusteringParameters,
                                        MCATClusteringOutput clusteringOutput,
-                                       MCATPostprocessingDataInterface postprocessingDataInterface) {
+                                       MCATPostprocessingOutput postprocessingOutput) {
         super(run, preprocessingParameters, postprocessingParameters, clusteringParameters);
         this.clusteringOutput = clusteringOutput;
-        this.postprocessingDataInterface = postprocessingDataInterface;
+        this.postprocessingOutput = postprocessingOutput;
     }
 
 
@@ -200,7 +200,7 @@ public class MCATPostprocessingAlgorithm extends MCATAlgorithm {
                 sumAbundance += clusterAbundance.getAbundance()[i];
             }
 
-            double[] weightedAverage = new double[getClusteringParameters().getMinLength() - 1];
+            double[] weightedAverage = new double[getClusteringOutput().getMinLength() - 1];
             for (Integer index : indices) {
                 int abun = clusterAbundance.getAbundance()[index];
 
@@ -272,7 +272,7 @@ public class MCATPostprocessingAlgorithm extends MCATAlgorithm {
 
     @Override
     public List<MCATDataInterface> getOutputDataInterfaces() {
-        return Arrays.asList(postprocessingDataInterface);
+        return Arrays.asList(postprocessingOutput);
     }
 
     @Override
@@ -284,7 +284,7 @@ public class MCATPostprocessingAlgorithm extends MCATAlgorithm {
         return clusteringOutput;
     }
 
-    public MCATPostprocessingDataInterface getPostprocessingDataInterface() {
-        return postprocessingDataInterface;
+    public MCATPostprocessingOutput getPostprocessingOutput() {
+        return postprocessingOutput;
     }
 }

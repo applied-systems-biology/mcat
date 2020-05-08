@@ -11,15 +11,18 @@ import java.util.Map;
 /**
  * Organizes preprocessed data
  */
-public class MCATPreprocessedDataInterface implements MCATDataInterface {
+public class MCATPreprocessingOutput implements MCATDataInterface {
     private MCATDataSlot preprocessedImage = new MCATDataSlot("preprocessed-image", HyperstackData.class);
     private MCATDataSlot derivativeMatrix = new MCATDataSlot("derivative-matrix", DerivativeMatrixData.class);
 
-    public MCATPreprocessedDataInterface() {
+    // Must be set by preprocessing
+    private int minLength = -1;
+
+    public MCATPreprocessingOutput() {
 
     }
 
-    public MCATPreprocessedDataInterface(MCATPreprocessedDataInterface other) {
+    public MCATPreprocessingOutput(MCATPreprocessingOutput other) {
         this.preprocessedImage = new MCATDataSlot(other.preprocessedImage);
         this.derivativeMatrix = new MCATDataSlot(other.derivativeMatrix);
     }
@@ -38,5 +41,13 @@ public class MCATPreprocessedDataInterface implements MCATDataInterface {
         result.put(preprocessedImage.getName(), preprocessedImage);
         result.put(derivativeMatrix.getName(), derivativeMatrix);
         return result;
+    }
+
+    public int getMinLength() {
+        return minLength;
+    }
+
+    public void setMinLength(int minLength) {
+        this.minLength = minLength;
     }
 }

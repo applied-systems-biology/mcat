@@ -1,6 +1,6 @@
 package org.hkijena.mcat.api;
 
-import org.hkijena.mcat.api.datainterfaces.MCATRawDataInterface;
+import org.hkijena.mcat.api.datainterfaces.MCATPreprocessingInput;
 import org.hkijena.mcat.api.parameters.MCATSampleParameters;
 import org.hkijena.mcat.ui.components.MonochromeColorIcon;
 import org.hkijena.mcat.utils.UIUtils;
@@ -17,7 +17,7 @@ public class MCATProjectDataSet implements Comparable<MCATProjectDataSet> {
 
     private MCATSampleParameters parameters = new MCATSampleParameters();
 
-    private MCATRawDataInterface rawDataInterface = new MCATRawDataInterface();
+    private MCATPreprocessingInput rawDataInterface = new MCATPreprocessingInput();
 
     public MCATProjectDataSet(MCATProject project) {
         this.project = project;
@@ -48,7 +48,7 @@ public class MCATProjectDataSet implements Comparable<MCATProjectDataSet> {
         return getName().compareTo(other.getName());
     }
 
-    public MCATRawDataInterface getRawDataInterface() {
+    public MCATPreprocessingInput getRawDataInterface() {
         return rawDataInterface;
     }
 }

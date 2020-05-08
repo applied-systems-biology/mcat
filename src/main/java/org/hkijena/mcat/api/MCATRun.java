@@ -51,7 +51,8 @@ public class MCATRun implements ACAQValidatable {
             row.getEventBus().register(new Object() {
                 @Subscribe
                 public void onParameterChanged(ParameterChangedEvent event) {
-                    throw new RuntimeException("Parameter " + event.getKey() + " in " + event.getSource() + " was changed after run generation! This is not allowed.");
+                    throw new RuntimeException("Parameter " + event.getKey() + " in " + event.getSource() + " was changed after run generation! This is not allowed. " +
+                            "If you want to pass data between algorithms, use a data interface.");
                 }
             });
         }
@@ -73,14 +74,14 @@ public class MCATRun implements ACAQValidatable {
         for (Map.Entry<String, MCATProjectDataSet> entry : project.getDataSets().entrySet()) {
             // Create a new raw data interface
             // It is only identified by its data set name
-            MCATRawDataInterface rawDataInterface = new MCATRawDataInterface(entry.getValue().getRawDataInterface());
+            MCATPreprocessingInput rawDataInterface = new MCATPreprocessingInput(entry.getValue().getRawDataInterface());
             MCATDataInterfaceKey rawDataInterfaceKey = new MCATDataInterfaceKey("preprocessing-input");
             rawDataInterfaceKey.addDataSet(entry.getKey());
             registerUniqueDataInterface(rawDataInterfaceKey, rawDataInterface);
 
             // Create a new preprocessed data interface
             // It is identified by its data set name and the parameters that generated it
-            MCATPreprocessedDataInterface preprocessedDataInterface = new MCATPreprocessedDataInterface();
+            MCATPreprocessingOutput preprocessedDataInterface = new MCATPreprocessingOutput();
             MCATDataInterfaceKey preprocessedDataInterfaceKey = new MCATDataInterfaceKey("preprocessing-output");
             preprocessedDataInterfaceKey.addDataSet(entry.getKey());
             preprocessedDataInterfaceKey.addParameter(preprocessingParameters);
@@ -125,8 +126,8 @@ public class MCATRun implements ACAQValidatable {
             savedDataInterfaces.add(rawInterfaceKey);
 
             MCATProjectDataSet projectDataSet = project.getDataSets().get(dataSetName);
-            MCATRawDataInterface rawDataInterface = (MCATRawDataInterface) uniqueDataInterfaces.get(rawInterfaceKey);
-            MCATPreprocessedDataInterface preprocessedDataInterface = (MCATPreprocessedDataInterface)uniqueDataInterfaces.get(preprocessedInterfaceKey);
+            MCATPreprocessingInput rawDataInterface = (MCATPreprocessingInput) uniqueDataInterfaces.get(rawInterfaceKey);
+            MCATPreprocessingOutput preprocessedDataInterface = (MCATPreprocessingOutput)uniqueDataInterfaces.get(preprocessedInterfaceKey);
 
             String groupSubject = projectDataSet.getName();
             String groupTreatment = projectDataSet.getParameters().getTreatment();
@@ -221,8 +222,8 @@ public class MCATRun implements ACAQValidatable {
             preprocessingOutputInterfaceKey.addDataSets(preprocessingInputInterfaceKey.getDataSetNames());
             preprocessingOutputInterfaceKey.addParameter(preprocessingParameters);
 
-            MCATRawDataInterface rawDataInterface = (MCATRawDataInterface) uniqueDataInterfaces.get(preprocessingInputInterfaceKey);
-            MCATPreprocessedDataInterface preprocessedDataInterface = (MCATPreprocessedDataInterface) uniqueDataInterfaces.get(preprocessingOutputInterfaceKey);
+            MCATPreprocessingInput rawDataInterface = (MCATPreprocessingInput) uniqueDataInterfaces.get(preprocessingInputInterfaceKey);
+            MCATPreprocessingOutput preprocessedDataInterface = (MCATPreprocessingOutput) uniqueDataInterfaces.get(preprocessingOutputInterfaceKey);
             savedDataInterfaces.add(preprocessingOutputInterfaceKey);
 
             // Preprocessing
@@ -261,7 +262,7 @@ public class MCATRun implements ACAQValidatable {
             }
 
             // Postprocessing
-            MCATPostprocessingDataInterface postprocessingDataInterface = new MCATPostprocessingDataInterface();
+            MCATPostprocessingOutput postprocessingDataInterface = new MCATPostprocessingOutput();
             MCATDataInterfaceKey postprocessingDataInterfaceKey = new MCATDataInterfaceKey("postprocessing-output");
             postprocessingDataInterfaceKey.addDataSets(clusteringOutputInterfaceKey.getDataSetNames());
             postprocessingDataInterfaceKey.addParameters(clusteringOutputInterfaceKey.getParameters());

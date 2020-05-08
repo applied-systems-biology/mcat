@@ -6,7 +6,7 @@ import org.hkijena.mcat.api.MCATDataSlot;
 import java.util.Collections;
 import java.util.Map;
 
-public class MCATPostprocessingDataInterface implements MCATDataInterface {
+public class MCATPostprocessingOutput implements MCATDataInterface {
     @Override
     public Map<String, MCATDataSlot> getSlots() {
         return Collections.emptyMap();

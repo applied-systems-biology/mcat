@@ -241,7 +241,16 @@ public class MCATClusteringAlgorithm extends MCATAlgorithm {
         System.out.println("Starting " + getName());
 
         k = getClusteringParameters().getkMeansK();
-        minLength = getClusteringParameters().getMinLength() - 1; //subtract one because of differences in indexing and slice number measurement
+
+        // Clustering gets multiple inputs (although they are actually from the same preprocessing), so I assume you want the minimum min length
+        // This should be equivalent to the old algorithm in MCATPreprocessingAlgorithm
+        minLength = Integer.MAX_VALUE;
+        for (MCATClusteringInputDataSetEntry entry : getClusteringInput().getDataSetEntries().values()) {
+            minLength = Math.min(entry.getPreprocessedDataInterface().getMinLength(), minLength);
+        }
+        getClusteringOutput().setMinLength(minLength); // Pass the calculated result to the data interface
+        minLength = minLength - 1; //subtract one because of differences in indexing and slice number measurement
+
 
         loadImages();
 
