@@ -17,6 +17,13 @@ public interface ACAQParameterAccess {
     String getKey();
 
     /**
+     * Returns a short form of the ID used, for example to generate a parameter string.
+     * Might return getKey() if none was provided
+     * @return a short form of the ID used, for example to generate a parameter string
+     */
+    String getShortKey();
+
+    /**
      * Returns the parameter name that is displayed to the user
      *
      * @return Parameter name

@@ -5,8 +5,10 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import com.google.common.eventbus.EventBus;
 import org.hkijena.mcat.utils.api.ACAQDocumentation;
 import org.hkijena.mcat.utils.api.events.ParameterChangedEvent;
+import org.hkijena.mcat.utils.api.parameters.ACAQCustomParameterCollection;
 import org.hkijena.mcat.utils.api.parameters.ACAQParameter;
 import org.hkijena.mcat.utils.api.parameters.ACAQParameterCollection;
+import org.hkijena.mcat.utils.api.parameters.ACAQTraversedParameterCollection;
 
 import java.util.Objects;
 
@@ -44,7 +46,7 @@ public class MCATPostprocessingParameters implements ACAQParameterCollection {
     }
 
     @ACAQDocumentation(name = "Analyze net increase")
-    @ACAQParameter("analyze-net-increase")
+    @ACAQParameter(value = "analyze-net-increase", shortKey = "net-inc")
     @JsonGetter("analyze-net-increase")
     public boolean isAnalyzeNetIncrease() {
         return analyzeNetIncrease;
@@ -58,7 +60,7 @@ public class MCATPostprocessingParameters implements ACAQParameterCollection {
     }
 
     @ACAQDocumentation(name = "Analyze net decrease")
-    @ACAQParameter("analyze-net-decrease")
+    @ACAQParameter(value = "analyze-net-decrease", shortKey = "net-dec")
     @JsonGetter("analyze-net-decrease")
     public boolean isAnalyzeNetDecrease() {
         return analyzeNetDecrease;
@@ -72,7 +74,7 @@ public class MCATPostprocessingParameters implements ACAQParameterCollection {
     }
 
     @ACAQDocumentation(name = "Analyze max increase")
-    @ACAQParameter("analyze-max-increase")
+    @ACAQParameter(value = "analyze-max-increase", shortKey = "max-inc")
     @JsonGetter("analyze-max-increase")
     public boolean isAnalyzeMaxIncrease() {
         return analyzeMaxIncrease;
@@ -86,7 +88,7 @@ public class MCATPostprocessingParameters implements ACAQParameterCollection {
     }
 
     @ACAQDocumentation(name = "Analyze max decrease")
-    @ACAQParameter("analyze-max-decrease")
+    @ACAQParameter(value = "analyze-max-decrease", shortKey = "max-dec")
     @JsonGetter("analyze-max-decrease")
     public boolean isAnalyzeMaxDecrease() {
         return analyzeMaxDecrease;
@@ -100,7 +102,7 @@ public class MCATPostprocessingParameters implements ACAQParameterCollection {
     }
 
     @ACAQDocumentation(name = "Perform cluster morphology analysis")
-    @ACAQParameter("perform-cluster-morphology-analysis")
+    @ACAQParameter(value = "perform-cluster-morphology-analysis", shortKey = "cma")
     @JsonGetter("perform-cluster-morphology-analysis")
     public boolean isPerformClusterMorphologyAnalysis() {
         return performClusterMorphologyAnalysis;
@@ -114,7 +116,7 @@ public class MCATPostprocessingParameters implements ACAQParameterCollection {
     }
 
     @ACAQDocumentation(name = "Cutoff value")
-    @ACAQParameter("cutoff-value")
+    @ACAQParameter(value = "cutoff-value", shortKey = "cutoff")
     @JsonGetter("cutoff-value")
     public double getCutoffValue() {
         return cutoffValue;
@@ -148,5 +150,10 @@ public class MCATPostprocessingParameters implements ACAQParameterCollection {
     @Override
     public EventBus getEventBus() {
         return eventBus;
+    }
+
+    @Override
+    public String toString() {
+        return ACAQCustomParameterCollection.parametersToString((new ACAQTraversedParameterCollection(this)).getParameters().values(), ",", "=");
     }
 }

@@ -6,8 +6,10 @@ import com.google.common.eventbus.EventBus;
 import org.hkijena.mcat.api.MCATClusteringHierarchy;
 import org.hkijena.mcat.utils.api.ACAQDocumentation;
 import org.hkijena.mcat.utils.api.events.ParameterChangedEvent;
+import org.hkijena.mcat.utils.api.parameters.ACAQCustomParameterCollection;
 import org.hkijena.mcat.utils.api.parameters.ACAQParameter;
 import org.hkijena.mcat.utils.api.parameters.ACAQParameterCollection;
+import org.hkijena.mcat.utils.api.parameters.ACAQTraversedParameterCollection;
 
 import java.util.Objects;
 
@@ -30,7 +32,6 @@ public class MCATClusteringParameters implements ACAQParameterCollection {
     private MCATClusteringHierarchy clusteringHierarchy = MCATClusteringHierarchy.PerTreatment;
 
     public MCATClusteringParameters() {
-
     }
 
     public MCATClusteringParameters(MCATClusteringParameters other) {
@@ -40,7 +41,7 @@ public class MCATClusteringParameters implements ACAQParameterCollection {
     }
 
     @ACAQDocumentation(name = "Clustering hierarchy")
-    @ACAQParameter("clustering-hierarchy")
+    @ACAQParameter(value = "clustering-hierarchy", shortKey = "ch")
     @JsonGetter("clustering-hierarchy")
     public MCATClusteringHierarchy getClusteringHierarchy() {
         return clusteringHierarchy;
@@ -54,7 +55,7 @@ public class MCATClusteringParameters implements ACAQParameterCollection {
     }
 
     @ACAQDocumentation(name = "K-Means groups (K)")
-    @ACAQParameter("kmeans-k")
+    @ACAQParameter(value = "kmeans-k", shortKey = "k")
     @JsonGetter("kmeans-k")
     public int getkMeansK() {
         return kMeansK;
@@ -68,7 +69,7 @@ public class MCATClusteringParameters implements ACAQParameterCollection {
     }
 
     @ACAQDocumentation(name = "Minimum length")
-    @ACAQParameter("min-length")
+    @ACAQParameter(value = "min-length", shortKey = "mlength")
     @JsonGetter("min-length")
     public int getMinLength() {
         return minLength;
@@ -99,5 +100,10 @@ public class MCATClusteringParameters implements ACAQParameterCollection {
     @Override
     public EventBus getEventBus() {
         return eventBus;
+    }
+
+    @Override
+    public String toString() {
+        return ACAQCustomParameterCollection.parametersToString((new ACAQTraversedParameterCollection(this)).getParameters().values(), ",", "=");
     }
 }

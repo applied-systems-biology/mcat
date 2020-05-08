@@ -173,6 +173,7 @@ public class MCATParametersTableUI extends MCATWorkbenchUIPanel {
                         selectedRow,
                         MarkdownDocument.fromPluginResource("documentation/parameters.md"),
                         ParameterPanel.WITH_SCROLLING | ParameterPanel.WITH_DOCUMENTATION | ParameterPanel.DOCUMENTATION_BELOW);
+                currentEditor.setPreferredSize(new Dimension((int)(0.33 * splitPane.getWidth()), (int)currentEditor.getPreferredSize().getHeight()));
                 splitPane.setRightComponent(currentEditor);
                 revalidate();
             }

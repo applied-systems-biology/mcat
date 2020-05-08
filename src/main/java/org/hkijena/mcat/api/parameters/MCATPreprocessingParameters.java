@@ -5,8 +5,10 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import com.google.common.eventbus.EventBus;
 import org.hkijena.mcat.utils.api.ACAQDocumentation;
 import org.hkijena.mcat.utils.api.events.ParameterChangedEvent;
+import org.hkijena.mcat.utils.api.parameters.ACAQCustomParameterCollection;
 import org.hkijena.mcat.utils.api.parameters.ACAQParameter;
 import org.hkijena.mcat.utils.api.parameters.ACAQParameterCollection;
+import org.hkijena.mcat.utils.api.parameters.ACAQTraversedParameterCollection;
 
 /**
  * Contains preprocessing parameters
@@ -45,7 +47,7 @@ public class MCATPreprocessingParameters implements ACAQParameterCollection {
 
     @ACAQDocumentation(name = "Downsamping factor")
     @JsonGetter("downsampling-factor")
-    @ACAQParameter("downsampling-factor")
+    @ACAQParameter(value = "downsampling-factor", shortKey = "downsample")
     public int getDownsamplingFactor() {
         return downsamplingFactor;
     }
@@ -59,7 +61,7 @@ public class MCATPreprocessingParameters implements ACAQParameterCollection {
 
     @ACAQDocumentation(name = "Channel of interest")
     @JsonGetter("channel-of-interest")
-    @ACAQParameter("channel-of-interest")
+    @ACAQParameter(value = "channel-of-interest", shortKey = "ichannel")
     public int getChannelOfInterest() {
         return channelOfInterest;
     }
@@ -73,7 +75,7 @@ public class MCATPreprocessingParameters implements ACAQParameterCollection {
 
     @ACAQDocumentation(name = "Anatomic channel")
     @JsonGetter("anatomic-channel")
-    @ACAQParameter("anatomic-channel")
+    @ACAQParameter(value = "anatomic-channel", shortKey = "achannel")
     public int getAnatomicChannel() {
         return anatomicChannel;
     }
@@ -87,7 +89,7 @@ public class MCATPreprocessingParameters implements ACAQParameterCollection {
 
     @ACAQDocumentation(name = "Save raw image")
     @JsonGetter("save-raw-image")
-    @ACAQParameter("save-raw-image")
+    @ACAQParameter(value = "save-raw-image", shortKey = "save-raw")
     public boolean isSaveRawImage() {
         return saveRawImage;
     }
@@ -101,7 +103,7 @@ public class MCATPreprocessingParameters implements ACAQParameterCollection {
 
     @ACAQDocumentation(name = "Save ROI")
     @JsonGetter("save-roi")
-    @ACAQParameter("save-roi")
+    @ACAQParameter(value = "save-roi", shortKey = "save-roi")
     public boolean isSaveRoi() {
         return saveRoi;
     }
@@ -115,7 +117,7 @@ public class MCATPreprocessingParameters implements ACAQParameterCollection {
 
     @ACAQDocumentation(name = "Minimum time")
     @JsonGetter("min-time")
-    @ACAQParameter("min-time")
+    @ACAQParameter(value = "min-time", shortKey = "min-time")
     public int getMinTime() {
         return minTime;
     }
@@ -129,7 +131,7 @@ public class MCATPreprocessingParameters implements ACAQParameterCollection {
 
     @ACAQDocumentation(name = "Maximum time")
     @JsonGetter("max-time")
-    @ACAQParameter("max-time")
+    @ACAQParameter(value = "max-time", shortKey = "max-time")
     public int getMaxTime() {
         return maxTime;
     }
@@ -144,5 +146,10 @@ public class MCATPreprocessingParameters implements ACAQParameterCollection {
     @Override
     public EventBus getEventBus() {
         return eventBus;
+    }
+
+    @Override
+    public String toString() {
+        return ACAQCustomParameterCollection.parametersToString((new ACAQTraversedParameterCollection(this)).getParameters().values(), ",", "=");
     }
 }

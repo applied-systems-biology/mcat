@@ -7,6 +7,7 @@ import org.hkijena.mcat.api.datainterfaces.*;
 import org.hkijena.mcat.api.parameters.*;
 import org.hkijena.mcat.utils.api.ACAQValidatable;
 import org.hkijena.mcat.utils.api.ACAQValidityReport;
+import org.hkijena.mcat.utils.api.parameters.ACAQParameterCollection;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -240,9 +241,39 @@ public class MCATRun implements ACAQValidatable {
         }
 
         for (MCATAlgorithm node : graph.getNodes()) {
+            ACAQParameterCollection parameter;
+            if(node instanceof MCATPreprocessingAlgorithm) {
+                parameter = node.getPreprocessingParameters();
+            }
+            else if(node instanceof MCATClusteringAlgorithm) {
+                parameter = node.getClusteringParameters();
+            }
+            else if(node instanceof MCATPostprocessingAlgorithm) {
+                parameter = node.getPostprocessingParameters();
+            }
+            else {
+                throw new RuntimeException("Cannot collect primary parameter for node " + node + ". This is done " +
+                        "to limit the generated parameter condition string to prevent it going over the operating system limits.");
+            }
+
+            // The parameters all have an internal conversion to a parameter string
+            String parameterString = parameter.toString();
+
             for (MCATDataInterface outputDataInterface : node.getOutputDataInterfaces()) {
                 for (Map.Entry<String, MCATDataSlot> entry : outputDataInterface.getSlots().entrySet()) {
-                    Path storagePath = outputPath.resolve(node.getName()).resolve(entry.getKey()); //TODO: Identifier for parameters
+                    Path storageRootPath = outputPath.resolve(node.getName()).resolve(entry.getKey());
+                    Path storagePath = storageRootPath.resolve(parameterString);
+
+                    // Create and assign directory
+                    if (!Files.exists(storagePath)) {
+                        try {
+                            Files.createDirectories(storagePath);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+
+                    entry.getValue().setStorageFilePath(storagePath);
                 }
             }
         }

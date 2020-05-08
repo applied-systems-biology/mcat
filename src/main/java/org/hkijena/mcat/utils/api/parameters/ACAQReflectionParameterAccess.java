@@ -1,5 +1,6 @@
 package org.hkijena.mcat.utils.api.parameters;
 
+import org.hkijena.mcat.utils.StringUtils;
 import org.hkijena.mcat.utils.api.ACAQDocumentation;
 
 import java.lang.annotation.Annotation;
@@ -12,6 +13,7 @@ import java.lang.reflect.Method;
 public class ACAQReflectionParameterAccess implements ACAQParameterAccess {
 
     private String key;
+    private String shortKey;
     private Method getter;
     private Method setter;
     private double priority;
@@ -124,5 +126,14 @@ public class ACAQReflectionParameterAccess implements ACAQParameterAccess {
 
     public void setGetter(Method getter) {
         this.getter = getter;
+    }
+
+    @Override
+    public String getShortKey() {
+        return !StringUtils.isNullOrEmpty(shortKey) ? shortKey : getKey();
+    }
+
+    public void setShortKey(String shortKey) {
+        this.shortKey = shortKey;
     }
 }

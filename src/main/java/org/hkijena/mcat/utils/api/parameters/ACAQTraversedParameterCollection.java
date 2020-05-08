@@ -4,6 +4,7 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
+import org.hkijena.mcat.utils.StringUtils;
 import org.hkijena.mcat.utils.api.ACAQDocumentation;
 import org.hkijena.mcat.utils.api.events.ParameterChangedEvent;
 import org.hkijena.mcat.utils.api.events.ParameterStructureChangedEvent;
@@ -337,6 +338,14 @@ public class ACAQTraversedParameterCollection implements ACAQParameterCollection
                 return getterAnnotation.priority();
             ACAQParameter setterAnnotation = setter.getAnnotation(ACAQParameter.class);
             return getterAnnotation.priority() != Priority.NORMAL ? getterAnnotation.priority() : setterAnnotation.priority();
+        }
+
+        public String getShortKey() {
+            ACAQParameter getterAnnotation = getter.getAnnotation(ACAQParameter.class);
+            if (!StringUtils.isNullOrEmpty(getterAnnotation.shortKey()))
+                return getterAnnotation.shortKey();
+            ACAQParameter setterAnnotation = setter.getAnnotation(ACAQParameter.class);
+            return setterAnnotation.shortKey();
         }
 
         public ACAQDocumentation getDocumentation() {

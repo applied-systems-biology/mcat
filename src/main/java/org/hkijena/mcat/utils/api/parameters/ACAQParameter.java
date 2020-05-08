@@ -36,4 +36,11 @@ public @interface ACAQParameter {
      * @return the priority
      */
     double priority() default Priority.NORMAL;
+
+    /**
+     * A short key used for generating parameter strings.
+     * Defaults to value() in {@link ACAQParameterAccess} implementations if not provided
+     * @return A short key used for generating parameter strings
+     */
+    String shortKey() default "";
 }

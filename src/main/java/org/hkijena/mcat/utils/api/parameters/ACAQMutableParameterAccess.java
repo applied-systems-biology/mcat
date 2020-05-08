@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.hkijena.mcat.utils.JsonUtils;
+import org.hkijena.mcat.utils.StringUtils;
 import org.hkijena.mcat.utils.api.events.ParameterChangedEvent;
 import org.scijava.Priority;
 
@@ -26,6 +27,7 @@ public class ACAQMutableParameterAccess implements ACAQParameterAccess {
     private String holderName;
     private String holderDescription;
     private String key;
+    private String shortKey;
     private String name;
     private String description;
     private ACAQParameterVisibility visibility = ACAQParameterVisibility.TransitiveVisible;
@@ -223,6 +225,15 @@ public class ACAQMutableParameterAccess implements ACAQParameterAccess {
 
     public void setAnnotationMap(Map<Class<? extends Annotation>, Annotation> annotationMap) {
         this.annotationMap = annotationMap;
+    }
+
+    @Override
+    public String getShortKey() {
+        return !StringUtils.isNullOrEmpty(shortKey) ? shortKey : getKey();
+    }
+
+    public void setShortKey(String shortKey) {
+        this.shortKey = shortKey;
     }
 
     /**
