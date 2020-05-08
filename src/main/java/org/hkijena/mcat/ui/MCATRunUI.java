@@ -45,7 +45,7 @@ public class MCATRunUI extends MCATWorkbenchUIPanel {
         FormPanel formPanel = new FormPanel(MarkdownDocument.fromPluginResource("documentation/run.md"),
                 FormPanel.WITH_SCROLLING | FormPanel.WITH_DOCUMENTATION);
 
-        FileSelection outputFolderSelection = formPanel.addToForm(new FileSelection(FileSelection.IOMode.Open,
+        FileSelection outputFolderSelection = formPanel.addToForm(new FileSelection(FileSelection.IOMode.Save,
                         FileSelection.PathMode.DirectoriesOnly),
                 new JLabel("Output folder"),
                 null);

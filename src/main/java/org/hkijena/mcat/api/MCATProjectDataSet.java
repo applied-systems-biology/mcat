@@ -32,7 +32,7 @@ public class MCATProjectDataSet implements Comparable<MCATProjectDataSet> {
     }
 
     public String getName() {
-        return getProject().getSamples().inverse().get(this);
+        return getProject().getDataSets().inverse().get(this);
     }
 
     public Color getTreatmentColor() {

@@ -103,6 +103,7 @@ public class MCATDataSlot {
      * Stores the data to the
      */
     public void flush(String identifier) {
+        System.out.println("Saving data " + data + " to " + storageFilePath + " with identifier " + identifier);
         data.saveTo(storageFilePath, getName(), identifier);
     }
 

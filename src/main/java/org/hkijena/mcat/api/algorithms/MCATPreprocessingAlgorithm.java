@@ -121,8 +121,10 @@ public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
         //check if minimum number of time frames has to be updated
         int slices = imp.getNSlices();
         int minLength = getClusteringParameters().getMinLength();
-        if (slices < minLength)
-            getClusteringParameters().setMinLength(slices);
+
+        // Setting parameters during runtime is not allowed
+//        if (slices < minLength)
+//            getClusteringParameters().setMinLength(slices);
 
         return imp;
     }

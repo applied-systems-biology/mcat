@@ -1,0 +1,71 @@
+package org.hkijena.mcat.api;
+
+import org.hkijena.mcat.utils.api.parameters.ACAQParameterCollection;
+
+import java.util.*;
+
+/**
+ * Key used to uniquely identify a {@link MCATDataInterface}
+ */
+public class MCATDataInterfaceKey {
+    private Set<String> dataSetNames = new HashSet<>();
+    private Set<ACAQParameterCollection> parameters = new HashSet<>();
+    private String dataInterfaceName;
+
+    public MCATDataInterfaceKey(String dataInterfaceName) {
+        this.dataInterfaceName = dataInterfaceName;
+    }
+
+    public void add(MCATDataInterfaceKey key) {
+        dataSetNames.addAll(key.dataSetNames);
+        parameters.addAll(key.parameters);
+    }
+
+    public void addDataSet(String dataSetName) {
+        dataSetNames.add(dataSetName);
+    }
+
+    public void addParameter(ACAQParameterCollection parameter) {
+        parameters.add(parameter);
+    }
+
+    public void addDataSets(Collection<String> dataSetNames) {
+        this.dataSetNames.addAll(dataSetNames);
+    }
+
+    public void addParameters(Collection<ACAQParameterCollection> parameters) {
+        this.parameters.addAll(parameters);
+    }
+
+    public Set<String> getDataSetNames() {
+        return Collections.unmodifiableSet(dataSetNames);
+    }
+
+    public Set<ACAQParameterCollection> getParameters() {
+        return Collections.unmodifiableSet(parameters);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MCATDataInterfaceKey that = (MCATDataInterfaceKey) o;
+        return dataSetNames.equals(that.dataSetNames) &&
+                parameters.equals(that.parameters) &&
+                dataInterfaceName.equals(that.dataInterfaceName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(dataSetNames, parameters, dataInterfaceName);
+    }
+
+    public String getDataInterfaceName() {
+        return dataInterfaceName;
+    }
+
+    @Override
+    public String toString() {
+        return getDataInterfaceName() + " -> @(" + String.join(",", dataSetNames) + ") # " + parameters;
+    }
+}

@@ -1,5 +1,8 @@
 package org.hkijena.mcat.api;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+import com.google.common.eventbus.Subscribe;
 import org.hkijena.mcat.api.algorithms.MCATClusteringAlgorithm;
 import org.hkijena.mcat.api.algorithms.MCATPostprocessingAlgorithm;
 import org.hkijena.mcat.api.algorithms.MCATPreprocessingAlgorithm;
@@ -7,7 +10,11 @@ import org.hkijena.mcat.api.datainterfaces.*;
 import org.hkijena.mcat.api.parameters.*;
 import org.hkijena.mcat.utils.api.ACAQValidatable;
 import org.hkijena.mcat.utils.api.ACAQValidityReport;
+import org.hkijena.mcat.utils.api.events.ParameterChangedEvent;
+import org.hkijena.mcat.utils.api.parameters.ACAQCustomParameterCollection;
+import org.hkijena.mcat.utils.api.parameters.ACAQParameterAccess;
 import org.hkijena.mcat.utils.api.parameters.ACAQParameterCollection;
+import org.hkijena.mcat.utils.api.parameters.ACAQTraversedParameterCollection;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -22,6 +29,8 @@ public class MCATRun implements ACAQValidatable {
     private MCATAlgorithmGraph graph;
 
     private MCATParametersTable parametersTable;
+    private BiMap<MCATDataInterfaceKey, MCATDataInterface> uniqueDataInterfaces = HashBiMap.create();
+    private Set<MCATDataInterfaceKey> savedDataInterfaces = new HashSet<>();
     private boolean isReady = false;
     private Path outputPath;
 
@@ -37,6 +46,21 @@ public class MCATRun implements ACAQValidatable {
             initializePreprocessing(preprocessingParameters);
         }
 
+        // Install some functionality to lock the parameters (which completely ruins some assumptions)
+        for (MCATParametersTableRow row : parametersTable.getRows()) {
+            row.getEventBus().register(new Object() {
+                @Subscribe
+                public void onParameterChanged(ParameterChangedEvent event) {
+                    throw new RuntimeException("Parameter " + event.getKey() + " in " + event.getSource() + " was changed after run generation! This is not allowed.");
+                }
+            });
+        }
+    }
+
+    private void registerUniqueDataInterface(MCATDataInterfaceKey key, MCATDataInterface dataInterface) {
+        if(uniqueDataInterfaces.containsKey(key))
+            throw new RuntimeException("Found data interface key " + key + " in set! This should not be possible.");
+        uniqueDataInterfaces.put(key, dataInterface);
     }
 
     /**
@@ -45,16 +69,24 @@ public class MCATRun implements ACAQValidatable {
      * @param preprocessingParameters the parameters
      */
     private void initializePreprocessing(MCATPreprocessingParameters preprocessingParameters) {
-        List<MCATProjectDataSet> dataSetList = new ArrayList<>();
-        List<MCATRawDataInterface> rawDataInterfaceList = new ArrayList<>();
-        List<MCATPreprocessedDataInterface> preprocessedDataInterfaceList = new ArrayList<>();
 
-        for (Map.Entry<String, MCATProjectDataSet> entry : project.getSamples().entrySet()) {
+        for (Map.Entry<String, MCATProjectDataSet> entry : project.getDataSets().entrySet()) {
+            // Create a new raw data interface
+            // It is only identified by its data set name
             MCATRawDataInterface rawDataInterface = new MCATRawDataInterface(entry.getValue().getRawDataInterface());
+            MCATDataInterfaceKey rawDataInterfaceKey = new MCATDataInterfaceKey("preprocessing-input");
+            rawDataInterfaceKey.addDataSet(entry.getKey());
+            registerUniqueDataInterface(rawDataInterfaceKey, rawDataInterface);
+
+            // Create a new preprocessed data interface
+            // It is identified by its data set name and the parameters that generated it
             MCATPreprocessedDataInterface preprocessedDataInterface = new MCATPreprocessedDataInterface();
-            dataSetList.add(entry.getValue());
-            rawDataInterfaceList.add(rawDataInterface);
-            preprocessedDataInterfaceList.add(preprocessedDataInterface);
+            MCATDataInterfaceKey preprocessedDataInterfaceKey = new MCATDataInterfaceKey("preprocessing-output");
+            preprocessedDataInterfaceKey.addDataSet(entry.getKey());
+            preprocessedDataInterfaceKey.addParameter(preprocessingParameters);
+            registerUniqueDataInterface(preprocessedDataInterfaceKey, preprocessedDataInterface);
+
+
         }
 
         // Find all unique clustering parameters with prepending preprocessing
@@ -67,26 +99,34 @@ public class MCATRun implements ACAQValidatable {
 
         // Go through unique clustering parameters
         for (MCATClusteringParameters clusteringParameters : uniqueClusteringParameters) {
-            initializeClustering(dataSetList, rawDataInterfaceList, preprocessedDataInterfaceList, preprocessingParameters, clusteringParameters);
+            initializeClustering(preprocessingParameters, clusteringParameters);
         }
     }
 
-    private void initializeClustering(List<MCATProjectDataSet> dataSetList,
-                                      List<MCATRawDataInterface> rawDataInterfaceList,
-                                      List<MCATPreprocessedDataInterface> preprocessedDataInterfaceList,
-                                      MCATPreprocessingParameters preprocessingParameters,
+    private void initializeClustering(MCATPreprocessingParameters preprocessingParameters,
                                       MCATClusteringParameters clusteringParameters) {
         boolean noTreatment = clusteringParameters.getClusteringHierarchy() != MCATClusteringHierarchy.PerTreatment;
         boolean noSubject = clusteringParameters.getClusteringHierarchy() != MCATClusteringHierarchy.PerSubject;
+
+        Set<MCATDataInterfaceKey> matchingPreprocessedInterfaceKeys = uniqueDataInterfaces.keySet().stream()
+                .filter(k -> k.getParameters().contains(preprocessingParameters) &&
+                        "preprocessing-output".equals(k.getDataInterfaceName())).collect(Collectors.toSet());
 
         // Map from dataset (subject) -> treatment -> input
         Map<String, Map<String, MCATClusteringInput>> inputGroups = new HashMap<>();
         Map<String, Map<String, MCATClusteringOutput>> outputGroups = new HashMap<>();
 
-        for (int i = 0; i < dataSetList.size(); i++) {
-            MCATProjectDataSet projectDataSet = dataSetList.get(i);
-            MCATRawDataInterface rawDataInterface = rawDataInterfaceList.get(i);
-            MCATPreprocessedDataInterface preprocessedDataInterface = preprocessedDataInterfaceList.get(i);
+        for (MCATDataInterfaceKey preprocessedInterfaceKey : matchingPreprocessedInterfaceKeys) {
+            if(preprocessedInterfaceKey.getDataSetNames().size() != 1)
+                throw new RuntimeException("Must have exactly one data set reference!");
+            String dataSetName = preprocessedInterfaceKey.getDataSetNames().iterator().next();
+            MCATDataInterfaceKey rawInterfaceKey = new MCATDataInterfaceKey("preprocessing-input");
+            rawInterfaceKey.addDataSets(preprocessedInterfaceKey.getDataSetNames());
+            savedDataInterfaces.add(rawInterfaceKey);
+
+            MCATProjectDataSet projectDataSet = project.getDataSets().get(dataSetName);
+            MCATRawDataInterface rawDataInterface = (MCATRawDataInterface) uniqueDataInterfaces.get(rawInterfaceKey);
+            MCATPreprocessedDataInterface preprocessedDataInterface = (MCATPreprocessedDataInterface)uniqueDataInterfaces.get(preprocessedInterfaceKey);
 
             String groupSubject = projectDataSet.getName();
             String groupTreatment = projectDataSet.getParameters().getTreatment();
@@ -134,6 +174,25 @@ public class MCATRun implements ACAQValidatable {
             }
         }
 
+        // Add data interfaces to the unique data set map
+        for (String subject : inputGroups.keySet()) {
+            for (String treatment : inputGroups.get(subject).keySet()) {
+                MCATClusteringInput clusteringInput = inputGroups.get(subject).get(treatment);
+                MCATDataInterfaceKey clusteringInputKey = new MCATDataInterfaceKey("clustering-input");
+                clusteringInputKey.addParameter(preprocessingParameters);
+                clusteringInputKey.addDataSets(clusteringInput.getDataSetEntries().keySet());
+                registerUniqueDataInterface(clusteringInputKey, clusteringInput);
+                
+                MCATClusteringOutput clusteringOutput = outputGroups.get(subject).get(treatment);
+                MCATDataInterfaceKey clusteringOutputKey = new MCATDataInterfaceKey("clustering-output");
+                clusteringOutputKey.addParameter(preprocessingParameters);
+                clusteringOutputKey.addParameter(clusteringParameters);
+                clusteringOutputKey.addDataSets(clusteringInput.getDataSetEntries().keySet());
+                registerUniqueDataInterface(clusteringOutputKey, clusteringOutput);
+            }
+        }
+
+
         // Find all unique postprocessing parameters with prepending preprocessing
         Set<MCATPostprocessingParameters> uniquePostProcessingParameters = new HashSet<>();
         for (MCATParametersTableRow row : parametersTable.getRows()) {
@@ -144,69 +203,80 @@ public class MCATRun implements ACAQValidatable {
         }
 
         for (MCATPostprocessingParameters postprocessingParameters : uniquePostProcessingParameters) {
-            initializePostprocessing(dataSetList,
-                    rawDataInterfaceList,
-                    preprocessedDataInterfaceList,
-                    inputGroups,
-                    outputGroups,
-                    preprocessingParameters,
+            initializePostprocessing(preprocessingParameters,
                     clusteringParameters,
                     postprocessingParameters);
         }
     }
 
-    private void initializePostprocessing(List<MCATProjectDataSet> dataSetList,
-                                          List<MCATRawDataInterface> rawDataInterfaceList,
-                                          List<MCATPreprocessedDataInterface> preprocessedDataInterfaceList,
-                                          Map<String, Map<String, MCATClusteringInput>> clusteringInputGroups,
-                                          Map<String, Map<String, MCATClusteringOutput>> clusteringOutputGroups,
-                                          MCATPreprocessingParameters preprocessingParameters,
+    private void initializePostprocessing(MCATPreprocessingParameters preprocessingParameters,
                                           MCATClusteringParameters clusteringParameters,
                                           MCATPostprocessingParameters postprocessingParameters) {
 
         List<MCATPreprocessingAlgorithm> preprocessingAlgorithmList = new ArrayList<>();
-        for (int i = 0; i < dataSetList.size(); i++) {
+        for (MCATDataInterfaceKey preprocessingInputInterfaceKey : uniqueDataInterfaces.keySet().stream()
+                .filter(k -> "preprocessing-input".equals(k.getDataInterfaceName())).collect(Collectors.toSet())) {
+
+            MCATDataInterfaceKey preprocessingOutputInterfaceKey = new MCATDataInterfaceKey("preprocessing-output");
+            preprocessingOutputInterfaceKey.addDataSets(preprocessingInputInterfaceKey.getDataSetNames());
+            preprocessingOutputInterfaceKey.addParameter(preprocessingParameters);
+
+            MCATRawDataInterface rawDataInterface = (MCATRawDataInterface) uniqueDataInterfaces.get(preprocessingInputInterfaceKey);
+            MCATPreprocessedDataInterface preprocessedDataInterface = (MCATPreprocessedDataInterface) uniqueDataInterfaces.get(preprocessingOutputInterfaceKey);
+            savedDataInterfaces.add(preprocessingOutputInterfaceKey);
+
             // Preprocessing
             MCATPreprocessingAlgorithm preprocessingAlgorithm = new MCATPreprocessingAlgorithm(this,
                     preprocessingParameters,
                     postprocessingParameters,
                     clusteringParameters,
-                    rawDataInterfaceList.get(i),
-                    preprocessedDataInterfaceList.get(i));
+                    rawDataInterface,
+                    preprocessedDataInterface);
             graph.insertNode(preprocessingAlgorithm);
             preprocessingAlgorithmList.add(preprocessingAlgorithm);
         }
 
-        for (String subject : clusteringInputGroups.keySet()) {
-            for (String treatment : clusteringInputGroups.get(subject).keySet()) {
-                // Clustering
-                MCATClusteringInput clusteringInput = clusteringInputGroups.get(subject).get(treatment);
-                MCATClusteringOutput clusteringOutput = clusteringOutputGroups.get(subject).get(treatment);
+        for (MCATDataInterfaceKey clusteringOutputInterfaceKey : uniqueDataInterfaces.keySet().stream().filter(k ->
+                "clustering-output".equals(k.getDataInterfaceName()) && k.getParameters().contains(clusteringParameters))
+                .collect(Collectors.toSet())) {
+            MCATDataInterfaceKey clusteringInputInterfaceKey = new MCATDataInterfaceKey("clustering-input");
+            clusteringInputInterfaceKey.addDataSets(clusteringOutputInterfaceKey.getDataSetNames());
+            clusteringInputInterfaceKey.addParameter(preprocessingParameters);
 
-                MCATClusteringAlgorithm clusteringAlgorithm = new MCATClusteringAlgorithm(this,
-                        preprocessingParameters,
-                        postprocessingParameters,
-                        clusteringParameters,
-                        clusteringInput,
-                        clusteringOutput);
+            MCATClusteringInput clusteringInputInterface = (MCATClusteringInput) uniqueDataInterfaces.get(clusteringInputInterfaceKey);
+            MCATClusteringOutput clusteringOutputInterface = (MCATClusteringOutput) uniqueDataInterfaces.get(clusteringOutputInterfaceKey);
+            savedDataInterfaces.add(clusteringOutputInterfaceKey);
 
-                // Insert into the graph and connect
-                graph.insertNode(clusteringAlgorithm);
-                for (MCATPreprocessingAlgorithm preprocessingAlgorithm : preprocessingAlgorithmList) {
-                    graph.connect(preprocessingAlgorithm, clusteringAlgorithm);
-                }
+            // Create clustering algorithm node, insert it, and let it depend on preprocessing
+            MCATClusteringAlgorithm clusteringAlgorithm = new MCATClusteringAlgorithm(this,
+                    preprocessingParameters,
+                    postprocessingParameters,
+                    clusteringParameters,
+                    clusteringInputInterface,
+                    clusteringOutputInterface);
 
-                // Postprocessing
-                MCATPostprocessingDataInterface postprocessingDataInterface = new MCATPostprocessingDataInterface();
-                MCATPostprocessingAlgorithm postprocessingAlgorithm = new MCATPostprocessingAlgorithm(this,
-                        preprocessingParameters,
-                        postprocessingParameters,
-                        clusteringParameters,
-                        clusteringOutput,
-                        postprocessingDataInterface);
-                graph.insertNode(postprocessingAlgorithm);
-                graph.connect(clusteringAlgorithm, postprocessingAlgorithm);
+            graph.insertNode(clusteringAlgorithm);
+            for (MCATPreprocessingAlgorithm preprocessingAlgorithm : preprocessingAlgorithmList) {
+                graph.connect(preprocessingAlgorithm, clusteringAlgorithm);
             }
+
+            // Postprocessing
+            MCATPostprocessingDataInterface postprocessingDataInterface = new MCATPostprocessingDataInterface();
+            MCATDataInterfaceKey postprocessingDataInterfaceKey = new MCATDataInterfaceKey("postprocessing-output");
+            postprocessingDataInterfaceKey.addDataSets(clusteringOutputInterfaceKey.getDataSetNames());
+            postprocessingDataInterfaceKey.addParameters(clusteringOutputInterfaceKey.getParameters());
+            postprocessingDataInterfaceKey.addParameter(postprocessingParameters);
+            registerUniqueDataInterface(postprocessingDataInterfaceKey, postprocessingDataInterface);
+            savedDataInterfaces.add(postprocessingDataInterfaceKey);
+
+            MCATPostprocessingAlgorithm postprocessingAlgorithm = new MCATPostprocessingAlgorithm(this,
+                    preprocessingParameters,
+                    postprocessingParameters,
+                    clusteringParameters,
+                    clusteringOutputInterface,
+                    postprocessingDataInterface);
+            graph.insertNode(postprocessingAlgorithm);
+            graph.connect(clusteringAlgorithm, postprocessingAlgorithm);
         }
     }
 
@@ -225,6 +295,25 @@ public class MCATRun implements ACAQValidatable {
         this.outputPath = outputPath;
     }
 
+    /**
+     * Finds the parameter keys in the parameter table that contain information
+     * @return parameter keys
+     */
+    private Set<String> getRelevantParameterKeys() {
+        Set<String> result = new HashSet<>();
+        for (int column = 0; column < parametersTable.getColumnCount(); column++) {
+            String key = parametersTable.getColumnKey(column);
+            Set<Object> values = new HashSet<>();
+            for (int row = 0; row < parametersTable.getRowCount(); row++) {
+                values.add(parametersTable.getValueAt(row, column));
+            }
+            if(values.size() > 1) {
+                result.add(key);
+            }
+        }
+        return result;
+    }
+
 
     /**
      * This function must be called before running the graph
@@ -240,46 +329,31 @@ public class MCATRun implements ACAQValidatable {
             }
         }
 
-        for (MCATAlgorithm node : graph.getNodes()) {
-            ACAQParameterCollection parameter;
-            if(node instanceof MCATPreprocessingAlgorithm) {
-                parameter = node.getPreprocessingParameters();
-            }
-            else if(node instanceof MCATClusteringAlgorithm) {
-                parameter = node.getClusteringParameters();
-            }
-            else if(node instanceof MCATPostprocessingAlgorithm) {
-                parameter = node.getPostprocessingParameters();
-            }
-            else {
-                throw new RuntimeException("Cannot collect primary parameter for node " + node + ". This is done " +
-                        "to limit the generated parameter condition string to prevent it going over the operating system limits.");
-            }
+        for (MCATDataInterfaceKey key : savedDataInterfaces) {
+            setDataInterfaceStoragePath(key, uniqueDataInterfaces.get(key));
+        }
+    }
 
-            // The parameters all have an internal conversion to a parameter string
-            String parameterString = parameter.toString();
+    private void setDataInterfaceStoragePath(MCATDataInterfaceKey key, MCATDataInterface dataInterface) {
+        String interfaceType = key.getDataInterfaceName();
+        String dataSetString = key.getDataSetNames().stream().sorted().collect(Collectors.joining(","));
+        Set<ACAQParameterAccess> parameterAccesses = new HashSet<>();
+        for (ACAQParameterCollection parameterCollection : key.getParameters()) {
+            parameterAccesses.addAll((new ACAQTraversedParameterCollection(parameterCollection)).getParameters().values());
+        }
+        String parameterString = ACAQCustomParameterCollection.parametersToString(parameterAccesses, ",", "=");
 
-            for (MCATDataInterface outputDataInterface : node.getOutputDataInterfaces()) {
-                for (Map.Entry<String, MCATDataSlot> entry : outputDataInterface.getSlots().entrySet()) {
-                    Path storageRootPath = outputPath.resolve(node.getName()).resolve(entry.getKey());
-                    Path storagePath = storageRootPath.resolve(parameterString);
-
-                    // Create and assign directory
-                    if (!Files.exists(storagePath)) {
-                        try {
-                            Files.createDirectories(storagePath);
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-
-                    entry.getValue().setStorageFilePath(storagePath);
+        for (Map.Entry<String, MCATDataSlot> slotEntry : dataInterface.getSlots().entrySet()) {
+            Path slotPath = outputPath.resolve(interfaceType).resolve(parameterString).resolve(dataSetString).resolve(slotEntry.getValue().getName());
+            if (!Files.exists(slotPath)) {
+                try {
+                    Files.createDirectories(slotPath);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
                 }
             }
+            slotEntry.getValue().setStorageFilePath(slotPath);
         }
-
-        // TODO: Write parameters + association into storage roots
-
     }
 
     public void run(Consumer<Status> onProgress, Supplier<Boolean> isCancelled) {

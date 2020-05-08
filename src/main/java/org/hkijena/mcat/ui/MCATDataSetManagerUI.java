@@ -145,7 +145,7 @@ public class MCATDataSetManagerUI extends MCATWorkbenchUIPanel {
         DefaultMutableTreeNode toSelect = null;
 
         String rootNodeName = "Data sets";
-        if (getProject().getSamples().isEmpty()) {
+        if (getProject().getDataSets().isEmpty()) {
             rootNodeName = "No data sets";
         }
         DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(rootNodeName);

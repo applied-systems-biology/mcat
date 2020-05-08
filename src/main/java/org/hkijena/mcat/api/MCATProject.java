@@ -30,7 +30,7 @@ public class MCATProject {
 
     private EventBus eventBus = new EventBus();
     private MCATParametersTable parametersTable = new MCATParametersTable();
-    private BiMap<String, MCATProjectDataSet> samples = HashBiMap.create();
+    private BiMap<String, MCATProjectDataSet> dataSets = HashBiMap.create();
 
     public MCATProject() {
         parametersTable.addRow();
@@ -40,13 +40,13 @@ public class MCATProject {
         return eventBus;
     }
 
-    public BiMap<String, MCATProjectDataSet> getSamples() {
-        return ImmutableBiMap.copyOf(samples);
+    public BiMap<String, MCATProjectDataSet> getDataSets() {
+        return ImmutableBiMap.copyOf(dataSets);
     }
 
     public Map<String, List<MCATProjectDataSet>> getSamplesByTreatment() {
         Map<String, List<MCATProjectDataSet>> result = new HashMap<>();
-        for (MCATProjectDataSet sample : samples.values()) {
+        for (MCATProjectDataSet sample : dataSets.values()) {
             if (!result.containsKey(sample.getParameters().getTreatment())) {
                 result.put(sample.getParameters().getTreatment(), new ArrayList<>());
             }
@@ -57,7 +57,7 @@ public class MCATProject {
 
     public Map<String, Set<MCATProjectDataSet>> getSamplesGroupedByTreatment() {
         Map<String, Set<MCATProjectDataSet>> result = new HashMap<>();
-        for (MCATProjectDataSet sample : samples.values()) {
+        for (MCATProjectDataSet sample : dataSets.values()) {
             if (!result.containsKey(sample.getParameters().getTreatment())) {
                 result.put(sample.getParameters().getTreatment(), new HashSet<>());
             }
@@ -67,11 +67,11 @@ public class MCATProject {
     }
 
     public MCATProjectDataSet addSample(String sampleName) {
-        if (samples.containsKey(sampleName)) {
-            return samples.get(sampleName);
+        if (dataSets.containsKey(sampleName)) {
+            return dataSets.get(sampleName);
         } else {
             MCATProjectDataSet sample = new MCATProjectDataSet(this);
-            samples.put(sampleName, sample);
+            dataSets.put(sampleName, sample);
             eventBus.post(new MCATDataSetAddedEvent(sample));
             return sample;
         }
@@ -79,8 +79,8 @@ public class MCATProject {
 
     public boolean removeSample(MCATProjectDataSet sample) {
         String name = sample.getName();
-        if (samples.containsKey(name)) {
-            samples.remove(name);
+        if (dataSets.containsKey(name)) {
+            dataSets.remove(name);
             eventBus.post(new MCATDataSetRemovedEvent(sample));
             return true;
         }
@@ -91,17 +91,17 @@ public class MCATProject {
         if (name == null)
             return false;
         name = name.trim();
-        if (name.isEmpty() || samples.containsKey(name))
+        if (name.isEmpty() || dataSets.containsKey(name))
             return false;
-        samples.remove(sample.getName());
-        samples.put(name, sample);
+        dataSets.remove(sample.getName());
+        dataSets.put(name, sample);
         eventBus.post(new MCATDataSetRenamedEvent(sample));
         return true;
     }
 
     public Set<String> getKnownTreatments() {
         Set<String> result = new HashSet<>();
-        for (MCATProjectDataSet sample : samples.values()) {
+        for (MCATProjectDataSet sample : dataSets.values()) {
             if (sample.getParameters().getTreatment() != null)
                 result.add(sample.getParameters().getTreatment());
         }
