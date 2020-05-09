@@ -5,9 +5,9 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.hkijena.mcat.utils.JsonUtils;
-import org.hkijena.mcat.utils.api.parameters.ACAQParameterAccess;
-import org.hkijena.mcat.utils.api.parameters.ACAQParameterCollection;
-import org.hkijena.mcat.utils.api.parameters.ACAQTraversedParameterCollection;
+import org.hkijena.mcat.api.parameters.MCATParameterAccess;
+import org.hkijena.mcat.api.parameters.MCATParameterCollection;
+import org.hkijena.mcat.api.parameters.MCATTraversedParameterCollection;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -51,10 +51,10 @@ public class MCATResultDataInterfaces {
             this.name = key.getDataInterfaceName();
             this.dataSets.addAll(key.getDataSetNames());
 
-            for (ACAQParameterCollection parameter : key.getParameters()) {
+            for (MCATParameterCollection parameter : key.getParameters()) {
                 ObjectNode node = JsonUtils.getObjectMapper().getNodeFactory().objectNode();
-                ACAQTraversedParameterCollection traversedParameterCollection = new ACAQTraversedParameterCollection(parameter);
-                for (Map.Entry<String, ACAQParameterAccess> entry : traversedParameterCollection.getParameters().entrySet()) {
+                MCATTraversedParameterCollection traversedParameterCollection = new MCATTraversedParameterCollection(parameter);
+                for (Map.Entry<String, MCATParameterAccess> entry : traversedParameterCollection.getParameters().entrySet()) {
                    node.set(entry.getKey(), JsonUtils.getObjectMapper().convertValue(entry.getValue().get(), JsonNode.class));
                 }
                 parameters.add(node);

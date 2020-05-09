@@ -1,8 +1,8 @@
 package org.hkijena.mcat.extension.parameters.editors;
 
 import org.hkijena.mcat.ui.components.FileSelection;
-import org.hkijena.mcat.utils.api.parameters.ACAQParameterAccess;
-import org.hkijena.mcat.utils.ui.parameters.ACAQParameterEditorUI;
+import org.hkijena.mcat.api.parameters.MCATParameterAccess;
+import org.hkijena.mcat.ui.parameters.MCATParameterEditorUI;
 import org.scijava.Context;
 
 import java.awt.*;
@@ -10,7 +10,7 @@ import java.awt.*;
 /**
  * Editor for a {@link java.nio.file.Path} parameter
  */
-public class FilePathParameterEditorUI extends ACAQParameterEditorUI {
+public class FilePathParameterEditorUI extends MCATParameterEditorUI {
 
     private boolean skipNextReload = false;
     private boolean isReloading = false;
@@ -20,7 +20,7 @@ public class FilePathParameterEditorUI extends ACAQParameterEditorUI {
      * @param context         SciJava context
      * @param parameterAccess the parameter
      */
-    public FilePathParameterEditorUI(Context context, ACAQParameterAccess parameterAccess) {
+    public FilePathParameterEditorUI(Context context, MCATParameterAccess parameterAccess) {
         super(context, parameterAccess);
         initialize();
 //        getWorkbenchUI().getProject().getEventBus().register(this);

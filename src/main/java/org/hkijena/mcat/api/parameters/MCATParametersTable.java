@@ -4,8 +4,7 @@ import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.google.common.eventbus.Subscribe;
 import org.hkijena.mcat.utils.StringUtils;
-import org.hkijena.mcat.utils.api.events.ParameterChangedEvent;
-import org.hkijena.mcat.utils.api.parameters.ACAQTraversedParameterCollection;
+import org.hkijena.mcat.api.events.ParameterChangedEvent;
 
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
@@ -17,7 +16,7 @@ import java.util.stream.Collectors;
 public class MCATParametersTable implements TableModel {
 
     private List<MCATParametersTableRow> rows = new ArrayList<>();
-    private List<ACAQTraversedParameterCollection> rowParameterAccessors = new ArrayList<>();
+    private List<MCATTraversedParameterCollection> rowParameterAccessors = new ArrayList<>();
     private List<TableModelListener> listeners = new ArrayList<>();
     private List<String> columnKeys;
     private List<Class<?>> columnClasses = new ArrayList<>();
@@ -44,7 +43,7 @@ public class MCATParametersTable implements TableModel {
         this.rows = rows;
         this.rowParameterAccessors.clear();
         for (MCATParametersTableRow row : rows) {
-            rowParameterAccessors.add(new ACAQTraversedParameterCollection(row));
+            rowParameterAccessors.add(new MCATTraversedParameterCollection(row));
         }
 
         // Post full change event
@@ -68,7 +67,7 @@ public class MCATParametersTable implements TableModel {
      */
     public void addRow(MCATParametersTableRow row) {
         rows.add(row);
-        rowParameterAccessors.add(new ACAQTraversedParameterCollection(row));
+        rowParameterAccessors.add(new MCATTraversedParameterCollection(row));
         row.getEventBus().register(this);
         for (TableModelListener listener : listeners) {
             listener.tableChanged(new TableModelEvent(this));
@@ -89,7 +88,7 @@ public class MCATParametersTable implements TableModel {
 
     private void initializeColumns() {
         MCATParametersTableRow row = new MCATParametersTableRow();
-        ACAQTraversedParameterCollection parameterCollection = new ACAQTraversedParameterCollection(row);
+        MCATTraversedParameterCollection parameterCollection = new MCATTraversedParameterCollection(row);
         columnKeys = parameterCollection.getParameters().keySet().stream().sorted().collect(Collectors.toList());
         for (String key : columnKeys) {
             columnClasses.add(parameterCollection.getParameters().get(key).getFieldClass());

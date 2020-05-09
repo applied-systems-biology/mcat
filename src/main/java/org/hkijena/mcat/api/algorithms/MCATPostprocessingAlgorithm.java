@@ -10,7 +10,7 @@ import org.hkijena.mcat.api.parameters.MCATPostprocessingParameters;
 import org.hkijena.mcat.api.parameters.MCATPreprocessingParameters;
 import org.hkijena.mcat.extension.datatypes.ClusterAbundanceData;
 import org.hkijena.mcat.extension.datatypes.ClusterCentersData;
-import org.hkijena.mcat.utils.api.ACAQValidityReport;
+import org.hkijena.mcat.api.MCATValidityReport;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -276,7 +276,7 @@ public class MCATPostprocessingAlgorithm extends MCATAlgorithm {
     }
 
     @Override
-    public void reportValidity(ACAQValidityReport report) {
+    public void reportValidity(MCATValidityReport report) {
 
     }
 

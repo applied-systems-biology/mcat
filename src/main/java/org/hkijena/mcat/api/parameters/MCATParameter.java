@@ -1,4 +1,4 @@
-package org.hkijena.mcat.utils.api.parameters;
+package org.hkijena.mcat.api.parameters;
 
 import org.scijava.Priority;
 
@@ -9,11 +9,11 @@ import java.lang.annotation.Target;
 
 /**
  * Annotates a getter or setter function as parameter.
- * {@link ACAQParameterAccess} will look for this annotation to find parameters.
+ * {@link MCATParameterAccess} will look for this annotation to find parameters.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface ACAQParameter {
+public @interface MCATParameter {
     /**
      * The unique key of this parameter
      *
@@ -27,7 +27,7 @@ public @interface ACAQParameter {
      *
      * @return Parameter visibility
      */
-    ACAQParameterVisibility visibility() default ACAQParameterVisibility.TransitiveVisible;
+    MCATParameterVisibility visibility() default MCATParameterVisibility.TransitiveVisible;
 
     /**
      * Sets the priority for (de)serializing this parameter.
@@ -39,7 +39,7 @@ public @interface ACAQParameter {
 
     /**
      * A short key used for generating parameter strings.
-     * Defaults to value() in {@link ACAQParameterAccess} implementations if not provided
+     * Defaults to value() in {@link MCATParameterAccess} implementations if not provided
      * @return A short key used for generating parameter strings
      */
     String shortKey() default "";

@@ -2,12 +2,12 @@ package org.hkijena.mcat.extension.dataproviders.api;
 
 import ij.IJ;
 import org.hkijena.mcat.extension.datatypes.HyperstackData;
-import org.hkijena.mcat.utils.api.ACAQDocumentation;
+import org.hkijena.mcat.api.MCATDocumentation;
 
 /**
  * Loads a {@link HyperstackData} from a file
  */
-@ACAQDocumentation(name = "Hyperstack (*.tif)")
+@MCATDocumentation(name = "Hyperstack (*.tif)")
 public class HyperstackFromTifDataProvider extends FileDataProvider {
 
     public HyperstackFromTifDataProvider() {

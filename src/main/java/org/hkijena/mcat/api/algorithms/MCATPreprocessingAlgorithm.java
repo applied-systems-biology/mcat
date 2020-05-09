@@ -19,7 +19,7 @@ import org.hkijena.mcat.api.parameters.MCATPreprocessingParameters;
 import org.hkijena.mcat.extension.datatypes.DerivativeMatrixData;
 import org.hkijena.mcat.extension.datatypes.HyperstackData;
 import org.hkijena.mcat.extension.datatypes.ROIData;
-import org.hkijena.mcat.utils.api.ACAQValidityReport;
+import org.hkijena.mcat.api.MCATValidityReport;
 
 import java.util.Arrays;
 import java.util.List;
@@ -295,7 +295,7 @@ public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
     }
 
     @Override
-    public void reportValidity(ACAQValidityReport report) {
+    public void reportValidity(MCATValidityReport report) {
 
     }
 

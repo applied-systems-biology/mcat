@@ -1,8 +1,8 @@
-package org.hkijena.mcat.utils.ui.parameters;
+package org.hkijena.mcat.ui.parameters;
 
 import org.hkijena.mcat.utils.UIUtils;
-import org.hkijena.mcat.utils.api.ACAQValidatable;
-import org.hkijena.mcat.utils.api.ACAQValidityReport;
+import org.hkijena.mcat.api.MCATValidatable;
+import org.hkijena.mcat.api.MCATValidityReport;
 import org.scijava.Context;
 
 import javax.swing.*;
@@ -14,7 +14,7 @@ import java.util.function.Supplier;
 /**
  * UI that generates a set of parameter values
  */
-public abstract class ACAQParameterGeneratorUI extends JPanel implements Supplier<List<Object>>, ACAQValidatable {
+public abstract class MCATParameterGeneratorUI extends JPanel implements Supplier<List<Object>>, MCATValidatable {
     private Context context;
 
     /**
@@ -22,7 +22,7 @@ public abstract class ACAQParameterGeneratorUI extends JPanel implements Supplie
      *
      * @param context the SciJava context
      */
-    public ACAQParameterGeneratorUI(Context context) {
+    public MCATParameterGeneratorUI(Context context) {
         this.context = context;
     }
 
@@ -38,7 +38,7 @@ public abstract class ACAQParameterGeneratorUI extends JPanel implements Supplie
      * @param uiClass The generator UI class
      * @return the generated values or null if the user cancelled
      */
-    public static List<Object> showDialog(Component parent, Context context, Class<? extends ACAQParameterGeneratorUI> uiClass) {
+    public static List<Object> showDialog(Component parent, Context context, Class<? extends MCATParameterGeneratorUI> uiClass) {
         Dialog dialog = new Dialog(SwingUtilities.getWindowAncestor(parent), context, uiClass);
         dialog.setTitle("");
         dialog.setModal(true);
@@ -55,14 +55,14 @@ public abstract class ACAQParameterGeneratorUI extends JPanel implements Supplie
     }
 
     /**
-     * Dialog around an {@link ACAQParameterGeneratorUI}
+     * Dialog around an {@link MCATParameterGeneratorUI}
      */
     private static class Dialog extends JDialog {
 
         private boolean cancelled = true;
-        private ACAQParameterGeneratorUI generatorUI;
+        private MCATParameterGeneratorUI generatorUI;
 
-        public Dialog(Window windowAncestor, Context context, Class<? extends ACAQParameterGeneratorUI> uiClass) {
+        public Dialog(Window windowAncestor, Context context, Class<? extends MCATParameterGeneratorUI> uiClass) {
             super(windowAncestor);
             try {
                 this.generatorUI = uiClass.getConstructor(Context.class).newInstance(context);
@@ -89,7 +89,7 @@ public abstract class ACAQParameterGeneratorUI extends JPanel implements Supplie
 
             JButton confirmButton = new JButton("Generate", UIUtils.getIconFromResources("run.png"));
             confirmButton.addActionListener(e -> {
-                ACAQValidityReport report = new ACAQValidityReport();
+                MCATValidityReport report = new MCATValidityReport();
                 generatorUI.reportValidity(report);
                 if (!report.isValid()) {
 //                    UIUtils.openValidityReportDialog(this, report, true);

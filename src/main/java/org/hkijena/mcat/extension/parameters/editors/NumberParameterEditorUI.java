@@ -1,7 +1,7 @@
 package org.hkijena.mcat.extension.parameters.editors;
 
-import org.hkijena.mcat.utils.api.parameters.ACAQParameterAccess;
-import org.hkijena.mcat.utils.ui.parameters.ACAQParameterEditorUI;
+import org.hkijena.mcat.api.parameters.MCATParameterAccess;
+import org.hkijena.mcat.ui.parameters.MCATParameterEditorUI;
 import org.scijava.Context;
 
 import javax.swing.*;
@@ -10,7 +10,7 @@ import java.awt.*;
 /**
  * Editor for a {@link Double} parameter
  */
-public class NumberParameterEditorUI extends ACAQParameterEditorUI {
+public class NumberParameterEditorUI extends MCATParameterEditorUI {
     private JSpinner spinner;
     private boolean skipNextReload = false;
     private boolean isReloading = false;
@@ -19,7 +19,7 @@ public class NumberParameterEditorUI extends ACAQParameterEditorUI {
      * @param context         SciJava context
      * @param parameterAccess the parameter
      */
-    public NumberParameterEditorUI(Context context, ACAQParameterAccess parameterAccess) {
+    public NumberParameterEditorUI(Context context, MCATParameterAccess parameterAccess) {
         super(context, parameterAccess);
         initialize();
         reload();

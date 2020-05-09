@@ -4,10 +4,10 @@ package org.hkijena.mcat.extension.parameters;
 import org.hkijena.mcat.api.MCATClusteringHierarchy;
 import org.hkijena.mcat.extension.parameters.editors.*;
 import org.hkijena.mcat.extension.parameters.generators.*;
-import org.hkijena.mcat.utils.api.ACAQDefaultDocumentation;
-import org.hkijena.mcat.utils.api.registries.ACAQUIParametertypeRegistry;
-import org.hkijena.mcat.utils.ui.parameters.ACAQParameterEditorUI;
-import org.hkijena.mcat.utils.ui.parameters.ACAQParameterGeneratorUI;
+import org.hkijena.mcat.api.MCATDefaultDocumentation;
+import org.hkijena.mcat.api.registries.MCATUIParametertypeRegistry;
+import org.hkijena.mcat.ui.parameters.MCATParameterEditorUI;
+import org.hkijena.mcat.ui.parameters.MCATParameterGeneratorUI;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -21,13 +21,13 @@ public class StandardParameterEditorsExtension {
 
     }
 
-    private static void registerParameterType(Class<?> parameterClass, Class<? extends ACAQParameterEditorUI> uiClass, String name, String description) {
-        ACAQUIParametertypeRegistry.getInstance().registerParameterEditor(parameterClass, uiClass);
-        ACAQUIParametertypeRegistry.getInstance().registerDocumentation(parameterClass, new ACAQDefaultDocumentation(name, description));
+    private static void registerParameterType(Class<?> parameterClass, Class<? extends MCATParameterEditorUI> uiClass, String name, String description) {
+        MCATUIParametertypeRegistry.getInstance().registerParameterEditor(parameterClass, uiClass);
+        MCATUIParametertypeRegistry.getInstance().registerDocumentation(parameterClass, new MCATDefaultDocumentation(name, description));
     }
 
-    private static void registerParameterGenerator(Class<?> parameterClass, Class<? extends ACAQParameterGeneratorUI> uiClass, String name, String description) {
-        ACAQUIParametertypeRegistry.getInstance().registerGenerator(parameterClass, uiClass, name, description);
+    private static void registerParameterGenerator(Class<?> parameterClass, Class<? extends MCATParameterGeneratorUI> uiClass, String name, String description) {
+        MCATUIParametertypeRegistry.getInstance().registerGenerator(parameterClass, uiClass, name, description);
     }
 
     public static void register() {

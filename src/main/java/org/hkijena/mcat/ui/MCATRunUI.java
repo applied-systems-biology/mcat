@@ -7,7 +7,7 @@ import org.hkijena.mcat.ui.components.FormPanel;
 import org.hkijena.mcat.ui.components.MarkdownDocument;
 import org.hkijena.mcat.ui.resultanalysis.MCATResultUI;
 import org.hkijena.mcat.utils.UIUtils;
-import org.hkijena.mcat.utils.api.ACAQValidityReport;
+import org.hkijena.mcat.api.MCATValidityReport;
 
 import javax.swing.*;
 import java.awt.*;
@@ -25,7 +25,7 @@ public class MCATRunUI extends MCATWorkbenchUIPanel {
     JProgressBar progressBar;
     JPanel buttonPanel;
     private MCATRun run;
-    private ACAQValidityReport validityReport = new ACAQValidityReport();
+    private MCATValidityReport validityReport = new MCATValidityReport();
     private Worker worker;
 
     public MCATRunUI(MCATWorkbenchUI workbenchUI) {

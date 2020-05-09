@@ -1,7 +1,7 @@
 package org.hkijena.mcat.extension.datatypes;
 
 import org.hkijena.mcat.api.MCATData;
-import org.hkijena.mcat.utils.api.ACAQDocumentation;
+import org.hkijena.mcat.api.MCATDocumentation;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -12,7 +12,7 @@ import java.nio.file.Path;
 /**
  * Contains a derivation matrix
  */
-@ACAQDocumentation(name = "Derivative matrix")
+@MCATDocumentation(name = "Derivative matrix")
 public class DerivativeMatrixData implements MCATData {
 
     private double[][] derivativeMatrix;

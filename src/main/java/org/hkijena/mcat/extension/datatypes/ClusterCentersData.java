@@ -3,7 +3,7 @@ package org.hkijena.mcat.extension.datatypes;
 import org.apache.commons.math3.ml.clustering.DoublePoint;
 import org.hkijena.mcat.api.MCATCentroidCluster;
 import org.hkijena.mcat.api.MCATData;
-import org.hkijena.mcat.utils.api.ACAQDocumentation;
+import org.hkijena.mcat.api.MCATDocumentation;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * Contains cluster centers
  */
-@ACAQDocumentation(name = "Cluster centers")
+@MCATDocumentation(name = "Cluster centers")
 public class ClusterCentersData implements MCATData {
 
     List<MCATCentroidCluster<DoublePoint>> clusterCenters;

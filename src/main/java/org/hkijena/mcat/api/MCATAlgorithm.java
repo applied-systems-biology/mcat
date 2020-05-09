@@ -3,7 +3,6 @@ package org.hkijena.mcat.api;
 import org.hkijena.mcat.api.parameters.MCATClusteringParameters;
 import org.hkijena.mcat.api.parameters.MCATPostprocessingParameters;
 import org.hkijena.mcat.api.parameters.MCATPreprocessingParameters;
-import org.hkijena.mcat.utils.api.ACAQValidatable;
 
 import java.util.List;
 
@@ -11,7 +10,7 @@ import java.util.List;
  * Base class for an algorithm node
  * Please use the provided properties to access data and parameters to later allow easy extension to hyperparameters
  */
-public abstract class MCATAlgorithm implements ACAQValidatable, Runnable {
+public abstract class MCATAlgorithm implements MCATValidatable, Runnable {
 
     private MCATRun run;
     private MCATPreprocessingParameters preprocessingParameters;

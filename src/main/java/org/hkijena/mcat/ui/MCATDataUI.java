@@ -2,7 +2,7 @@ package org.hkijena.mcat.ui;
 
 import com.google.common.eventbus.Subscribe;
 import org.hkijena.mcat.api.MCATProjectDataSet;
-import org.hkijena.mcat.api.events.MCATDataSetRemovedEvent;
+import org.hkijena.mcat.api.events.DataSetRemovedEvent;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -54,7 +54,7 @@ public class MCATDataUI extends MCATWorkbenchUIPanel {
     }
 
     @Subscribe
-    public void onCurrentlyDisplayedSampleDeleted(MCATDataSetRemovedEvent event) {
+    public void onCurrentlyDisplayedSampleDeleted(DataSetRemovedEvent event) {
         if (event.getSample() == currentlyDisplayedSample) {
             setCurrentlyDisplayedSample(null);
         }

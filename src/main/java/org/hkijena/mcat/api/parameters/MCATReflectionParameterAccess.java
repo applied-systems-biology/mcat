@@ -1,27 +1,27 @@
-package org.hkijena.mcat.utils.api.parameters;
+package org.hkijena.mcat.api.parameters;
 
 import org.hkijena.mcat.utils.StringUtils;
-import org.hkijena.mcat.utils.api.ACAQDocumentation;
+import org.hkijena.mcat.api.MCATDocumentation;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
- * {@link ACAQParameterAccess} generated from reflection
+ * {@link MCATParameterAccess} generated from reflection
  */
-public class ACAQReflectionParameterAccess implements ACAQParameterAccess {
+public class MCATReflectionParameterAccess implements MCATParameterAccess {
 
     private String key;
     private String shortKey;
     private Method getter;
     private Method setter;
     private double priority;
-    private ACAQDocumentation documentation;
+    private MCATDocumentation documentation;
     private String holderName;
     private String holderDescription;
-    private ACAQParameterVisibility visibility = ACAQParameterVisibility.TransitiveVisible;
-    private ACAQParameterCollection source;
+    private MCATParameterVisibility visibility = MCATParameterVisibility.TransitiveVisible;
+    private MCATParameterCollection source;
 
     @Override
     public String getKey() {
@@ -49,11 +49,11 @@ public class ACAQReflectionParameterAccess implements ACAQParameterAccess {
     /**
      * @return Documentation of this parameter
      */
-    public ACAQDocumentation getDocumentation() {
+    public MCATDocumentation getDocumentation() {
         return documentation;
     }
 
-    public void setDocumentation(ACAQDocumentation documentation) {
+    public void setDocumentation(MCATDocumentation documentation) {
         this.documentation = documentation;
     }
 
@@ -94,20 +94,20 @@ public class ACAQReflectionParameterAccess implements ACAQParameterAccess {
     }
 
     @Override
-    public ACAQParameterCollection getSource() {
+    public MCATParameterCollection getSource() {
         return source;
     }
 
-    public void setSource(ACAQParameterCollection source) {
+    public void setSource(MCATParameterCollection source) {
         this.source = source;
     }
 
     @Override
-    public ACAQParameterVisibility getVisibility() {
+    public MCATParameterVisibility getVisibility() {
         return visibility;
     }
 
-    public void setVisibility(ACAQParameterVisibility visibility) {
+    public void setVisibility(MCATParameterVisibility visibility) {
         this.visibility = visibility;
     }
 

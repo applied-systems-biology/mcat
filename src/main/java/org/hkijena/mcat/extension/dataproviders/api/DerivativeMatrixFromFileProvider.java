@@ -1,7 +1,7 @@
 package org.hkijena.mcat.extension.dataproviders.api;
 
 import org.hkijena.mcat.extension.datatypes.DerivativeMatrixData;
-import org.hkijena.mcat.utils.api.ACAQDocumentation;
+import org.hkijena.mcat.api.MCATDocumentation;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -13,7 +13,7 @@ import java.util.stream.Stream;
 /**
  * Loads a {@link DerivativeMatrixData} from a file
  */
-@ACAQDocumentation(name = "Derivation matrix (*.csv)")
+@MCATDocumentation(name = "Derivation matrix (*.csv)")
 public class DerivativeMatrixFromFileProvider extends FileDataProvider {
 
     public DerivativeMatrixFromFileProvider() {

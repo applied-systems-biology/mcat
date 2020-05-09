@@ -1,4 +1,4 @@
-package org.hkijena.mcat.utils.api.parameters;
+package org.hkijena.mcat.api.parameters;
 
 import org.scijava.Priority;
 
@@ -7,7 +7,7 @@ import java.lang.annotation.Annotation;
 /**
  * Interface around accessing a parameter
  */
-public interface ACAQParameterAccess {
+public interface MCATParameterAccess {
 
     /**
      * Returns the unique ID of this parameter
@@ -42,7 +42,7 @@ public interface ACAQParameterAccess {
      *
      * @return Parameter visibility
      */
-    ACAQParameterVisibility getVisibility();
+    MCATParameterVisibility getVisibility();
 
     /**
      * Finds an annotation for this parameter
@@ -82,7 +82,7 @@ public interface ACAQParameterAccess {
      *
      * @return the object that holds the parameter
      */
-    ACAQParameterCollection getSource();
+    MCATParameterCollection getSource();
 
     /**
      * Returns the priority for (de)serializing this parameter.
@@ -99,7 +99,7 @@ public interface ACAQParameterAccess {
      * @param rhs access
      * @return the order
      */
-    static int comparePriority(ACAQParameterAccess lhs, ACAQParameterAccess rhs) {
+    static int comparePriority(MCATParameterAccess lhs, MCATParameterAccess rhs) {
         return -Double.compare(lhs.getPriority(), rhs.getPriority());
     }
 }

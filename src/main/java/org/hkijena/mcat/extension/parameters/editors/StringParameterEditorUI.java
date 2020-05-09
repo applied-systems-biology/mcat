@@ -1,8 +1,8 @@
 package org.hkijena.mcat.extension.parameters.editors;
 
 import org.hkijena.mcat.ui.components.DocumentChangeListener;
-import org.hkijena.mcat.utils.api.parameters.ACAQParameterAccess;
-import org.hkijena.mcat.utils.ui.parameters.ACAQParameterEditorUI;
+import org.hkijena.mcat.api.parameters.MCATParameterAccess;
+import org.hkijena.mcat.ui.parameters.MCATParameterEditorUI;
 import org.scijava.Context;
 
 import javax.swing.*;
@@ -13,7 +13,7 @@ import java.awt.*;
 /**
  * Parameter editor for {@link String}
  */
-public class StringParameterEditorUI extends ACAQParameterEditorUI {
+public class StringParameterEditorUI extends MCATParameterEditorUI {
 
     private JTextComponent textComponent;
     private boolean skipNextReload = false;
@@ -23,7 +23,7 @@ public class StringParameterEditorUI extends ACAQParameterEditorUI {
      * @param context         SciJava context
      * @param parameterAccess the parameter
      */
-    public StringParameterEditorUI(Context context, ACAQParameterAccess parameterAccess) {
+    public StringParameterEditorUI(Context context, MCATParameterAccess parameterAccess) {
         super(context, parameterAccess);
         initialize();
         reload();

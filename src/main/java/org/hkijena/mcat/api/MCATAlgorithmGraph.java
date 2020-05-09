@@ -1,7 +1,5 @@
 package org.hkijena.mcat.api;
 
-import org.hkijena.mcat.utils.api.ACAQValidatable;
-import org.hkijena.mcat.utils.api.ACAQValidityReport;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.traverse.GraphIterator;
@@ -12,7 +10,7 @@ import java.util.*;
 /**
  * Manages multiple {@link MCATAlgorithm} instances as graph
  */
-public class MCATAlgorithmGraph implements ACAQValidatable {
+public class MCATAlgorithmGraph implements MCATValidatable {
 
     private DefaultDirectedGraph<MCATAlgorithm, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
     private Set<MCATAlgorithm> algorithms = new HashSet<>();
@@ -52,7 +50,7 @@ public class MCATAlgorithmGraph implements ACAQValidatable {
     }
 
     @Override
-    public void reportValidity(ACAQValidityReport report) {
+    public void reportValidity(MCATValidityReport report) {
         for (MCATAlgorithm algorithm : algorithms) {
             report.forCategory(algorithm.toString()).report(algorithm);
         }

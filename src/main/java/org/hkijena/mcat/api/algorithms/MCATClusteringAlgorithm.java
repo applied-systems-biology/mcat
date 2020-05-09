@@ -25,7 +25,7 @@ import org.hkijena.mcat.extension.datatypes.ClusterAbundanceData;
 import org.hkijena.mcat.extension.datatypes.ClusterCentersData;
 import org.hkijena.mcat.extension.datatypes.HyperstackData;
 import org.hkijena.mcat.extension.datatypes.ROIData;
-import org.hkijena.mcat.utils.api.ACAQValidityReport;
+import org.hkijena.mcat.api.MCATValidityReport;
 
 import java.awt.*;
 import java.nio.file.Path;
@@ -266,7 +266,7 @@ public class MCATClusteringAlgorithm extends MCATAlgorithm {
     }
 
     @Override
-    public void reportValidity(ACAQValidityReport report) {
+    public void reportValidity(MCATValidityReport report) {
 
     }
 

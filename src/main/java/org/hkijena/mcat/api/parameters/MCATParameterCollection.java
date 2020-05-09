@@ -1,11 +1,11 @@
-package org.hkijena.mcat.utils.api.parameters;
+package org.hkijena.mcat.api.parameters;
 
 import com.google.common.eventbus.EventBus;
 
 /**
  * Interfaced for a parameterized object
  */
-public interface ACAQParameterCollection {
+public interface MCATParameterCollection {
     /**
      * Gets the event bus that posts events about the parameters
      *

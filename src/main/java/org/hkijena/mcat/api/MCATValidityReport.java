@@ -10,7 +10,7 @@
  * See the LICENSE file provided with this code for the full license.
  */
 
-package org.hkijena.mcat.utils.api;
+package org.hkijena.mcat.api;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
@@ -20,7 +20,7 @@ import java.util.*;
 /**
  * Report about the validity of an object
  */
-public class ACAQValidityReport {
+public class MCATValidityReport {
     private final List<String> categories = new ArrayList<>();
     private Map<String, Response> responses = new HashMap<>();
     private Map<String, Message> messages = new HashMap<>();
@@ -28,7 +28,7 @@ public class ACAQValidityReport {
     /**
      * Creates a new report instance
      */
-    public ACAQValidityReport() {
+    public MCATValidityReport() {
     }
 
     /**
@@ -71,8 +71,8 @@ public class ACAQValidityReport {
      * @param category the category
      * @return the sub-report
      */
-    public ACAQValidityReport forCategory(String category) {
-        ACAQValidityReport result = new ACAQValidityReport();
+    public MCATValidityReport forCategory(String category) {
+        MCATValidityReport result = new MCATValidityReport();
         result.categories.addAll(categories);
         result.categories.add(category);
         result.responses = responses;
@@ -93,11 +93,11 @@ public class ACAQValidityReport {
     }
 
     /**
-     * Passes the report to another {@link ACAQValidatable}
+     * Passes the report to another {@link MCATValidatable}
      *
      * @param validatable the target
      */
-    public void report(ACAQValidatable validatable) {
+    public void report(MCATValidatable validatable) {
         validatable.reportValidity(this);
     }
 

@@ -6,11 +6,9 @@ import org.hkijena.mcat.ui.MCATWorkbenchUIPanel;
 import org.hkijena.mcat.ui.components.MarkdownDocument;
 import org.hkijena.mcat.ui.components.MarkdownReader;
 import org.hkijena.mcat.utils.UIUtils;
-import org.hkijena.mcat.utils.api.ACAQDocumentation;
-import org.hkijena.mcat.utils.api.parameters.ACAQParameterCollection;
-import org.hkijena.mcat.utils.api.registries.ACAQUIParametertypeRegistry;
-import org.hkijena.mcat.utils.ui.parameters.ACAQParameterGeneratorUI;
-import org.hkijena.mcat.utils.ui.parameters.ParameterPanel;
+import org.hkijena.mcat.api.MCATDocumentation;
+import org.hkijena.mcat.api.parameters.MCATParameterCollection;
+import org.hkijena.mcat.api.registries.MCATUIParametertypeRegistry;
 import org.jdesktop.swingx.JXTable;
 
 import javax.swing.*;
@@ -114,12 +112,12 @@ public class MCATParametersTableUI extends MCATWorkbenchUIPanel {
         getWorkbenchUI().getProject().getParametersTable().addRow();
     }
 
-    private void replaceColumnValues(int column, Class<? extends ACAQParameterGeneratorUI> generator) {
+    private void replaceColumnValues(int column, Class<? extends MCATParameterGeneratorUI> generator) {
         if (table.getSelectedRowCount() == 0 || table.getSelectedColumnCount() > 1) {
             return;
         }
 
-        List<Object> generatedObjects = ACAQParameterGeneratorUI.showDialog(this, getWorkbenchUI().getContext(), generator);
+        List<Object> generatedObjects = MCATParameterGeneratorUI.showDialog(this, getWorkbenchUI().getContext(), generator);
         if (generatedObjects == null)
             return;
 
@@ -146,8 +144,8 @@ public class MCATParametersTableUI extends MCATWorkbenchUIPanel {
     }
 
 
-    private void generateRow(int columnIndex, Class<? extends ACAQParameterGeneratorUI> generator) {
-        List<Object> generatedObjects = ACAQParameterGeneratorUI.showDialog(this, getWorkbenchUI().getContext(), generator);
+    private void generateRow(int columnIndex, Class<? extends MCATParameterGeneratorUI> generator) {
+        List<Object> generatedObjects = MCATParameterGeneratorUI.showDialog(this, getWorkbenchUI().getContext(), generator);
         if (generatedObjects != null) {
             MCATParametersTable parametersTable = getWorkbenchUI().getProject().getParametersTable();
             for (Object generatedObject : generatedObjects) {
@@ -161,7 +159,7 @@ public class MCATParametersTableUI extends MCATWorkbenchUIPanel {
         Point selection = new Point(table.getSelectedRow(), table.getSelectedColumn());
         if (!Objects.equals(selection, currentSelection)) {
             currentSelection = selection;
-            ACAQParameterCollection selectedRow = null;
+            MCATParameterCollection selectedRow = null;
             if (currentSelection.x != -1 && currentSelection.y != -1) {
                 selectedRow = getWorkbenchUI().getProject().getParametersTable().getRows().get(currentSelection.x);
             }
@@ -190,9 +188,9 @@ public class MCATParametersTableUI extends MCATWorkbenchUIPanel {
             JMenu columnMenu = new JMenu(parametersTable.getColumnName(col));
             columnMenu.setIcon(UIUtils.getIconFromResources("wrench.png"));
 
-            for (Class<? extends ACAQParameterGeneratorUI> generator : ACAQUIParametertypeRegistry.getInstance()
+            for (Class<? extends MCATParameterGeneratorUI> generator : MCATUIParametertypeRegistry.getInstance()
                     .getGeneratorsFor(parametersTable.getColumnClass(col))) {
-                ACAQDocumentation documentation = ACAQUIParametertypeRegistry.getInstance().getGeneratorDocumentationFor(generator);
+                MCATDocumentation documentation = MCATUIParametertypeRegistry.getInstance().getGeneratorDocumentationFor(generator);
                 JMenuItem generateRowItem = new JMenuItem(documentation.name());
                 generateRowItem.setToolTipText(documentation.description());
                 generateRowItem.setIcon(UIUtils.getIconFromResources("add.png"));
@@ -233,9 +231,9 @@ public class MCATParametersTableUI extends MCATWorkbenchUIPanel {
         boolean hasColumnEntries = false;
 
         if (col != -1) {
-            for (Class<? extends ACAQParameterGeneratorUI> generator : ACAQUIParametertypeRegistry.getInstance()
+            for (Class<? extends MCATParameterGeneratorUI> generator : MCATUIParametertypeRegistry.getInstance()
                     .getGeneratorsFor(getWorkbenchUI().getProject().getParametersTable().getColumnClass(col))) {
-                ACAQDocumentation documentation = ACAQUIParametertypeRegistry.getInstance().getGeneratorDocumentationFor(generator);
+                MCATDocumentation documentation = MCATUIParametertypeRegistry.getInstance().getGeneratorDocumentationFor(generator);
                 JMenuItem replaceCellItem = new JMenuItem(documentation.name());
                 replaceCellItem.setToolTipText(documentation.description());
                 replaceCellItem.setIcon(UIUtils.getIconFromResources("edit.png"));

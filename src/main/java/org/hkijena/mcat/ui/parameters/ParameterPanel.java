@@ -1,4 +1,4 @@
-package org.hkijena.mcat.utils.ui.parameters;
+package org.hkijena.mcat.ui.parameters;
 
 import com.google.common.eventbus.Subscribe;
 import com.google.common.html.HtmlEscapers;
@@ -6,10 +6,10 @@ import org.hkijena.mcat.ui.components.FormPanel;
 import org.hkijena.mcat.ui.components.MarkdownDocument;
 import org.hkijena.mcat.utils.ResourceUtils;
 import org.hkijena.mcat.utils.UIUtils;
-import org.hkijena.mcat.utils.api.ACAQDocumentation;
-import org.hkijena.mcat.utils.api.events.ParameterStructureChangedEvent;
-import org.hkijena.mcat.utils.api.parameters.*;
-import org.hkijena.mcat.utils.api.registries.ACAQUIParametertypeRegistry;
+import org.hkijena.mcat.api.MCATDocumentation;
+import org.hkijena.mcat.api.events.ParameterStructureChangedEvent;
+import org.hkijena.mcat.api.parameters.*;
+import org.hkijena.mcat.api.registries.MCATUIParametertypeRegistry;
 import org.scijava.Context;
 import org.scijava.Contextual;
 import org.scijava.util.StringUtils;
@@ -21,7 +21,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * UI around a {@link ACAQParameterCollection}
+ * UI around a {@link MCATParameterCollection}
  */
 public class ParameterPanel extends FormPanel implements Contextual {
     /**
@@ -35,7 +35,7 @@ public class ParameterPanel extends FormPanel implements Contextual {
      */
     public static final int NO_EMPTY_GROUP_HEADERS = 128;
     private Context context;
-    private ACAQParameterCollection parameterCollection;
+    private MCATParameterCollection parameterCollection;
     private boolean noGroupHeaders;
     private boolean noEmptyGroupHeaders;
 
@@ -45,7 +45,7 @@ public class ParameterPanel extends FormPanel implements Contextual {
      * @param documentation       Optional documentation
      * @param flags               Flags
      */
-    public ParameterPanel(Context context, ACAQParameterCollection parameterCollection, MarkdownDocument documentation, int flags) {
+    public ParameterPanel(Context context, MCATParameterCollection parameterCollection, MarkdownDocument documentation, int flags) {
         super(documentation, flags);
         this.noGroupHeaders = (flags & NO_GROUP_HEADERS) == NO_GROUP_HEADERS;
         this.noEmptyGroupHeaders = (flags & NO_EMPTY_GROUP_HEADERS) == NO_EMPTY_GROUP_HEADERS;
@@ -60,14 +60,14 @@ public class ParameterPanel extends FormPanel implements Contextual {
      */
     public void reloadForm() {
         clear();
-        ACAQTraversedParameterCollection parameterCollection = new ACAQTraversedParameterCollection(getParameterCollection());
+        MCATTraversedParameterCollection parameterCollection = new MCATTraversedParameterCollection(getParameterCollection());
 
-        Map<ACAQParameterCollection, List<ACAQParameterAccess>> groupedBySource = parameterCollection.getGroupedBySource();
+        Map<MCATParameterCollection, List<MCATParameterAccess>> groupedBySource = parameterCollection.getGroupedBySource();
         if (groupedBySource.containsKey(this.parameterCollection)) {
             addToForm(parameterCollection, this.parameterCollection, groupedBySource.get(this.parameterCollection));
         }
 
-        for (ACAQParameterCollection collection : groupedBySource.keySet().stream().sorted(
+        for (MCATParameterCollection collection : groupedBySource.keySet().stream().sorted(
                 Comparator.nullsFirst(Comparator.comparing(parameterCollection::getSourceDocumentationName)))
                 .collect(Collectors.toList())) {
             if (collection == this.parameterCollection)
@@ -77,14 +77,14 @@ public class ParameterPanel extends FormPanel implements Contextual {
         addVerticalGlue();
     }
 
-    private void addToForm(ACAQTraversedParameterCollection parameterCollection, ACAQParameterCollection parameterHolder, List<ACAQParameterAccess> parameterAccesses) {
-        boolean isModifiable = parameterHolder instanceof ACAQDynamicParameterCollection && ((ACAQDynamicParameterCollection) parameterHolder).isAllowUserModification();
+    private void addToForm(MCATTraversedParameterCollection parameterCollection, MCATParameterCollection parameterHolder, List<MCATParameterAccess> parameterAccesses) {
+        boolean isModifiable = parameterHolder instanceof MCATDynamicParameterCollection && ((MCATDynamicParameterCollection) parameterHolder).isAllowUserModification();
 
         if (!isModifiable && parameterAccesses.isEmpty())
             return;
 
         if (!noGroupHeaders) {
-            ACAQDocumentation documentation = parameterCollection.getSourceDocumentation(parameterHolder);
+            MCATDocumentation documentation = parameterCollection.getSourceDocumentation(parameterHolder);
             boolean documentationIsEmpty = documentation == null || (StringUtils.isNullOrEmpty(documentation.name()) && StringUtils.isNullOrEmpty(documentation.description()));
 
             if (!noEmptyGroupHeaders || (!documentationIsEmpty && !isModifiable)) {
@@ -98,7 +98,7 @@ public class ParameterPanel extends FormPanel implements Contextual {
 
                 if (isModifiable) {
                     JButton addButton = new JButton(UIUtils.getIconFromResources("add.png"));
-                    initializeAddDynamicParameterButton(addButton, (ACAQDynamicParameterCollection) parameterHolder);
+                    initializeAddDynamicParameterButton(addButton, (MCATDynamicParameterCollection) parameterHolder);
                     addButton.setToolTipText("Add new parameter");
                     UIUtils.makeFlat25x25(addButton);
                     groupHeaderPanel.addColumn(addButton);
@@ -106,14 +106,14 @@ public class ParameterPanel extends FormPanel implements Contextual {
             }
         }
 
-        List<ACAQParameterEditorUI> uiList = new ArrayList<>();
-        for (ACAQParameterAccess parameterAccess : parameterAccesses) {
-            ACAQParameterEditorUI ui = ACAQUIParametertypeRegistry.getInstance().createEditorFor(getContext(), parameterAccess);
+        List<MCATParameterEditorUI> uiList = new ArrayList<>();
+        for (MCATParameterAccess parameterAccess : parameterAccesses) {
+            MCATParameterEditorUI ui = MCATUIParametertypeRegistry.getInstance().createEditorFor(getContext(), parameterAccess);
             uiList.add(ui);
         }
-        for (ACAQParameterEditorUI ui : uiList.stream().sorted(Comparator.comparing((ACAQParameterEditorUI u) -> !u.isUILabelEnabled())
+        for (MCATParameterEditorUI ui : uiList.stream().sorted(Comparator.comparing((MCATParameterEditorUI u) -> !u.isUILabelEnabled())
                 .thenComparing(u -> u.getParameterAccess().getName())).collect(Collectors.toList())) {
-            ACAQParameterAccess parameterAccess = ui.getParameterAccess();
+            MCATParameterAccess parameterAccess = ui.getParameterAccess();
             JPanel labelPanel = new JPanel(new BorderLayout());
             if (ui.isUILabelEnabled())
                 labelPanel.add(new JLabel(parameterAccess.getName()), BorderLayout.CENTER);
@@ -121,21 +121,21 @@ public class ParameterPanel extends FormPanel implements Contextual {
                 JButton removeButton = new JButton(UIUtils.getIconFromResources("close-tab.png"));
                 removeButton.setToolTipText("Remove this parameter");
                 UIUtils.makeBorderlessWithoutMargin(removeButton);
-                removeButton.addActionListener(e -> removeDynamicParameter(parameterAccess.getKey(), (ACAQDynamicParameterCollection) parameterHolder));
+                removeButton.addActionListener(e -> removeDynamicParameter(parameterAccess.getKey(), (MCATDynamicParameterCollection) parameterHolder));
                 labelPanel.add(removeButton, BorderLayout.WEST);
             }
 
-            if (ui.isUILabelEnabled() || parameterHolder instanceof ACAQDynamicParameterCollection)
+            if (ui.isUILabelEnabled() || parameterHolder instanceof MCATDynamicParameterCollection)
                 addToForm(ui, labelPanel, generateParameterDocumentation(parameterAccess));
             else
                 addToForm(ui, generateParameterDocumentation(parameterAccess));
         }
     }
 
-    private MarkdownDocument generateParameterDocumentation(ACAQParameterAccess access) {
+    private MarkdownDocument generateParameterDocumentation(MCATParameterAccess access) {
         StringBuilder markdownString = new StringBuilder();
         markdownString.append("# Parameter '").append(access.getName()).append("'\n\n");
-        ACAQDocumentation documentation = ACAQUIParametertypeRegistry.getInstance().getDocumentationFor(access.getFieldClass());
+        MCATDocumentation documentation = MCATUIParametertypeRegistry.getInstance().getDocumentationFor(access.getFieldClass());
         if (documentation != null) {
             markdownString.append("<table><tr>");
             markdownString.append("<td><img src=\"").append(ResourceUtils.getPluginResource("icons/wrench.png")).append("\" /></td>");
@@ -150,8 +150,8 @@ public class ParameterPanel extends FormPanel implements Contextual {
         return new MarkdownDocument(markdownString.toString());
     }
 
-    private void removeDynamicParameter(String key, ACAQDynamicParameterCollection parameterHolder) {
-        ACAQMutableParameterAccess parameter = parameterHolder.getParameter(key);
+    private void removeDynamicParameter(String key, MCATDynamicParameterCollection parameterHolder) {
+        MCATMutableParameterAccess parameter = parameterHolder.getParameter(key);
         if (JOptionPane.showConfirmDialog(this, "Do you really want to remove the parameter '" + parameter.getName() + "'?",
                 "Remove parameter", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
             parameterHolder.removeParameter(key);
@@ -159,10 +159,10 @@ public class ParameterPanel extends FormPanel implements Contextual {
         }
     }
 
-    private void initializeAddDynamicParameterButton(JButton addButton, ACAQDynamicParameterCollection parameterHolder) {
+    private void initializeAddDynamicParameterButton(JButton addButton, MCATDynamicParameterCollection parameterHolder) {
         JPopupMenu menu = UIUtils.addPopupMenuToComponent(addButton);
         for (Class<?> allowedType : parameterHolder.getAllowedTypes()) {
-            ACAQDocumentation documentation = ACAQUIParametertypeRegistry.getInstance().getDocumentationFor(allowedType);
+            MCATDocumentation documentation = MCATUIParametertypeRegistry.getInstance().getDocumentationFor(allowedType);
             String name = allowedType.getSimpleName();
             String description = "Inserts a new parameter";
             if (documentation != null) {
@@ -177,11 +177,11 @@ public class ParameterPanel extends FormPanel implements Contextual {
         }
     }
 
-    private void addDynamicParameter(ACAQDynamicParameterCollection parameterHolder, Class<?> fieldType) {
+    private void addDynamicParameter(MCATDynamicParameterCollection parameterHolder, Class<?> fieldType) {
         String name = UIUtils.getUniqueStringByDialog(this, "Please set the parameter name: ", fieldType.getSimpleName(),
                 s -> parameterHolder.getParameters().values().stream().anyMatch(p -> Objects.equals(p.getName(), s)));
         if (name != null) {
-            ACAQMutableParameterAccess parameterAccess = parameterHolder.addParameter(name, fieldType);
+            MCATMutableParameterAccess parameterAccess = parameterHolder.addParameter(name, fieldType);
             parameterAccess.setName(name);
             reloadForm();
         }
@@ -200,7 +200,7 @@ public class ParameterPanel extends FormPanel implements Contextual {
     /**
      * @return The parameterized object
      */
-    public ACAQParameterCollection getParameterCollection() {
+    public MCATParameterCollection getParameterCollection() {
         return parameterCollection;
     }
 
@@ -220,7 +220,7 @@ public class ParameterPanel extends FormPanel implements Contextual {
         return context;
     }
 
-    private static List<String> getParameterKeysSortedByParameterName(Map<String, ACAQParameterAccess> parameters, Collection<String> keys) {
+    private static List<String> getParameterKeysSortedByParameterName(Map<String, MCATParameterAccess> parameters, Collection<String> keys) {
         return keys.stream().sorted(Comparator.comparing(k0 -> parameters.get(k0).getName())).collect(Collectors.toList());
     }
 }

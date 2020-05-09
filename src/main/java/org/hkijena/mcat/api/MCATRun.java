@@ -9,13 +9,11 @@ import org.hkijena.mcat.api.algorithms.MCATPreprocessingAlgorithm;
 import org.hkijena.mcat.api.datainterfaces.*;
 import org.hkijena.mcat.api.parameters.*;
 import org.hkijena.mcat.utils.JsonUtils;
-import org.hkijena.mcat.utils.api.ACAQValidatable;
-import org.hkijena.mcat.utils.api.ACAQValidityReport;
-import org.hkijena.mcat.utils.api.events.ParameterChangedEvent;
-import org.hkijena.mcat.utils.api.parameters.ACAQCustomParameterCollection;
-import org.hkijena.mcat.utils.api.parameters.ACAQParameterAccess;
-import org.hkijena.mcat.utils.api.parameters.ACAQParameterCollection;
-import org.hkijena.mcat.utils.api.parameters.ACAQTraversedParameterCollection;
+import org.hkijena.mcat.api.events.ParameterChangedEvent;
+import org.hkijena.mcat.api.parameters.MCATCustomParameterCollection;
+import org.hkijena.mcat.api.parameters.MCATParameterAccess;
+import org.hkijena.mcat.api.parameters.MCATParameterCollection;
+import org.hkijena.mcat.api.parameters.MCATTraversedParameterCollection;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -25,7 +23,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-public class MCATRun implements ACAQValidatable {
+public class MCATRun implements MCATValidatable {
     private MCATProject project;
     private MCATAlgorithmGraph graph;
 
@@ -354,11 +352,11 @@ public class MCATRun implements ACAQValidatable {
 
         String interfaceType = key.getDataInterfaceName();
         String dataSetString = key.getDataSetNames().stream().sorted().collect(Collectors.joining(","));
-        Set<ACAQParameterAccess> parameterAccesses = new HashSet<>();
-        for (ACAQParameterCollection parameterCollection : key.getParameters()) {
-            parameterAccesses.addAll((new ACAQTraversedParameterCollection(parameterCollection)).getParameters().values());
+        Set<MCATParameterAccess> parameterAccesses = new HashSet<>();
+        for (MCATParameterCollection parameterCollection : key.getParameters()) {
+            parameterAccesses.addAll((new MCATTraversedParameterCollection(parameterCollection)).getParameters().values());
         }
-        String parameterString = ACAQCustomParameterCollection.parametersToString(parameterAccesses, ",", "=");
+        String parameterString = MCATCustomParameterCollection.parametersToString(parameterAccesses, ",", "=");
         result.setParameterString(parameterString);
 
         for (Map.Entry<String, MCATDataSlot> slotEntry : dataInterface.getSlots().entrySet()) {
@@ -401,7 +399,7 @@ public class MCATRun implements ACAQValidatable {
     }
 
     @Override
-    public void reportValidity(ACAQValidityReport report) {
+    public void reportValidity(MCATValidityReport report) {
         report.forCategory("Algorithm graph").report(graph);
     }
 

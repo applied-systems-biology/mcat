@@ -1,4 +1,4 @@
-package org.hkijena.mcat.utils.api.parameters;
+package org.hkijena.mcat.api.parameters;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
@@ -8,7 +8,7 @@ import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.eventbus.EventBus;
 import org.hkijena.mcat.utils.JsonUtils;
-import org.hkijena.mcat.utils.api.events.ParameterStructureChangedEvent;
+import org.hkijena.mcat.api.events.ParameterStructureChangedEvent;
 
 import java.io.IOException;
 import java.util.*;
@@ -16,10 +16,10 @@ import java.util.*;
 /**
  * Holds a user-definable set of parameters
  */
-public class ACAQDynamicParameterCollection implements ACAQCustomParameterCollection {
+public class MCATDynamicParameterCollection implements MCATCustomParameterCollection {
 
     private EventBus eventBus = new EventBus();
-    private BiMap<String, ACAQMutableParameterAccess> dynamicParameters = HashBiMap.create();
+    private BiMap<String, MCATMutableParameterAccess> dynamicParameters = HashBiMap.create();
     private Set<Class<?>> allowedTypes = new HashSet<>();
     private String name;
     private String description;
@@ -31,7 +31,7 @@ public class ACAQDynamicParameterCollection implements ACAQCustomParameterCollec
      *
      * @param allowedTypes The parameter types that can be added
      */
-    public ACAQDynamicParameterCollection(Class<?>... allowedTypes) {
+    public MCATDynamicParameterCollection(Class<?>... allowedTypes) {
         this.allowedTypes.addAll(Arrays.asList(allowedTypes));
     }
 
@@ -41,7 +41,7 @@ public class ACAQDynamicParameterCollection implements ACAQCustomParameterCollec
      * @param allowUserModification let user modify this collection
      * @param allowedTypes          The parameter types that can be added by the user (ignored if user cannot add)
      */
-    public ACAQDynamicParameterCollection(boolean allowUserModification, Class<?>... allowedTypes) {
+    public MCATDynamicParameterCollection(boolean allowUserModification, Class<?>... allowedTypes) {
         this.allowUserModification = allowUserModification;
         this.allowedTypes.addAll(Arrays.asList(allowedTypes));
     }
@@ -51,28 +51,28 @@ public class ACAQDynamicParameterCollection implements ACAQCustomParameterCollec
      *
      * @param other The original
      */
-    public ACAQDynamicParameterCollection(ACAQDynamicParameterCollection other) {
+    public MCATDynamicParameterCollection(MCATDynamicParameterCollection other) {
         this.allowedTypes.addAll(other.allowedTypes);
         this.allowUserModification = other.allowUserModification;
-        for (Map.Entry<String, ACAQMutableParameterAccess> entry : other.dynamicParameters.entrySet()) {
-            ACAQMutableParameterAccess parameterAccess = new ACAQMutableParameterAccess(entry.getValue());
+        for (Map.Entry<String, MCATMutableParameterAccess> entry : other.dynamicParameters.entrySet()) {
+            MCATMutableParameterAccess parameterAccess = new MCATMutableParameterAccess(entry.getValue());
             parameterAccess.setParameterHolder(this);
             dynamicParameters.put(entry.getKey(), parameterAccess);
         }
     }
 
     @Override
-    public Map<String, ACAQParameterAccess> getParameters() {
+    public Map<String, MCATParameterAccess> getParameters() {
         return Collections.unmodifiableMap(dynamicParameters);
     }
 
     @JsonGetter("parameters")
-    private Map<String, ACAQMutableParameterAccess> getDynamicParameters() {
+    private Map<String, MCATMutableParameterAccess> getDynamicParameters() {
         return Collections.unmodifiableMap(dynamicParameters);
     }
 
     @JsonSetter("parameters")
-    private void setDynamicParameters(Map<String, ACAQMutableParameterAccess> dynamicParameters) {
+    private void setDynamicParameters(Map<String, MCATMutableParameterAccess> dynamicParameters) {
         this.dynamicParameters.putAll(dynamicParameters);
     }
 
@@ -83,7 +83,7 @@ public class ACAQDynamicParameterCollection implements ACAQCustomParameterCollec
      * @param parameterAccess the parameter
      * @return the parameter access
      */
-    public ACAQMutableParameterAccess addParameter(ACAQMutableParameterAccess parameterAccess) {
+    public MCATMutableParameterAccess addParameter(MCATMutableParameterAccess parameterAccess) {
         if (dynamicParameters.containsKey(parameterAccess.getKey()))
             throw new IllegalArgumentException("Parameter with key " + parameterAccess.getKey() + " already exists!");
         parameterAccess.setParameterHolder(this);
@@ -100,8 +100,8 @@ public class ACAQDynamicParameterCollection implements ACAQCustomParameterCollec
      * @param fieldClass The parameter class
      * @return The created parameter access
      */
-    public ACAQMutableParameterAccess addParameter(String key, Class<?> fieldClass) {
-        ACAQMutableParameterAccess parameterAccess = new ACAQMutableParameterAccess(this, key, fieldClass);
+    public MCATMutableParameterAccess addParameter(String key, Class<?> fieldClass) {
+        MCATMutableParameterAccess parameterAccess = new MCATMutableParameterAccess(this, key, fieldClass);
         parameterAccess.setName(key);
         return addParameter(parameterAccess);
     }
@@ -132,7 +132,7 @@ public class ACAQDynamicParameterCollection implements ACAQCustomParameterCollec
      * @param key The parameter key
      * @return The parameter access
      */
-    public ACAQMutableParameterAccess getParameter(String key) {
+    public MCATMutableParameterAccess getParameter(String key) {
         return dynamicParameters.get(key);
     }
 
@@ -199,7 +199,7 @@ public class ACAQDynamicParameterCollection implements ACAQCustomParameterCollec
         JsonNode parametersNode = node.get("parameters");
         for (Map.Entry<String, JsonNode> entry : ImmutableList.copyOf(parametersNode.fields())) {
             try {
-                ACAQMutableParameterAccess parameterAccess = JsonUtils.getObjectMapper().readerFor(ACAQMutableParameterAccess.class).readValue(entry.getValue());
+                MCATMutableParameterAccess parameterAccess = JsonUtils.getObjectMapper().readerFor(MCATMutableParameterAccess.class).readValue(entry.getValue());
                 parameterAccess.setKey(entry.getKey());
                 parameterAccess.setParameterHolder(this);
                 dynamicParameters.put(entry.getKey(), parameterAccess);
@@ -246,7 +246,7 @@ public class ACAQDynamicParameterCollection implements ACAQCustomParameterCollec
      * @param key the parameter key
      * @return the parameter access
      */
-    public ACAQParameterAccess get(String key) {
+    public MCATParameterAccess get(String key) {
         return dynamicParameters.get(key);
     }
 
@@ -276,13 +276,13 @@ public class ACAQDynamicParameterCollection implements ACAQCustomParameterCollec
      *
      * @param target the target configuration
      */
-    public void copyTo(ACAQDynamicParameterCollection target) {
+    public void copyTo(MCATDynamicParameterCollection target) {
         target.setAllowUserModification(isAllowUserModification());
         target.setAllowedTypes(getAllowedTypes());
         target.beginModificationBlock();
         target.clear();
-        for (Map.Entry<String, ACAQMutableParameterAccess> entry : dynamicParameters.entrySet()) {
-            target.addParameter(new ACAQMutableParameterAccess(entry.getValue()));
+        for (Map.Entry<String, MCATMutableParameterAccess> entry : dynamicParameters.entrySet()) {
+            target.addParameter(new MCATMutableParameterAccess(entry.getValue()));
         }
         target.endModificationBlock();
     }

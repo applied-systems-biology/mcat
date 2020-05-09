@@ -2,13 +2,13 @@ package org.hkijena.mcat.ui;
 
 import com.google.common.eventbus.Subscribe;
 import org.hkijena.mcat.api.MCATProjectDataSet;
-import org.hkijena.mcat.api.events.MCATDataSetAddedEvent;
-import org.hkijena.mcat.api.events.MCATDataSetRemovedEvent;
-import org.hkijena.mcat.api.events.MCATDataSetRenamedEvent;
+import org.hkijena.mcat.api.events.DataSetAddedEvent;
+import org.hkijena.mcat.api.events.DataSetRemovedEvent;
+import org.hkijena.mcat.api.events.DataSetRenamedEvent;
 import org.hkijena.mcat.api.parameters.MCATSampleParameters;
 import org.hkijena.mcat.ui.components.MCATSampleTreeCellRenderer;
 import org.hkijena.mcat.utils.UIUtils;
-import org.hkijena.mcat.utils.api.events.ParameterChangedEvent;
+import org.hkijena.mcat.api.events.ParameterChangedEvent;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -173,17 +173,17 @@ public class MCATDataSetManagerUI extends MCATWorkbenchUIPanel {
     }
 
     @Subscribe
-    public void onDataSetAdded(MCATDataSetAddedEvent event) {
+    public void onDataSetAdded(DataSetAddedEvent event) {
         rebuildSampleListTree();
     }
 
     @Subscribe
-    public void onDataSetRemoved(MCATDataSetRemovedEvent event) {
+    public void onDataSetRemoved(DataSetRemovedEvent event) {
         rebuildSampleListTree();
     }
 
     @Subscribe
-    public void onDataSetRenamed(MCATDataSetRenamedEvent event) {
+    public void onDataSetRenamed(DataSetRenamedEvent event) {
         rebuildSampleListTree();
     }
 

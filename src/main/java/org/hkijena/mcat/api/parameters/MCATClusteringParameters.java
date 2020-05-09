@@ -4,12 +4,8 @@ import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.google.common.eventbus.EventBus;
 import org.hkijena.mcat.api.MCATClusteringHierarchy;
-import org.hkijena.mcat.utils.api.ACAQDocumentation;
-import org.hkijena.mcat.utils.api.events.ParameterChangedEvent;
-import org.hkijena.mcat.utils.api.parameters.ACAQCustomParameterCollection;
-import org.hkijena.mcat.utils.api.parameters.ACAQParameter;
-import org.hkijena.mcat.utils.api.parameters.ACAQParameterCollection;
-import org.hkijena.mcat.utils.api.parameters.ACAQTraversedParameterCollection;
+import org.hkijena.mcat.api.MCATDocumentation;
+import org.hkijena.mcat.api.events.ParameterChangedEvent;
 
 import java.util.Objects;
 
@@ -17,14 +13,14 @@ import java.util.Objects;
  * Class that contains all clustering parameters.
  * <p>
  * To create a parameter, create a a private field with getter & setter.
- * Annotate the getter with {@link JsonGetter}, {@link ACAQParameter}, and {@link ACAQDocumentation}
- * Annotate the setter with {@link ACAQParameter} and {@link JsonSetter}
+ * Annotate the getter with {@link JsonGetter}, {@link MCATParameter}, and {@link MCATDocumentation}
+ * Annotate the setter with {@link MCATParameter} and {@link JsonSetter}
  * <p>
  * Post an event {@link ParameterChangedEvent} when a value is set.
  * <p>
  * Add the variable to getHashCode() and equals()
  */
-public class MCATClusteringParameters implements ACAQParameterCollection {
+public class MCATClusteringParameters implements MCATParameterCollection {
     private EventBus eventBus = new EventBus();
     private int kMeansK = 5;
     private int minLength = Integer.MAX_VALUE;
@@ -40,42 +36,42 @@ public class MCATClusteringParameters implements ACAQParameterCollection {
         this.clusteringHierarchy = other.clusteringHierarchy;
     }
 
-    @ACAQDocumentation(name = "Clustering hierarchy")
-    @ACAQParameter(value = "clustering-hierarchy", shortKey = "ch")
+    @MCATDocumentation(name = "Clustering hierarchy")
+    @MCATParameter(value = "clustering-hierarchy", shortKey = "ch")
     @JsonGetter("clustering-hierarchy")
     public MCATClusteringHierarchy getClusteringHierarchy() {
         return clusteringHierarchy;
     }
 
-    @ACAQParameter("clustering-hierarchy")
+    @MCATParameter("clustering-hierarchy")
     @JsonSetter("clustering-hierarchy")
     public void setClusteringHierarchy(MCATClusteringHierarchy clusteringHierarchy) {
         this.clusteringHierarchy = clusteringHierarchy;
         eventBus.post(new ParameterChangedEvent(this, "clustering-hierarchy"));
     }
 
-    @ACAQDocumentation(name = "K-Means groups (K)")
-    @ACAQParameter(value = "kmeans-k", shortKey = "k")
+    @MCATDocumentation(name = "K-Means groups (K)")
+    @MCATParameter(value = "kmeans-k", shortKey = "k")
     @JsonGetter("kmeans-k")
     public int getkMeansK() {
         return kMeansK;
     }
 
-    @ACAQParameter("kmeans-k")
+    @MCATParameter("kmeans-k")
     @JsonSetter("kmeans-k")
     public void setkMeansK(int kMeansK) {
         this.kMeansK = kMeansK;
         eventBus.post(new ParameterChangedEvent(this, "kmeans-k"));
     }
 
-    @ACAQDocumentation(name = "Minimum length")
-    @ACAQParameter(value = "min-length", shortKey = "mlength")
+    @MCATDocumentation(name = "Minimum length")
+    @MCATParameter(value = "min-length", shortKey = "mlength")
     @JsonGetter("min-length")
     public int getMinLength() {
         return minLength;
     }
 
-    @ACAQParameter("min-length")
+    @MCATParameter("min-length")
     @JsonSetter("min-length")
     public void setMinLength(int minLength) {
         this.minLength = minLength;
@@ -104,6 +100,6 @@ public class MCATClusteringParameters implements ACAQParameterCollection {
 
     @Override
     public String toString() {
-        return ACAQCustomParameterCollection.parametersToString((new ACAQTraversedParameterCollection(this)).getParameters().values(), ",", "=");
+        return MCATCustomParameterCollection.parametersToString((new MCATTraversedParameterCollection(this)).getParameters().values(), ",", "=");
     }
 }

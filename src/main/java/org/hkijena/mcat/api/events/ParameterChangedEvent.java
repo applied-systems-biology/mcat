@@ -1,4 +1,4 @@
-package org.hkijena.mcat.utils.api.events;
+package org.hkijena.mcat.api.events;
 
 /**
  * Triggered when a parameter holder's parameters are changed

@@ -3,15 +3,13 @@ package org.hkijena.mcat.api.parameters;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.google.common.eventbus.EventBus;
-import org.hkijena.mcat.utils.api.ACAQDocumentation;
-import org.hkijena.mcat.utils.api.events.ParameterChangedEvent;
-import org.hkijena.mcat.utils.api.parameters.ACAQParameter;
-import org.hkijena.mcat.utils.api.parameters.ACAQParameterCollection;
+import org.hkijena.mcat.api.MCATDocumentation;
+import org.hkijena.mcat.api.events.ParameterChangedEvent;
 
 /**
  * Contains sample parameters
  */
-public class MCATSampleParameters implements ACAQParameterCollection {
+public class MCATSampleParameters implements MCATParameterCollection {
     private EventBus eventBus = new EventBus();
     private String treatment;
 
@@ -22,14 +20,14 @@ public class MCATSampleParameters implements ACAQParameterCollection {
         this.treatment = other.treatment;
     }
 
-    @ACAQDocumentation(name = "Treatment")
-    @ACAQParameter("treatment")
+    @MCATDocumentation(name = "Treatment")
+    @MCATParameter("treatment")
     @JsonGetter("treatment")
     public String getTreatment() {
         return treatment;
     }
 
-    @ACAQParameter("treatment")
+    @MCATParameter("treatment")
     @JsonSetter("treatment")
     public void setTreatment(String treatment) {
         this.treatment = treatment;

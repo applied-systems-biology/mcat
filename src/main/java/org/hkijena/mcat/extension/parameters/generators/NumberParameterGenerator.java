@@ -1,13 +1,13 @@
 package org.hkijena.mcat.extension.parameters.generators;
 
 import com.google.common.eventbus.EventBus;
-import org.hkijena.mcat.utils.api.ACAQValidityReport;
-import org.hkijena.mcat.utils.api.parameters.ACAQCustomParameterCollection;
-import org.hkijena.mcat.utils.api.parameters.ACAQDynamicParameterCollection;
-import org.hkijena.mcat.utils.api.parameters.ACAQMutableParameterAccess;
-import org.hkijena.mcat.utils.api.parameters.ACAQParameterAccess;
-import org.hkijena.mcat.utils.ui.parameters.ACAQParameterGeneratorUI;
-import org.hkijena.mcat.utils.ui.parameters.ParameterPanel;
+import org.hkijena.mcat.api.MCATValidityReport;
+import org.hkijena.mcat.api.parameters.MCATCustomParameterCollection;
+import org.hkijena.mcat.api.parameters.MCATDynamicParameterCollection;
+import org.hkijena.mcat.api.parameters.MCATMutableParameterAccess;
+import org.hkijena.mcat.api.parameters.MCATParameterAccess;
+import org.hkijena.mcat.ui.parameters.MCATParameterGeneratorUI;
+import org.hkijena.mcat.ui.parameters.ParameterPanel;
 import org.scijava.Context;
 
 import java.awt.*;
@@ -20,11 +20,11 @@ import java.util.Map;
  * This cannot be used directly in {@link ACAQUIParametertypeRegistry}, as the constructor does
  * not match. You have to inherit from this type and define the number type.
  */
-public class NumberParameterGenerator<T extends Number & Comparable<T>> extends ACAQParameterGeneratorUI implements ACAQCustomParameterCollection {
+public class NumberParameterGenerator<T extends Number & Comparable<T>> extends MCATParameterGeneratorUI implements MCATCustomParameterCollection {
 
     private EventBus eventBus = new EventBus();
     private Class<? extends Number> numberClass;
-    private ACAQDynamicParameterCollection parameters = new ACAQDynamicParameterCollection();
+    private MCATDynamicParameterCollection parameters = new MCATDynamicParameterCollection();
 
     /**
      * Creates a new instance
@@ -48,11 +48,11 @@ public class NumberParameterGenerator<T extends Number & Comparable<T>> extends 
     }
 
     private void initializeParameters() {
-        ACAQMutableParameterAccess minParameter = parameters.addParameter("min", numberClass);
+        MCATMutableParameterAccess minParameter = parameters.addParameter("min", numberClass);
         minParameter.setName("Minimum value");
-        ACAQMutableParameterAccess maxParameter = parameters.addParameter("max", numberClass);
+        MCATMutableParameterAccess maxParameter = parameters.addParameter("max", numberClass);
         maxParameter.setName("Maximum value");
-        ACAQMutableParameterAccess stepSizeParameter = parameters.addParameter("step-size", numberClass);
+        MCATMutableParameterAccess stepSizeParameter = parameters.addParameter("step-size", numberClass);
         stepSizeParameter.setName("Step size");
         parameters.setAllowUserModification(false);
     }
@@ -82,7 +82,7 @@ public class NumberParameterGenerator<T extends Number & Comparable<T>> extends 
     }
 
     @Override
-    public void reportValidity(ACAQValidityReport report) {
+    public void reportValidity(MCATValidityReport report) {
         if (getCurrentMin().compareTo(getCurrentMax()) > 0) {
             report.reportIsInvalid("Invalid minimum and maximum values!",
                     "The minimum value must be less or equal to the maximum value.",
@@ -181,7 +181,7 @@ public class NumberParameterGenerator<T extends Number & Comparable<T>> extends 
     }
 
     @Override
-    public Map<String, ACAQParameterAccess> getParameters() {
+    public Map<String, MCATParameterAccess> getParameters() {
         return parameters.getParameters();
     }
 

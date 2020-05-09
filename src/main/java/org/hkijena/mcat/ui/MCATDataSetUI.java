@@ -2,7 +2,7 @@ package org.hkijena.mcat.ui;
 
 import com.google.common.eventbus.Subscribe;
 import org.hkijena.mcat.api.MCATProjectDataSet;
-import org.hkijena.mcat.api.events.MCATDataSetRenamedEvent;
+import org.hkijena.mcat.api.events.DataSetRenamedEvent;
 import org.hkijena.mcat.ui.components.FormPanel;
 import org.hkijena.mcat.ui.components.MarkdownDocument;
 import org.hkijena.mcat.utils.UIUtils;
@@ -135,7 +135,7 @@ public class MCATDataSetUI extends MCATWorkbenchUIPanel {
     }
 
     @Subscribe
-    public void onSampleRenamed(MCATDataSetRenamedEvent event) {
+    public void onSampleRenamed(DataSetRenamedEvent event) {
         if (event.getSample() == sample) {
             sampleTitle.setText(sample.getName());
         }

@@ -11,9 +11,9 @@ import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.eventbus.EventBus;
-import org.hkijena.mcat.api.events.MCATDataSetAddedEvent;
-import org.hkijena.mcat.api.events.MCATDataSetRemovedEvent;
-import org.hkijena.mcat.api.events.MCATDataSetRenamedEvent;
+import org.hkijena.mcat.api.events.DataSetAddedEvent;
+import org.hkijena.mcat.api.events.DataSetRemovedEvent;
+import org.hkijena.mcat.api.events.DataSetRenamedEvent;
 import org.hkijena.mcat.api.parameters.MCATParametersTable;
 import org.hkijena.mcat.utils.JsonUtils;
 
@@ -73,7 +73,7 @@ public class MCATProject {
         } else {
             MCATProjectDataSet sample = new MCATProjectDataSet(this);
             dataSets.put(sampleName, sample);
-            eventBus.post(new MCATDataSetAddedEvent(sample));
+            eventBus.post(new DataSetAddedEvent(sample));
             return sample;
         }
     }
@@ -82,7 +82,7 @@ public class MCATProject {
         String name = sample.getName();
         if (dataSets.containsKey(name)) {
             dataSets.remove(name);
-            eventBus.post(new MCATDataSetRemovedEvent(sample));
+            eventBus.post(new DataSetRemovedEvent(sample));
             return true;
         }
         return false;
@@ -96,7 +96,7 @@ public class MCATProject {
             return false;
         dataSets.remove(sample.getName());
         dataSets.put(name, sample);
-        eventBus.post(new MCATDataSetRenamedEvent(sample));
+        eventBus.post(new DataSetRenamedEvent(sample));
         return true;
     }
 

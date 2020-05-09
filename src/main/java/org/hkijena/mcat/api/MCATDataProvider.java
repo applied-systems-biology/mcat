@@ -1,11 +1,9 @@
 package org.hkijena.mcat.api;
 
-import org.hkijena.mcat.utils.api.ACAQValidatable;
-
 /**
  * An interface that generates data
  */
-public interface MCATDataProvider extends ACAQValidatable {
+public interface MCATDataProvider extends MCATValidatable {
     /**
      * Gets the data
      *

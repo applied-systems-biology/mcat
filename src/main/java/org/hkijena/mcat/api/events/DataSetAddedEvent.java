@@ -3,12 +3,12 @@ package org.hkijena.mcat.api.events;
 import org.hkijena.mcat.api.MCATProjectDataSet;
 
 /**
- * Triggered when a sample is removed from an {@link org.hkijena.mcat.api.MCATProject}
+ * Triggered when a sample is added to an {@link org.hkijena.mcat.api.MCATProject}
  */
-public class MCATDataSetRemovedEvent {
+public class DataSetAddedEvent {
     private MCATProjectDataSet sample;
 
-    public MCATDataSetRemovedEvent(MCATProjectDataSet sample) {
+    public DataSetAddedEvent(MCATProjectDataSet sample) {
         this.sample = sample;
     }
 

@@ -10,19 +10,19 @@
  * See the LICENSE file provided with this code for the full license.
  */
 
-package org.hkijena.mcat.utils.api;
+package org.hkijena.mcat.api;
 
 
 /**
  * An interface about a type that reports of the validity of its internal state
  */
-public interface ACAQValidatable {
+public interface MCATValidatable {
 
     /**
      * Generates a validity report
      *
      * @param report the report to be added to
      */
-    void reportValidity(ACAQValidityReport report);
+    void reportValidity(MCATValidityReport report);
 
 }

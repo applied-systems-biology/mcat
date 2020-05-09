@@ -1,11 +1,11 @@
-package org.hkijena.mcat.utils.api.registries;
+package org.hkijena.mcat.api.registries;
 
 import org.hkijena.mcat.extension.parameters.StandardParameterEditorsExtension;
-import org.hkijena.mcat.utils.api.ACAQDefaultDocumentation;
-import org.hkijena.mcat.utils.api.ACAQDocumentation;
-import org.hkijena.mcat.utils.api.parameters.ACAQParameterAccess;
-import org.hkijena.mcat.utils.ui.parameters.ACAQParameterEditorUI;
-import org.hkijena.mcat.utils.ui.parameters.ACAQParameterGeneratorUI;
+import org.hkijena.mcat.api.MCATDefaultDocumentation;
+import org.hkijena.mcat.api.MCATDocumentation;
+import org.hkijena.mcat.api.parameters.MCATParameterAccess;
+import org.hkijena.mcat.ui.parameters.MCATParameterEditorUI;
+import org.hkijena.mcat.ui.parameters.MCATParameterGeneratorUI;
 import org.scijava.Context;
 
 import java.lang.reflect.InvocationTargetException;
@@ -14,20 +14,20 @@ import java.util.*;
 /**
  * Registry for parameter types
  */
-public class ACAQUIParametertypeRegistry {
+public class MCATUIParametertypeRegistry {
 
-    private static ACAQUIParametertypeRegistry instance;
+    private static MCATUIParametertypeRegistry instance;
 
-    private Map<Class<?>, ACAQDocumentation> parameterDocumentations = new HashMap<>();
-    private Map<Class<?>, Class<? extends ACAQParameterEditorUI>> parameterTypes = new HashMap<>();
+    private Map<Class<?>, MCATDocumentation> parameterDocumentations = new HashMap<>();
+    private Map<Class<?>, Class<? extends MCATParameterEditorUI>> parameterTypes = new HashMap<>();
 
-    private Map<Class<?>, Set<Class<? extends ACAQParameterGeneratorUI>>> parameterGenerators = new HashMap<>();
-    private Map<Class<? extends ACAQParameterGeneratorUI>, ACAQDocumentation> parameterGeneratorDocumentations = new HashMap<>();
+    private Map<Class<?>, Set<Class<? extends MCATParameterGeneratorUI>>> parameterGenerators = new HashMap<>();
+    private Map<Class<? extends MCATParameterGeneratorUI>, MCATDocumentation> parameterGeneratorDocumentations = new HashMap<>();
 
     /**
      * New instance
      */
-    private ACAQUIParametertypeRegistry() {
+    private MCATUIParametertypeRegistry() {
 
     }
 
@@ -37,7 +37,7 @@ public class ACAQUIParametertypeRegistry {
      * @param parameterType parameter type
      * @param uiClass       corresponding editor UI
      */
-    public void registerParameterEditor(Class<?> parameterType, Class<? extends ACAQParameterEditorUI> uiClass) {
+    public void registerParameterEditor(Class<?> parameterType, Class<? extends MCATParameterEditorUI> uiClass) {
         parameterTypes.put(parameterType, uiClass);
     }
 
@@ -47,7 +47,7 @@ public class ACAQUIParametertypeRegistry {
      * @param parameterType parameter type
      * @param documentation the documentation
      */
-    public void registerDocumentation(Class<?> parameterType, ACAQDocumentation documentation) {
+    public void registerDocumentation(Class<?> parameterType, MCATDocumentation documentation) {
         parameterDocumentations.put(parameterType, documentation);
     }
 
@@ -57,7 +57,7 @@ public class ACAQUIParametertypeRegistry {
      * @param parameterType parameter type
      * @return documentation. Can be null.
      */
-    public ACAQDocumentation getDocumentationFor(Class<?> parameterType) {
+    public MCATDocumentation getDocumentationFor(Class<?> parameterType) {
         return parameterDocumentations.getOrDefault(parameterType, null);
     }
 
@@ -68,11 +68,11 @@ public class ACAQUIParametertypeRegistry {
      * @param parameterAccess the parameter
      * @return Parameter editor UI
      */
-    public ACAQParameterEditorUI createEditorFor(Context context, ACAQParameterAccess parameterAccess) {
-        Class<? extends ACAQParameterEditorUI> uiClass = parameterTypes.getOrDefault(parameterAccess.getFieldClass(), null);
+    public MCATParameterEditorUI createEditorFor(Context context, MCATParameterAccess parameterAccess) {
+        Class<? extends MCATParameterEditorUI> uiClass = parameterTypes.getOrDefault(parameterAccess.getFieldClass(), null);
         if (uiClass == null) {
             // Search a matching one
-            for (Map.Entry<Class<?>, Class<? extends ACAQParameterEditorUI>> entry : parameterTypes.entrySet()) {
+            for (Map.Entry<Class<?>, Class<? extends MCATParameterEditorUI>> entry : parameterTypes.entrySet()) {
                 if (entry.getKey().isAssignableFrom(parameterAccess.getFieldClass())) {
                     uiClass = entry.getValue();
                     break;
@@ -83,7 +83,7 @@ public class ACAQUIParametertypeRegistry {
             throw new NullPointerException("Could not find parameter editor for parameter class '" + parameterAccess.getFieldClass() + "'");
         }
         try {
-            return uiClass.getConstructor(Context.class, ACAQParameterAccess.class).newInstance(context, parameterAccess);
+            return uiClass.getConstructor(Context.class, MCATParameterAccess.class).newInstance(context, parameterAccess);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             throw new RuntimeException(e);
         }
@@ -107,14 +107,14 @@ public class ACAQUIParametertypeRegistry {
      * @param name           Generator name
      * @param description    Description for the generator
      */
-    public void registerGenerator(Class<?> parameterClass, Class<? extends ACAQParameterGeneratorUI> uiClass, String name, String description) {
-        Set<Class<? extends ACAQParameterGeneratorUI>> generators = parameterGenerators.getOrDefault(parameterClass, null);
+    public void registerGenerator(Class<?> parameterClass, Class<? extends MCATParameterGeneratorUI> uiClass, String name, String description) {
+        Set<Class<? extends MCATParameterGeneratorUI>> generators = parameterGenerators.getOrDefault(parameterClass, null);
         if (generators == null) {
             generators = new HashSet<>();
             parameterGenerators.put(parameterClass, generators);
         }
         generators.add(uiClass);
-        parameterGeneratorDocumentations.put(uiClass, new ACAQDefaultDocumentation(name, description));
+        parameterGeneratorDocumentations.put(uiClass, new MCATDefaultDocumentation(name, description));
     }
 
     /**
@@ -123,7 +123,7 @@ public class ACAQUIParametertypeRegistry {
      * @param parameterClass the parameter class
      * @return Set of generators
      */
-    public Set<Class<? extends ACAQParameterGeneratorUI>> getGeneratorsFor(Class<?> parameterClass) {
+    public Set<Class<? extends MCATParameterGeneratorUI>> getGeneratorsFor(Class<?> parameterClass) {
         return parameterGenerators.getOrDefault(parameterClass, Collections.emptySet());
     }
 
@@ -133,13 +133,13 @@ public class ACAQUIParametertypeRegistry {
      * @param generatorClass the generator
      * @return documentation
      */
-    public ACAQDocumentation getGeneratorDocumentationFor(Class<? extends ACAQParameterGeneratorUI> generatorClass) {
+    public MCATDocumentation getGeneratorDocumentationFor(Class<? extends MCATParameterGeneratorUI> generatorClass) {
         return parameterGeneratorDocumentations.get(generatorClass);
     }
 
-    public static ACAQUIParametertypeRegistry getInstance() {
+    public static MCATUIParametertypeRegistry getInstance() {
         if (instance == null) {
-            instance = new ACAQUIParametertypeRegistry();
+            instance = new MCATUIParametertypeRegistry();
             StandardParameterEditorsExtension.register();
         }
 

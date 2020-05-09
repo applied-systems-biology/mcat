@@ -1,4 +1,4 @@
-package org.hkijena.mcat.utils.api.parameters;
+package org.hkijena.mcat.api.parameters;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
@@ -10,7 +10,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.hkijena.mcat.utils.JsonUtils;
 import org.hkijena.mcat.utils.StringUtils;
-import org.hkijena.mcat.utils.api.events.ParameterChangedEvent;
+import org.hkijena.mcat.api.events.ParameterChangedEvent;
 import org.scijava.Priority;
 
 import java.io.IOException;
@@ -19,18 +19,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * A mutable implementation of {@link ACAQParameterAccess}
+ * A mutable implementation of {@link MCATParameterAccess}
  */
-@JsonDeserialize(using = ACAQMutableParameterAccess.Deserializer.class)
-public class ACAQMutableParameterAccess implements ACAQParameterAccess {
-    private ACAQParameterCollection parameterHolder;
+@JsonDeserialize(using = MCATMutableParameterAccess.Deserializer.class)
+public class MCATMutableParameterAccess implements MCATParameterAccess {
+    private MCATParameterCollection parameterHolder;
     private String holderName;
     private String holderDescription;
     private String key;
     private String shortKey;
     private String name;
     private String description;
-    private ACAQParameterVisibility visibility = ACAQParameterVisibility.TransitiveVisible;
+    private MCATParameterVisibility visibility = MCATParameterVisibility.TransitiveVisible;
     private Class<?> fieldClass;
     private Object value;
     private double priority = Priority.NORMAL;
@@ -39,7 +39,7 @@ public class ACAQMutableParameterAccess implements ACAQParameterAccess {
     /**
      * Creates a new instance
      */
-    public ACAQMutableParameterAccess() {
+    public MCATMutableParameterAccess() {
     }
 
     /**
@@ -47,7 +47,7 @@ public class ACAQMutableParameterAccess implements ACAQParameterAccess {
      *
      * @param other the parameter
      */
-    public ACAQMutableParameterAccess(ACAQParameterAccess other) {
+    public MCATMutableParameterAccess(MCATParameterAccess other) {
         this.parameterHolder = other.getSource();
         this.key = other.getKey();
         this.name = other.getName();
@@ -64,7 +64,7 @@ public class ACAQMutableParameterAccess implements ACAQParameterAccess {
      * @param key             Unique parameter key
      * @param fieldClass      Parameter field type
      */
-    public ACAQMutableParameterAccess(ACAQParameterCollection parameterHolder, String key, Class<?> fieldClass) {
+    public MCATMutableParameterAccess(MCATParameterCollection parameterHolder, String key, Class<?> fieldClass) {
         this.parameterHolder = parameterHolder;
         this.key = key;
         this.fieldClass = fieldClass;
@@ -75,7 +75,7 @@ public class ACAQMutableParameterAccess implements ACAQParameterAccess {
      *
      * @param other The original
      */
-    public ACAQMutableParameterAccess(ACAQMutableParameterAccess other) {
+    public MCATMutableParameterAccess(MCATMutableParameterAccess other) {
         this.parameterHolder = other.parameterHolder;
         this.holderName = other.holderName;
         this.holderDescription = other.holderDescription;
@@ -136,9 +136,9 @@ public class ACAQMutableParameterAccess implements ACAQParameterAccess {
 
     @Override
     @JsonGetter("visibility")
-    public ACAQParameterVisibility getVisibility() {
+    public MCATParameterVisibility getVisibility() {
         if (visibility == null)
-            return ACAQParameterVisibility.TransitiveVisible;
+            return MCATParameterVisibility.TransitiveVisible;
         return visibility;
     }
 
@@ -148,7 +148,7 @@ public class ACAQMutableParameterAccess implements ACAQParameterAccess {
      * @param visibility The visibilities
      */
     @JsonSetter("visibility")
-    public void setVisibility(ACAQParameterVisibility visibility) {
+    public void setVisibility(MCATParameterVisibility visibility) {
         this.visibility = visibility;
     }
 
@@ -191,7 +191,7 @@ public class ACAQMutableParameterAccess implements ACAQParameterAccess {
     }
 
     @Override
-    public ACAQParameterCollection getSource() {
+    public MCATParameterCollection getSource() {
         return parameterHolder;
     }
 
@@ -200,7 +200,7 @@ public class ACAQMutableParameterAccess implements ACAQParameterAccess {
      *
      * @param parameterHolder The object that holds the parameter
      */
-    public void setParameterHolder(ACAQParameterCollection parameterHolder) {
+    public void setParameterHolder(MCATParameterCollection parameterHolder) {
         this.parameterHolder = parameterHolder;
     }
 
@@ -237,16 +237,16 @@ public class ACAQMutableParameterAccess implements ACAQParameterAccess {
     }
 
     /**
-     * Deserializes {@link ACAQMutableParameterAccess}
+     * Deserializes {@link MCATMutableParameterAccess}
      */
-    public static class Deserializer extends JsonDeserializer<ACAQMutableParameterAccess> {
+    public static class Deserializer extends JsonDeserializer<MCATMutableParameterAccess> {
         @Override
-        public ACAQMutableParameterAccess deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+        public MCATMutableParameterAccess deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
             JsonNode jsonNode = p.readValueAsTree();
-            ACAQMutableParameterAccess result = new ACAQMutableParameterAccess();
+            MCATMutableParameterAccess result = new MCATMutableParameterAccess();
             result.setName(jsonNode.get("name").textValue());
             result.setDescription(jsonNode.get("description").textValue());
-            result.setVisibility(JsonUtils.getObjectMapper().readerFor(ACAQParameterVisibility.class).readValue(jsonNode.get("visibility")));
+            result.setVisibility(JsonUtils.getObjectMapper().readerFor(MCATParameterVisibility.class).readValue(jsonNode.get("visibility")));
             result.setFieldClass(JsonUtils.getObjectMapper().readerFor(Class.class).readValue(jsonNode.get("field-class")));
             result.set(JsonUtils.getObjectMapper().readerFor(result.getFieldClass()).readValue(jsonNode.get("value")));
             return result;

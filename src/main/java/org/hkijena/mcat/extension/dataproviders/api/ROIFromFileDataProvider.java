@@ -2,12 +2,12 @@ package org.hkijena.mcat.extension.dataproviders.api;
 
 import ij.io.Opener;
 import org.hkijena.mcat.extension.datatypes.ROIData;
-import org.hkijena.mcat.utils.api.ACAQDocumentation;
+import org.hkijena.mcat.api.MCATDocumentation;
 
 /**
  * Loads a {@link ROIData} from a file
  */
-@ACAQDocumentation(name = "ROI (*.roi, *.zip)")
+@MCATDocumentation(name = "ROI (*.roi, *.zip)")
 public class ROIFromFileDataProvider extends FileDataProvider {
 
     public ROIFromFileDataProvider() {

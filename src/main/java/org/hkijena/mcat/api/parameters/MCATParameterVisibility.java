@@ -1,9 +1,9 @@
-package org.hkijena.mcat.utils.api.parameters;
+package org.hkijena.mcat.api.parameters;
 
 /**
  * Defines the visibility of a parameter
  */
-public enum ACAQParameterVisibility {
+public enum MCATParameterVisibility {
     /**
      * Highest visibility: Visible to users, and to parent parameter holders
      */
@@ -19,7 +19,7 @@ public enum ACAQParameterVisibility {
 
     int order;
 
-    ACAQParameterVisibility(int order) {
+    MCATParameterVisibility(int order) {
         this.order = order;
     }
 
@@ -29,7 +29,7 @@ public enum ACAQParameterVisibility {
      * @param other The other visibility
      * @return the lower visibility
      */
-    public ACAQParameterVisibility intersectWith(ACAQParameterVisibility other) {
+    public MCATParameterVisibility intersectWith(MCATParameterVisibility other) {
         if (other.order > order)
             return other;
         else
@@ -42,7 +42,7 @@ public enum ACAQParameterVisibility {
      * @param container The container visibility
      * @return If the visibility is visible in the container
      */
-    public boolean isVisibleIn(ACAQParameterVisibility container) {
+    public boolean isVisibleIn(MCATParameterVisibility container) {
         return this.order <= container.order;
     }
 }

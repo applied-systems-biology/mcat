@@ -1,10 +1,10 @@
-package org.hkijena.mcat.utils.ui.parameters;
+package org.hkijena.mcat.ui.parameters;
 
 
 import com.google.common.eventbus.Subscribe;
-import org.hkijena.mcat.utils.api.events.ParameterChangedEvent;
-import org.hkijena.mcat.utils.api.parameters.ACAQParameterAccess;
-import org.hkijena.mcat.utils.api.parameters.ACAQParameterCollection;
+import org.hkijena.mcat.api.events.ParameterChangedEvent;
+import org.hkijena.mcat.api.parameters.MCATParameterAccess;
+import org.hkijena.mcat.api.parameters.MCATParameterCollection;
 import org.scijava.Context;
 import org.scijava.Contextual;
 
@@ -14,9 +14,9 @@ import java.util.Objects;
 /**
  * A UI for a parameter type
  */
-public abstract class ACAQParameterEditorUI extends JPanel implements Contextual {
+public abstract class MCATParameterEditorUI extends JPanel implements Contextual {
     private Context context;
-    private ACAQParameterAccess parameterAccess;
+    private MCATParameterAccess parameterAccess;
 
     /**
      * Creates new instance
@@ -24,7 +24,7 @@ public abstract class ACAQParameterEditorUI extends JPanel implements Contextual
      * @param context         SciJava context
      * @param parameterAccess Parameter
      */
-    public ACAQParameterEditorUI(Context context, ACAQParameterAccess parameterAccess) {
+    public MCATParameterEditorUI(Context context, MCATParameterAccess parameterAccess) {
         this.context = context;
         this.parameterAccess = parameterAccess;
         parameterAccess.getSource().getEventBus().register(this);
@@ -35,7 +35,7 @@ public abstract class ACAQParameterEditorUI extends JPanel implements Contextual
      *
      * @return object that holds the parameter
      */
-    public ACAQParameterCollection getParameterHolder() {
+    public MCATParameterCollection getParameterHolder() {
         return parameterAccess.getSource();
     }
 
@@ -44,7 +44,7 @@ public abstract class ACAQParameterEditorUI extends JPanel implements Contextual
      *
      * @return parameter accessor
      */
-    public ACAQParameterAccess getParameterAccess() {
+    public MCATParameterAccess getParameterAccess() {
         return parameterAccess;
     }
 

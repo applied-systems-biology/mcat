@@ -1,7 +1,7 @@
 package org.hkijena.mcat.extension.parameters.editors;
 
-import org.hkijena.mcat.utils.api.parameters.ACAQParameterAccess;
-import org.hkijena.mcat.utils.ui.parameters.ACAQParameterEditorUI;
+import org.hkijena.mcat.api.parameters.MCATParameterAccess;
+import org.hkijena.mcat.ui.parameters.MCATParameterEditorUI;
 import org.scijava.Context;
 
 import javax.swing.*;
@@ -10,7 +10,7 @@ import java.awt.*;
 /**
  * A parameter editor UI that works for all enumerations
  */
-public class EnumParameterEditorUI extends ACAQParameterEditorUI {
+public class EnumParameterEditorUI extends MCATParameterEditorUI {
 
     private boolean skipNextReload = false;
     private boolean isReloading = false;
@@ -20,7 +20,7 @@ public class EnumParameterEditorUI extends ACAQParameterEditorUI {
      * @param context         SciJava context
      * @param parameterAccess the parameter
      */
-    public EnumParameterEditorUI(Context context, ACAQParameterAccess parameterAccess) {
+    public EnumParameterEditorUI(Context context, MCATParameterAccess parameterAccess) {
         super(context, parameterAccess);
         initialize();
         reload();

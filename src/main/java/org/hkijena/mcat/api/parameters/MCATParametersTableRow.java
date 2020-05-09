@@ -4,15 +4,13 @@ import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
-import org.hkijena.mcat.utils.api.ACAQDocumentation;
-import org.hkijena.mcat.utils.api.events.ParameterChangedEvent;
-import org.hkijena.mcat.utils.api.parameters.ACAQParameter;
-import org.hkijena.mcat.utils.api.parameters.ACAQParameterCollection;
+import org.hkijena.mcat.api.MCATDocumentation;
+import org.hkijena.mcat.api.events.ParameterChangedEvent;
 
 /**
  * Row in {@link MCATParametersTable}
  */
-public class MCATParametersTableRow implements ACAQParameterCollection {
+public class MCATParametersTableRow implements MCATParameterCollection {
     private EventBus eventBus = new EventBus();
     private MCATPreprocessingParameters preprocessingParameters = new MCATPreprocessingParameters();
     private MCATPostprocessingParameters postprocessingParameters = new MCATPostprocessingParameters();
@@ -33,8 +31,8 @@ public class MCATParametersTableRow implements ACAQParameterCollection {
         clusteringParameters.getEventBus().register(this);
     }
 
-    @ACAQDocumentation(name = "Preprocessing", description = "Following parameters apply to the preprocessing.")
-    @ACAQParameter("preprocessing")
+    @MCATDocumentation(name = "Preprocessing", description = "Following parameters apply to the preprocessing.")
+    @MCATParameter("preprocessing")
     @JsonGetter("preprocessing")
     public MCATPreprocessingParameters getPreprocessingParameters() {
         return preprocessingParameters;
@@ -45,8 +43,8 @@ public class MCATParametersTableRow implements ACAQParameterCollection {
         this.preprocessingParameters = preprocessingParameters;
     }
 
-    @ACAQDocumentation(name = "Postprocessing", description = "Following parameters apply to the postprocessing.")
-    @ACAQParameter("postprocessing")
+    @MCATDocumentation(name = "Postprocessing", description = "Following parameters apply to the postprocessing.")
+    @MCATParameter("postprocessing")
     @JsonGetter("postprocessing")
     public MCATPostprocessingParameters getPostprocessingParameters() {
         return postprocessingParameters;
@@ -57,8 +55,8 @@ public class MCATParametersTableRow implements ACAQParameterCollection {
         this.postprocessingParameters = postprocessingParameters;
     }
 
-    @ACAQDocumentation(name = "Clustering", description = "Following parameters apply to the clustering.")
-    @ACAQParameter("clustering")
+    @MCATDocumentation(name = "Clustering", description = "Following parameters apply to the clustering.")
+    @MCATParameter("clustering")
     @JsonGetter("clustering")
     public MCATClusteringParameters getClusteringParameters() {
         return clusteringParameters;

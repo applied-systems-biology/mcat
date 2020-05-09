@@ -1,7 +1,7 @@
 package org.hkijena.mcat.extension.parameters.editors;
 
-import org.hkijena.mcat.utils.api.parameters.ACAQParameterAccess;
-import org.hkijena.mcat.utils.ui.parameters.ACAQParameterEditorUI;
+import org.hkijena.mcat.api.parameters.MCATParameterAccess;
+import org.hkijena.mcat.ui.parameters.MCATParameterEditorUI;
 import org.scijava.Context;
 
 import javax.swing.*;
@@ -10,7 +10,7 @@ import java.awt.*;
 /**
  * Parameter editor for boolean data
  */
-public class BooleanParameterEditorUI extends ACAQParameterEditorUI {
+public class BooleanParameterEditorUI extends MCATParameterEditorUI {
 
     private JCheckBox checkBox;
     private boolean skipNextReload = false;
@@ -20,7 +20,7 @@ public class BooleanParameterEditorUI extends ACAQParameterEditorUI {
      * @param context         SciJava context
      * @param parameterAccess the parameter
      */
-    public BooleanParameterEditorUI(Context context, ACAQParameterAccess parameterAccess) {
+    public BooleanParameterEditorUI(Context context, MCATParameterAccess parameterAccess) {
         super(context, parameterAccess);
         initialize();
     }

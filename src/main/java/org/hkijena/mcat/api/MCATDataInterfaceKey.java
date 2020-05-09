@@ -1,6 +1,6 @@
 package org.hkijena.mcat.api;
 
-import org.hkijena.mcat.utils.api.parameters.ACAQParameterCollection;
+import org.hkijena.mcat.api.parameters.MCATParameterCollection;
 
 import java.util.*;
 
@@ -9,7 +9,7 @@ import java.util.*;
  */
 public class MCATDataInterfaceKey {
     private Set<String> dataSetNames = new HashSet<>();
-    private Set<ACAQParameterCollection> parameters = new HashSet<>();
+    private Set<MCATParameterCollection> parameters = new HashSet<>();
     private String dataInterfaceName;
 
     public MCATDataInterfaceKey(String dataInterfaceName) {
@@ -25,7 +25,7 @@ public class MCATDataInterfaceKey {
         dataSetNames.add(dataSetName);
     }
 
-    public void addParameter(ACAQParameterCollection parameter) {
+    public void addParameter(MCATParameterCollection parameter) {
         parameters.add(parameter);
     }
 
@@ -33,7 +33,7 @@ public class MCATDataInterfaceKey {
         this.dataSetNames.addAll(dataSetNames);
     }
 
-    public void addParameters(Collection<ACAQParameterCollection> parameters) {
+    public void addParameters(Collection<MCATParameterCollection> parameters) {
         this.parameters.addAll(parameters);
     }
 
@@ -41,7 +41,7 @@ public class MCATDataInterfaceKey {
         return Collections.unmodifiableSet(dataSetNames);
     }
 
-    public Set<ACAQParameterCollection> getParameters() {
+    public Set<MCATParameterCollection> getParameters() {
         return Collections.unmodifiableSet(parameters);
     }
 

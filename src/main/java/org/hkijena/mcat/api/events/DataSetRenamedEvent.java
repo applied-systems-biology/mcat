@@ -6,10 +6,10 @@ import org.hkijena.mcat.api.MCATProjectDataSet;
 /**
  * Triggered when a sample in an {@link org.hkijena.mcat.api.MCATProject} is renamed
  */
-public class MCATDataSetRenamedEvent {
+public class DataSetRenamedEvent {
     private MCATProjectDataSet sample;
 
-    public MCATDataSetRenamedEvent(MCATProjectDataSet sample) {
+    public DataSetRenamedEvent(MCATProjectDataSet sample) {
         this.sample = sample;
     }
 

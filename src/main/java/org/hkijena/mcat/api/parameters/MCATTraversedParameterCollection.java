@@ -1,13 +1,13 @@
-package org.hkijena.mcat.utils.api.parameters;
+package org.hkijena.mcat.api.parameters;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import org.hkijena.mcat.utils.StringUtils;
-import org.hkijena.mcat.utils.api.ACAQDocumentation;
-import org.hkijena.mcat.utils.api.events.ParameterChangedEvent;
-import org.hkijena.mcat.utils.api.events.ParameterStructureChangedEvent;
+import org.hkijena.mcat.api.MCATDocumentation;
+import org.hkijena.mcat.api.events.ParameterChangedEvent;
+import org.hkijena.mcat.api.events.ParameterStructureChangedEvent;
 import org.scijava.Priority;
 
 import java.lang.reflect.InvocationTargetException;
@@ -16,17 +16,17 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * An {@link ACAQParameterCollection} that contains the parameters of one or multiple
- * {@link ACAQParameterCollection} instances in a traversed form.
+ * An {@link MCATParameterCollection} that contains the parameters of one or multiple
+ * {@link MCATParameterCollection} instances in a traversed form.
  */
-public class ACAQTraversedParameterCollection implements ACAQParameterCollection, ACAQCustomParameterCollection {
+public class MCATTraversedParameterCollection implements MCATParameterCollection, MCATCustomParameterCollection {
 
     private EventBus eventBus = new EventBus();
-    private Set<ACAQParameterCollection> registeredSources = new HashSet<>();
-    private Map<ACAQParameterCollection, String> sourceKeys = new HashMap<>();
-    private Map<ACAQParameterCollection, ACAQDocumentation> sourceDocumentation = new HashMap<>();
-    private BiMap<String, ACAQParameterAccess> parameters = HashBiMap.create();
-    private PriorityQueue<ACAQParameterAccess> parametersByPriority = new PriorityQueue<>(ACAQParameterAccess::comparePriority);
+    private Set<MCATParameterCollection> registeredSources = new HashSet<>();
+    private Map<MCATParameterCollection, String> sourceKeys = new HashMap<>();
+    private Map<MCATParameterCollection, MCATDocumentation> sourceDocumentation = new HashMap<>();
+    private BiMap<String, MCATParameterAccess> parameters = HashBiMap.create();
+    private PriorityQueue<MCATParameterAccess> parametersByPriority = new PriorityQueue<>(MCATParameterAccess::comparePriority);
 
     private boolean ignoreReflectionParameters = false;
     private boolean ignoreCustomParameters = false;
@@ -37,30 +37,30 @@ public class ACAQTraversedParameterCollection implements ACAQParameterCollection
      *
      * @param sources Parameter collections to add. The list of parents is assumed to be empty for each entry.
      */
-    public ACAQTraversedParameterCollection(ACAQParameterCollection... sources) {
-        for (ACAQParameterCollection source : sources) {
+    public MCATTraversedParameterCollection(MCATParameterCollection... sources) {
+        for (MCATParameterCollection source : sources) {
             add(source, Collections.emptyList());
         }
     }
 
     /**
-     * Sets the key of an {@link ACAQParameterCollection}
+     * Sets the key of an {@link MCATParameterCollection}
      * This is used to generate an unique key for sub-parameters
      *
      * @param source the collection
      * @param name   unique key within its parent
      */
-    public void setSourceKey(ACAQParameterCollection source, String name) {
+    public void setSourceKey(MCATParameterCollection source, String name) {
         sourceKeys.put(source, name);
     }
 
     /**
-     * Gets the key of an {@link ACAQParameterCollection}
+     * Gets the key of an {@link MCATParameterCollection}
      *
      * @param source the collection
      * @return the key or null if none was set
      */
-    public String getSourceKey(ACAQParameterCollection source) {
+    public String getSourceKey(MCATParameterCollection source) {
         return sourceKeys.getOrDefault(source, null);
     }
 
@@ -69,9 +69,9 @@ public class ACAQTraversedParameterCollection implements ACAQParameterCollection
      *
      * @return
      */
-    public Map<ACAQParameterCollection, List<ACAQParameterAccess>> getGroupedBySource() {
-        Map<ACAQParameterCollection, List<ACAQParameterAccess>> result = parameters.values().stream().collect(Collectors.groupingBy(ACAQParameterAccess::getSource));
-        for (ACAQParameterCollection registeredSource : registeredSources) {
+    public Map<MCATParameterCollection, List<MCATParameterAccess>> getGroupedBySource() {
+        Map<MCATParameterCollection, List<MCATParameterAccess>> result = parameters.values().stream().collect(Collectors.groupingBy(MCATParameterAccess::getSource));
+        for (MCATParameterCollection registeredSource : registeredSources) {
             if (!result.containsKey(registeredSource))
                 result.put(registeredSource, new ArrayList<>());
         }
@@ -79,34 +79,34 @@ public class ACAQTraversedParameterCollection implements ACAQParameterCollection
     }
 
     /**
-     * Sets the documentation of an {@link ACAQParameterCollection}
+     * Sets the documentation of an {@link MCATParameterCollection}
      * This is queried by UI
      *
      * @param source        the collection
      * @param documentation the documentation
      */
-    public void setSourceDocumentation(ACAQParameterCollection source, ACAQDocumentation documentation) {
+    public void setSourceDocumentation(MCATParameterCollection source, MCATDocumentation documentation) {
         sourceDocumentation.put(source, documentation);
     }
 
     /**
-     * Gets the documentation of an {@link ACAQParameterCollection}
+     * Gets the documentation of an {@link MCATParameterCollection}
      *
      * @param source the collection
      * @return the documentation or null if none was provided
      */
-    public ACAQDocumentation getSourceDocumentation(ACAQParameterCollection source) {
+    public MCATDocumentation getSourceDocumentation(MCATParameterCollection source) {
         return sourceDocumentation.getOrDefault(source, null);
     }
 
     /**
-     * Gets the documentation of an {@link ACAQParameterCollection}
+     * Gets the documentation of an {@link MCATParameterCollection}
      *
      * @param source the collection
      * @return the documentation or an empty string if none was provided
      */
-    public String getSourceDocumentationName(ACAQParameterCollection source) {
-        ACAQDocumentation documentation = sourceDocumentation.getOrDefault(source, null);
+    public String getSourceDocumentationName(MCATParameterCollection source) {
+        MCATDocumentation documentation = sourceDocumentation.getOrDefault(source, null);
         if (documentation != null) {
             return "" + documentation.name();
         }
@@ -119,24 +119,24 @@ public class ACAQTraversedParameterCollection implements ACAQParameterCollection
      * @param parameterAccess the access
      * @return unique key
      */
-    public String getUniqueKey(ACAQParameterAccess parameterAccess) {
+    public String getUniqueKey(MCATParameterAccess parameterAccess) {
         return parameters.inverse().get(parameterAccess);
     }
 
     /**
-     * Adds a new {@link ACAQParameterCollection} into this collection.
+     * Adds a new {@link MCATParameterCollection} into this collection.
      * Ignores sources that have already been added
      *
      * @param source    the added collection
      * @param hierarchy hierarchy behind this parameter collection
      */
-    public void add(ACAQParameterCollection source, List<ACAQParameterCollection> hierarchy) {
+    public void add(MCATParameterCollection source, List<MCATParameterCollection> hierarchy) {
         if (registeredSources.contains(source))
             return;
-        if (!forceReflection && source instanceof ACAQCustomParameterCollection) {
+        if (!forceReflection && source instanceof MCATCustomParameterCollection) {
             if (ignoreCustomParameters)
                 return;
-            for (Map.Entry<String, ACAQParameterAccess> entry : ((ACAQCustomParameterCollection) source).getParameters().entrySet()) {
+            for (Map.Entry<String, MCATParameterAccess> entry : ((MCATCustomParameterCollection) source).getParameters().entrySet()) {
                 addParameter(entry.getKey(), entry.getValue(), hierarchy);
             }
         } else {
@@ -148,9 +148,9 @@ public class ACAQTraversedParameterCollection implements ACAQParameterCollection
         source.getEventBus().register(this);
     }
 
-    private void addParameter(String initialKey, ACAQParameterAccess parameterAccess, List<ACAQParameterCollection> hierarchy) {
+    private void addParameter(String initialKey, MCATParameterAccess parameterAccess, List<MCATParameterCollection> hierarchy) {
         List<String> keys = new ArrayList<>();
-        for (ACAQParameterCollection collection : hierarchy) {
+        for (MCATParameterCollection collection : hierarchy) {
             keys.add(sourceKeys.getOrDefault(collection, ""));
         }
         keys.add(initialKey);
@@ -159,15 +159,15 @@ public class ACAQTraversedParameterCollection implements ACAQParameterCollection
         parametersByPriority.add(parameterAccess);
     }
 
-    private void addReflectionParameters(ACAQParameterCollection source, List<ACAQParameterCollection> hierarchy) {
+    private void addReflectionParameters(MCATParameterCollection source, List<MCATParameterCollection> hierarchy) {
 
         // Find getter and setter pairs
         Map<String, GetterSetterPair> getterSetterPairs = new HashMap<>();
         for (Method method : source.getClass().getMethods()) {
-            ACAQParameter[] parameterAnnotations = method.getAnnotationsByType(ACAQParameter.class);
+            MCATParameter[] parameterAnnotations = method.getAnnotationsByType(MCATParameter.class);
             if (parameterAnnotations.length == 0)
                 continue;
-            ACAQParameter parameterAnnotation = parameterAnnotations[0];
+            MCATParameter parameterAnnotation = parameterAnnotations[0];
 
             String key = parameterAnnotation.value();
             GetterSetterPair pair = getterSetterPairs.getOrDefault(key, null);
@@ -186,11 +186,11 @@ public class ACAQTraversedParameterCollection implements ACAQParameterCollection
         // Add parameters of this source. Sub-parameters are excluded
         for (Map.Entry<String, GetterSetterPair> entry : getterSetterPairs.entrySet()) {
             GetterSetterPair pair = entry.getValue();
-            if (pair.getFieldClass() != null && !ACAQParameterCollection.class.isAssignableFrom(pair.getFieldClass())) {
+            if (pair.getFieldClass() != null && !MCATParameterCollection.class.isAssignableFrom(pair.getFieldClass())) {
                 if (pair.getter == null || pair.setter == null)
                     throw new RuntimeException("Invalid parameter definition: Getter or setter could not be found for key '" + entry.getKey() + "' in " + source);
 
-                ACAQReflectionParameterAccess parameterAccess = new ACAQReflectionParameterAccess();
+                MCATReflectionParameterAccess parameterAccess = new MCATReflectionParameterAccess();
                 parameterAccess.setSource(source);
                 parameterAccess.setKey(entry.getKey());
                 parameterAccess.setGetter(pair.getter);
@@ -207,14 +207,14 @@ public class ACAQTraversedParameterCollection implements ACAQParameterCollection
         // Add sub-parameters
         for (Map.Entry<String, GetterSetterPair> entry : getterSetterPairs.entrySet()) {
             GetterSetterPair pair = entry.getValue();
-            if (pair.getFieldClass() != null && ACAQParameterCollection.class.isAssignableFrom(pair.getFieldClass())) {
+            if (pair.getFieldClass() != null && MCATParameterCollection.class.isAssignableFrom(pair.getFieldClass())) {
                 try {
-                    ACAQParameterCollection subParameters = (ACAQParameterCollection) pair.getter.invoke(source);
+                    MCATParameterCollection subParameters = (MCATParameterCollection) pair.getter.invoke(source);
                     if (subParameters == null)
                         continue;
                     setSourceDocumentation(subParameters, pair.getDocumentation());
                     setSourceKey(subParameters, entry.getKey());
-                    List<ACAQParameterCollection> subParameterHierarchy = new ArrayList<>(hierarchy);
+                    List<MCATParameterCollection> subParameterHierarchy = new ArrayList<>(hierarchy);
                     subParameterHierarchy.add(subParameters);
                     add(subParameters, subParameterHierarchy);
                 } catch (IllegalAccessException | InvocationTargetException e) {
@@ -225,7 +225,7 @@ public class ACAQTraversedParameterCollection implements ACAQParameterCollection
     }
 
     @Override
-    public Map<String, ACAQParameterAccess> getParameters() {
+    public Map<String, MCATParameterAccess> getParameters() {
         return Collections.unmodifiableMap(parameters);
     }
 
@@ -272,11 +272,11 @@ public class ACAQTraversedParameterCollection implements ACAQParameterCollection
         this.ignoreCustomParameters = ignoreCustomParameters;
     }
 
-    public PriorityQueue<ACAQParameterAccess> getParametersByPriority() {
+    public PriorityQueue<MCATParameterAccess> getParametersByPriority() {
         return parametersByPriority;
     }
 
-    public Set<ACAQParameterCollection> getRegisteredSources() {
+    public Set<MCATParameterCollection> getRegisteredSources() {
         return Collections.unmodifiableSet(registeredSources);
     }
 
@@ -294,8 +294,8 @@ public class ACAQTraversedParameterCollection implements ACAQParameterCollection
      * @param collection the collection
      * @return traversed parameters
      */
-    public static Map<String, ACAQParameterAccess> getParameters(ACAQParameterCollection collection) {
-        return (new ACAQTraversedParameterCollection(collection)).getParameters();
+    public static Map<String, MCATParameterAccess> getParameters(MCATParameterCollection collection) {
+        return (new MCATTraversedParameterCollection(collection)).getParameters();
     }
 
     /**
@@ -306,8 +306,8 @@ public class ACAQTraversedParameterCollection implements ACAQParameterCollection
      * @param withDynamic    if dynamic/custom parameters are included
      * @return traversed parameters
      */
-    public static Map<String, ACAQParameterAccess> getParameters(ACAQParameterCollection collection, boolean withReflection, boolean withDynamic) {
-        ACAQTraversedParameterCollection traversedParameterCollection = new ACAQTraversedParameterCollection();
+    public static Map<String, MCATParameterAccess> getParameters(MCATParameterCollection collection, boolean withReflection, boolean withDynamic) {
+        MCATTraversedParameterCollection traversedParameterCollection = new MCATTraversedParameterCollection();
         traversedParameterCollection.setIgnoreReflectionParameters(!withReflection);
         traversedParameterCollection.setIgnoreCustomParameters(!withDynamic);
         traversedParameterCollection.add(collection, Collections.emptyList());
@@ -325,37 +325,37 @@ public class ACAQTraversedParameterCollection implements ACAQParameterCollection
             return getter != null ? getter.getReturnType() : null;
         }
 
-        public ACAQParameterVisibility getVisibility() {
-            ACAQParameter getterAnnotation = getter.getAnnotation(ACAQParameter.class);
+        public MCATParameterVisibility getVisibility() {
+            MCATParameter getterAnnotation = getter.getAnnotation(MCATParameter.class);
             if (setter == null)
                 return getterAnnotation.visibility();
-            ACAQParameter setterAnnotation = setter.getAnnotation(ACAQParameter.class);
+            MCATParameter setterAnnotation = setter.getAnnotation(MCATParameter.class);
             return getterAnnotation.visibility().intersectWith(setterAnnotation.visibility());
         }
 
         public double getPriority() {
-            ACAQParameter getterAnnotation = getter.getAnnotation(ACAQParameter.class);
+            MCATParameter getterAnnotation = getter.getAnnotation(MCATParameter.class);
             if (setter == null)
                 return getterAnnotation.priority();
-            ACAQParameter setterAnnotation = setter.getAnnotation(ACAQParameter.class);
+            MCATParameter setterAnnotation = setter.getAnnotation(MCATParameter.class);
             return getterAnnotation.priority() != Priority.NORMAL ? getterAnnotation.priority() : setterAnnotation.priority();
         }
 
         public String getShortKey() {
-            ACAQParameter getterAnnotation = getter.getAnnotation(ACAQParameter.class);
+            MCATParameter getterAnnotation = getter.getAnnotation(MCATParameter.class);
             if (!StringUtils.isNullOrEmpty(getterAnnotation.shortKey()))
                 return getterAnnotation.shortKey();
-            ACAQParameter setterAnnotation = setter.getAnnotation(ACAQParameter.class);
+            MCATParameter setterAnnotation = setter.getAnnotation(MCATParameter.class);
             return setterAnnotation.shortKey();
         }
 
-        public ACAQDocumentation getDocumentation() {
-            ACAQDocumentation[] documentations = getter.getAnnotationsByType(ACAQDocumentation.class);
+        public MCATDocumentation getDocumentation() {
+            MCATDocumentation[] documentations = getter.getAnnotationsByType(MCATDocumentation.class);
             if (documentations.length > 0)
                 return documentations[0];
             if (setter == null)
                 return null;
-            documentations = setter.getAnnotationsByType(ACAQDocumentation.class);
+            documentations = setter.getAnnotationsByType(MCATDocumentation.class);
             return documentations.length > 0 ? documentations[0] : null;
         }
     }

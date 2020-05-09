@@ -3,14 +3,14 @@ package org.hkijena.mcat.extension.datatypes;
 import ij.IJ;
 import ij.ImagePlus;
 import org.hkijena.mcat.api.MCATData;
-import org.hkijena.mcat.utils.api.ACAQDocumentation;
+import org.hkijena.mcat.api.MCATDocumentation;
 
 import java.nio.file.Path;
 
 /**
  * Contains a hyperstack as {@link ImagePlus}
  */
-@ACAQDocumentation(name = "Image hyperstack")
+@MCATDocumentation(name = "Image hyperstack")
 public class HyperstackData implements MCATData {
 
     private ImagePlus image;

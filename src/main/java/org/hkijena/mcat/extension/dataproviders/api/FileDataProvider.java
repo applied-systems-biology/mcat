@@ -6,17 +6,17 @@ import com.google.common.eventbus.EventBus;
 import org.hkijena.mcat.api.MCATDataProvider;
 import org.hkijena.mcat.extension.parameters.editors.FilePathParameterSettings;
 import org.hkijena.mcat.ui.components.FileSelection;
-import org.hkijena.mcat.utils.api.ACAQDocumentation;
-import org.hkijena.mcat.utils.api.ACAQValidityReport;
-import org.hkijena.mcat.utils.api.events.ParameterChangedEvent;
-import org.hkijena.mcat.utils.api.parameters.ACAQParameter;
-import org.hkijena.mcat.utils.api.parameters.ACAQParameterCollection;
+import org.hkijena.mcat.api.MCATDocumentation;
+import org.hkijena.mcat.api.MCATValidityReport;
+import org.hkijena.mcat.api.events.ParameterChangedEvent;
+import org.hkijena.mcat.api.parameters.MCATParameter;
+import org.hkijena.mcat.api.parameters.MCATParameterCollection;
 
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-public abstract class FileDataProvider implements ACAQParameterCollection, MCATDataProvider {
+public abstract class FileDataProvider implements MCATParameterCollection, MCATDataProvider {
     private EventBus eventBus = new EventBus();
     private Path filePath;
 
@@ -37,15 +37,15 @@ public abstract class FileDataProvider implements ACAQParameterCollection, MCATD
         }
     }
 
-    @ACAQDocumentation(name = "File path")
-    @ACAQParameter("file-path")
+    @MCATDocumentation(name = "File path")
+    @MCATParameter("file-path")
     @JsonGetter("file-path")
     @FilePathParameterSettings(ioMode = FileSelection.IOMode.Open, pathMode = FileSelection.PathMode.FilesOnly)
     public Path getFilePath() {
         return filePath;
     }
 
-    @ACAQParameter("file-path")
+    @MCATParameter("file-path")
     @JsonSetter("file-path")
     public void setFilePath(Path filePath) {
         this.filePath = filePath;
@@ -58,7 +58,7 @@ public abstract class FileDataProvider implements ACAQParameterCollection, MCATD
     }
 
     @Override
-    public void reportValidity(ACAQValidityReport report) {
+    public void reportValidity(MCATValidityReport report) {
         if (!Files.exists(filePath)) {
             report.forCategory("File path").reportIsInvalid("File path is invalid!",
                     "The selected file '" + filePath + "' does not exist!",

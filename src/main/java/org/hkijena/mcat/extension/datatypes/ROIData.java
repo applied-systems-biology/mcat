@@ -3,7 +3,7 @@ package org.hkijena.mcat.extension.datatypes;
 import ij.gui.Roi;
 import ij.io.RoiEncoder;
 import org.hkijena.mcat.api.MCATData;
-import org.hkijena.mcat.utils.api.ACAQDocumentation;
+import org.hkijena.mcat.api.MCATDocumentation;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -11,7 +11,7 @@ import java.nio.file.Path;
 /**
  * Contains a {@link Roi}
  */
-@ACAQDocumentation(name = "ROI")
+@MCATDocumentation(name = "ROI")
 public class ROIData implements MCATData {
 
     private Roi roi;

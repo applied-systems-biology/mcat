@@ -1,11 +1,11 @@
-package org.hkijena.mcat.utils.api;
+package org.hkijena.mcat.api;
 
 import java.lang.annotation.Annotation;
 
 /**
- * Default implementation of {@link ACAQDocumentation}
+ * Default implementation of {@link MCATDocumentation}
  */
-public class ACAQDefaultDocumentation implements ACAQDocumentation {
+public class MCATDefaultDocumentation implements MCATDocumentation {
     private final String name;
     private final String description;
 
@@ -15,7 +15,7 @@ public class ACAQDefaultDocumentation implements ACAQDocumentation {
      * @param name        The name
      * @param description The description
      */
-    public ACAQDefaultDocumentation(String name, String description) {
+    public MCATDefaultDocumentation(String name, String description) {
         this.name = name;
         this.description = description;
     }
@@ -32,6 +32,6 @@ public class ACAQDefaultDocumentation implements ACAQDocumentation {
 
     @Override
     public Class<? extends Annotation> annotationType() {
-        return ACAQDocumentation.class;
+        return MCATDocumentation.class;
     }
 }
