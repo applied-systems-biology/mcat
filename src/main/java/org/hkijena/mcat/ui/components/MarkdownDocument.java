@@ -83,6 +83,28 @@ public class MarkdownDocument {
     }
 
     /**
+     * Loads a document from the a resource
+     *
+     * @param resource resource path
+     * @return the document
+     */
+    public static MarkdownDocument fromResource(String resource) {
+        try {
+            URL resourcePath = ResourceUtils.class.getResource(resource);
+            MarkdownDocument existing = fromResourcesCache.getOrDefault(resourcePath, null);
+            if (existing != null)
+                return existing;
+            String md = Resources.toString(resourcePath, Charsets.UTF_8);
+            md = md.replace("image://", "/");
+            MarkdownDocument markdownDocument = new MarkdownDocument(md);
+            fromResourcesCache.put(resourcePath, markdownDocument);
+            return markdownDocument;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
      * Loads a document from the MCAT plugin resources
      *
      * @param internalPath resource path. Relative to MCAT resources

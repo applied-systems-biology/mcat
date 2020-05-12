@@ -14,6 +14,8 @@ package org.hkijena.mcat.utils;
 
 import com.google.common.html.HtmlEscapers;
 import org.apache.commons.lang.WordUtils;
+import org.hkijena.mcat.api.MCATDocumentation;
+import org.hkijena.mcat.ui.components.MarkdownDocument;
 
 import java.net.URL;
 import java.util.Collection;
@@ -25,6 +27,39 @@ public class StringUtils {
 
     private StringUtils() {
 
+    }
+
+    /**
+     * Gets a description from a documentation annotation
+     * @param documentation the documentation
+     * @return document. Is never null.
+     */
+    public static MarkdownDocument getDocumentation(String documentation) {
+        if(StringUtils.isNullOrEmpty(documentation))
+            return new MarkdownDocument("");
+        if(documentation.startsWith("res://")) {
+            return MarkdownDocument.fromResource(documentation.substring("res://".length()));
+        }
+        else {
+            return new MarkdownDocument(documentation);
+        }
+    }
+
+
+    /**
+     * Gets a description from a documentation annotation
+     * @param documentation the annotation
+     * @return document. Is never null.
+     */
+    public static MarkdownDocument getDocumentation(MCATDocumentation documentation) {
+        if(StringUtils.isNullOrEmpty(documentation.description()))
+            return new MarkdownDocument("");
+        if(documentation.description().startsWith("res://")) {
+            return MarkdownDocument.fromResource(documentation.description().substring("res://".length()));
+        }
+        else {
+            return new MarkdownDocument(documentation.description());
+        }
     }
 
     /**
