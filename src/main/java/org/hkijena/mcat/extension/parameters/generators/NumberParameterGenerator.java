@@ -17,7 +17,7 @@ import java.util.Map;
 
 /**
  * Generator that creates instances of {@link Number}.
- * This cannot be used directly in {@link ACAQUIParametertypeRegistry}, as the constructor does
+ * This cannot be used directly in {@link MCATUIParametertypeRegistry}, as the constructor does
  * not match. You have to inherit from this type and define the number type.
  */
 public class NumberParameterGenerator<T extends Number & Comparable<T>> extends MCATParameterGeneratorUI implements MCATCustomParameterCollection {

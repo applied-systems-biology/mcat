@@ -83,9 +83,9 @@ public class MarkdownDocument {
     }
 
     /**
-     * Loads a document from the ACAQ5 plugin resources
+     * Loads a document from the MCAT plugin resources
      *
-     * @param internalPath resource path. Relative to ACAQ5 resources
+     * @param internalPath resource path. Relative to MCAT resources
      * @return the document
      */
     public static MarkdownDocument fromPluginResource(String internalPath) {

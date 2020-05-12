@@ -125,9 +125,9 @@ public class FileSelection extends JPanel {
     private void generateRandom() {
         try {
             if (pathMode == PathMode.DirectoriesOnly) {
-                setPath(Files.createTempDirectory("ACAQ5"));
+                setPath(Files.createTempDirectory("MCAT"));
             } else {
-                setPath(Files.createTempFile("ACAQ5", null));
+                setPath(Files.createTempFile("MCAT", null));
             }
         } catch (IOException e) {
             throw new RuntimeException(e);

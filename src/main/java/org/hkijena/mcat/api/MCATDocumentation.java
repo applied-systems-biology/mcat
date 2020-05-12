@@ -4,7 +4,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * Used within ACAQ to annotate types and methods with documentation
+ * Used within MCAT to annotate types and methods with documentation
  */
 @Retention(RetentionPolicy.RUNTIME)
 public @interface MCATDocumentation {
