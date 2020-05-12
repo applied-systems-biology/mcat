@@ -59,9 +59,13 @@ public class MCATClusteringParameters implements MCATParameterCollection {
 
     @MCATParameter("kmeans-k")
     @JsonSetter("kmeans-k")
-    public void setkMeansK(int kMeansK) {
+    public boolean setkMeansK(int kMeansK) {
+        if(kMeansK <= 0) {
+            return false;
+        }
         this.kMeansK = kMeansK;
         eventBus.post(new ParameterChangedEvent(this, "kmeans-k"));
+        return true;
     }
 
     @MCATDocumentation(name = "Minimum length")
