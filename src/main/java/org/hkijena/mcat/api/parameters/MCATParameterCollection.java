@@ -9,7 +9,7 @@ public interface MCATParameterCollection {
     /**
      * Gets the event bus that posts events about the parameters
      *
-     * @return The event bus triggering {@link events.ParameterChangedEvent} and {@link events.ParameterStructureChangedEvent}
+     * @return The event bus triggering {@link org.hkijena.mcat.api.events.ParameterChangedEvent} and {@link org.hkijena.mcat.api.events.ParameterStructureChangedEvent}
      */
     EventBus getEventBus();
 }

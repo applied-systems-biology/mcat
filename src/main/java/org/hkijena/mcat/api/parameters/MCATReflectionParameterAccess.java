@@ -14,12 +14,11 @@ public class MCATReflectionParameterAccess implements MCATParameterAccess {
 
     private String key;
     private String shortKey;
+    private int uiOrder;
     private Method getter;
     private Method setter;
     private double priority;
     private MCATDocumentation documentation;
-    private String holderName;
-    private String holderDescription;
     private MCATParameterVisibility visibility = MCATParameterVisibility.TransitiveVisible;
     private MCATParameterCollection source;
 
@@ -135,5 +134,14 @@ public class MCATReflectionParameterAccess implements MCATParameterAccess {
 
     public void setShortKey(String shortKey) {
         this.shortKey = shortKey;
+    }
+
+    @Override
+    public int getUIOrder() {
+        return uiOrder;
+    }
+
+    public void setUIOrder(int uiOrder) {
+        this.uiOrder = uiOrder;
     }
 }

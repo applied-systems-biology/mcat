@@ -32,7 +32,7 @@ public class MCATParametersTableRow implements MCATParameterCollection {
     }
 
     @MCATDocumentation(name = "Preprocessing", description = "Following parameters apply to the preprocessing.")
-    @MCATParameter("preprocessing")
+    @MCATParameter(value = "preprocessing", uiOrder = 0)
     @JsonGetter("preprocessing")
     public MCATPreprocessingParameters getPreprocessingParameters() {
         return preprocessingParameters;
@@ -44,7 +44,7 @@ public class MCATParametersTableRow implements MCATParameterCollection {
     }
 
     @MCATDocumentation(name = "Postprocessing", description = "Following parameters apply to the postprocessing.")
-    @MCATParameter("postprocessing")
+    @MCATParameter(value = "postprocessing", uiOrder = 2)
     @JsonGetter("postprocessing")
     public MCATPostprocessingParameters getPostprocessingParameters() {
         return postprocessingParameters;
@@ -56,7 +56,7 @@ public class MCATParametersTableRow implements MCATParameterCollection {
     }
 
     @MCATDocumentation(name = "Clustering", description = "Following parameters apply to the clustering.")
-    @MCATParameter("clustering")
+    @MCATParameter(value = "clustering", uiOrder = 1)
     @JsonGetter("clustering")
     public MCATClusteringParameters getClusteringParameters() {
         return clusteringParameters;

@@ -35,6 +35,7 @@ public class MCATMutableParameterAccess implements MCATParameterAccess {
     private Object value;
     private double priority = Priority.NORMAL;
     private Map<Class<? extends Annotation>, Annotation> annotationMap = new HashMap<>();
+    private int uiOrder;
 
     /**
      * Creates a new instance
@@ -234,6 +235,15 @@ public class MCATMutableParameterAccess implements MCATParameterAccess {
 
     public void setShortKey(String shortKey) {
         this.shortKey = shortKey;
+    }
+
+    @Override
+    public int getUIOrder() {
+        return uiOrder;
+    }
+
+    public void setUIOrder(int uiOrder) {
+        this.uiOrder = uiOrder;
     }
 
     /**

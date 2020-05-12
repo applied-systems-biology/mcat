@@ -27,6 +27,7 @@ public class MCATTraversedParameterCollection implements MCATParameterCollection
     private Map<MCATParameterCollection, MCATDocumentation> sourceDocumentation = new HashMap<>();
     private BiMap<String, MCATParameterAccess> parameters = HashBiMap.create();
     private PriorityQueue<MCATParameterAccess> parametersByPriority = new PriorityQueue<>(MCATParameterAccess::comparePriority);
+    private Map<MCATParameterCollection, Integer> sourceOrder = new HashMap<>();
 
     private boolean ignoreReflectionParameters = false;
     private boolean ignoreCustomParameters = false;
@@ -62,6 +63,17 @@ public class MCATTraversedParameterCollection implements MCATParameterCollection
      */
     public String getSourceKey(MCATParameterCollection source) {
         return sourceKeys.getOrDefault(source, null);
+    }
+
+    /**
+     * Gets the UI order of an {@link MCATParameterCollection}
+     * This is only used for UI.
+     * Lower values indicate that the source should be placed higher.
+     * @param source the collection
+     * @return UI order. 0 if no order was defined.
+     */
+    public int getSourceUIOrder(MCATParameterCollection source) {
+        return sourceOrder.getOrDefault(source, 0);
     }
 
     /**
@@ -196,6 +208,7 @@ public class MCATTraversedParameterCollection implements MCATParameterCollection
                 parameterAccess.setGetter(pair.getter);
                 parameterAccess.setSetter(pair.setter);
                 parameterAccess.setShortKey(pair.getShortKey());
+                parameterAccess.setUIOrder(pair.getUIOrder());
                 parameterAccess.setDocumentation(pair.getDocumentation());
                 parameterAccess.setVisibility(pair.getVisibility());
                 parameterAccess.setPriority(pair.getPriority());
@@ -214,6 +227,7 @@ public class MCATTraversedParameterCollection implements MCATParameterCollection
                         continue;
                     setSourceDocumentation(subParameters, pair.getDocumentation());
                     setSourceKey(subParameters, entry.getKey());
+                    setSourceUIOrder(subParameters, entry.getValue().getUIOrder());
                     List<MCATParameterCollection> subParameterHierarchy = new ArrayList<>(hierarchy);
                     subParameterHierarchy.add(subParameters);
                     add(subParameters, subParameterHierarchy);
@@ -222,6 +236,15 @@ public class MCATTraversedParameterCollection implements MCATParameterCollection
                 }
             }
         }
+    }
+
+    /**
+     * Sets the UI order of a source
+     * @param collection the source
+     * @param uiOrder the UI order
+     */
+    public void setSourceUIOrder(MCATParameterCollection collection, int uiOrder) {
+        sourceOrder.put(collection, uiOrder);
     }
 
     @Override
@@ -347,6 +370,14 @@ public class MCATTraversedParameterCollection implements MCATParameterCollection
                 return getterAnnotation.shortKey();
             MCATParameter setterAnnotation = setter.getAnnotation(MCATParameter.class);
             return setterAnnotation.shortKey();
+        }
+
+        public int getUIOrder() {
+            MCATParameter getterAnnotation = getter.getAnnotation(MCATParameter.class);
+            if (setter == null)
+                return getterAnnotation.uiOrder();
+            MCATParameter setterAnnotation = setter.getAnnotation(MCATParameter.class);
+            return getterAnnotation.uiOrder() != 0 ? getterAnnotation.uiOrder() : setterAnnotation.uiOrder();
         }
 
         public MCATDocumentation getDocumentation() {

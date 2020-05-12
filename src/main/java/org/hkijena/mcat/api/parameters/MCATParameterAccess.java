@@ -24,6 +24,12 @@ public interface MCATParameterAccess {
     String getShortKey();
 
     /**
+     * Controls how the parameter is ordered within the user interface
+     * @return a low number indicates that this parameter is put first, while a high number indicates that this parameter is put last
+     */
+    int getUIOrder();
+
+    /**
      * Returns the parameter name that is displayed to the user
      *
      * @return Parameter name

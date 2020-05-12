@@ -34,6 +34,7 @@ public class ParameterPanel extends FormPanel implements Contextual {
      * dynamic parameters) are not shown. Overridden by NO_GROUP_HEADERS.
      */
     public static final int NO_EMPTY_GROUP_HEADERS = 128;
+
     private Context context;
     private MCATParameterCollection parameterCollection;
     private boolean noGroupHeaders;
@@ -68,7 +69,8 @@ public class ParameterPanel extends FormPanel implements Contextual {
         }
 
         for (MCATParameterCollection collection : groupedBySource.keySet().stream().sorted(
-                Comparator.nullsFirst(Comparator.comparing(parameterCollection::getSourceDocumentationName)))
+                Comparator.comparing(parameterCollection::getSourceUIOrder).thenComparing(
+                        Comparator.nullsFirst(Comparator.comparing(parameterCollection::getSourceDocumentationName))))
                 .collect(Collectors.toList())) {
             if (collection == this.parameterCollection)
                 continue;
@@ -112,6 +114,7 @@ public class ParameterPanel extends FormPanel implements Contextual {
             uiList.add(ui);
         }
         for (MCATParameterEditorUI ui : uiList.stream().sorted(Comparator.comparing((MCATParameterEditorUI u) -> !u.isUILabelEnabled())
+                .thenComparing(u -> u.getParameterAccess().getUIOrder())
                 .thenComparing(u -> u.getParameterAccess().getName())).collect(Collectors.toList())) {
             MCATParameterAccess parameterAccess = ui.getParameterAccess();
             JPanel labelPanel = new JPanel(new BorderLayout());
