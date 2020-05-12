@@ -5,6 +5,7 @@ import org.hkijena.mcat.ui.MCATWorkbenchUI;
 import org.hkijena.mcat.ui.MCATWorkbenchUIPanel;
 import org.hkijena.mcat.ui.components.MarkdownDocument;
 import org.hkijena.mcat.ui.components.MarkdownReader;
+import org.hkijena.mcat.ui.components.TransposedTableModel;
 import org.hkijena.mcat.utils.UIUtils;
 import org.hkijena.mcat.api.MCATDocumentation;
 import org.hkijena.mcat.api.parameters.MCATParameterCollection;
@@ -23,6 +24,7 @@ public class MCATParametersTableUI extends MCATWorkbenchUIPanel {
 
     private JSplitPane splitPane;
     private JXTable table;
+    private TransposedTableModel transposedTableModel;
     private Point currentSelection = new Point();
     private ParameterPanel currentEditor;
     private JPopupMenu generatePopupMenu;
@@ -35,7 +37,7 @@ public class MCATParametersTableUI extends MCATWorkbenchUIPanel {
         reloadReplacePopupMenu();
 
         // Select first cell
-        table.changeSelection(0, 0, false, false);
+//        table.changeSelection(0, 0, false, false);
     }
 
     private void initialize() {
@@ -74,13 +76,16 @@ public class MCATParametersTableUI extends MCATWorkbenchUIPanel {
 
         // Create table
         JPanel tablePanel = new JPanel(new BorderLayout());
-        table = new JXTable(getWorkbenchUI().getProject().getParametersTable());
+        transposedTableModel = new TransposedTableModel(getWorkbenchUI().getProject().getParametersTable());
+        table = new JXTable(transposedTableModel);
+        table.setDefaultRenderer(Object.class, new MCATParametersTableCellRenderer());
         table.setCellSelectionEnabled(true);
         table.getSelectionModel().addListSelectionListener(e -> onTableCellSelected());
         table.getColumnModel().getSelectionModel().addListSelectionListener(e -> onTableCellSelected());
+        table.setRowHeight(32);
         table.packAll();
         tablePanel.add(table, BorderLayout.CENTER);
-        tablePanel.add(table.getTableHeader(), BorderLayout.NORTH);
+//        tablePanel.add(table.getTableHeader(), BorderLayout.NORTH);
 
         contentPanel.add(new JScrollPane(tablePanel), BorderLayout.CENTER);
 
