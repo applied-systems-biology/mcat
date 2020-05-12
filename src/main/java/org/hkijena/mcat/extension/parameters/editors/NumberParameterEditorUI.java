@@ -61,6 +61,11 @@ public class NumberParameterEditorUI extends MCATParameterEditorUI {
     }
 
     private Comparable<?> getMinimumValue() {
+        NumberParameterSettings settings = getParameterAccess().getAnnotationOfType(NumberParameterSettings.class);
+        if(settings != null) {
+            return settings.min();
+        }
+
         if (getParameterAccess().getFieldClass() == byte.class || getParameterAccess().getFieldClass() == Byte.class) {
             return Byte.MIN_VALUE;
         } else if (getParameterAccess().getFieldClass() == short.class || getParameterAccess().getFieldClass() == Short.class) {
@@ -79,6 +84,11 @@ public class NumberParameterEditorUI extends MCATParameterEditorUI {
     }
 
     private Comparable<?> getMaximumValue() {
+        NumberParameterSettings settings = getParameterAccess().getAnnotationOfType(NumberParameterSettings.class);
+        if(settings != null) {
+            return settings.max();
+        }
+
         if (getParameterAccess().getFieldClass() == byte.class || getParameterAccess().getFieldClass() == Byte.class) {
             return Byte.MAX_VALUE;
         } else if (getParameterAccess().getFieldClass() == short.class || getParameterAccess().getFieldClass() == Short.class) {
@@ -94,6 +104,14 @@ public class NumberParameterEditorUI extends MCATParameterEditorUI {
         } else {
             throw new IllegalArgumentException("Unsupported numeric type: " + getParameterAccess().getFieldClass());
         }
+    }
+
+    private double getStep() {
+        NumberParameterSettings settings = getParameterAccess().getAnnotationOfType(NumberParameterSettings.class);
+        if(settings != null) {
+            return settings.step();
+        }
+        return 1;
     }
 
     private boolean setCurrentValue(Number number) {
@@ -116,7 +134,7 @@ public class NumberParameterEditorUI extends MCATParameterEditorUI {
 
     private void initialize() {
         setLayout(new BorderLayout());
-        SpinnerNumberModel model = new SpinnerNumberModel(getCurrentValue(), getMinimumValue(), getMaximumValue(), 1);
+        SpinnerNumberModel model = new SpinnerNumberModel(getCurrentValue(), getMinimumValue(), getMaximumValue(), getStep());
         spinner = new JSpinner(model);
         spinner.addChangeListener(e -> {
             if (!isReloading) {

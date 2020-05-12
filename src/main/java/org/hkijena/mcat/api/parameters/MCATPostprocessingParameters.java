@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import com.google.common.eventbus.EventBus;
 import org.hkijena.mcat.api.MCATDocumentation;
 import org.hkijena.mcat.api.events.ParameterChangedEvent;
+import org.hkijena.mcat.extension.parameters.editors.NumberParameterSettings;
 
 import java.util.Objects;
 
@@ -114,6 +115,7 @@ public class MCATPostprocessingParameters implements MCATParameterCollection {
     @MCATDocumentation(name = "Cutoff value")
     @MCATParameter(value = "cutoff-value", shortKey = "cutoff")
     @JsonGetter("cutoff-value")
+    @NumberParameterSettings(step = 0.1)
     public double getCutoffValue() {
         return cutoffValue;
     }

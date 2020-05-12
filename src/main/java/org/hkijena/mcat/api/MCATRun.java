@@ -38,6 +38,16 @@ public class MCATRun implements MCATValidatable {
         this.parametersTable = new MCATParametersTable(project.getParametersTable());
         this.graph = new MCATAlgorithmGraph();
 
+        // Create input data keys
+        for (Map.Entry<String, MCATProjectDataSet> entry : project.getDataSets().entrySet()) {
+            // Create a new raw data interface
+            // It is only identified by its data set name
+            MCATPreprocessingInput rawDataInterface = new MCATPreprocessingInput(entry.getValue().getRawDataInterface());
+            MCATDataInterfaceKey rawDataInterfaceKey = new MCATDataInterfaceKey("preprocessing-input");
+            rawDataInterfaceKey.addDataSet(entry.getKey());
+            registerUniqueDataInterface(rawDataInterfaceKey, rawDataInterface);
+        }
+
         // Iterate through unique preprocessing parameters
         Set<MCATPreprocessingParameters> uniquePreprocessingParameters =
                 parametersTable.getRows().stream().map(MCATParametersTableRow::getPreprocessingParameters).collect(Collectors.toSet());
@@ -71,13 +81,6 @@ public class MCATRun implements MCATValidatable {
     private void initializePreprocessing(MCATPreprocessingParameters preprocessingParameters) {
 
         for (Map.Entry<String, MCATProjectDataSet> entry : project.getDataSets().entrySet()) {
-            // Create a new raw data interface
-            // It is only identified by its data set name
-            MCATPreprocessingInput rawDataInterface = new MCATPreprocessingInput(entry.getValue().getRawDataInterface());
-            MCATDataInterfaceKey rawDataInterfaceKey = new MCATDataInterfaceKey("preprocessing-input");
-            rawDataInterfaceKey.addDataSet(entry.getKey());
-            registerUniqueDataInterface(rawDataInterfaceKey, rawDataInterface);
-
             // Create a new preprocessed data interface
             // It is identified by its data set name and the parameters that generated it
             MCATPreprocessingOutput preprocessedDataInterface = new MCATPreprocessingOutput();
@@ -85,8 +88,6 @@ public class MCATRun implements MCATValidatable {
             preprocessedDataInterfaceKey.addDataSet(entry.getKey());
             preprocessedDataInterfaceKey.addParameter(preprocessingParameters);
             registerUniqueDataInterface(preprocessedDataInterfaceKey, preprocessedDataInterface);
-
-
         }
 
         // Find all unique clustering parameters with prepending preprocessing
