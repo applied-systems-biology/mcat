@@ -1,5 +1,7 @@
 package org.hkijena.mcat.ui.parameters;
 
+import com.google.common.eventbus.Subscribe;
+import org.hkijena.mcat.api.events.ParameterChangedEvent;
 import org.hkijena.mcat.api.parameters.MCATParametersTable;
 import org.hkijena.mcat.ui.MCATWorkbenchUI;
 import org.hkijena.mcat.ui.MCATWorkbenchUIPanel;
@@ -13,6 +15,8 @@ import org.hkijena.mcat.api.registries.MCATUIParametertypeRegistry;
 import org.jdesktop.swingx.JXTable;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -29,6 +33,7 @@ public class MCATParametersTableUI extends MCATWorkbenchUIPanel {
     private ParameterPanel currentEditor;
     private JPopupMenu generatePopupMenu;
     private JPopupMenu replacePopupMenu;
+    private boolean tableIsReloading = false;
 
     public MCATParametersTableUI(MCATWorkbenchUI workbenchUI) {
         super(workbenchUI);
@@ -50,19 +55,19 @@ public class MCATParametersTableUI extends MCATWorkbenchUIPanel {
         toolBar.setFloatable(false);
         add(toolBar, BorderLayout.NORTH);
 
-        JButton addButton = new JButton("Add row", UIUtils.getIconFromResources("add.png"));
-        addButton.setToolTipText("Adds a new row to the table. It contains the default values.");
+        JButton addButton = new JButton("Add column", UIUtils.getIconFromResources("add.png"));
+        addButton.setToolTipText("Adds a new column to the table. It contains the default values.");
         addButton.addActionListener(e -> addRow());
         toolBar.add(addButton);
 
-        JButton generateButton = new JButton("Generate rows", UIUtils.getIconFromResources("add.png"));
-        generateButton.setToolTipText("Generates new rows and adds them to the table. You can select one column to generate data for.\n" +
+        JButton generateButton = new JButton("Generate columns", UIUtils.getIconFromResources("add.png"));
+        generateButton.setToolTipText("Generates new columns and adds them to the table. You can select one row to generate data for.\n" +
                 "The other columns contain default values.");
         generatePopupMenu = UIUtils.addPopupMenuToComponent(generateButton);
         toolBar.add(generateButton);
 
         JButton replaceButton = new JButton("Replace cells", UIUtils.getIconFromResources("edit.png"));
-        replaceButton.setToolTipText("Replaces the selected cells with generated values. You have to select cells of one specific column.");
+        replaceButton.setToolTipText("Replaces the selected cells with generated values. You have to select cells of one specific row.");
         replacePopupMenu = UIUtils.addPopupMenuToComponent(replaceButton);
         toolBar.add(replaceButton);
 
@@ -77,16 +82,19 @@ public class MCATParametersTableUI extends MCATWorkbenchUIPanel {
         // Create table
         JPanel tablePanel = new JPanel(new BorderLayout());
         transposedTableModel = new TransposedTableModel(getWorkbenchUI().getProject().getParametersTable());
-        table = new JXTable(transposedTableModel);
+        transposedTableModel.getEventBus().register(this);
+        table = new JXTable();
         table.setDefaultRenderer(Object.class, new MCATParametersTableCellRenderer());
+//        table.setAutoCreateRowSorter(false);
+        table.setSortable(false);
         table.setCellSelectionEnabled(true);
         table.getSelectionModel().addListSelectionListener(e -> onTableCellSelected());
         table.getColumnModel().getSelectionModel().addListSelectionListener(e -> onTableCellSelected());
         table.setRowHeight(32);
-        table.packAll();
+        table.setModel(transposedTableModel);
+//        table.packAll();
         tablePanel.add(table, BorderLayout.CENTER);
-//        tablePanel.add(table.getTableHeader(), BorderLayout.NORTH);
-
+        tablePanel.add(table.getTableHeader(), BorderLayout.NORTH);
         contentPanel.add(new JScrollPane(tablePanel), BorderLayout.CENTER);
 
         // Create split pane
@@ -161,12 +169,14 @@ public class MCATParametersTableUI extends MCATWorkbenchUIPanel {
     }
 
     private void onTableCellSelected() {
+        if(tableIsReloading)
+            return;
         Point selection = new Point(table.getSelectedRow(), table.getSelectedColumn());
         if (!Objects.equals(selection, currentSelection)) {
             currentSelection = selection;
             MCATParameterCollection selectedRow = null;
-            if (currentSelection.x != -1 && currentSelection.y != -1) {
-                selectedRow = getWorkbenchUI().getProject().getParametersTable().getRows().get(currentSelection.x);
+            if (currentSelection.x != -1 && currentSelection.y > 0) {
+                selectedRow = getWorkbenchUI().getProject().getParametersTable().getRows().get(currentSelection.y - 1);
             }
             if (selectedRow == null) {
                 splitPane.setRightComponent(new MarkdownReader(false, MarkdownDocument.fromPluginResource("documentation/parameters.md")));
@@ -182,6 +192,21 @@ public class MCATParametersTableUI extends MCATWorkbenchUIPanel {
             }
         }
         reloadReplacePopupMenu();
+    }
+
+    @Subscribe
+    public void onTableDataChanged(ParameterChangedEvent event) {
+        if("table-data".equals(event.getKey())) {
+            Point selection = new Point(table.getSelectedRow(), table.getSelectedColumn());
+            tableIsReloading = true;
+            table.setModel(new DefaultTableModel());
+            table.setModel(transposedTableModel);
+            if(selection.x >= 0 && selection.x < table.getRowCount() && selection.y >= 0 && selection.y < table.getColumnCount()) {
+                table.changeSelection(selection.x, selection.y, false, false);
+            }
+            tableIsReloading = false;
+            table.packAll();
+        }
     }
 
     private void reloadGeneratePopupMenu() {
@@ -221,18 +246,18 @@ public class MCATParametersTableUI extends MCATWorkbenchUIPanel {
     private void reloadReplacePopupMenu() {
         replacePopupMenu.removeAll();
         if (table.getSelectedRowCount() == 0) {
-            JMenuItem noItem = new JMenuItem("Please select cells of one column");
+            JMenuItem noItem = new JMenuItem("Please select cells of one row");
             noItem.setEnabled(false);
             replacePopupMenu.add(noItem);
             return;
         }
-        if (table.getSelectedColumnCount() > 1) {
-            JMenuItem noItem = new JMenuItem("Please select only cells of one column");
+        if (table.getSelectedRowCount() > 1) {
+            JMenuItem noItem = new JMenuItem("Please select only cells of one row");
             noItem.setEnabled(false);
             replacePopupMenu.add(noItem);
             return;
         }
-        int col = table.getSelectedColumn();
+        int col = table.getSelectedRow();
         boolean hasColumnEntries = false;
 
         if (col != -1) {

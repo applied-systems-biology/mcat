@@ -1,5 +1,8 @@
 package org.hkijena.mcat.ui.components;
 
+import com.google.common.eventbus.EventBus;
+import org.hkijena.mcat.api.events.ParameterChangedEvent;
+
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
@@ -9,7 +12,7 @@ import java.util.List;
 public class TransposedTableModel implements TableModel, TableModelListener {
 
     private TableModel wrappedModel;
-    private List<TableModelListener> listeners = new ArrayList<>();
+    private EventBus eventBus = new EventBus();
 
     public TransposedTableModel(TableModel wrappedModel) {
         this.wrappedModel = wrappedModel;
@@ -28,7 +31,10 @@ public class TransposedTableModel implements TableModel, TableModelListener {
 
     @Override
     public String getColumnName(int columnIndex) {
-        return null;
+        if(columnIndex == 0)
+            return "Parameter types";
+        else
+            return "Parameters " + columnIndex;
     }
 
     @Override
@@ -51,17 +57,19 @@ public class TransposedTableModel implements TableModel, TableModelListener {
 
     @Override
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+        if(columnIndex == 0)
+            return;
         wrappedModel.setValueAt(aValue, columnIndex - 1, rowIndex);
     }
 
     @Override
     public void addTableModelListener(TableModelListener l) {
-        listeners.add(l);
+
     }
 
     @Override
     public void removeTableModelListener(TableModelListener l) {
-       listeners.remove(l);
+
     }
 
     public TableModel getWrappedModel() {
@@ -70,13 +78,10 @@ public class TransposedTableModel implements TableModel, TableModelListener {
 
     @Override
     public void tableChanged(TableModelEvent e) {
-        int firstRow = e.getFirstRow();
-        int lastRow = e.getLastRow();
-        int column = e.getColumn();
-        int type = e.getType();
+        eventBus.post(new ParameterChangedEvent(this, "table-data"));
+    }
 
-        for (TableModelListener listener : listeners) {
-            listener.tableChanged(new TableModelEvent(this, firstRow, lastRow, column, type));
-        }
+    public EventBus getEventBus() {
+        return eventBus;
     }
 }
