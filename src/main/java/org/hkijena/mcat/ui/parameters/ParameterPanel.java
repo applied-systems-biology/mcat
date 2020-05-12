@@ -5,6 +5,7 @@ import com.google.common.html.HtmlEscapers;
 import org.hkijena.mcat.ui.components.FormPanel;
 import org.hkijena.mcat.ui.components.MarkdownDocument;
 import org.hkijena.mcat.utils.ResourceUtils;
+import org.hkijena.mcat.utils.StringUtils;
 import org.hkijena.mcat.utils.UIUtils;
 import org.hkijena.mcat.api.MCATDocumentation;
 import org.hkijena.mcat.api.events.ParameterStructureChangedEvent;
@@ -12,7 +13,6 @@ import org.hkijena.mcat.api.parameters.*;
 import org.hkijena.mcat.api.registries.MCATUIParametertypeRegistry;
 import org.scijava.Context;
 import org.scijava.Contextual;
-import org.scijava.util.StringUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -146,7 +146,7 @@ public class ParameterPanel extends FormPanel implements Contextual {
             markdownString.append(HtmlEscapers.htmlEscaper().escape(documentation.description())).append("</td></tr></table>\n\n");
         }
         if (access.getDescription() != null && !access.getDescription().isEmpty()) {
-            markdownString.append(access.getDescription());
+            markdownString.append(StringUtils.getDocumentation(access.getDescription()).getMarkdown());
         } else {
             markdownString.append("No description provided.");
         }

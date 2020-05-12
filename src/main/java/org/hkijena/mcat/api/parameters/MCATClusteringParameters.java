@@ -36,7 +36,7 @@ public class MCATClusteringParameters implements MCATParameterCollection {
         this.clusteringHierarchy = other.clusteringHierarchy;
     }
 
-    @MCATDocumentation(name = "Clustering hierarchy")
+    @MCATDocumentation(name = "Clustering hierarchy", description = "res:///org/hkijena/mcat/documentation/parameter_clustering_hierarchy.md")
     @MCATParameter(value = "clustering-hierarchy", shortKey = "ch")
     @JsonGetter("clustering-hierarchy")
     public MCATClusteringHierarchy getClusteringHierarchy() {
