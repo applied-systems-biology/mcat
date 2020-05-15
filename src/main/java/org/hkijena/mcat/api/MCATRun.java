@@ -4,6 +4,7 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.eventbus.Subscribe;
 import org.hkijena.mcat.api.algorithms.MCATClusteringAlgorithm;
+import org.hkijena.mcat.api.algorithms.MCATPlotGenerationAlgorithm;
 import org.hkijena.mcat.api.algorithms.MCATPostprocessingAlgorithm;
 import org.hkijena.mcat.api.algorithms.MCATPreprocessingAlgorithm;
 import org.hkijena.mcat.api.datainterfaces.*;
@@ -229,8 +230,6 @@ public class MCATRun implements MCATValidatable {
             // Preprocessing
             MCATPreprocessingAlgorithm preprocessingAlgorithm = new MCATPreprocessingAlgorithm(this,
                     preprocessingParameters,
-                    postprocessingParameters,
-                    clusteringParameters,
                     rawDataInterface,
                     preprocessedDataInterface);
             graph.insertNode(preprocessingAlgorithm);
@@ -251,7 +250,6 @@ public class MCATRun implements MCATValidatable {
             // Create clustering algorithm node, insert it, and let it depend on preprocessing
             MCATClusteringAlgorithm clusteringAlgorithm = new MCATClusteringAlgorithm(this,
                     preprocessingParameters,
-                    postprocessingParameters,
                     clusteringParameters,
                     clusteringInputInterface,
                     clusteringOutputInterface);
@@ -278,7 +276,43 @@ public class MCATRun implements MCATValidatable {
                     postprocessingDataInterface);
             graph.insertNode(postprocessingAlgorithm);
             graph.connect(clusteringAlgorithm, postprocessingAlgorithm);
+
+            if(postprocessingParameters.isAnalyzeNetIncrease()) {
+                initializePlotGeneration(MCATPostprocessingMethod.NetIncrease, postprocessingAlgorithm, postprocessingDataInterfaceKey);
+            }
+            if(postprocessingParameters.isAnalyzeNetDecrease()) {
+                initializePlotGeneration(MCATPostprocessingMethod.NetDecrease, postprocessingAlgorithm, postprocessingDataInterfaceKey);
+            }
+            if(postprocessingParameters.isAnalyzeMaxIncrease()) {
+                initializePlotGeneration(MCATPostprocessingMethod.MaxIncrease, postprocessingAlgorithm, postprocessingDataInterfaceKey);
+            }
+            if(postprocessingParameters.isAnalyzeMaxDecrease()) {
+                initializePlotGeneration(MCATPostprocessingMethod.MaxDecrease, postprocessingAlgorithm, postprocessingDataInterfaceKey);
+            }
         }
+    }
+
+    private void initializePlotGeneration(MCATPostprocessingMethod method, MCATPostprocessingAlgorithm postprocessingAlgorithm, MCATDataInterfaceKey postprocessingDataInterfaceKey) {
+        // Create output data
+        MCATDataInterfaceKey plotDataInterfaceKey = new MCATDataInterfaceKey("plots");
+        plotDataInterfaceKey.addDataSets(postprocessingDataInterfaceKey.getDataSetNames());
+        plotDataInterfaceKey.addParameters(postprocessingDataInterfaceKey.getParameters());
+        plotDataInterfaceKey.addParameter(new MCATAUCDataConditions(method));
+
+        MCATPlotGenerationOutput plotGenerationOutput = new MCATPlotGenerationOutput();
+        registerUniqueDataInterface(plotDataInterfaceKey, plotGenerationOutput);
+        savedDataInterfaces.add(plotDataInterfaceKey);
+
+        // Create the algorithm instance
+        MCATPlotGenerationAlgorithm plotGenerationAlgorithm = new MCATPlotGenerationAlgorithm(this,
+                postprocessingAlgorithm.getPreprocessingParameters(),
+                postprocessingAlgorithm.getPostprocessingParameters(),
+                postprocessingAlgorithm.getClusteringParameters(),
+                postprocessingAlgorithm.getClusteringOutput(),
+                postprocessingAlgorithm.getPostprocessingOutput(),
+                plotGenerationOutput);
+        graph.insertNode(plotGenerationAlgorithm);
+        graph.connect(postprocessingAlgorithm, plotGenerationAlgorithm);
     }
 
 

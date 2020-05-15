@@ -25,6 +25,9 @@ public class MCATPostprocessingAlgorithm extends MCATAlgorithm {
     private final double epsilon = 0.1;
     private final MCATPostprocessingOutput postprocessingOutput;
     private List<MCATCentroidCluster<DoublePoint>> clusterCenters;
+    private final MCATPreprocessingParameters preprocessingParameters;
+    private final MCATPostprocessingParameters postprocessingParameters;
+    private final MCATClusteringParameters clusteringParameters;
     private MCATClusteringOutput clusteringOutput;
     private AUCData aucData = new AUCData();
 
@@ -34,7 +37,10 @@ public class MCATPostprocessingAlgorithm extends MCATAlgorithm {
                                        MCATClusteringParameters clusteringParameters,
                                        MCATClusteringOutput clusteringOutput,
                                        MCATPostprocessingOutput postprocessingOutput) {
-        super(run, preprocessingParameters, postprocessingParameters, clusteringParameters);
+        super(run);
+        this.preprocessingParameters = preprocessingParameters;
+        this.postprocessingParameters = postprocessingParameters;
+        this.clusteringParameters = clusteringParameters;
         this.clusteringOutput = clusteringOutput;
         this.postprocessingOutput = postprocessingOutput;
     }
@@ -263,16 +269,6 @@ public class MCATPostprocessingAlgorithm extends MCATAlgorithm {
     }
 
     @Override
-    public List<MCATDataInterface> getInputDataInterfaces() {
-        return Arrays.asList(clusteringOutput);
-    }
-
-    @Override
-    public List<MCATDataInterface> getOutputDataInterfaces() {
-        return Arrays.asList(postprocessingOutput);
-    }
-
-    @Override
     public void reportValidity(MCATValidityReport report) {
 
     }
@@ -283,5 +279,17 @@ public class MCATPostprocessingAlgorithm extends MCATAlgorithm {
 
     public MCATPostprocessingOutput getPostprocessingOutput() {
         return postprocessingOutput;
+    }
+
+    public MCATPreprocessingParameters getPreprocessingParameters() {
+        return preprocessingParameters;
+    }
+
+    public MCATPostprocessingParameters getPostprocessingParameters() {
+        return postprocessingParameters;
+    }
+
+    public MCATClusteringParameters getClusteringParameters() {
+        return clusteringParameters;
     }
 }

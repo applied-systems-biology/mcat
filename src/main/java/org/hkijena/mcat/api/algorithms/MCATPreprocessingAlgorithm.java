@@ -9,7 +9,6 @@ import ij.gui.Roi;
 import ij.plugin.ImageCalculator;
 import ij.process.ImageStatistics;
 import org.hkijena.mcat.api.MCATAlgorithm;
-import org.hkijena.mcat.api.MCATDataInterface;
 import org.hkijena.mcat.api.MCATRun;
 import org.hkijena.mcat.api.datainterfaces.MCATPreprocessingOutput;
 import org.hkijena.mcat.api.datainterfaces.MCATPreprocessingInput;
@@ -21,11 +20,9 @@ import org.hkijena.mcat.extension.datatypes.HyperstackData;
 import org.hkijena.mcat.extension.datatypes.ROIData;
 import org.hkijena.mcat.api.MCATValidityReport;
 
-import java.util.Arrays;
-import java.util.List;
-
 public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
 
+    private final MCATPreprocessingParameters preprocessingParameters;
     private MCATPreprocessingInput preprocessingInput;
     private MCATPreprocessingOutput preprocessingOutput;
 
@@ -36,11 +33,10 @@ public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
 
     public MCATPreprocessingAlgorithm(MCATRun run,
                                       MCATPreprocessingParameters preprocessingParameters,
-                                      MCATPostprocessingParameters postprocessingParameters,
-                                      MCATClusteringParameters clusteringParameters,
                                       MCATPreprocessingInput preprocessingInput,
                                       MCATPreprocessingOutput preprocessingOutput) {
-        super(run, preprocessingParameters, postprocessingParameters, clusteringParameters);
+        super(run);
+        this.preprocessingParameters = preprocessingParameters;
         this.preprocessingInput = preprocessingInput;
         this.preprocessingOutput = preprocessingOutput;
     }
@@ -120,13 +116,12 @@ public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
         }
         //check if minimum number of time frames has to be updated
         int slices = imp.getNSlices();
-        int minLength = getClusteringParameters().getMinLength();
 
         // Setting parameters during runtime is not allowed
 //        if (slices < minLength)
 //            getClusteringParameters().setMinLength(slices);
         // Use the data interface instead (just create a variable)
-        getPreprocessingOutput().setMinLength(Math.min(slices, minLength));
+        getPreprocessingOutput().setMinLength(slices);
 
         return imp;
     }
@@ -285,16 +280,6 @@ public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
     }
 
     @Override
-    public List<MCATDataInterface> getInputDataInterfaces() {
-        return Arrays.asList(preprocessingInput);
-    }
-
-    @Override
-    public List<MCATDataInterface> getOutputDataInterfaces() {
-        return Arrays.asList(preprocessingInput, preprocessingOutput);
-    }
-
-    @Override
     public void reportValidity(MCATValidityReport report) {
 
     }
@@ -305,5 +290,9 @@ public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
 
     public MCATPreprocessingOutput getPreprocessingOutput() {
         return preprocessingOutput;
+    }
+
+    public MCATPreprocessingParameters getPreprocessingParameters() {
+        return preprocessingParameters;
     }
 }

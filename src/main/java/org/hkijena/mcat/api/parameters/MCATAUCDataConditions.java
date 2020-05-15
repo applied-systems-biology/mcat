@@ -7,6 +7,8 @@ import org.hkijena.mcat.api.MCATDocumentation;
 import org.hkijena.mcat.api.MCATPostprocessingMethod;
 import org.hkijena.mcat.api.events.ParameterChangedEvent;
 
+import java.util.Objects;
+
 /**
  * Additional parameters used to generate an {@link org.hkijena.mcat.extension.datatypes.AUCData}
  */
@@ -38,5 +40,18 @@ public class MCATAUCDataConditions implements MCATParameterCollection{
     @Override
     public EventBus getEventBus() {
         return eventBus;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MCATAUCDataConditions that = (MCATAUCDataConditions) o;
+        return method == that.method;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(method);
     }
 }

@@ -12,7 +12,6 @@ import org.apache.commons.math3.ml.distance.EuclideanDistance;
 import org.apache.commons.math3.random.JDKRandomGenerator;
 import org.hkijena.mcat.api.MCATAlgorithm;
 import org.hkijena.mcat.api.MCATCentroidCluster;
-import org.hkijena.mcat.api.MCATDataInterface;
 import org.hkijena.mcat.api.MCATRun;
 import org.hkijena.mcat.api.datainterfaces.MCATClusteringInput;
 import org.hkijena.mcat.api.datainterfaces.MCATClusteringInputDataSetEntry;
@@ -58,20 +57,23 @@ public class MCATClusteringAlgorithm extends MCATAlgorithm {
             "#1E1E1E", "#D7D7D7", "#9C9C9C", "#828282"
     };
 
+    private MCATPreprocessingParameters preprocessingParameters;
+    private MCATClusteringParameters clusteringParameters;
     private MCATClusteringInput clusteringInput;
     private MCATClusteringOutput clusteringOutput;
 
     private int minLength, k;
-    private HashMap<String, ImagePlus> clustered = new HashMap<String, ImagePlus>();
-    private List<DoublePoint> points = new ArrayList<DoublePoint>();
+    private HashMap<String, ImagePlus> clustered = new HashMap<>();
+    private List<DoublePoint> points = new ArrayList<>();
 
     public MCATClusteringAlgorithm(MCATRun run,
                                    MCATPreprocessingParameters preprocessingParameters,
-                                   MCATPostprocessingParameters postprocessingParameters,
                                    MCATClusteringParameters clusteringParameters,
                                    MCATClusteringInput clusteringInput,
                                    MCATClusteringOutput clusteringOutput) {
-        super(run, preprocessingParameters, postprocessingParameters, clusteringParameters);
+        super(run);
+        this.preprocessingParameters = preprocessingParameters;
+        this.clusteringParameters = clusteringParameters;
         this.clusteringInput = clusteringInput;
         this.clusteringOutput = clusteringOutput;
     }
@@ -244,7 +246,7 @@ public class MCATClusteringAlgorithm extends MCATAlgorithm {
 
         // Clustering gets multiple inputs (although they are actually from the same preprocessing), so I assume you want the minimum min length
         // This should be equivalent to the old algorithm in MCATPreprocessingAlgorithm
-        minLength = Integer.MAX_VALUE;
+        minLength = getClusteringParameters().getMinLength();
         for (MCATClusteringInputDataSetEntry entry : getClusteringInput().getDataSetEntries().values()) {
             minLength = Math.min(entry.getPreprocessedDataInterface().getMinLength(), minLength);
         }
@@ -278,13 +280,11 @@ public class MCATClusteringAlgorithm extends MCATAlgorithm {
         return clusteringOutput;
     }
 
-    @Override
-    public List<MCATDataInterface> getInputDataInterfaces() {
-        return Arrays.asList(clusteringInput);
+    public MCATPreprocessingParameters getPreprocessingParameters() {
+        return preprocessingParameters;
     }
 
-    @Override
-    public List<MCATDataInterface> getOutputDataInterfaces() {
-        return Arrays.asList(clusteringOutput);
+    public MCATClusteringParameters getClusteringParameters() {
+        return clusteringParameters;
     }
 }
