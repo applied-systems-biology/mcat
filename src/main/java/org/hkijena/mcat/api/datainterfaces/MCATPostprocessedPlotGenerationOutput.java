@@ -8,7 +8,7 @@ import org.hkijena.mcat.extension.datatypes.AUCPlotData;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MCATPlotGenerationOutput implements MCATDataInterface {
+public class MCATPostprocessedPlotGenerationOutput implements MCATDataInterface {
 
     private MCATDataSlot aucPlotData = new MCATDataSlot("AUC-plot", AUCPlotData.class);
 

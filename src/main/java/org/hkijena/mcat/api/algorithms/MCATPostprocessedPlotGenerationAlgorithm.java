@@ -5,7 +5,7 @@ import org.hkijena.mcat.api.MCATDataInterfaceKey;
 import org.hkijena.mcat.api.MCATRun;
 import org.hkijena.mcat.api.MCATValidityReport;
 import org.hkijena.mcat.api.datainterfaces.MCATClusteringOutput;
-import org.hkijena.mcat.api.datainterfaces.MCATPlotGenerationOutput;
+import org.hkijena.mcat.api.datainterfaces.MCATPostprocessedPlotGenerationOutput;
 import org.hkijena.mcat.api.datainterfaces.MCATPostprocessingOutput;
 import org.hkijena.mcat.api.parameters.MCATAUCDataConditions;
 import org.hkijena.mcat.api.parameters.MCATClusteringParameters;
@@ -17,7 +17,10 @@ import org.hkijena.mcat.extension.datatypes.AUCPlotData;
 import java.util.Arrays;
 import java.util.Map;
 
-public class MCATPlotGenerationAlgorithm extends MCATAlgorithm {
+/**
+ * Plots generated for each {@link MCATPostprocessingAlgorithm} run
+ */
+public class MCATPostprocessedPlotGenerationAlgorithm extends MCATAlgorithm {
 
     private final MCATPreprocessingParameters preprocessingParameters;
     private final MCATPostprocessingParameters postprocessingParameters;
@@ -25,16 +28,16 @@ public class MCATPlotGenerationAlgorithm extends MCATAlgorithm {
     private MCATAUCDataConditions AUCConditions;
     private final MCATClusteringOutput clusteringOutput;
     private final MCATPostprocessingOutput postprocessingOutput;
-    private final MCATPlotGenerationOutput plotGenerationOutput;
+    private final MCATPostprocessedPlotGenerationOutput plotGenerationOutput;
 
-    public MCATPlotGenerationAlgorithm(MCATRun run,
-                                       MCATPreprocessingParameters preprocessingParameters,
-                                       MCATPostprocessingParameters postprocessingParameters,
-                                       MCATClusteringParameters clusteringParameters,
-                                       MCATAUCDataConditions conditions,
-                                       MCATClusteringOutput clusteringOutput,
-                                       MCATPostprocessingOutput postprocessingOutput,
-                                       MCATPlotGenerationOutput plotGenerationOutput) {
+    public MCATPostprocessedPlotGenerationAlgorithm(MCATRun run,
+                                                    MCATPreprocessingParameters preprocessingParameters,
+                                                    MCATPostprocessingParameters postprocessingParameters,
+                                                    MCATClusteringParameters clusteringParameters,
+                                                    MCATAUCDataConditions conditions,
+                                                    MCATClusteringOutput clusteringOutput,
+                                                    MCATPostprocessingOutput postprocessingOutput,
+                                                    MCATPostprocessedPlotGenerationOutput plotGenerationOutput) {
         super(run);
         this.preprocessingParameters = preprocessingParameters;
         this.postprocessingParameters = postprocessingParameters;
@@ -65,7 +68,7 @@ public class MCATPlotGenerationAlgorithm extends MCATAlgorithm {
 
     @Override
     public String getName() {
-        return "generate-plots";
+        return "generate-postprocessed-plots";
     }
 
     @Override
@@ -93,7 +96,7 @@ public class MCATPlotGenerationAlgorithm extends MCATAlgorithm {
         return postprocessingOutput;
     }
 
-    public MCATPlotGenerationOutput getPlotGenerationOutput() {
+    public MCATPostprocessedPlotGenerationOutput getPlotGenerationOutput() {
         return plotGenerationOutput;
     }
 
