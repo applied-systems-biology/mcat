@@ -14,6 +14,9 @@ public class StandardDataTypeExtension {
         registerDataType("derivative-matrix", DerivativeMatrixData.class);
         registerDataType("imageplus-hyperstack", HyperstackData.class);
         registerDataType("roi", ROIData.class);
+        registerDataType("auc", AUCData.class);
+        registerDataType("auc-plot", AUCPlotData.class);
+        registerDataType("time-derivative-plot", TimeDerivativePlotData.class);
     }
 
     private static void registerDataType(String id, Class<? extends MCATData> klass) {

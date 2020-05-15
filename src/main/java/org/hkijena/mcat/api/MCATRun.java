@@ -7,6 +7,7 @@ import org.hkijena.mcat.api.algorithms.*;
 import org.hkijena.mcat.api.datainterfaces.*;
 import org.hkijena.mcat.api.events.ParameterChangedEvent;
 import org.hkijena.mcat.api.parameters.*;
+import org.hkijena.mcat.api.registries.MCATDataTypeRegistry;
 import org.hkijena.mcat.utils.JsonUtils;
 import org.hkijena.mcat.utils.StringUtils;
 
@@ -443,6 +444,7 @@ public class MCATRun implements MCATValidatable {
             slotEntry.getValue().setStorageFilePath(slotPath);
 
             MCATResultDataInterfaces.SlotEntry exportedSlotEntry = new MCATResultDataInterfaces.SlotEntry(slotEntry.getKey(), outputPath.relativize(slotPath));
+            exportedSlotEntry.setDataTypeId(Objects.requireNonNull(MCATDataTypeRegistry.getInstance().getDataTypeId(slotEntry.getValue().getAcceptedDataType())));
             result.getSlots().add(exportedSlotEntry);
         }
 

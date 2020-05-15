@@ -115,6 +115,7 @@ public class MCATResultDataInterfaces {
     public static class SlotEntry {
 
         private String name;
+        private String dataTypeId;
         private Path storagePath;
 
         public SlotEntry() {
@@ -144,6 +145,16 @@ public class MCATResultDataInterfaces {
         @JsonSetter("storage-path")
         public void setStoragePath(Path storagePath) {
             this.storagePath = storagePath;
+        }
+
+        @JsonGetter("data-type-id")
+        public String getDataTypeId() {
+            return dataTypeId;
+        }
+
+        @JsonSetter("data-type-id")
+        public void setDataTypeId(String dataTypeId) {
+            this.dataTypeId = dataTypeId;
         }
     }
 }

@@ -32,6 +32,14 @@ public class MCATDataTypeRegistry {
         registeredDataTypes.put(id, klass);
     }
 
+    public String getDataTypeId(Class<? extends MCATData> klass) {
+        return registeredDataTypes.inverse().get(klass);
+    }
+
+    public Class<? extends MCATData> getDataTypeFromId(String id) {
+        return registeredDataTypes.get(id);
+    }
+
     /**
      * Registers a data provider
      *
