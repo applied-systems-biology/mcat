@@ -1,22 +1,21 @@
 package org.hkijena.mcat.ui.parameters;
 
 import com.google.common.eventbus.Subscribe;
+import org.hkijena.mcat.api.MCATDocumentation;
 import org.hkijena.mcat.api.events.ParameterChangedEvent;
+import org.hkijena.mcat.api.parameters.MCATParameterCollection;
 import org.hkijena.mcat.api.parameters.MCATParametersTable;
+import org.hkijena.mcat.api.registries.MCATUIParametertypeRegistry;
 import org.hkijena.mcat.ui.MCATWorkbenchUI;
 import org.hkijena.mcat.ui.MCATWorkbenchUIPanel;
 import org.hkijena.mcat.ui.components.MarkdownDocument;
 import org.hkijena.mcat.ui.components.MarkdownReader;
 import org.hkijena.mcat.ui.components.TransposedTableModel;
 import org.hkijena.mcat.utils.UIUtils;
-import org.hkijena.mcat.api.MCATDocumentation;
-import org.hkijena.mcat.api.parameters.MCATParameterCollection;
-import org.hkijena.mcat.api.registries.MCATUIParametertypeRegistry;
 import org.jdesktop.swingx.JXTable;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -169,7 +168,7 @@ public class MCATParametersTableUI extends MCATWorkbenchUIPanel {
     }
 
     private void onTableCellSelected() {
-        if(tableIsReloading)
+        if (tableIsReloading)
             return;
         Point selection = new Point(table.getSelectedRow(), table.getSelectedColumn());
         if (!Objects.equals(selection, currentSelection)) {
@@ -186,7 +185,7 @@ public class MCATParametersTableUI extends MCATWorkbenchUIPanel {
                         selectedRow,
                         MarkdownDocument.fromPluginResource("documentation/parameters.md"),
                         ParameterPanel.WITH_SCROLLING | ParameterPanel.WITH_DOCUMENTATION | ParameterPanel.DOCUMENTATION_BELOW);
-                currentEditor.setPreferredSize(new Dimension((int)(0.33 * splitPane.getWidth()), (int)currentEditor.getPreferredSize().getHeight()));
+                currentEditor.setPreferredSize(new Dimension((int) (0.33 * splitPane.getWidth()), (int) currentEditor.getPreferredSize().getHeight()));
                 splitPane.setRightComponent(currentEditor);
                 revalidate();
             }
@@ -196,12 +195,12 @@ public class MCATParametersTableUI extends MCATWorkbenchUIPanel {
 
     @Subscribe
     public void onTableDataChanged(ParameterChangedEvent event) {
-        if("table-data".equals(event.getKey())) {
+        if ("table-data".equals(event.getKey())) {
             Point selection = new Point(table.getSelectedRow(), table.getSelectedColumn());
             tableIsReloading = true;
             table.setModel(new DefaultTableModel());
             table.setModel(transposedTableModel);
-            if(selection.x >= 0 && selection.x < table.getRowCount() && selection.y >= 0 && selection.y < table.getColumnCount()) {
+            if (selection.x >= 0 && selection.x < table.getRowCount() && selection.y >= 0 && selection.y < table.getColumnCount()) {
                 table.changeSelection(selection.x, selection.y, false, false);
             }
             tableIsReloading = false;

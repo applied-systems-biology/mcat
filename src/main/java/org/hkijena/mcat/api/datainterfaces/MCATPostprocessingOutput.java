@@ -4,7 +4,6 @@ import org.hkijena.mcat.api.MCATDataInterface;
 import org.hkijena.mcat.api.MCATDataSlot;
 import org.hkijena.mcat.extension.datatypes.AUCData;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 

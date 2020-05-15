@@ -124,11 +124,12 @@ public class MCATDataSlot {
 
     /**
      * Loads the provider from a JSON node
+     *
      * @param jsonNode
      */
     public void fromJson(JsonNode jsonNode) {
         String providerId = jsonNode.get("current-provider-type-id").textValue();
-        if(!StringUtils.isNullOrEmpty(providerId)) {
+        if (!StringUtils.isNullOrEmpty(providerId)) {
             Class<? extends MCATDataProvider> providerClass = MCATDataTypeRegistry.getInstance().getRegisteredDataProviders().get(providerId);
             try {
                 setCurrentProvider(providerClass.newInstance());
@@ -142,12 +143,11 @@ public class MCATDataSlot {
         @Override
         public void serialize(MCATDataSlot value, JsonGenerator gen, SerializerProvider serializers) throws IOException, JsonProcessingException {
             gen.writeStartObject();
-            if(value.getCurrentProvider() != null) {
+            if (value.getCurrentProvider() != null) {
                 String providerId = MCATDataTypeRegistry.getInstance().getProviderId(value.getCurrentProvider().getClass());
                 gen.writeStringField("current-provider-type-id", providerId);
                 gen.writeObjectField("current-provider", value.getCurrentProvider());
-            }
-            else {
+            } else {
                 gen.writeStringField("current-provider-type-id", "");
             }
             gen.writeEndObject();

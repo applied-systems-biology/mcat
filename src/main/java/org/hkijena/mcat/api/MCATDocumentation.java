@@ -1,7 +1,5 @@
 package org.hkijena.mcat.api;
 
-import org.hkijena.mcat.ui.components.MarkdownDocument;
-
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
@@ -18,6 +16,7 @@ public @interface MCATDocumentation {
     /**
      * Either a string that is used as description or a link to a Markdown resource that contains the description.
      * To load a description from Markdown, the string must begin with res://, following an absolute resource path
+     *
      * @return The description
      */
     String description() default "";

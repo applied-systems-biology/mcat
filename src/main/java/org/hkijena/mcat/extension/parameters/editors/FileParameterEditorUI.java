@@ -1,7 +1,7 @@
 package org.hkijena.mcat.extension.parameters.editors;
 
-import org.hkijena.mcat.ui.components.FileSelection;
 import org.hkijena.mcat.api.parameters.MCATParameterAccess;
+import org.hkijena.mcat.ui.components.FileSelection;
 import org.hkijena.mcat.ui.parameters.MCATParameterEditorUI;
 import org.scijava.Context;
 

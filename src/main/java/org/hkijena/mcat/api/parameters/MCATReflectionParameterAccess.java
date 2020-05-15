@@ -1,7 +1,7 @@
 package org.hkijena.mcat.api.parameters;
 
-import org.hkijena.mcat.utils.StringUtils;
 import org.hkijena.mcat.api.MCATDocumentation;
+import org.hkijena.mcat.utils.StringUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;

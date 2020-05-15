@@ -4,10 +4,10 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
-import org.hkijena.mcat.utils.StringUtils;
 import org.hkijena.mcat.api.MCATDocumentation;
 import org.hkijena.mcat.api.events.ParameterChangedEvent;
 import org.hkijena.mcat.api.events.ParameterStructureChangedEvent;
+import org.hkijena.mcat.utils.StringUtils;
 import org.scijava.Priority;
 
 import java.lang.reflect.InvocationTargetException;
@@ -69,6 +69,7 @@ public class MCATTraversedParameterCollection implements MCATParameterCollection
      * Gets the UI order of an {@link MCATParameterCollection}
      * This is only used for UI.
      * Lower values indicate that the source should be placed higher.
+     *
      * @param source the collection
      * @return UI order. 0 if no order was defined.
      */
@@ -240,8 +241,9 @@ public class MCATTraversedParameterCollection implements MCATParameterCollection
 
     /**
      * Sets the UI order of a source
+     *
      * @param collection the source
-     * @param uiOrder the UI order
+     * @param uiOrder    the UI order
      */
     public void setSourceUIOrder(MCATParameterCollection collection, int uiOrder) {
         sourceOrder.put(collection, uiOrder);

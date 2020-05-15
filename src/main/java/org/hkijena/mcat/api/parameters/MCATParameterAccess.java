@@ -19,12 +19,14 @@ public interface MCATParameterAccess {
     /**
      * Returns a short form of the ID used, for example to generate a parameter string.
      * Might return getKey() if none was provided
+     *
      * @return a short form of the ID used, for example to generate a parameter string
      */
     String getShortKey();
 
     /**
      * Controls how the parameter is ordered within the user interface
+     *
      * @return a low number indicates that this parameter is put first, while a high number indicates that this parameter is put last
      */
     int getUIOrder();

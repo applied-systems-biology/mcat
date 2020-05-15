@@ -4,10 +4,10 @@ import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.hkijena.mcat.utils.JsonUtils;
 import org.hkijena.mcat.api.parameters.MCATParameterAccess;
 import org.hkijena.mcat.api.parameters.MCATParameterCollection;
 import org.hkijena.mcat.api.parameters.MCATTraversedParameterCollection;
+import org.hkijena.mcat.utils.JsonUtils;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -55,7 +55,7 @@ public class MCATResultDataInterfaces {
                 ObjectNode node = JsonUtils.getObjectMapper().getNodeFactory().objectNode();
                 MCATTraversedParameterCollection traversedParameterCollection = new MCATTraversedParameterCollection(parameter);
                 for (Map.Entry<String, MCATParameterAccess> entry : traversedParameterCollection.getParameters().entrySet()) {
-                   node.set(entry.getKey(), JsonUtils.getObjectMapper().convertValue(entry.getValue().get(), JsonNode.class));
+                    node.set(entry.getKey(), JsonUtils.getObjectMapper().convertValue(entry.getValue().get(), JsonNode.class));
                 }
                 parameters.add(node);
             }

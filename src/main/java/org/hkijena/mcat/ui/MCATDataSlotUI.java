@@ -2,11 +2,11 @@ package org.hkijena.mcat.ui;
 
 import org.hkijena.mcat.api.MCATDataProvider;
 import org.hkijena.mcat.api.MCATDataSlot;
+import org.hkijena.mcat.api.MCATDocumentation;
 import org.hkijena.mcat.api.MCATProjectDataSet;
 import org.hkijena.mcat.api.registries.MCATDataTypeRegistry;
 import org.hkijena.mcat.ui.registries.MCATDataProviderUIRegistry;
 import org.hkijena.mcat.utils.UIUtils;
-import org.hkijena.mcat.api.MCATDocumentation;
 
 import javax.swing.*;
 import java.awt.*;
@@ -73,7 +73,7 @@ public class MCATDataSlotUI extends JPanel {
             currentProviderUI = null;
         }
 
-        if(slot.getCurrentProvider() != null) {
+        if (slot.getCurrentProvider() != null) {
             currentProviderUI = MCATDataProviderUIRegistry.getInstance().getUIFor(sample, slot.getCurrentProvider());
             add(currentProviderUI, BorderLayout.CENTER);
         }

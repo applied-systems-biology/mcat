@@ -2,8 +2,8 @@ package org.hkijena.mcat.extension.dataproviders.api;
 
 import org.apache.commons.math3.ml.clustering.DoublePoint;
 import org.hkijena.mcat.api.MCATCentroidCluster;
-import org.hkijena.mcat.extension.datatypes.ClusterAbundanceData;
 import org.hkijena.mcat.api.MCATDocumentation;
+import org.hkijena.mcat.extension.datatypes.ClusterAbundanceData;
 
 import java.io.BufferedReader;
 import java.io.File;

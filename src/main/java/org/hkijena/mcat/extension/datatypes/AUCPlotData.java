@@ -12,7 +12,6 @@ import org.hkijena.mcat.utils.JsonUtils;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtils;
 import org.jfree.chart.JFreeChart;
-import org.jfree.data.statistics.BoxAndWhiskerCategoryDataset;
 import org.jfree.data.statistics.DefaultBoxAndWhiskerCategoryDataset;
 import org.jfree.graphics2d.svg.SVGGraphics2D;
 import org.jfree.graphics2d.svg.SVGUtils;
@@ -20,14 +19,17 @@ import org.jfree.graphics2d.svg.SVGUtils;
 import java.awt.*;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 
 /**
  * Contains plots for {@link AUCData}
  */
 @MCATDocumentation(name = "AUC Plots")
 public class AUCPlotData implements MCATData {
+
+    public static final int AUTO_EXPORT_HEIGHT = 400;
+
     private Map<String, Object> parameterValues = new HashMap<>();
     private ResultsTable table = new ResultsTable();
 
@@ -43,12 +45,14 @@ public class AUCPlotData implements MCATData {
 
     /**
      * Loads plot data from a folder
+     *
      * @param folderPath the output folder
      */
     public AUCPlotData(Path folderPath) {
         try {
             table = ResultsTable.open(folderPath.resolve("plot-data.csv").toString());
-            TypeReference<Map<String, Object>> typeReference = new TypeReference<Map<String, Object>>() {};
+            TypeReference<Map<String, Object>> typeReference = new TypeReference<Map<String, Object>>() {
+            };
             parameterValues = JsonUtils.getObjectMapper().readValue(folderPath.resolve("parameters.json").toFile(), typeReference);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -74,7 +78,7 @@ public class AUCPlotData implements MCATData {
         for (int row = 0; row < table.getCounter(); row++) {
             String category = table.getStringValue("treatment", row);
             List<Double> dataList = groupedBy.getOrDefault(category, null);
-            if(dataList == null) {
+            if (dataList == null) {
                 dataList = new ArrayList<>();
                 groupedBy.put(category, dataList);
             }
@@ -100,7 +104,7 @@ public class AUCPlotData implements MCATData {
         for (int row = 0; row < table.getCounter(); row++) {
             String category = table.getStringValue("subject", row);
             List<Double> dataList = groupedBy.getOrDefault(category, null);
-            if(dataList == null) {
+            if (dataList == null) {
                 dataList = new ArrayList<>();
                 groupedBy.put(category, dataList);
             }
@@ -136,8 +140,8 @@ public class AUCPlotData implements MCATData {
     }
 
     public void autoSaveChartToSVG(JFreeChart chart, Path fileName) {
-        SVGGraphics2D g2 = new SVGGraphics2D(getAutoChartWidth(chart), 400);
-        Rectangle r = new Rectangle(0, 0, getAutoChartWidth(chart), 400);
+        SVGGraphics2D g2 = new SVGGraphics2D(getAutoChartWidth(chart), AUTO_EXPORT_HEIGHT);
+        Rectangle r = new Rectangle(0, 0, getAutoChartWidth(chart), AUTO_EXPORT_HEIGHT);
         chart.draw(g2, r);
         try {
             SVGUtils.writeToSVG(fileName.toFile(), g2.getSVGElement());

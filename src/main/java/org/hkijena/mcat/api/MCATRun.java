@@ -5,13 +5,9 @@ import com.google.common.collect.HashBiMap;
 import com.google.common.eventbus.Subscribe;
 import org.hkijena.mcat.api.algorithms.*;
 import org.hkijena.mcat.api.datainterfaces.*;
+import org.hkijena.mcat.api.events.ParameterChangedEvent;
 import org.hkijena.mcat.api.parameters.*;
 import org.hkijena.mcat.utils.JsonUtils;
-import org.hkijena.mcat.api.events.ParameterChangedEvent;
-import org.hkijena.mcat.api.parameters.MCATCustomParameterCollection;
-import org.hkijena.mcat.api.parameters.MCATParameterAccess;
-import org.hkijena.mcat.api.parameters.MCATParameterCollection;
-import org.hkijena.mcat.api.parameters.MCATTraversedParameterCollection;
 import org.hkijena.mcat.utils.StringUtils;
 
 import java.io.IOException;
@@ -67,7 +63,7 @@ public class MCATRun implements MCATValidatable {
     }
 
     private void registerUniqueDataInterface(MCATDataInterfaceKey key, MCATDataInterface dataInterface) {
-        if(uniqueDataInterfaces.containsKey(key))
+        if (uniqueDataInterfaces.containsKey(key))
             throw new RuntimeException("Found data interface key " + key + " in set! This should not be possible.");
         uniqueDataInterfaces.put(key, dataInterface);
     }
@@ -117,7 +113,7 @@ public class MCATRun implements MCATValidatable {
         Map<String, Map<String, MCATClusteringOutput>> outputGroups = new HashMap<>();
 
         for (MCATDataInterfaceKey preprocessedInterfaceKey : matchingPreprocessedInterfaceKeys) {
-            if(preprocessedInterfaceKey.getDataSetNames().size() != 1)
+            if (preprocessedInterfaceKey.getDataSetNames().size() != 1)
                 throw new RuntimeException("Must have exactly one data set reference!");
             String dataSetName = preprocessedInterfaceKey.getDataSetNames().iterator().next();
             MCATDataInterfaceKey rawInterfaceKey = new MCATDataInterfaceKey("preprocessing-input");
@@ -126,7 +122,7 @@ public class MCATRun implements MCATValidatable {
 
             MCATProjectDataSet projectDataSet = project.getDataSets().get(dataSetName);
             MCATPreprocessingInput rawDataInterface = (MCATPreprocessingInput) uniqueDataInterfaces.get(rawInterfaceKey);
-            MCATPreprocessingOutput preprocessedDataInterface = (MCATPreprocessingOutput)uniqueDataInterfaces.get(preprocessedInterfaceKey);
+            MCATPreprocessingOutput preprocessedDataInterface = (MCATPreprocessingOutput) uniqueDataInterfaces.get(preprocessedInterfaceKey);
 
             String groupSubject = projectDataSet.getName();
             String groupTreatment = projectDataSet.getParameters().getTreatment();
@@ -182,7 +178,7 @@ public class MCATRun implements MCATValidatable {
                 clusteringInputKey.addParameter(preprocessingParameters);
                 clusteringInputKey.addDataSets(clusteringInput.getDataSetEntries().keySet());
                 registerUniqueDataInterface(clusteringInputKey, clusteringInput);
-                
+
                 MCATClusteringOutput clusteringOutput = outputGroups.get(subject).get(treatment);
                 MCATDataInterfaceKey clusteringOutputKey = new MCATDataInterfaceKey("clustering-output");
                 clusteringOutputKey.addParameter(preprocessingParameters);
@@ -278,16 +274,16 @@ public class MCATRun implements MCATValidatable {
             graph.insertNode(postprocessingAlgorithm);
             graph.connect(clusteringAlgorithm, postprocessingAlgorithm);
 
-            if(postprocessingParameters.isAnalyzeNetIncrease()) {
+            if (postprocessingParameters.isAnalyzeNetIncrease()) {
                 initializePostprocessedPlotGeneration(MCATPostprocessingMethod.NetIncrease, postprocessingAlgorithm, postprocessingDataInterfaceKey);
             }
-            if(postprocessingParameters.isAnalyzeNetDecrease()) {
+            if (postprocessingParameters.isAnalyzeNetDecrease()) {
                 initializePostprocessedPlotGeneration(MCATPostprocessingMethod.NetDecrease, postprocessingAlgorithm, postprocessingDataInterfaceKey);
             }
-            if(postprocessingParameters.isAnalyzeMaxIncrease()) {
+            if (postprocessingParameters.isAnalyzeMaxIncrease()) {
                 initializePostprocessedPlotGeneration(MCATPostprocessingMethod.MaxIncrease, postprocessingAlgorithm, postprocessingDataInterfaceKey);
             }
-            if(postprocessingParameters.isAnalyzeMaxDecrease()) {
+            if (postprocessingParameters.isAnalyzeMaxDecrease()) {
                 initializePostprocessedPlotGeneration(MCATPostprocessingMethod.MaxDecrease, postprocessingAlgorithm, postprocessingDataInterfaceKey);
             }
         }
@@ -312,9 +308,9 @@ public class MCATRun implements MCATValidatable {
         for (MCATClusteringAlgorithm clusteringAlgorithm : allClusteringAlgorithms) {
             String subject = clusteringAlgorithm.getClusteringInput().getGroupSubject();
             String treatment = clusteringAlgorithm.getClusteringInput().getGroupTreatment();
-            if(StringUtils.isNullOrEmpty(subject))
+            if (StringUtils.isNullOrEmpty(subject))
                 subject = "ALL_SUBJECTS";
-            if(StringUtils.isNullOrEmpty(treatment))
+            if (StringUtils.isNullOrEmpty(treatment))
                 treatment = "ALL_TREATMENTS";
             String id = subject + "__" + treatment;
             input.getClusteringOutputMap().put(id, clusteringAlgorithm.getClusteringOutput());
@@ -372,6 +368,7 @@ public class MCATRun implements MCATValidatable {
 
     /**
      * Finds the parameter keys in the parameter table that contain information
+     *
      * @return parameter keys
      */
     private Set<String> getRelevantParameterKeys() {
@@ -382,7 +379,7 @@ public class MCATRun implements MCATValidatable {
             for (int row = 0; row < parametersTable.getRowCount(); row++) {
                 values.add(parametersTable.getValueAt(row, column));
             }
-            if(values.size() > 1) {
+            if (values.size() > 1) {
                 result.add(key);
             }
         }

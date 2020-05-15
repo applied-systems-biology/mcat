@@ -5,10 +5,10 @@ import org.hkijena.mcat.api.MCATProjectDataSet;
 import org.hkijena.mcat.api.events.DataSetAddedEvent;
 import org.hkijena.mcat.api.events.DataSetRemovedEvent;
 import org.hkijena.mcat.api.events.DataSetRenamedEvent;
+import org.hkijena.mcat.api.events.ParameterChangedEvent;
 import org.hkijena.mcat.api.parameters.MCATSampleParameters;
 import org.hkijena.mcat.ui.components.MCATSampleTreeCellRenderer;
 import org.hkijena.mcat.utils.UIUtils;
-import org.hkijena.mcat.api.events.ParameterChangedEvent;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;

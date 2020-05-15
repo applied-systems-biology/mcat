@@ -1,7 +1,5 @@
 package org.hkijena.mcat.api;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import org.hkijena.mcat.utils.JsonUtils;
 
 import java.io.IOException;

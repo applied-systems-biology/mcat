@@ -12,7 +12,7 @@ import java.util.Objects;
 /**
  * Additional parameters used to generate an {@link org.hkijena.mcat.extension.datatypes.AUCData}
  */
-public class MCATAUCDataConditions implements MCATParameterCollection{
+public class MCATAUCDataConditions implements MCATParameterCollection {
     private EventBus eventBus = new EventBus();
     private MCATPostprocessingMethod method;
 

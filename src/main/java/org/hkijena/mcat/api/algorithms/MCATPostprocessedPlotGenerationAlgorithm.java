@@ -25,10 +25,10 @@ public class MCATPostprocessedPlotGenerationAlgorithm extends MCATAlgorithm {
     private final MCATPreprocessingParameters preprocessingParameters;
     private final MCATPostprocessingParameters postprocessingParameters;
     private final MCATClusteringParameters clusteringParameters;
-    private MCATAUCDataConditions AUCConditions;
     private final MCATClusteringOutput clusteringOutput;
     private final MCATPostprocessingOutput postprocessingOutput;
     private final MCATPostprocessedPlotGenerationOutput plotGenerationOutput;
+    private MCATAUCDataConditions AUCConditions;
 
     public MCATPostprocessedPlotGenerationAlgorithm(MCATRun run,
                                                     MCATPreprocessingParameters preprocessingParameters,

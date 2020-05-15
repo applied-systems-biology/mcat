@@ -1,10 +1,8 @@
 package org.hkijena.mcat.ui.resultanalysis;
 
-import org.hkijena.mcat.api.MCATResultDataInterfaces;
 import org.hkijena.mcat.utils.UIUtils;
 
 import javax.swing.*;
-import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeCellRenderer;
 import java.awt.*;
 
@@ -24,7 +22,7 @@ public class MCATRunSampleTreeCellRenderer extends JLabel implements TreeCellRen
             setFont(tree.getFont());
         }
 
-        if(value instanceof MCATResultTreeNode) {
+        if (value instanceof MCATResultTreeNode) {
 
             MCATResultTreeNode treeNode = (MCATResultTreeNode) value;
             setText("" + treeNode.getUserObject());
@@ -45,8 +43,7 @@ public class MCATRunSampleTreeCellRenderer extends JLabel implements TreeCellRen
                     setIcon(UIUtils.getIconFromResources("database.png"));
                     break;
             }
-        }
-        else {
+        } else {
             setText("<Invalid>");
         }
 

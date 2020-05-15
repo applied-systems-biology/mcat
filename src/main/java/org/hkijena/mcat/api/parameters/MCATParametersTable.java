@@ -3,8 +3,8 @@ package org.hkijena.mcat.api.parameters;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.google.common.eventbus.Subscribe;
-import org.hkijena.mcat.utils.StringUtils;
 import org.hkijena.mcat.api.events.ParameterChangedEvent;
+import org.hkijena.mcat.utils.StringUtils;
 
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
@@ -92,7 +92,7 @@ public class MCATParametersTable implements TableModel {
         MCATTraversedParameterCollection parameterCollection = new MCATTraversedParameterCollection(row);
         columnKeys = parameterCollection.getParameters().keySet().stream()
                 .sorted(Comparator.comparing(k -> parameterCollection.getSourceUIOrder(parameterCollection.getParameters().get(k).getSource()))
-                .thenComparing(k ->parameterCollection.getParameters().get(k).getName())).collect(Collectors.toList());
+                        .thenComparing(k -> parameterCollection.getParameters().get(k).getName())).collect(Collectors.toList());
         for (String key : columnKeys) {
             columnClasses.add(parameterCollection.getParameters().get(key).getFieldClass());
             int slashIndex = key.indexOf('/');

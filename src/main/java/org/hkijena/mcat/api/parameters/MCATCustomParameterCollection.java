@@ -1,6 +1,8 @@
 package org.hkijena.mcat.api.parameters;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -17,9 +19,10 @@ public interface MCATCustomParameterCollection extends MCATParameterCollection {
 
     /**
      * Generates a parameter string from parameters.
+     *
      * @param parameters The parameters
-     * @param separator String that separates entries (e.g. ',')
-     * @param equals String that separates key and values (e.g. '=')
+     * @param separator  String that separates entries (e.g. ',')
+     * @param equals     String that separates key and values (e.g. '=')
      * @return Parameter string
      */
     static String parameterCollectionsToString(Collection<MCATParameterCollection> parameters, String separator, String equals) {
@@ -28,19 +31,20 @@ public interface MCATCustomParameterCollection extends MCATParameterCollection {
 
     /**
      * Generates a parameter string from parameters.
+     *
      * @param parameters The parameters
-     * @param separator String that separates entries (e.g. ',')
-     * @param equals String that separates key and values (e.g. '=')
+     * @param separator  String that separates entries (e.g. ',')
+     * @param equals     String that separates key and values (e.g. '=')
      * @return Parameter string
      */
     static String parametersToString(Collection<MCATParameterAccess> parameters, String separator, String equals) {
         StringBuilder stringBuilder = new StringBuilder();
         boolean first = true;
         for (MCATParameterAccess access : parameters.stream().sorted(Comparator.comparing(MCATParameterAccess::getShortKey)).collect(Collectors.toList())) {
-            if(!first)
+            if (!first)
                 stringBuilder.append(separator);
             first = false;
-            stringBuilder.append(access.getShortKey()).append(equals).append(("" + (Object)access.get()));
+            stringBuilder.append(access.getShortKey()).append(equals).append(("" + (Object) access.get()));
         }
         return stringBuilder.toString();
     }

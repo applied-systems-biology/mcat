@@ -10,15 +10,13 @@ import ij.plugin.ImageCalculator;
 import ij.process.ImageStatistics;
 import org.hkijena.mcat.api.MCATAlgorithm;
 import org.hkijena.mcat.api.MCATRun;
-import org.hkijena.mcat.api.datainterfaces.MCATPreprocessingOutput;
+import org.hkijena.mcat.api.MCATValidityReport;
 import org.hkijena.mcat.api.datainterfaces.MCATPreprocessingInput;
-import org.hkijena.mcat.api.parameters.MCATClusteringParameters;
-import org.hkijena.mcat.api.parameters.MCATPostprocessingParameters;
+import org.hkijena.mcat.api.datainterfaces.MCATPreprocessingOutput;
 import org.hkijena.mcat.api.parameters.MCATPreprocessingParameters;
 import org.hkijena.mcat.extension.datatypes.DerivativeMatrixData;
 import org.hkijena.mcat.extension.datatypes.HyperstackData;
 import org.hkijena.mcat.extension.datatypes.ROIData;
-import org.hkijena.mcat.api.MCATValidityReport;
 
 public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
 

@@ -12,7 +12,6 @@ import org.hkijena.mcat.api.parameters.MCATPreprocessingParameters;
 import org.hkijena.mcat.extension.datatypes.AUCData;
 import org.hkijena.mcat.extension.datatypes.ClusterAbundanceData;
 import org.hkijena.mcat.extension.datatypes.ClusterCentersData;
-import org.hkijena.mcat.api.MCATValidityReport;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,10 +23,10 @@ public class MCATPostprocessingAlgorithm extends MCATAlgorithm {
     // compensate for rounding errors when checking which curves have net decrease/increase; omit zero line
     private final double epsilon = 0.1;
     private final MCATPostprocessingOutput postprocessingOutput;
-    private List<MCATCentroidCluster<DoublePoint>> clusterCenters;
     private final MCATPreprocessingParameters preprocessingParameters;
     private final MCATPostprocessingParameters postprocessingParameters;
     private final MCATClusteringParameters clusteringParameters;
+    private List<MCATCentroidCluster<DoublePoint>> clusterCenters;
     private MCATClusteringOutput clusteringOutput;
     private AUCData aucData = new AUCData();
 

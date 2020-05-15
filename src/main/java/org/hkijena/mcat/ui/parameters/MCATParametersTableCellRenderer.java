@@ -19,10 +19,9 @@ public class MCATParametersTableCellRenderer extends JLabel implements TableCell
         if (isSelected) {
             setBackground(new Color(184, 207, 229));
         } else {
-            if(column == 0) {
+            if (column == 0) {
                 setBackground(new Color(242, 242, 242));
-            }
-            else {
+            } else {
                 setBackground(new Color(255, 255, 255));
             }
         }

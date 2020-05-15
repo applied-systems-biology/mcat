@@ -1,12 +1,10 @@
 package org.hkijena.mcat.ui.resultanalysis;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import org.hkijena.mcat.api.MCATResultDataInterfaces;
 import org.hkijena.mcat.utils.StringUtils;
 import org.hkijena.mcat.utils.UIUtils;
 
 import javax.swing.*;
-import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import java.awt.*;
 import java.util.ArrayList;
@@ -36,7 +34,7 @@ public class MCATResultSlotManagerUI extends JPanel {
     private void rebuildSampleListTree() {
         MCATResultDataInterfaces resultDataInterfaces = resultUI.getResult().getResultDataInterfaces();
         String rootNodeName = "Results";
-        if(resultDataInterfaces.getEntries().isEmpty()) {
+        if (resultDataInterfaces.getEntries().isEmpty()) {
             rootNodeName = "No results";
         }
 
@@ -48,7 +46,7 @@ public class MCATResultSlotManagerUI extends JPanel {
 
         for (Map.Entry<String, List<MCATResultDataInterfaces.DataInterfaceEntry>> byNameEntry : groupedByName.entrySet()) {
             List<MCATResultDataInterfaces.SlotEntry> nameNodeEntries = new ArrayList<>();
-            MCATResultTreeNode nameNode = new MCATResultTreeNode(StringUtils.capitalizeFirstLetter( byNameEntry.getKey().replace('-', ' ')),
+            MCATResultTreeNode nameNode = new MCATResultTreeNode(StringUtils.capitalizeFirstLetter(byNameEntry.getKey().replace('-', ' ')),
                     MCATResultTreeNode.NodeType.DataInterfaceGroup,
                     nameNodeEntries);
 

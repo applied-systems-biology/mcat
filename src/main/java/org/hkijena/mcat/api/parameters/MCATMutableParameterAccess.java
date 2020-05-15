@@ -8,9 +8,9 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import org.hkijena.mcat.api.events.ParameterChangedEvent;
 import org.hkijena.mcat.utils.JsonUtils;
 import org.hkijena.mcat.utils.StringUtils;
-import org.hkijena.mcat.api.events.ParameterChangedEvent;
 import org.scijava.Priority;
 
 import java.io.IOException;

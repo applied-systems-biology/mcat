@@ -6,8 +6,6 @@ import org.hkijena.mcat.api.events.ParameterChangedEvent;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
-import java.util.ArrayList;
-import java.util.List;
 
 public class TransposedTableModel implements TableModel, TableModelListener {
 
@@ -31,7 +29,7 @@ public class TransposedTableModel implements TableModel, TableModelListener {
 
     @Override
     public String getColumnName(int columnIndex) {
-        if(columnIndex == 0)
+        if (columnIndex == 0)
             return "Parameter types";
         else
             return "Parameters " + columnIndex;
@@ -49,7 +47,7 @@ public class TransposedTableModel implements TableModel, TableModelListener {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        if(columnIndex > 0)
+        if (columnIndex > 0)
             return wrappedModel.getValueAt(columnIndex - 1, rowIndex);
         else
             return wrappedModel.getColumnName(rowIndex);
@@ -57,7 +55,7 @@ public class TransposedTableModel implements TableModel, TableModelListener {
 
     @Override
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-        if(columnIndex == 0)
+        if (columnIndex == 0)
             return;
         wrappedModel.setValueAt(aValue, columnIndex - 1, rowIndex);
     }

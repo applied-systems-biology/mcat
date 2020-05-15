@@ -1,6 +1,5 @@
 package org.hkijena.mcat.api.datainterfaces;
 
-import org.hkijena.mcat.api.MCATData;
 import org.hkijena.mcat.api.MCATDataInterface;
 import org.hkijena.mcat.api.MCATDataSlot;
 import org.hkijena.mcat.extension.datatypes.AUCPlotData;

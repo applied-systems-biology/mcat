@@ -60,7 +60,7 @@ public class MCATClusteringParameters implements MCATParameterCollection {
     @MCATParameter("kmeans-k")
     @JsonSetter("kmeans-k")
     public boolean setkMeansK(int kMeansK) {
-        if(kMeansK <= 0) {
+        if (kMeansK <= 0) {
             return false;
         }
         this.kMeansK = kMeansK;

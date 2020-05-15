@@ -129,9 +129,9 @@ public class MCATProject {
             JsonNode node = jsonParser.readValueAsTree();
             project.parametersTable = JsonUtils.getObjectMapper().readerFor(MCATParametersTable.class).readValue(node.get("parameters"));
             for (Map.Entry<String, JsonNode> dataSetEntry : ImmutableList.copyOf(node.get("data-sets").fields())) {
-                   MCATProjectDataSet dataSet = JsonUtils.getObjectMapper().readerFor(MCATProjectDataSet.class).readValue(dataSetEntry.getValue());
-                   dataSet.setProject(project);
-                   project.dataSets.put(dataSetEntry.getKey(), dataSet);
+                MCATProjectDataSet dataSet = JsonUtils.getObjectMapper().readerFor(MCATProjectDataSet.class).readValue(dataSetEntry.getValue());
+                dataSet.setProject(project);
+                project.dataSets.put(dataSetEntry.getKey(), dataSet);
             }
             return project;
         }

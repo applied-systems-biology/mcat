@@ -1,8 +1,8 @@
 package org.hkijena.mcat.ui.parameters;
 
-import org.hkijena.mcat.utils.UIUtils;
 import org.hkijena.mcat.api.MCATValidatable;
 import org.hkijena.mcat.api.MCATValidityReport;
+import org.hkijena.mcat.utils.UIUtils;
 import org.scijava.Context;
 
 import javax.swing.*;

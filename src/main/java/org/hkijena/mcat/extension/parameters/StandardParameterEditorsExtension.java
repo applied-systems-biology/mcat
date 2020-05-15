@@ -2,10 +2,10 @@ package org.hkijena.mcat.extension.parameters;
 
 
 import org.hkijena.mcat.api.MCATClusteringHierarchy;
-import org.hkijena.mcat.extension.parameters.editors.*;
-import org.hkijena.mcat.extension.parameters.generators.*;
 import org.hkijena.mcat.api.MCATDefaultDocumentation;
 import org.hkijena.mcat.api.registries.MCATUIParametertypeRegistry;
+import org.hkijena.mcat.extension.parameters.editors.*;
+import org.hkijena.mcat.extension.parameters.generators.*;
 import org.hkijena.mcat.ui.parameters.MCATParameterEditorUI;
 import org.hkijena.mcat.ui.parameters.MCATParameterGeneratorUI;
 

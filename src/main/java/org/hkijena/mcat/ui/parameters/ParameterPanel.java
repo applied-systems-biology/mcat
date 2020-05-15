@@ -2,15 +2,15 @@ package org.hkijena.mcat.ui.parameters;
 
 import com.google.common.eventbus.Subscribe;
 import com.google.common.html.HtmlEscapers;
+import org.hkijena.mcat.api.MCATDocumentation;
+import org.hkijena.mcat.api.events.ParameterStructureChangedEvent;
+import org.hkijena.mcat.api.parameters.*;
+import org.hkijena.mcat.api.registries.MCATUIParametertypeRegistry;
 import org.hkijena.mcat.ui.components.FormPanel;
 import org.hkijena.mcat.ui.components.MarkdownDocument;
 import org.hkijena.mcat.utils.ResourceUtils;
 import org.hkijena.mcat.utils.StringUtils;
 import org.hkijena.mcat.utils.UIUtils;
-import org.hkijena.mcat.api.MCATDocumentation;
-import org.hkijena.mcat.api.events.ParameterStructureChangedEvent;
-import org.hkijena.mcat.api.parameters.*;
-import org.hkijena.mcat.api.registries.MCATUIParametertypeRegistry;
 import org.scijava.Context;
 import org.scijava.Contextual;
 

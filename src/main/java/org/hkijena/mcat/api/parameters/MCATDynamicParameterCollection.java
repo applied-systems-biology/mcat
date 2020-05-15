@@ -7,8 +7,8 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.eventbus.EventBus;
-import org.hkijena.mcat.utils.JsonUtils;
 import org.hkijena.mcat.api.events.ParameterStructureChangedEvent;
+import org.hkijena.mcat.utils.JsonUtils;
 
 import java.io.IOException;
 import java.util.*;

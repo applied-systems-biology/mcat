@@ -36,7 +36,7 @@ public class MCATResultUI extends JPanel {
 
         sampleManagerUI.getSampleTree().addTreeSelectionListener(e -> {
             Object pathComponent = e.getPath().getLastPathComponent();
-            if(pathComponent != null) {
+            if (pathComponent != null) {
                 MCATResultTreeNode treeNode = (MCATResultTreeNode) pathComponent;
                 splitPane.setRightComponent(new MCATResultSlotListUI(result.getOutputFolder(), treeNode.getSlotEntries()));
             }

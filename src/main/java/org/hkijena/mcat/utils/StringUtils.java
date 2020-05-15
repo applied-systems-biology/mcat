@@ -31,16 +31,16 @@ public class StringUtils {
 
     /**
      * Gets a description from a documentation annotation
+     *
      * @param documentation the documentation
      * @return document. Is never null.
      */
     public static MarkdownDocument getDocumentation(String documentation) {
-        if(StringUtils.isNullOrEmpty(documentation))
+        if (StringUtils.isNullOrEmpty(documentation))
             return new MarkdownDocument("");
-        if(documentation.startsWith("res://")) {
+        if (documentation.startsWith("res://")) {
             return MarkdownDocument.fromResource(documentation.substring("res://".length()));
-        }
-        else {
+        } else {
             return new MarkdownDocument(documentation);
         }
     }
@@ -48,16 +48,16 @@ public class StringUtils {
 
     /**
      * Gets a description from a documentation annotation
+     *
      * @param documentation the annotation
      * @return document. Is never null.
      */
     public static MarkdownDocument getDocumentation(MCATDocumentation documentation) {
-        if(StringUtils.isNullOrEmpty(documentation.description()))
+        if (StringUtils.isNullOrEmpty(documentation.description()))
             return new MarkdownDocument("");
-        if(documentation.description().startsWith("res://")) {
+        if (documentation.description().startsWith("res://")) {
             return MarkdownDocument.fromResource(documentation.description().substring("res://".length()));
-        }
-        else {
+        } else {
             return new MarkdownDocument(documentation.description());
         }
     }

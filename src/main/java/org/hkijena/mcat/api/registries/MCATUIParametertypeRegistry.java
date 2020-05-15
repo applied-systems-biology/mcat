@@ -1,9 +1,9 @@
 package org.hkijena.mcat.api.registries;
 
-import org.hkijena.mcat.extension.parameters.StandardParameterEditorsExtension;
 import org.hkijena.mcat.api.MCATDefaultDocumentation;
 import org.hkijena.mcat.api.MCATDocumentation;
 import org.hkijena.mcat.api.parameters.MCATParameterAccess;
+import org.hkijena.mcat.extension.parameters.StandardParameterEditorsExtension;
 import org.hkijena.mcat.ui.parameters.MCATParameterEditorUI;
 import org.hkijena.mcat.ui.parameters.MCATParameterGeneratorUI;
 import org.scijava.Context;
