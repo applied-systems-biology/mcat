@@ -3,10 +3,7 @@ package org.hkijena.mcat.api;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.eventbus.Subscribe;
-import org.hkijena.mcat.api.algorithms.MCATClusteringAlgorithm;
-import org.hkijena.mcat.api.algorithms.MCATPostprocessedPlotGenerationAlgorithm;
-import org.hkijena.mcat.api.algorithms.MCATPostprocessingAlgorithm;
-import org.hkijena.mcat.api.algorithms.MCATPreprocessingAlgorithm;
+import org.hkijena.mcat.api.algorithms.*;
 import org.hkijena.mcat.api.datainterfaces.*;
 import org.hkijena.mcat.api.parameters.*;
 import org.hkijena.mcat.utils.JsonUtils;
@@ -15,6 +12,7 @@ import org.hkijena.mcat.api.parameters.MCATCustomParameterCollection;
 import org.hkijena.mcat.api.parameters.MCATParameterAccess;
 import org.hkijena.mcat.api.parameters.MCATParameterCollection;
 import org.hkijena.mcat.api.parameters.MCATTraversedParameterCollection;
+import org.hkijena.mcat.utils.StringUtils;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -236,6 +234,8 @@ public class MCATRun implements MCATValidatable {
             preprocessingAlgorithmList.add(preprocessingAlgorithm);
         }
 
+        List<MCATClusteringAlgorithm> allClusteringAlgorithms = new ArrayList<>();
+
         for (MCATDataInterfaceKey clusteringOutputInterfaceKey : uniqueDataInterfaces.keySet().stream().filter(k ->
                 "clustering-output".equals(k.getDataInterfaceName()) && k.getParameters().contains(clusteringParameters))
                 .collect(Collectors.toSet())) {
@@ -255,6 +255,7 @@ public class MCATRun implements MCATValidatable {
                     clusteringOutputInterface);
 
             graph.insertNode(clusteringAlgorithm);
+            allClusteringAlgorithms.add(clusteringAlgorithm);
             for (MCATPreprocessingAlgorithm preprocessingAlgorithm : preprocessingAlgorithmList) {
                 graph.connect(preprocessingAlgorithm, clusteringAlgorithm);
             }
@@ -289,6 +290,41 @@ public class MCATRun implements MCATValidatable {
             if(postprocessingParameters.isAnalyzeMaxDecrease()) {
                 initializePostprocessedPlotGeneration(MCATPostprocessingMethod.MaxDecrease, postprocessingAlgorithm, postprocessingDataInterfaceKey);
             }
+        }
+
+        // Pass clustering algorithms to plot generation
+        initializeClusteredPlotGeneration(preprocessingParameters, clusteringParameters, allClusteringAlgorithms);
+    }
+
+    private void initializeClusteredPlotGeneration(MCATPreprocessingParameters preprocessingParameters,
+                                                   MCATClusteringParameters clusteringParameters,
+                                                   List<MCATClusteringAlgorithm> allClusteringAlgorithms) {
+        // Create the output
+        MCATDataInterfaceKey outputKey = new MCATDataInterfaceKey("clustered-plots");
+        outputKey.addParameter(preprocessingParameters);
+        outputKey.addParameter(clusteringParameters);
+        MCATClusteredPlotGenerationOutput output = new MCATClusteredPlotGenerationOutput();
+        registerUniqueDataInterface(outputKey, output);
+        savedDataInterfaces.add(outputKey);
+
+        // Create the input interface
+        MCATClusteredPlotGenerationInput input = new MCATClusteredPlotGenerationInput();
+        for (MCATClusteringAlgorithm clusteringAlgorithm : allClusteringAlgorithms) {
+            String subject = clusteringAlgorithm.getClusteringInput().getGroupSubject();
+            String treatment = clusteringAlgorithm.getClusteringInput().getGroupTreatment();
+            if(StringUtils.isNullOrEmpty(subject))
+                subject = "ALL_SUBJECTS";
+            if(StringUtils.isNullOrEmpty(treatment))
+                treatment = "ALL_TREATMENTS";
+            String id = subject + "__" + treatment;
+            input.getClusteringOutputMap().put(id, clusteringAlgorithm.getClusteringOutput());
+        }
+
+        // Create the algorithm
+        MCATClusteredPlotGenerationAlgorithm algorithm = new MCATClusteredPlotGenerationAlgorithm(this, input, output);
+        graph.insertNode(algorithm);
+        for (MCATClusteringAlgorithm clusteringAlgorithm : allClusteringAlgorithms) {
+            graph.connect(clusteringAlgorithm, algorithm);
         }
     }
 
