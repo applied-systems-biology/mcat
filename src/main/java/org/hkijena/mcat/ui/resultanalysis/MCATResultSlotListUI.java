@@ -16,7 +16,10 @@ import java.util.stream.Collectors;
 
 public class MCATResultSlotListUI extends JPanel {
 
-    public MCATResultSlotListUI(List<MCATResultDataInterfaces.SlotEntry> slotEntries) {
+    private Path outputPath;
+
+    public MCATResultSlotListUI(Path outputPath, List<MCATResultDataInterfaces.SlotEntry> slotEntries) {
+        this.outputPath = outputPath;
         setLayout(new BorderLayout());
         FormPanel formPanel = new FormPanel(null, FormPanel.WITH_SCROLLING);
 
@@ -30,7 +33,7 @@ public class MCATResultSlotListUI extends JPanel {
             groupHeader.addColumn(openFolderButton);
 
             for (MCATResultDataInterfaces.SlotEntry slotEntry : byParentStoragePath.get(parentStoragePath).stream().sorted(Comparator.comparing(MCATResultDataInterfaces.SlotEntry::getName)).collect(Collectors.toList())) {
-                Component ui = MCATResultDataSlotUIRegistry.getInstance().getUIFor(slotEntry);
+                Component ui = MCATResultDataSlotUIRegistry.getInstance().getUIFor(outputPath, slotEntry);
                 JLabel label = new JLabel(slotEntry.getName(), UIUtils.getIconFromResources("database.png"), JLabel.LEFT);
                 formPanel.addToForm(ui, label, null);
             }
@@ -43,7 +46,7 @@ public class MCATResultSlotListUI extends JPanel {
 
     private void openFolder(Path parentStoragePath) {
         try {
-            Desktop.getDesktop().open(parentStoragePath.toFile());
+            Desktop.getDesktop().open(outputPath.resolve(parentStoragePath).toFile());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

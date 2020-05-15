@@ -22,6 +22,17 @@ public interface MCATCustomParameterCollection extends MCATParameterCollection {
      * @param equals String that separates key and values (e.g. '=')
      * @return Parameter string
      */
+    static String parameterCollectionsToString(Collection<MCATParameterCollection> parameters, String separator, String equals) {
+        return parametersToString((new MCATTraversedParameterCollection(parameters.toArray(new MCATParameterCollection[0])).getParameters().values()), separator, equals);
+    }
+
+    /**
+     * Generates a parameter string from parameters.
+     * @param parameters The parameters
+     * @param separator String that separates entries (e.g. ',')
+     * @param equals String that separates key and values (e.g. '=')
+     * @return Parameter string
+     */
     static String parametersToString(Collection<MCATParameterAccess> parameters, String separator, String equals) {
         StringBuilder stringBuilder = new StringBuilder();
         boolean first = true;

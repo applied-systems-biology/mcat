@@ -5,6 +5,7 @@ import org.hkijena.mcat.ui.dataslots.MCATDefaultDataSlotResultUI;
 import org.hkijena.mcat.ui.resultanalysis.MCATResultDataSlotUI;
 
 import java.lang.reflect.InvocationTargetException;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,7 +17,7 @@ public class MCATResultDataSlotUIRegistry {
         // Register here
     }
 
-    public MCATResultDataSlotUI getUIFor(MCATResultDataInterfaces.SlotEntry slot) {
+    public MCATResultDataSlotUI getUIFor(Path outputPath, MCATResultDataInterfaces.SlotEntry slot) {
         Class<? extends MCATResultDataSlotUI> uiClass = registry.getOrDefault(slot.getName(), null);
         if (uiClass != null) {
             try {
@@ -25,7 +26,7 @@ public class MCATResultDataSlotUIRegistry {
                 throw new RuntimeException(e);
             }
         } else {
-            return new MCATDefaultDataSlotResultUI(slot);
+            return new MCATDefaultDataSlotResultUI(outputPath, slot);
         }
     }
 

@@ -5,9 +5,11 @@ import org.hkijena.mcat.api.*;
 import org.hkijena.mcat.api.datainterfaces.MCATClusteringOutput;
 import org.hkijena.mcat.api.datainterfaces.MCATClusteringOutputDataSetEntry;
 import org.hkijena.mcat.api.datainterfaces.MCATPostprocessingOutput;
+import org.hkijena.mcat.api.parameters.MCATAUCDataConditions;
 import org.hkijena.mcat.api.parameters.MCATClusteringParameters;
 import org.hkijena.mcat.api.parameters.MCATPostprocessingParameters;
 import org.hkijena.mcat.api.parameters.MCATPreprocessingParameters;
+import org.hkijena.mcat.extension.datatypes.AUCData;
 import org.hkijena.mcat.extension.datatypes.ClusterAbundanceData;
 import org.hkijena.mcat.extension.datatypes.ClusterCentersData;
 import org.hkijena.mcat.api.MCATValidityReport;
@@ -21,15 +23,10 @@ public class MCATPostprocessingAlgorithm extends MCATAlgorithm {
 
     // compensate for rounding errors when checking which curves have net decrease/increase; omit zero line
     private final double epsilon = 0.1;
-
-    private final int maxDecrease = 1;
-    private final int maxIncrease = 2;
-    private final int netDecrease = 4;
-    private final int netIncrease = 8;
     private final MCATPostprocessingOutput postprocessingOutput;
-    private int mode = 0;
     private List<MCATCentroidCluster<DoublePoint>> clusterCenters;
     private MCATClusteringOutput clusteringOutput;
+    private AUCData aucData = new AUCData();
 
     public MCATPostprocessingAlgorithm(MCATRun run,
                                        MCATPreprocessingParameters preprocessingParameters,
@@ -80,16 +77,16 @@ public class MCATPostprocessingAlgorithm extends MCATAlgorithm {
     }
 
     private void postProcess() {
-        if ((mode & maxDecrease) != 0)
+        if (getPostprocessingParameters().isAnalyzeMaxDecrease())
             postProcessMaxDecrease(clusterCenters);
 
-        if ((mode & maxIncrease) != 0)
+        if (getPostprocessingParameters().isAnalyzeMaxIncrease())
             postProcessMaxIncrease(clusterCenters);
 
-        if ((mode & netDecrease) != 0)
+        if (getPostprocessingParameters().isAnalyzeNetDecrease())
             postProcessNetDecrease(clusterCenters);
 
-        if ((mode & netIncrease) != 0)
+        if (getPostprocessingParameters().isAnalyzeNetIncrease())
             postProcessNetIncrease(clusterCenters);
     }
 
@@ -226,6 +223,16 @@ public class MCATPostprocessingAlgorithm extends MCATAlgorithm {
             System.out.println("    AUC: " + auc);
             System.out.println("    AUC cum: " + aucCum);
 
+            // Create the output object
+            MCATDataInterfaceKey outputKey = new MCATDataInterfaceKey("auc");
+            outputKey.addDataSet(key);
+            outputKey.addParameter(getPreprocessingParameters());
+            outputKey.addParameter(getClusteringParameters());
+            outputKey.addParameter(getPostprocessingParameters());
+            outputKey.addParameter(new MCATAUCDataConditions(postprocessingMethod));
+
+            aucData.getAucMap().put(outputKey, new AUCData.Row(auc, aucCum));
+
 //    		getRun().addResultObject(new MCATResultObject(samp.getName(),
 //    				samp.getParameters().getTreatment(),
 //    				samp.getRawDataInterface().getTissueROI().getData(ROIData.class).getRoi().getName(),
@@ -244,20 +251,10 @@ public class MCATPostprocessingAlgorithm extends MCATAlgorithm {
         clusterCenters = getClusteringOutput().getClusterCenters()
                 .getData(ClusterCentersData.class).getCentroids();
 
-        if (getPostprocessingParameters().isAnalyzeMaxDecrease())
-            mode = mode | maxDecrease;
-
-        if (getPostprocessingParameters().isAnalyzeMaxIncrease())
-            mode = mode | maxIncrease;
-
-        if (getPostprocessingParameters().isAnalyzeNetDecrease())
-            mode = mode | netDecrease;
-
-        if (getPostprocessingParameters().isAnalyzeNetIncrease())
-            mode = mode | netIncrease;
-
-
         postProcess();
+
+        getPostprocessingOutput().getAuc().setData(aucData);
+        getPostprocessingOutput().getAuc().flush("auc");
     }
 
     @Override

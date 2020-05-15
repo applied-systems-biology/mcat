@@ -11,7 +11,7 @@ public enum MCATPostprocessingMethod {
     public String toString() {
         switch (this) {
             case MaxDecrease:
-                return "maximum increase";
+                return "maximum decrease";
             case MaxIncrease:
                 return "maximum increase";
             case NetDecrease:

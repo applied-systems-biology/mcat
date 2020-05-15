@@ -7,11 +7,12 @@ import org.hkijena.mcat.utils.UIUtils;
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Objects;
 
 public class MCATDefaultDataSlotResultUI extends MCATResultDataSlotUI {
-    public MCATDefaultDataSlotResultUI(MCATResultDataInterfaces.SlotEntry slot) {
-        super(slot);
+    public MCATDefaultDataSlotResultUI(Path outputPath, MCATResultDataInterfaces.SlotEntry slot) {
+        super(outputPath, slot);
         initialize();
     }
 
@@ -27,7 +28,7 @@ public class MCATDefaultDataSlotResultUI extends MCATResultDataSlotUI {
 
     private void openFolder() {
         try {
-            Desktop.getDesktop().open(Objects.requireNonNull(getSlot().getStoragePath()).toFile());
+            Desktop.getDesktop().open(Objects.requireNonNull(getOutputPath().resolve(getSlot().getStoragePath())).toFile());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
