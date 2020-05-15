@@ -5,6 +5,11 @@ import org.hkijena.mcat.api.MCATRun;
 import org.hkijena.mcat.api.MCATValidityReport;
 import org.hkijena.mcat.api.datainterfaces.MCATClusteredPlotGenerationInput;
 import org.hkijena.mcat.api.datainterfaces.MCATClusteredPlotGenerationOutput;
+import org.hkijena.mcat.api.datainterfaces.MCATClusteringOutput;
+import org.hkijena.mcat.extension.datatypes.ClusterCentersData;
+import org.hkijena.mcat.extension.datatypes.TimeDerivativePlotData;
+
+import java.util.Map;
 
 /**
  * Plots that are generated for each generated cluster of a preprocessing data group
@@ -22,7 +27,19 @@ public class MCATClusteredPlotGenerationAlgorithm extends MCATAlgorithm {
 
     @Override
     public void run() {
+        TimeDerivativePlotData plotData = new TimeDerivativePlotData();
+        for (Map.Entry<String, MCATClusteringOutput> entry : getInput().getClusteringOutputMap().entrySet()) {
+            ClusterCentersData clusterCentersData = entry.getValue().getClusterCenters().getData(ClusterCentersData.class);
 
+            TimeDerivativePlotData.Series series = new TimeDerivativePlotData.Series();
+            series.setGroup(entry.getKey());
+            series.setData(clusterCentersData.getCentroids());
+
+            plotData.getDataSeries().put(entry.getKey() + ".csv", series);
+        }
+
+        output.getTimeDerivativePlot().setData(plotData);
+        output.getTimeDerivativePlot().flush("time-derivative-plot");
     }
 
     @Override
