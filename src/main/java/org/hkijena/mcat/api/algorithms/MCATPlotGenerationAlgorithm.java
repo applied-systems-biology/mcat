@@ -15,6 +15,9 @@ public class MCATPlotGenerationAlgorithm extends MCATAlgorithm {
     private final MCATPreprocessingParameters preprocessingParameters;
     private final MCATPostprocessingParameters postprocessingParameters;
     private final MCATClusteringParameters clusteringParameters;
+    private final MCATClusteringOutput clusteringOutput;
+    private final MCATPostprocessingOutput postprocessingOutput;
+    private final MCATPlotGenerationOutput plotGenerationOutput;
 
     public MCATPlotGenerationAlgorithm(MCATRun run,
                                        MCATPreprocessingParameters preprocessingParameters,
@@ -24,6 +27,9 @@ public class MCATPlotGenerationAlgorithm extends MCATAlgorithm {
         this.preprocessingParameters = preprocessingParameters;
         this.postprocessingParameters = postprocessingParameters;
         this.clusteringParameters = clusteringParameters;
+        this.clusteringOutput = clusteringOutput;
+        this.postprocessingOutput = postprocessingOutput;
+        this.plotGenerationOutput = plotGenerationOutput;
     }
 
     @Override
@@ -51,5 +57,17 @@ public class MCATPlotGenerationAlgorithm extends MCATAlgorithm {
 
     public MCATClusteringParameters getClusteringParameters() {
         return clusteringParameters;
+    }
+
+    public MCATClusteringOutput getClusteringOutput() {
+        return clusteringOutput;
+    }
+
+    public MCATPostprocessingOutput getPostprocessingOutput() {
+        return postprocessingOutput;
+    }
+
+    public MCATPlotGenerationOutput getPlotGenerationOutput() {
+        return plotGenerationOutput;
     }
 }
