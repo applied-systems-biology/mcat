@@ -292,12 +292,15 @@ public class MCATRun implements MCATValidatable {
         }
     }
 
-    private void initializePlotGeneration(MCATPostprocessingMethod method, MCATPostprocessingAlgorithm postprocessingAlgorithm, MCATDataInterfaceKey postprocessingDataInterfaceKey) {
+    private void initializePlotGeneration(MCATPostprocessingMethod method,
+                                          MCATPostprocessingAlgorithm postprocessingAlgorithm,
+                                          MCATDataInterfaceKey postprocessingDataInterfaceKey) {
+        MCATAUCDataConditions conditions = new MCATAUCDataConditions(method);
         // Create output data
         MCATDataInterfaceKey plotDataInterfaceKey = new MCATDataInterfaceKey("plots");
         plotDataInterfaceKey.addDataSets(postprocessingDataInterfaceKey.getDataSetNames());
         plotDataInterfaceKey.addParameters(postprocessingDataInterfaceKey.getParameters());
-        plotDataInterfaceKey.addParameter(new MCATAUCDataConditions(method));
+        plotDataInterfaceKey.addParameter(conditions);
 
         MCATPlotGenerationOutput plotGenerationOutput = new MCATPlotGenerationOutput();
         registerUniqueDataInterface(plotDataInterfaceKey, plotGenerationOutput);
@@ -308,6 +311,7 @@ public class MCATRun implements MCATValidatable {
                 postprocessingAlgorithm.getPreprocessingParameters(),
                 postprocessingAlgorithm.getPostprocessingParameters(),
                 postprocessingAlgorithm.getClusteringParameters(),
+                conditions,
                 postprocessingAlgorithm.getClusteringOutput(),
                 postprocessingAlgorithm.getPostprocessingOutput(),
                 plotGenerationOutput);
