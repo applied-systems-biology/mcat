@@ -1,10 +1,9 @@
 package org.hkijena.mcat.ui.registries;
 
 import org.hkijena.mcat.api.MCATResultDataInterfaces;
-import org.hkijena.mcat.extension.dataproviders.ui.DerivationMatrixFromFileDataProviderUI;
-import org.hkijena.mcat.extension.resultanalysis.DerivativeMatrixDataSlotResultUI;
 import org.hkijena.mcat.extension.resultanalysis.MCATDefaultDataSlotResultUI;
 import org.hkijena.mcat.extension.resultanalysis.StandardResultDataSlotUIExtension;
+import org.hkijena.mcat.ui.MCATWorkbenchUI;
 import org.hkijena.mcat.ui.resultanalysis.MCATResultDataSlotUI;
 
 import java.lang.reflect.InvocationTargetException;
@@ -23,16 +22,16 @@ public class MCATResultDataSlotUIRegistry {
         registry.put(dataTypeId, uiClass);
     }
 
-    public MCATResultDataSlotUI getUIFor(Path outputPath, MCATResultDataInterfaces.SlotEntry slot) {
+    public MCATResultDataSlotUI getUIFor(MCATResultDataInterfaces.SlotEntry slot, Path outputPath, MCATWorkbenchUI workbenchUI) {
         Class<? extends MCATResultDataSlotUI> uiClass = registry.getOrDefault(slot.getDataTypeId(), null);
         if (uiClass != null) {
             try {
-                return uiClass.getConstructor(Path.class, MCATResultDataInterfaces.SlotEntry.class).newInstance(outputPath, slot);
+                return uiClass.getConstructor(MCATWorkbenchUI.class, Path.class, MCATResultDataInterfaces.SlotEntry.class).newInstance(workbenchUI, outputPath, slot);
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
                 throw new RuntimeException(e);
             }
         } else {
-            return new MCATDefaultDataSlotResultUI(outputPath, slot);
+            return new MCATDefaultDataSlotResultUI(workbenchUI, outputPath, slot);
         }
     }
 

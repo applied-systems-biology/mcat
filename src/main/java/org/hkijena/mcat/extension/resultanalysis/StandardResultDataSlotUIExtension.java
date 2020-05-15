@@ -14,5 +14,7 @@ public class StandardResultDataSlotUIExtension {
     public static void register() {
         MCATResultDataSlotUIRegistry.getInstance().register("derivative-matrix", DerivativeMatrixDataSlotResultUI.class);
         MCATResultDataSlotUIRegistry.getInstance().register("imageplus-hyperstack", HyperStackDataSlotResultUI.class);
+        MCATResultDataSlotUIRegistry.getInstance().register("auc-plot", AUCPlotDataSlotResultUI.class);
+        MCATResultDataSlotUIRegistry.getInstance().register("time-derivative-plot", TimeDerivativePlotDataSlotResultUI.class);
     }
 }

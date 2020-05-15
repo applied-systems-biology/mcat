@@ -93,7 +93,7 @@ public class MCATWorkbenchUI extends JFrame {
         if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
             MCATResult result = new MCATResult(fileChooser.getSelectedFile().toPath());
             MCATWorkbenchUI workbenchUI = newWindow(command, result.getProject());
-            MCATResultUI resultUI = new MCATResultUI(result);
+            MCATResultUI resultUI = new MCATResultUI(workbenchUI, result);
             workbenchUI.documentTabPane.addTab("Result", UIUtils.getIconFromResources("run.png"),
                     resultUI, DocumentTabPane.CloseMode.withAskOnCloseButton, true);
         }

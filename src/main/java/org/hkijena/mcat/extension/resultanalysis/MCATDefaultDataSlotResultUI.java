@@ -1,6 +1,7 @@
 package org.hkijena.mcat.extension.resultanalysis;
 
 import org.hkijena.mcat.api.MCATResultDataInterfaces;
+import org.hkijena.mcat.ui.MCATWorkbenchUI;
 import org.hkijena.mcat.ui.resultanalysis.MCATResultDataSlotUI;
 import org.hkijena.mcat.utils.UIUtils;
 
@@ -11,15 +12,16 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Consumer;
 
 public class MCATDefaultDataSlotResultUI extends MCATResultDataSlotUI {
 
     private List<SlotAction> registeredSlotActions = new ArrayList<>();
+    private MCATWorkbenchUI workbenchUI;
 
-    public MCATDefaultDataSlotResultUI(Path outputPath, MCATResultDataInterfaces.SlotEntry slot) {
+    public MCATDefaultDataSlotResultUI(MCATWorkbenchUI workbenchUI, Path outputPath, MCATResultDataInterfaces.SlotEntry slot) {
         super(outputPath, slot);
+        this.workbenchUI = workbenchUI;
         registerActions();
         initialize();
     }
@@ -39,28 +41,37 @@ public class MCATDefaultDataSlotResultUI extends MCATResultDataSlotUI {
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         add(Box.createHorizontalGlue());
 
-        if (!registeredSlotActions.isEmpty()) {
-            SlotAction mainSlotAction = registeredSlotActions.get(registeredSlotActions.size() - 1);
-            JButton mainActionButton = new JButton(mainSlotAction.getName(), mainSlotAction.getIcon());
-            mainActionButton.setToolTipText(mainSlotAction.getDescription());
-            mainActionButton.addActionListener(e -> mainSlotAction.action.accept(this));
-            add(mainActionButton);
+//        if (!registeredSlotActions.isEmpty()) {
+//            SlotAction mainSlotAction = registeredSlotActions.get(registeredSlotActions.size() - 1);
+//            JButton mainActionButton = new JButton(mainSlotAction.getName(), mainSlotAction.getIcon());
+//            mainActionButton.setToolTipText(mainSlotAction.getDescription());
+//            mainActionButton.addActionListener(e -> mainSlotAction.action.accept(this));
+//            add(mainActionButton);
+//
+//            if (registeredSlotActions.size() > 1) {
+//                JButton menuButton = new JButton("...");
+//                menuButton.setMaximumSize(new Dimension(1, (int) mainActionButton.getPreferredSize().getHeight()));
+//                menuButton.setToolTipText("More actions ...");
+//                JPopupMenu menu = UIUtils.addPopupMenuToComponent(menuButton);
+//                for (int i = registeredSlotActions.size() - 2; i >= 0; --i) {
+//                    SlotAction otherSlotAction = registeredSlotActions.get(i);
+//                    JMenuItem item = new JMenuItem(otherSlotAction.getName(), otherSlotAction.getIcon());
+//                    item.setToolTipText(otherSlotAction.getDescription());
+//                    item.addActionListener(e -> otherSlotAction.getAction().accept(this));
+//                    menu.add(item);
+//                }
+//                add(menuButton);
+//            }
+//        }
 
-            if (registeredSlotActions.size() > 1) {
-                JButton menuButton = new JButton("...");
-                menuButton.setMaximumSize(new Dimension(1, (int) mainActionButton.getPreferredSize().getHeight()));
-                menuButton.setToolTipText("More actions ...");
-                JPopupMenu menu = UIUtils.addPopupMenuToComponent(menuButton);
-                for (int i = registeredSlotActions.size() - 2; i >= 0; --i) {
-                    SlotAction otherSlotAction = registeredSlotActions.get(i);
-                    JMenuItem item = new JMenuItem(otherSlotAction.getName(), otherSlotAction.getIcon());
-                    item.setToolTipText(otherSlotAction.getDescription());
-                    item.addActionListener(e -> otherSlotAction.getAction().accept(this));
-                    menu.add(item);
-                }
-                add(menuButton);
-            }
+        for (int i = registeredSlotActions.size() - 1; i >= 0; --i) {
+            SlotAction slotAction = registeredSlotActions.get(i);
+            JButton mainActionButton = new JButton(slotAction.getName(), slotAction.getIcon());
+            mainActionButton.setToolTipText(slotAction.getDescription());
+            mainActionButton.addActionListener(e -> slotAction.action.accept(this));
+            add(mainActionButton);
         }
+
     }
 
     /**
@@ -102,6 +113,10 @@ public class MCATDefaultDataSlotResultUI extends MCATResultDataSlotUI {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public MCATWorkbenchUI getWorkbenchUI() {
+        return workbenchUI;
     }
 
     /**

@@ -1,6 +1,8 @@
 package org.hkijena.mcat.ui.resultanalysis;
 
 import org.hkijena.mcat.api.MCATResult;
+import org.hkijena.mcat.ui.MCATWorkbenchUI;
+import org.hkijena.mcat.ui.MCATWorkbenchUIPanel;
 import org.hkijena.mcat.utils.UIUtils;
 
 import javax.swing.*;
@@ -9,11 +11,12 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.io.IOException;
 
-public class MCATResultUI extends JPanel {
+public class MCATResultUI extends MCATWorkbenchUIPanel {
     private JSplitPane splitPane;
     private MCATResult result;
 
-    public MCATResultUI(MCATResult result) {
+    public MCATResultUI(MCATWorkbenchUI workbenchUI, MCATResult result) {
+        super(workbenchUI);
         this.result = result;
         initialize();
     }
@@ -38,7 +41,7 @@ public class MCATResultUI extends JPanel {
             Object pathComponent = e.getPath().getLastPathComponent();
             if (pathComponent != null) {
                 MCATResultTreeNode treeNode = (MCATResultTreeNode) pathComponent;
-                splitPane.setRightComponent(new MCATResultSlotListUI(result.getOutputFolder(), treeNode.getSlotEntries()));
+                splitPane.setRightComponent(new MCATResultSlotListUI(getWorkbenchUI(), result.getOutputFolder(), treeNode.getSlotEntries()));
             }
         });
 

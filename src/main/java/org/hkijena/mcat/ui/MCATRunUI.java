@@ -133,7 +133,7 @@ public class MCATRunUI extends MCATWorkbenchUIPanel {
     }
 
     private void openResults() {
-        MCATResultUI resultUI = new MCATResultUI(new MCATResult(run.getOutputPath()));
+        MCATResultUI resultUI = new MCATResultUI(getWorkbenchUI(), new MCATResult(run.getOutputPath()));
         add(resultUI, BorderLayout.CENTER);
         buttonPanel.setVisible(false);
         revalidate();

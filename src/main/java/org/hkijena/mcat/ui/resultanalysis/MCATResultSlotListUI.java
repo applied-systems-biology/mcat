@@ -1,6 +1,8 @@
 package org.hkijena.mcat.ui.resultanalysis;
 
 import org.hkijena.mcat.api.MCATResultDataInterfaces;
+import org.hkijena.mcat.ui.MCATWorkbenchUI;
+import org.hkijena.mcat.ui.MCATWorkbenchUIPanel;
 import org.hkijena.mcat.ui.components.FormPanel;
 import org.hkijena.mcat.ui.registries.MCATResultDataSlotUIRegistry;
 import org.hkijena.mcat.utils.UIUtils;
@@ -14,11 +16,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class MCATResultSlotListUI extends JPanel {
+public class MCATResultSlotListUI extends MCATWorkbenchUIPanel {
 
     private Path outputPath;
 
-    public MCATResultSlotListUI(Path outputPath, List<MCATResultDataInterfaces.SlotEntry> slotEntries) {
+    public MCATResultSlotListUI(MCATWorkbenchUI workbenchUI, Path outputPath, List<MCATResultDataInterfaces.SlotEntry> slotEntries) {
+        super(workbenchUI);
         this.outputPath = outputPath;
         setLayout(new BorderLayout());
         FormPanel formPanel = new FormPanel(null, FormPanel.WITH_SCROLLING);
@@ -33,7 +36,7 @@ public class MCATResultSlotListUI extends JPanel {
             groupHeader.addColumn(openFolderButton);
 
             for (MCATResultDataInterfaces.SlotEntry slotEntry : byParentStoragePath.get(parentStoragePath).stream().sorted(Comparator.comparing(MCATResultDataInterfaces.SlotEntry::getName)).collect(Collectors.toList())) {
-                Component ui = MCATResultDataSlotUIRegistry.getInstance().getUIFor(outputPath, slotEntry);
+                Component ui = MCATResultDataSlotUIRegistry.getInstance().getUIFor(slotEntry, outputPath, getWorkbenchUI());
                 JLabel label = new JLabel(slotEntry.getName(), UIUtils.getIconFromResources("database.png"), JLabel.LEFT);
                 formPanel.addToForm(ui, label, null);
             }
