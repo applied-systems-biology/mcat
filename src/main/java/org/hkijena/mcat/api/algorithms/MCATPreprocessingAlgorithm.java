@@ -119,7 +119,7 @@ public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
 //        if (slices < minLength)
 //            getClusteringParameters().setMinLength(slices);
         // Use the data interface instead (just create a variable)
-        getPreprocessingOutput().setMinLength(slices);
+        getPreprocessingOutput().setNSlices(slices);
 
         return imp;
     }

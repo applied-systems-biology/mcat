@@ -247,7 +247,7 @@ public class MCATClusteringAlgorithm extends MCATAlgorithm {
         // This should be equivalent to the old algorithm in MCATPreprocessingAlgorithm
         minLength = getClusteringParameters().getMinLength();
         for (MCATClusteringInputDataSetEntry entry : getClusteringInput().getDataSetEntries().values()) {
-            minLength = Math.min(entry.getPreprocessedDataInterface().getMinLength(), minLength);
+            minLength = Math.min(entry.getPreprocessedDataInterface().getNSlices(), minLength);
         }
         getClusteringOutput().setMinLength(minLength); // Pass the calculated result to the data interface
         minLength = minLength - 1; //subtract one because of differences in indexing and slice number measurement

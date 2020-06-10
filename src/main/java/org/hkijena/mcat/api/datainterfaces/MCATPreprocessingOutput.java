@@ -16,7 +16,7 @@ public class MCATPreprocessingOutput implements MCATDataInterface {
     private MCATDataSlot derivativeMatrix = new MCATDataSlot("derivative-matrix", DerivativeMatrixData.class);
 
     // Must be set by preprocessing
-    private int minLength = -1;
+    private int nSlices = -1;
 
     public MCATPreprocessingOutput() {
 
@@ -43,11 +43,11 @@ public class MCATPreprocessingOutput implements MCATDataInterface {
         return result;
     }
 
-    public int getMinLength() {
-        return minLength;
+    public int getNSlices() {
+        return nSlices;
     }
 
-    public void setMinLength(int minLength) {
-        this.minLength = minLength;
+    public void setNSlices(int nSlices) {
+        this.nSlices = nSlices;
     }
 }
