@@ -3,7 +3,9 @@ package org.hkijena.mcat.api.datainterfaces;
 import org.hkijena.mcat.api.MCATDataInterface;
 import org.hkijena.mcat.api.MCATDataSlot;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -14,6 +16,7 @@ public class MCATClusteringInput implements MCATDataInterface {
     private final String groupSubject;
     private final String groupTreatment;
     private Map<String, MCATClusteringInputDataSetEntry> dataSetEntries = new HashMap<>();
+    private List<MCATPreprocessingOutput> allPreprocessingOutputs = new ArrayList<>();
 
     public MCATClusteringInput(String groupSubject, String groupTreatment) {
         this.groupSubject = groupSubject;
@@ -30,6 +33,15 @@ public class MCATClusteringInput implements MCATDataInterface {
             }
         }
         return result;
+    }
+
+
+    /**
+     * List of ALL preprocessing results that were involved in ALL clustering operations
+     * @return list
+     */
+    public List<MCATPreprocessingOutput> getAllPreprocessingOutputs() {
+        return allPreprocessingOutputs;
     }
 
     public Map<String, MCATClusteringInputDataSetEntry> getDataSetEntries() {

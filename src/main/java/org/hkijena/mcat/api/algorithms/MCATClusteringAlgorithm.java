@@ -18,6 +18,7 @@ import org.hkijena.mcat.api.datainterfaces.MCATClusteringInput;
 import org.hkijena.mcat.api.datainterfaces.MCATClusteringInputDataSetEntry;
 import org.hkijena.mcat.api.datainterfaces.MCATClusteringOutput;
 import org.hkijena.mcat.api.datainterfaces.MCATClusteringOutputDataSetEntry;
+import org.hkijena.mcat.api.datainterfaces.MCATPreprocessingOutput;
 import org.hkijena.mcat.api.parameters.MCATClusteringParameters;
 import org.hkijena.mcat.api.parameters.MCATPreprocessingParameters;
 import org.hkijena.mcat.extension.datatypes.ClusterAbundanceData;
@@ -243,15 +244,14 @@ public class MCATClusteringAlgorithm extends MCATAlgorithm {
 
         k = getClusteringParameters().getkMeansK();
 
-        // Clustering gets multiple inputs (although they are actually from the same preprocessing), so I assume you want the minimum min length
-        // This should be equivalent to the old algorithm in MCATPreprocessingAlgorithm
+        // Horrible hack (aka workaround) for the issues?
         minLength = getClusteringParameters().getMinLength();
-        for (MCATClusteringInputDataSetEntry entry : getClusteringInput().getDataSetEntries().values()) {
-            minLength = Math.min(entry.getPreprocessedDataInterface().getNSlices(), minLength);
+        for (MCATPreprocessingOutput preprocessingOutput : getClusteringInput().getAllPreprocessingOutputs()) {
+            minLength = Math.min(preprocessingOutput.getNSlices(), minLength);
         }
+        minLength = Math.min(getPreprocessingParameters().getMinTime(), minLength); // Min time as requested :D
         getClusteringOutput().setMinLength(minLength); // Pass the calculated result to the data interface
         minLength = minLength - 1; //subtract one because of differences in indexing and slice number measurement
-
 
         loadImages();
 

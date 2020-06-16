@@ -113,6 +113,9 @@ public class MCATRun implements MCATValidatable {
         Map<String, Map<String, MCATClusteringInput>> inputGroups = new HashMap<>();
         Map<String, Map<String, MCATClusteringOutput>> outputGroups = new HashMap<>();
 
+        // Keep the list of preprocessing interfaces
+        List<MCATPreprocessingOutput> preprocessingOutputs = new ArrayList<>();
+
         for (MCATDataInterfaceKey preprocessedInterfaceKey : matchingPreprocessedInterfaceKeys) {
             if (preprocessedInterfaceKey.getDataSetNames().size() != 1)
                 throw new RuntimeException("Must have exactly one data set reference!");
@@ -124,6 +127,7 @@ public class MCATRun implements MCATValidatable {
             MCATProjectDataSet projectDataSet = project.getDataSets().get(dataSetName);
             MCATPreprocessingInput rawDataInterface = (MCATPreprocessingInput) uniqueDataInterfaces.get(rawInterfaceKey);
             MCATPreprocessingOutput preprocessedDataInterface = (MCATPreprocessingOutput) uniqueDataInterfaces.get(preprocessedInterfaceKey);
+            preprocessingOutputs.add(preprocessedDataInterface);
 
             String groupSubject = projectDataSet.getName();
             String groupTreatment = projectDataSet.getParameters().getTreatment();
@@ -175,6 +179,10 @@ public class MCATRun implements MCATValidatable {
         for (String subject : inputGroups.keySet()) {
             for (String treatment : inputGroups.get(subject).keySet()) {
                 MCATClusteringInput clusteringInput = inputGroups.get(subject).get(treatment);
+
+                // Provide clustering input with all preprocessing data sets
+                clusteringInput.getAllPreprocessingOutputs().addAll(preprocessingOutputs);
+
                 MCATDataInterfaceKey clusteringInputKey = new MCATDataInterfaceKey("clustering-input");
                 clusteringInputKey.addParameter(preprocessingParameters);
                 clusteringInputKey.addDataSets(clusteringInput.getDataSetEntries().keySet());
