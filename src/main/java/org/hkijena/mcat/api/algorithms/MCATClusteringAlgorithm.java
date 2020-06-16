@@ -249,7 +249,7 @@ public class MCATClusteringAlgorithm extends MCATAlgorithm {
         for (MCATPreprocessingOutput preprocessingOutput : getClusteringInput().getAllPreprocessingOutputs()) {
             minLength = Math.min(preprocessingOutput.getNSlices(), minLength);
         }
-        minLength = Math.min(getPreprocessingParameters().getMinTime(), minLength); // Min time as requested :D
+        minLength = Math.min(getPreprocessingParameters().getMaxTime(), minLength); // Min time as requested :D
         getClusteringOutput().setMinLength(minLength); // Pass the calculated result to the data interface
         minLength = minLength - 1; //subtract one because of differences in indexing and slice number measurement
 
