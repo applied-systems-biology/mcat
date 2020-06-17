@@ -90,6 +90,14 @@ public class MCATClusteringAlgorithm extends MCATAlgorithm {
         List<String> keys = new ArrayList<>(clusteringInput.getDataSetEntries().keySet());
         String[] names = new String[keys.size()];
         ImagePlus[] imps = new ImagePlus[keys.size()];
+        
+//        Map<String, String> keys_sorted = new TreeMap<String, String>();  
+//        for (int i = 0; i < keys.size(); i++) {
+//        	MCATClusteringInputDataSetEntry samp = clusteringInput.getDataSetEntries().get(keys.get(i));
+//        	System.out.println("In ordering: " + samp.getDataSetName());
+//        	keys_sorted.put(samp.getDataSetName(), keys.get(i));
+//		}
+//        Object[] keys2 = keys_sorted.values().toArray();
 
         for (int i = 0; i < keys.size(); i++) {
             MCATClusteringInputDataSetEntry samp = clusteringInput.getDataSetEntries().get(keys.get(i));
@@ -101,6 +109,8 @@ public class MCATClusteringAlgorithm extends MCATAlgorithm {
 
             int width = imp.getWidth();
             int height = imp.getHeight();
+            
+            System.out.println("minLength: " + minLength);
 
             float[] tmp;
 
@@ -111,6 +121,14 @@ public class MCATClusteringAlgorithm extends MCATAlgorithm {
                     for (int j = 0; j < tmp.length; j++) {
                         pixels[j] = tmp[j];
                     }
+
+                    if(x == 150 && y == 150) {
+                    	String print = "";
+                    	for (int j = 0; j < tmp.length; j++) {
+                    		print = print + tmp[j] + "; ";
+                    	}
+                    	System.out.println(imp.getTitle() + " values: " + print);
+                    } 
 
                     points.add(new DoublePoint(pixels));
                 }
@@ -128,8 +146,7 @@ public class MCATClusteringAlgorithm extends MCATAlgorithm {
 
         System.out.println("\tPerforming k-means algorithm...");
 
-        int nSeeds = 50;
-        KMeansPlusPlusClusterer<DoublePoint> kmpp = new KMeansPlusPlusClusterer<DoublePoint>(k, 50, new EuclideanDistance(), new JDKRandomGenerator(nSeeds), EmptyClusterStrategy.FARTHEST_POINT);
+        KMeansPlusPlusClusterer<DoublePoint> kmpp = new KMeansPlusPlusClusterer<DoublePoint>(k, 50, new EuclideanDistance());
 
         List<CentroidCluster<DoublePoint>> tmpCentroidCluster = kmpp.cluster(points);
 
@@ -249,7 +266,7 @@ public class MCATClusteringAlgorithm extends MCATAlgorithm {
         for (MCATPreprocessingOutput preprocessingOutput : getClusteringInput().getAllPreprocessingOutputs()) {
             minLength = Math.min(preprocessingOutput.getNSlices(), minLength);
         }
-        minLength = Math.min(getPreprocessingParameters().getMinTime(), minLength); // Min time as requested :D
+        minLength = Math.min(getPreprocessingParameters().getMaxTime(), minLength); // Min time as requested :D
         getClusteringOutput().setMinLength(minLength); // Pass the calculated result to the data interface
         minLength = minLength - 1; //subtract one because of differences in indexing and slice number measurement
 
