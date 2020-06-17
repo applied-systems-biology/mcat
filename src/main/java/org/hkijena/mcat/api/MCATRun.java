@@ -3,6 +3,9 @@ package org.hkijena.mcat.api;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.eventbus.Subscribe;
+
+import scala.annotation.meta.param;
+
 import org.hkijena.mcat.api.algorithms.*;
 import org.hkijena.mcat.api.datainterfaces.*;
 import org.hkijena.mcat.api.events.ParameterChangedEvent;
@@ -432,16 +435,37 @@ public class MCATRun implements MCATValidatable {
         MCATResultDataInterfaces.DataInterfaceEntry result = new MCATResultDataInterfaces.DataInterfaceEntry(key);
 
         String interfaceType = key.getDataInterfaceName();
-        String dataSetString = key.getDataSetNames().stream().sorted().collect(Collectors.joining(","));
+        String dataSetString = key.getDataSetNames().stream().sorted().collect(Collectors.joining("_"));
+        
+        
+        System.out.println("result name: " + result.getName());
+        System.out.println("interface type: " + interfaceType);
+        System.out.println("dataset string: " + dataSetString);
+        
         Set<MCATParameterAccess> parameterAccesses = new HashSet<>();
         for (MCATParameterCollection parameterCollection : key.getParameters()) {
+        	System.out.println("in loop: " + parameterCollection.toString());
             parameterAccesses.addAll((new MCATTraversedParameterCollection(parameterCollection)).getParameters().values());
         }
-        String parameterString = MCATCustomParameterCollection.parametersToString(parameterAccesses, ",", "=");
+        
+        for (MCATParameterAccess mcatParameterAccess : parameterAccesses) {
+			System.out.println("in second loop: " + mcatParameterAccess.getShortKey() + ": " + mcatParameterAccess.get());
+		}
+        
+        
+        String parameterString = MCATCustomParameterCollection.parametersToString(parameterAccesses, "_", "-");
+        parameterString = parameterString.replace("_minTime-0", "");
+        parameterString = parameterString.replace("_maxTime-" + Integer.MAX_VALUE, "");
+        parameterString = parameterString.replace("_mlength-" + Integer.MAX_VALUE, "");
+        parameterString = parameterString.replace("_sRaw-true", "");
+        parameterString = parameterString.replace("_sRaw-false", "");
+        parameterString = parameterString.replace("_sRoi-true", "");
+        parameterString = parameterString.replace("_sRoi-false", "");
+        
         result.setParameterString(parameterString);
 
         for (Map.Entry<String, MCATDataSlot> slotEntry : dataInterface.getSlots().entrySet()) {
-            Path slotPath = outputPath.resolve(interfaceType).resolve(parameterString).resolve(dataSetString).resolve(slotEntry.getValue().getName());
+        	Path slotPath = outputPath.resolve(interfaceType).resolve(parameterString).resolve(dataSetString).resolve(slotEntry.getValue().getName());
             if (!Files.exists(slotPath)) {
                 try {
                     Files.createDirectories(slotPath);

@@ -12,6 +12,7 @@ import org.hkijena.mcat.api.parameters.MCATPreprocessingParameters;
 import org.hkijena.mcat.extension.datatypes.AUCData;
 import org.hkijena.mcat.extension.datatypes.ClusterAbundanceData;
 import org.hkijena.mcat.extension.datatypes.ClusterCentersData;
+import org.hkijena.mcat.extension.datatypes.ROIData;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -202,16 +203,6 @@ public class MCATPostprocessingAlgorithm extends MCATAlgorithm {
             outputKey.addParameter(new MCATAUCDataConditions(postprocessingMethod));
 
             aucData.getAucMap().put(outputKey, new AUCData.Row(auc, aucCum));
-
-//    		getRun().addResultObject(new MCATResultObject(samp.getName(),
-//    				samp.getParameters().getTreatment(),
-//    				samp.getRawDataInterface().getTissueROI().getData(ROIData.class).getRoi().getName(),
-//    				getPreprocessingParameters().getDownsamplingFactor(),
-//    				getPreprocessingParameters().getChannelOfInterest(),
-//    				getClusteringParameters().getClusteringHierarchy(),
-//    				getClusteringParameters().getkMeansK(),
-//    				postprocessingMethod,
-//    				auc));
         }
     }
 
@@ -223,8 +214,23 @@ public class MCATPostprocessingAlgorithm extends MCATAlgorithm {
 
         postProcess();
 
+        System.out.println("treatment: " + getClusteringOutput().getGroupTreatment());
+        System.out.println("subject: " + getClusteringOutput().getGroupSubject());
+        
+        String group = "";
+        if(getClusteringOutput().getGroupTreatment() == "")
+        	group = getClusteringOutput().getGroupSubject();
+        else
+        	group = getClusteringOutput().getGroupTreatment();
+        	
+        String identifier = group + 
+                "_down-" + getPreprocessingParameters().getDownsamplingFactor() +
+                "_aCh-" + getPreprocessingParameters().getAnatomicChannel() +
+                "_iCh-" + getPreprocessingParameters().getChannelOfInterest() +
+                "_k-" + getClusteringParameters().getkMeansK() + "_";
+
         getPostprocessingOutput().getAuc().setData(aucData);
-        getPostprocessingOutput().getAuc().flush("auc");
+        getPostprocessingOutput().getAuc().flush(identifier);
     }
 
     @Override

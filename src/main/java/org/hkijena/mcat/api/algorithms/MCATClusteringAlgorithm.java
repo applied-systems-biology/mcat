@@ -90,14 +90,6 @@ public class MCATClusteringAlgorithm extends MCATAlgorithm {
         List<String> keys = new ArrayList<>(clusteringInput.getDataSetEntries().keySet());
         String[] names = new String[keys.size()];
         ImagePlus[] imps = new ImagePlus[keys.size()];
-        
-//        Map<String, String> keys_sorted = new TreeMap<String, String>();  
-//        for (int i = 0; i < keys.size(); i++) {
-//        	MCATClusteringInputDataSetEntry samp = clusteringInput.getDataSetEntries().get(keys.get(i));
-//        	System.out.println("In ordering: " + samp.getDataSetName());
-//        	keys_sorted.put(samp.getDataSetName(), keys.get(i));
-//		}
-//        Object[] keys2 = keys_sorted.values().toArray();
 
         for (int i = 0; i < keys.size(); i++) {
             MCATClusteringInputDataSetEntry samp = clusteringInput.getDataSetEntries().get(keys.get(i));
@@ -157,11 +149,7 @@ public class MCATClusteringAlgorithm extends MCATAlgorithm {
 
         centroids.sort(Comparator.comparingDouble(MCATCentroidCluster::getCumSum));
 
-
         getClusteringOutput().getClusterCenters().setData(new ClusterCentersData(centroids));
-
-
-        //TODO assign colors according to cluster center
 
         Set<String> keys = getClusteringInput().getDataSetEntries().keySet();
 
@@ -211,10 +199,9 @@ public class MCATClusteringAlgorithm extends MCATAlgorithm {
 
             String identifier = outputEntry.getDataSetName() + "_roi-" +
                     inputEntry.getRawDataInterface().getTissueROI().getData(ROIData.class).getRoi().getName() +
-                    "_downsampling-" + getPreprocessingParameters().getDownsamplingFactor() +
-                    "_anatomyCh-" + getPreprocessingParameters().getAnatomicChannel() +
-                    "_interestCh-" + getPreprocessingParameters().getChannelOfInterest() +
-                    "_timeFrames-" + getClusteringParameters().getMinLength() +
+                    "_down-" + getPreprocessingParameters().getDownsamplingFactor() +
+                    "_aCh-" + getPreprocessingParameters().getAnatomicChannel() +
+                    "_iCh-" + getPreprocessingParameters().getChannelOfInterest() +
                     "_k-" + getClusteringParameters().getkMeansK() + "_";
 
 
@@ -223,9 +210,7 @@ public class MCATClusteringAlgorithm extends MCATAlgorithm {
             ImagePlus clusteredImage = IJ.createImage(imp.getTitle() + "_clusteredImage", "RGB white", w, h, 1);
             clusteredImage.getProcessor().setPixels(clusteredPixels);
 
-
             clustered.put(outputEntry.getDataSetName(), clusteredImage);
-//    		samp.getClusteredDataInterface().getSingleClusterImage().setData(new HyperstackData(clusteredImage));
         }
     }
 
@@ -235,14 +220,19 @@ public class MCATClusteringAlgorithm extends MCATAlgorithm {
     private void saveData() {
         System.out.println("\tSaving clustering results...");
 
-        System.out.println("flush...");
-        String identifier = "_downsampling-" + getPreprocessingParameters().getDownsamplingFactor() +
-                "_anatomyCh-" + getPreprocessingParameters().getAnatomicChannel() +
-                "_interestCh-" + getPreprocessingParameters().getChannelOfInterest() +
-                "_timeFrames-" + getClusteringParameters().getMinLength() +
+        String group = "";
+        if(getClusteringOutput().getGroupTreatment() == "")
+        	group = getClusteringOutput().getGroupSubject();
+        else
+        	group = getClusteringOutput().getGroupTreatment();
+        	
+        String identifier = group + 
+        		"_down-" + getPreprocessingParameters().getDownsamplingFactor() +
+                "_aCh-" + getPreprocessingParameters().getAnatomicChannel() +
+                "_iCh-" + getPreprocessingParameters().getChannelOfInterest() +
                 "_k-" + getClusteringParameters().getkMeansK() + "_";
+        
         getClusteringOutput().getClusterCenters().flush(identifier);
-
 
         Path storageFilePathClusteredImage = getClusteringOutput().getClusterImages().getStorageFilePath();
 

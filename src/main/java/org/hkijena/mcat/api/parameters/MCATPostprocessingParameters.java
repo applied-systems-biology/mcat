@@ -43,7 +43,7 @@ public class MCATPostprocessingParameters implements MCATParameterCollection {
     }
 
     @MCATDocumentation(name = "Analyze net increase")
-    @MCATParameter(value = "analyze-net-increase", shortKey = "net-inc")
+    @MCATParameter(value = "analyze-net-increase", shortKey = "netInc")
     @JsonGetter("analyze-net-increase")
     public boolean isAnalyzeNetIncrease() {
         return analyzeNetIncrease;
@@ -57,7 +57,7 @@ public class MCATPostprocessingParameters implements MCATParameterCollection {
     }
 
     @MCATDocumentation(name = "Analyze net decrease")
-    @MCATParameter(value = "analyze-net-decrease", shortKey = "net-dec")
+    @MCATParameter(value = "analyze-net-decrease", shortKey = "netDec")
     @JsonGetter("analyze-net-decrease")
     public boolean isAnalyzeNetDecrease() {
         return analyzeNetDecrease;
@@ -71,7 +71,7 @@ public class MCATPostprocessingParameters implements MCATParameterCollection {
     }
 
     @MCATDocumentation(name = "Analyze max increase")
-    @MCATParameter(value = "analyze-max-increase", shortKey = "max-inc")
+    @MCATParameter(value = "analyze-max-increase", shortKey = "maxInc")
     @JsonGetter("analyze-max-increase")
     public boolean isAnalyzeMaxIncrease() {
         return analyzeMaxIncrease;
@@ -85,7 +85,7 @@ public class MCATPostprocessingParameters implements MCATParameterCollection {
     }
 
     @MCATDocumentation(name = "Analyze max decrease")
-    @MCATParameter(value = "analyze-max-decrease", shortKey = "max-dec")
+    @MCATParameter(value = "analyze-max-decrease", shortKey = "maxDec")
     @JsonGetter("analyze-max-decrease")
     public boolean isAnalyzeMaxDecrease() {
         return analyzeMaxDecrease;
@@ -152,6 +152,6 @@ public class MCATPostprocessingParameters implements MCATParameterCollection {
 
     @Override
     public String toString() {
-        return MCATCustomParameterCollection.parametersToString((new MCATTraversedParameterCollection(this)).getParameters().values(), ",", "=");
+        return MCATCustomParameterCollection.parametersToString((new MCATTraversedParameterCollection(this)).getParameters().values(), "_", "-");
     }
 }

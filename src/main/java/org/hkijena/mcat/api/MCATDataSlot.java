@@ -47,7 +47,7 @@ public class MCATDataSlot {
 
     /**
      * Gets the data stored within this slot.
-     * If not data is loaded, but an {@link MCATDataProvider} is set, the data is automatically set to the {@link MCATDataProvider} result.
+     * If no data is loaded, but an {@link MCATDataProvider} is set, the data is automatically set to the {@link MCATDataProvider} result.
      *
      * @param klass target class
      * @param <T>   target class
@@ -111,10 +111,9 @@ public class MCATDataSlot {
     }
 
     /**
-     * Stores the data to the
+     * Stores the data to the storageFilePath
      */
     public void flush(String identifier) {
-        System.out.println("Saving data " + data + " to " + storageFilePath + " with identifier " + identifier);
         data.saveTo(storageFilePath, getName(), identifier);
     }
 

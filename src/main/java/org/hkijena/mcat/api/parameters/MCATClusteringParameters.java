@@ -37,7 +37,7 @@ public class MCATClusteringParameters implements MCATParameterCollection {
     }
 
     @MCATDocumentation(name = "Clustering hierarchy", description = "res:///org/hkijena/mcat/documentation/parameter_clustering_hierarchy.md")
-    @MCATParameter(value = "clustering-hierarchy", shortKey = "ch")
+    @MCATParameter(value = "clustering-hierarchy", shortKey = "grouping")
     @JsonGetter("clustering-hierarchy")
     public MCATClusteringHierarchy getClusteringHierarchy() {
         return clusteringHierarchy;
@@ -104,6 +104,6 @@ public class MCATClusteringParameters implements MCATParameterCollection {
 
     @Override
     public String toString() {
-        return MCATCustomParameterCollection.parametersToString((new MCATTraversedParameterCollection(this)).getParameters().values(), ",", "=");
+        return MCATCustomParameterCollection.parametersToString((new MCATTraversedParameterCollection(this)).getParameters().values(), "_", "-");
     }
 }

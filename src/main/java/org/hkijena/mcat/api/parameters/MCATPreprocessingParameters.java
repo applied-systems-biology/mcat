@@ -43,7 +43,7 @@ public class MCATPreprocessingParameters implements MCATParameterCollection {
 
     @MCATDocumentation(name = "Downsamping factor")
     @JsonGetter("downsampling-factor")
-    @MCATParameter(value = "downsampling-factor", shortKey = "downsample")
+    @MCATParameter(value = "downsampling-factor", shortKey = "down")
     public int getDownsamplingFactor() {
         return downsamplingFactor;
     }
@@ -57,7 +57,7 @@ public class MCATPreprocessingParameters implements MCATParameterCollection {
 
     @MCATDocumentation(name = "Channel of interest")
     @JsonGetter("channel-of-interest")
-    @MCATParameter(value = "channel-of-interest", shortKey = "ichannel")
+    @MCATParameter(value = "channel-of-interest", shortKey = "iCh")
     public int getChannelOfInterest() {
         return channelOfInterest;
     }
@@ -71,7 +71,7 @@ public class MCATPreprocessingParameters implements MCATParameterCollection {
 
     @MCATDocumentation(name = "Anatomic channel")
     @JsonGetter("anatomic-channel")
-    @MCATParameter(value = "anatomic-channel", shortKey = "achannel")
+    @MCATParameter(value = "anatomic-channel", shortKey = "aCh")
     public int getAnatomicChannel() {
         return anatomicChannel;
     }
@@ -85,7 +85,7 @@ public class MCATPreprocessingParameters implements MCATParameterCollection {
 
     @MCATDocumentation(name = "Save raw image")
     @JsonGetter("save-raw-image")
-    @MCATParameter(value = "save-raw-image", shortKey = "save-raw")
+    @MCATParameter(value = "save-raw-image", shortKey = "sRaw")
     public boolean isSaveRawImage() {
         return saveRawImage;
     }
@@ -99,7 +99,7 @@ public class MCATPreprocessingParameters implements MCATParameterCollection {
 
     @MCATDocumentation(name = "Save ROI")
     @JsonGetter("save-roi")
-    @MCATParameter(value = "save-roi", shortKey = "save-roi")
+    @MCATParameter(value = "save-roi", shortKey = "sRoi")
     public boolean isSaveRoi() {
         return saveRoi;
     }
@@ -113,7 +113,7 @@ public class MCATPreprocessingParameters implements MCATParameterCollection {
 
     @MCATDocumentation(name = "Minimum time")
     @JsonGetter("min-time")
-    @MCATParameter(value = "min-time", shortKey = "min-time")
+    @MCATParameter(value = "min-time", shortKey = "minTime")
     public int getMinTime() {
         return minTime;
     }
@@ -127,7 +127,7 @@ public class MCATPreprocessingParameters implements MCATParameterCollection {
 
     @MCATDocumentation(name = "Maximum time")
     @JsonGetter("max-time")
-    @MCATParameter(value = "max-time", shortKey = "max-time")
+    @MCATParameter(value = "max-time", shortKey = "maxTime")
     public int getMaxTime() {
         return maxTime;
     }
@@ -146,6 +146,6 @@ public class MCATPreprocessingParameters implements MCATParameterCollection {
 
     @Override
     public String toString() {
-        return MCATCustomParameterCollection.parametersToString((new MCATTraversedParameterCollection(this)).getParameters().values(), ",", "=");
+        return MCATCustomParameterCollection.parametersToString((new MCATTraversedParameterCollection(this)).getParameters().values(), "_", "-");
     }
 }
