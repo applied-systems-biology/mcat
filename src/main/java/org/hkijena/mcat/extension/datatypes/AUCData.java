@@ -37,7 +37,7 @@ public class AUCData implements MCATData {
         }
 
         try {
-            table.saveAs(folder.resolve("auc.csv").toString());
+            table.saveAs(folder.resolve(identifier + name + ".csv").toString());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
