@@ -52,7 +52,6 @@ public class MCATPostprocessingAlgorithm extends MCATAlgorithm {
         for (int i = 0; i < a1.length; i++) {
             a1[i] += a2[i];
         }
-
         return a1;
     }
 
@@ -60,7 +59,6 @@ public class MCATPostprocessingAlgorithm extends MCATAlgorithm {
         for (int i = 0; i < a.length; i++) {
             a[i] /= scalar;
         }
-
         return a;
     }
 
@@ -96,8 +94,6 @@ public class MCATPostprocessingAlgorithm extends MCATAlgorithm {
     }
 
     private void postProcessMaxDecrease(List<MCATCentroidCluster<DoublePoint>> clusterCenters) {
-        System.out.println("maxDecrease");
-
         ArrayList<Integer> indices = new ArrayList<Integer>();
 
         double min = Double.MAX_VALUE;
@@ -112,17 +108,12 @@ public class MCATPostprocessingAlgorithm extends MCATAlgorithm {
         if (index == -1)
             throw new IllegalArgumentException("No cluster with max decrease found. Please select other post-processing type.");
 
-        System.out.println("   max decrease curve: " + index);
-//		System.out.println("   cluster abundance: " + clusterCenters.get(index).getAbundance());
-
         indices.add(index);
 
         getAUC(indices, MCATPostprocessingMethod.MaxDecrease);
     }
 
     private void postProcessMaxIncrease(List<MCATCentroidCluster<DoublePoint>> clusterCenters) {
-        System.out.println("maxIncrease");
-
         ArrayList<Integer> indices = new ArrayList<Integer>();
 
         double max = 0;
@@ -137,22 +128,14 @@ public class MCATPostprocessingAlgorithm extends MCATAlgorithm {
         if (index == -1)
             throw new IllegalArgumentException("No cluster with max increase found. Please select other post-processing type.");
 
-        System.out.println("   max increase curve: " + index);
-//		System.out.println("   cluster abundance: " + clusterCenters.get(index).getAbundance());
-
         indices.add(index);
 
         getAUC(indices, MCATPostprocessingMethod.MaxIncrease);
     }
 
     private void postProcessNetDecrease(List<MCATCentroidCluster<DoublePoint>> clusterCenters) {
-        System.out.println("netDecrease");
-
         ArrayList<Integer> indices = new ArrayList<Integer>();
         for (int i = 0; i < clusterCenters.size(); i++) {
-//			System.out.println("curve " + i + " cumSum: " + clusterCenters.get(i).getCumSum() + 
-//					" abundance: " + clusterCenters.get(i).getAbundance() + 
-//					" mean: " + clusterCenters.get(i).getMeanDifferenceFromZero());
             if (clusterCenters.get(i).getCumSum() < 0 && Math.abs(clusterCenters.get(i).getMeanDifferenceFromZero()) > epsilon) {
                 indices.add(i);
             }
@@ -160,8 +143,6 @@ public class MCATPostprocessingAlgorithm extends MCATAlgorithm {
 
         if (!(indices.size() > 0))
             throw new IllegalArgumentException("No cluster centers with net decrease found. Please select other post-processing type.");
-
-        System.out.println("net decrease curves: " + indices.size());
 
         getAUC(indices, MCATPostprocessingMethod.NetDecrease);
     }
@@ -172,17 +153,12 @@ public class MCATPostprocessingAlgorithm extends MCATAlgorithm {
         ArrayList<Integer> indices = new ArrayList<Integer>();
 
         for (int i = 0; i < clusterCenters.size(); i++) {
-//			System.out.println("curve " + i + " cumSum: " + clusterCenters.get(i).getCumSum() + 
-//					" abundance: " + clusterCenters.get(i).getAbundance() + 
-//					" mean: " + clusterCenters.get(i).getMeanDifferenceFromZero());
             if (clusterCenters.get(i).getCumSum() > 0 && Math.abs(clusterCenters.get(i).getMeanDifferenceFromZero()) > epsilon) {
                 indices.add(i);
             }
         }
         if (!(indices.size() > 0))
             throw new IllegalArgumentException("No cluster centers with net increase found. Please select other post-processing type.");
-
-        System.out.println("net increase curves: " + indices.size());
 
         getAUC(indices, MCATPostprocessingMethod.NetIncrease);
     }
@@ -206,27 +182,16 @@ public class MCATPostprocessingAlgorithm extends MCATAlgorithm {
             for (Integer index : indices) {
                 int abun = clusterAbundance.getAbundance()[index];
 
-                System.out.println("abun: " + abun + " sumAbun: " + sumAbundance);
-
                 double[] weighted = clusterAbundance.getCentroids().get(index).multiply(abun);
                 weightedAverage = addDoubleArrays(weightedAverage, weighted);
-
-                System.out.println(Arrays.toString(weighted));
-                System.out.println(Arrays.toString(weightedAverage));
             }
 
             weightedAverage = divideDoubleArray(weightedAverage, sumAbundance);
 
-            System.out.println(Arrays.toString(weightedAverage));
-
             double[] cumCurve = getCumulativeCurve(weightedAverage);
-
-            System.out.println(Arrays.toString(cumCurve));
 
             double auc = getAucValue(weightedAverage);
             double aucCum = getAucValue(cumCurve);
-            System.out.println("    AUC: " + auc);
-            System.out.println("    AUC cum: " + aucCum);
 
             // Create the output object
             MCATDataInterfaceKey outputKey = new MCATDataInterfaceKey("auc");

@@ -305,7 +305,7 @@ public class MCATRun implements MCATValidatable {
                                                    MCATClusteringParameters clusteringParameters,
                                                    List<MCATClusteringAlgorithm> allClusteringAlgorithms) {
         // Create the output
-        MCATDataInterfaceKey outputKey = new MCATDataInterfaceKey("clustered-plots");
+        MCATDataInterfaceKey outputKey = new MCATDataInterfaceKey("clustering-plots");
         outputKey.addParameter(preprocessingParameters);
         outputKey.addParameter(clusteringParameters);
         MCATClusteredPlotGenerationOutput output = new MCATClusteredPlotGenerationOutput();
@@ -338,7 +338,7 @@ public class MCATRun implements MCATValidatable {
                                                        MCATDataInterfaceKey postprocessingDataInterfaceKey) {
         MCATAUCDataConditions conditions = new MCATAUCDataConditions(method);
         // Create output data
-        MCATDataInterfaceKey plotDataInterfaceKey = new MCATDataInterfaceKey("postprocessed-plots");
+        MCATDataInterfaceKey plotDataInterfaceKey = new MCATDataInterfaceKey("postprocessing-plots");
         plotDataInterfaceKey.addDataSets(postprocessingDataInterfaceKey.getDataSetNames());
         plotDataInterfaceKey.addParameters(postprocessingDataInterfaceKey.getParameters());
         plotDataInterfaceKey.addParameter(conditions);
