@@ -63,7 +63,12 @@ public class MCATPostprocessedPlotGenerationAlgorithm extends MCATAlgorithm {
         }
 
         getPlotGenerationOutput().getAucPlotData().setData(plotData);
-        getPlotGenerationOutput().getAucPlotData().flush("auc");
+        
+        String identifier = getPreprocessingParameters().toShortenedString() + "_" + 
+        					getClusteringParameters().toShortenedString() + "_" +
+        					getPostprocessingParameters().toShortenedString();
+        
+        getPlotGenerationOutput().getAucPlotData().flush("auc" + identifier + "_");
     }
 
     @Override

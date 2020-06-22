@@ -21,13 +21,15 @@ import java.util.Objects;
  * Add the variable to getHashCode() and equals()
  */
 public class MCATPostprocessingParameters implements MCATParameterCollection {
+	public static final double CUTOFF_DEFAULT = 0.0;
+	
     private EventBus eventBus = new EventBus();
     private boolean analyzeNetIncrease = true;
     private boolean analyzeNetDecrease = false;
     private boolean analyzeMaxIncrease = false;
     private boolean analyzeMaxDecrease = false;
     private boolean performClusterMorphologyAnalysis = false;
-    private double cutoffValue = 0;
+    private double cutoffValue = CUTOFF_DEFAULT;
 
     public MCATPostprocessingParameters() {
 
@@ -152,6 +154,16 @@ public class MCATPostprocessingParameters implements MCATParameterCollection {
 
     @Override
     public String toString() {
-        return MCATCustomParameterCollection.parametersToString((new MCATTraversedParameterCollection(this)).getParameters().values(), "_", "-");
+    	return MCATCustomParameterCollection.parametersToString((new MCATTraversedParameterCollection(this)).getParameters().values(), "_", "-");
     }
+    
+    public String toShortenedString() {
+    	String cutoff = cutoffValue == CUTOFF_DEFAULT ? "" : "_cutoff-" + cutoffValue;
+    	String netInc = analyzeNetIncrease ? "_netInc" : "";
+    	String netDec = analyzeNetDecrease ? "_netDec" : "";
+    	String maxInc = analyzeMaxIncrease ? "_maxInc" : "";
+    	String maxDec = analyzeMaxDecrease ? "_maxDec" : "";
+    	
+		return cutoff + netInc + netDec + maxInc + maxDec;
+	}
 }

@@ -21,9 +21,11 @@ import java.util.Objects;
  * Add the variable to getHashCode() and equals()
  */
 public class MCATClusteringParameters implements MCATParameterCollection {
+	public static final int MIN_LENGTH_DEFAULT = Integer.MAX_VALUE;
+	
     private EventBus eventBus = new EventBus();
     private int kMeansK = 5;
-    private int minLength = Integer.MAX_VALUE;
+    private int minLength = MIN_LENGTH_DEFAULT;
 
     private MCATClusteringHierarchy clusteringHierarchy = MCATClusteringHierarchy.PerTreatment;
 
@@ -106,4 +108,8 @@ public class MCATClusteringParameters implements MCATParameterCollection {
     public String toString() {
         return MCATCustomParameterCollection.parametersToString((new MCATTraversedParameterCollection(this)).getParameters().values(), "_", "-");
     }
+    
+    public String toShortenedString() {
+		return "_k-" + kMeansK + "_hierarchy-" + clusteringHierarchy;
+	}
 }

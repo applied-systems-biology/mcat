@@ -199,10 +199,8 @@ public class MCATClusteringAlgorithm extends MCATAlgorithm {
 
             String identifier = outputEntry.getDataSetName() + "_roi-" +
                     inputEntry.getRawDataInterface().getTissueROI().getData(ROIData.class).getRoi().getName() +
-                    "_down-" + getPreprocessingParameters().getDownsamplingFactor() +
-                    "_aCh-" + getPreprocessingParameters().getAnatomicChannel() +
-                    "_iCh-" + getPreprocessingParameters().getChannelOfInterest() +
-                    "_k-" + getClusteringParameters().getkMeansK() + "_";
+                    getPreprocessingParameters().toShortenedString() +
+                    getClusteringParameters().toShortenedString();
 
 
             outputEntry.getClusterAbundance().flush(identifier);
@@ -227,10 +225,8 @@ public class MCATClusteringAlgorithm extends MCATAlgorithm {
         	group = getClusteringOutput().getGroupTreatment();
         	
         String identifier = group + 
-        		"_down-" + getPreprocessingParameters().getDownsamplingFactor() +
-                "_aCh-" + getPreprocessingParameters().getAnatomicChannel() +
-                "_iCh-" + getPreprocessingParameters().getChannelOfInterest() +
-                "_k-" + getClusteringParameters().getkMeansK() + "_";
+        		getPreprocessingParameters().toShortenedString() +
+        		getClusteringParameters().toShortenedString();
         
         getClusteringOutput().getClusterCenters().flush(identifier);
 

@@ -106,12 +106,18 @@ public class MCATPostprocessingAlgorithm extends MCATAlgorithm {
                 index = i;
             }
         }
-        if (index == -1)
-            throw new IllegalArgumentException("No cluster with max decrease found. Please select other post-processing type.");
-
-        indices.add(index);
-
-        getAUC(indices, MCATPostprocessingMethod.MaxDecrease);
+        try {
+        	if (index != -1) {
+        		indices.add(index);
+        		getAUC(indices, MCATPostprocessingMethod.MaxDecrease);
+        	}else
+                throw new IllegalArgumentException("No cluster with max decrease found. Please select other post-processing type.");
+            
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} finally {
+			//TODO
+		}
     }
 
     private void postProcessMaxIncrease(List<MCATCentroidCluster<DoublePoint>> clusterCenters) {
@@ -126,12 +132,18 @@ public class MCATPostprocessingAlgorithm extends MCATAlgorithm {
                 index = i;
             }
         }
-        if (index == -1)
-            throw new IllegalArgumentException("No cluster with max increase found. Please select other post-processing type.");
-
-        indices.add(index);
-
-        getAUC(indices, MCATPostprocessingMethod.MaxIncrease);
+        try {
+        	if (index != -1) {
+        		indices.add(index);
+        		getAUC(indices, MCATPostprocessingMethod.MaxIncrease);
+        	}else
+                throw new IllegalArgumentException("No cluster with max increase found. Please select other post-processing type.");
+            
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} finally {
+			//TODO
+		}
     }
 
     private void postProcessNetDecrease(List<MCATCentroidCluster<DoublePoint>> clusterCenters) {
@@ -141,11 +153,17 @@ public class MCATPostprocessingAlgorithm extends MCATAlgorithm {
                 indices.add(i);
             }
         }
-
-        if (!(indices.size() > 0))
-            throw new IllegalArgumentException("No cluster centers with net decrease found. Please select other post-processing type.");
-
-        getAUC(indices, MCATPostprocessingMethod.NetDecrease);
+        try {
+        	if (indices.size() > 0) {
+        		getAUC(indices, MCATPostprocessingMethod.NetDecrease);
+        	}else
+                throw new IllegalArgumentException("No cluster with net decrease found. Please select other post-processing type.");
+            
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} finally {
+			//TODO
+		}
     }
 
     private void postProcessNetIncrease(List<MCATCentroidCluster<DoublePoint>> clusterCenters) {
@@ -158,10 +176,17 @@ public class MCATPostprocessingAlgorithm extends MCATAlgorithm {
                 indices.add(i);
             }
         }
-        if (!(indices.size() > 0))
-            throw new IllegalArgumentException("No cluster centers with net increase found. Please select other post-processing type.");
-
-        getAUC(indices, MCATPostprocessingMethod.NetIncrease);
+        try {
+        	if (indices.size() > 0) {
+        		getAUC(indices, MCATPostprocessingMethod.NetIncrease);
+        	}else
+                throw new IllegalArgumentException("No cluster with net increase found. Please select other post-processing type.");
+            
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} finally {
+			//TODO
+		}
     }
 
     private void getAUC(ArrayList<Integer> indices, MCATPostprocessingMethod postprocessingMethod) {
@@ -223,11 +248,9 @@ public class MCATPostprocessingAlgorithm extends MCATAlgorithm {
         else
         	group = getClusteringOutput().getGroupTreatment();
         	
-        String identifier = group + 
-                "_down-" + getPreprocessingParameters().getDownsamplingFactor() +
-                "_aCh-" + getPreprocessingParameters().getAnatomicChannel() +
-                "_iCh-" + getPreprocessingParameters().getChannelOfInterest() +
-                "_k-" + getClusteringParameters().getkMeansK() + "_";
+        String identifier = group + getPreprocessingParameters().toShortenedString() +
+        					getClusteringParameters().toShortenedString() +
+        					getPostprocessingParameters().toShortenedString();
 
         getPostprocessingOutput().getAuc().setData(aucData);
         getPostprocessingOutput().getAuc().flush(identifier);

@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class MCATClusteredPlotGenerationOutput implements MCATDataInterface {
 
-    private MCATDataSlot timeDerivativePlot = new MCATDataSlot("time-derivative-plot", TimeDerivativePlotData.class);
+    private MCATDataSlot timeDerivativePlot = new MCATDataSlot("cluster-centers-plot", TimeDerivativePlotData.class);
 
     @Override
     public Map<String, MCATDataSlot> getSlots() {

@@ -34,12 +34,12 @@ public class MCATClusteredPlotGenerationAlgorithm extends MCATAlgorithm {
             TimeDerivativePlotData.Series series = new TimeDerivativePlotData.Series();
             series.setGroup(entry.getKey());
             series.setData(clusterCentersData.getCentroids());
-
+            
             plotData.getDataSeries().put(entry.getKey() + ".csv", series);
         }
 
         output.getTimeDerivativePlot().setData(plotData);
-        output.getTimeDerivativePlot().flush("time-derivative-plot");
+        output.getTimeDerivativePlot().flush("cluster-centers-plot");
     }
 
     @Override

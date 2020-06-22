@@ -442,25 +442,45 @@ public class MCATRun implements MCATValidatable {
         System.out.println("interface type: " + interfaceType);
         System.out.println("dataset string: " + dataSetString);
         
+        
         Set<MCATParameterAccess> parameterAccesses = new HashSet<>();
         for (MCATParameterCollection parameterCollection : key.getParameters()) {
-        	System.out.println("in loop: " + parameterCollection.toString());
+        	System.out.println("in loop key: " + key.toString());
+        	System.out.println("in loop params: " + key.getParameters().toString());
+        	System.out.println("in loop name: " + key.getDataInterfaceName());
+        	System.out.println("in loop datset names: " + key.getDataSetNames().toString());
+        	System.out.println("in loop class: " + key.getClass().toString());
+        	
             parameterAccesses.addAll((new MCATTraversedParameterCollection(parameterCollection)).getParameters().values());
         }
         
+        
+        //remove unused parameters from output file string
+        List<MCATParameterAccess> toRemove = new ArrayList<MCATParameterAccess>();
         for (MCATParameterAccess mcatParameterAccess : parameterAccesses) {
-			System.out.println("in second loop: " + mcatParameterAccess.getShortKey() + ": " + mcatParameterAccess.get());
+        	if(mcatParameterAccess.getShortKey().equals("minTime") && (int) mcatParameterAccess.get() == MCATPreprocessingParameters.MIN_TIME_DEFAULT) {
+        		toRemove.add(mcatParameterAccess);
+        	}
+        	if(mcatParameterAccess.getShortKey().equals("maxTime") && (int) mcatParameterAccess.get() == MCATPreprocessingParameters.MAX_TIME_DEFAULT) {
+        		toRemove.add(mcatParameterAccess);
+        	}
+        	if(mcatParameterAccess.getShortKey().equals("cutoff") && (double) mcatParameterAccess.get() == MCATPostprocessingParameters.CUTOFF_DEFAULT) {
+        		toRemove.add(mcatParameterAccess);
+        	}
+        	if(mcatParameterAccess.getShortKey().equals("mlength") && (int) mcatParameterAccess.get() == MCATClusteringParameters.MIN_LENGTH_DEFAULT) {
+        		toRemove.add(mcatParameterAccess);
+        	}
+        	if(mcatParameterAccess.getShortKey().equals("sRoi")){
+        		toRemove.add(mcatParameterAccess);
+        	}
+        	if(mcatParameterAccess.getShortKey().equals("sRaw")){
+        		toRemove.add(mcatParameterAccess);
+        	}
 		}
+        parameterAccesses.removeAll(toRemove);
         
         
         String parameterString = MCATCustomParameterCollection.parametersToString(parameterAccesses, "_", "-");
-        parameterString = parameterString.replace("_minTime-0", "");
-        parameterString = parameterString.replace("_maxTime-" + Integer.MAX_VALUE, "");
-        parameterString = parameterString.replace("_mlength-" + Integer.MAX_VALUE, "");
-        parameterString = parameterString.replace("_sRaw-true", "");
-        parameterString = parameterString.replace("_sRaw-false", "");
-        parameterString = parameterString.replace("_sRoi-true", "");
-        parameterString = parameterString.replace("_sRoi-false", "");
         
         result.setParameterString(parameterString);
 

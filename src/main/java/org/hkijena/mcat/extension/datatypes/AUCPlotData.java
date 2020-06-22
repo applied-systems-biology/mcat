@@ -152,7 +152,7 @@ public class AUCPlotData implements MCATData {
 
     @Override
     public void saveTo(Path folder, String name, String identifier) {
-        table.save(folder.resolve("plot-data.csv").toString());
+        table.save(folder.resolve(identifier + "plot-data.csv").toString());
 
         try {
             JsonUtils.getObjectMapper().writeValue(folder.resolve("parameters.json").toFile(), parameterValues);
@@ -161,11 +161,11 @@ public class AUCPlotData implements MCATData {
         }
 
         JFreeChart perTreatmentRender = renderChartPerTreatment();
-        autoSaveChartToPNG(perTreatmentRender, folder.resolve("per-treatment.png"));
-        autoSaveChartToSVG(perTreatmentRender, folder.resolve("per-treatment.svg"));
+        autoSaveChartToPNG(perTreatmentRender, folder.resolve(identifier + "per-treatment.png"));
+        autoSaveChartToSVG(perTreatmentRender, folder.resolve(identifier + "per-treatment.svg"));
 
         JFreeChart perSubjectRender = renderChartPerSubject();
-        autoSaveChartToPNG(perSubjectRender, folder.resolve("per-subject.png"));
-        autoSaveChartToSVG(perSubjectRender, folder.resolve("per-subject.svg"));
+        autoSaveChartToPNG(perSubjectRender, folder.resolve(identifier + "per-subject.png"));
+        autoSaveChartToSVG(perSubjectRender, folder.resolve(identifier + "per-subject.svg"));
     }
 }

@@ -18,14 +18,16 @@ import org.hkijena.mcat.api.events.ParameterChangedEvent;
  * Add the variable to getHashCode() and equals()
  */
 public class MCATPreprocessingParameters implements MCATParameterCollection {
+	public static final int MIN_TIME_DEFAULT = 0, MAX_TIME_DEFAULT = Integer.MAX_VALUE;
+	
     private EventBus eventBus = new EventBus();
     private int downsamplingFactor = 4;
     private int channelOfInterest = 2;
     private int anatomicChannel = 1;
     private boolean saveRawImage = true;
     private boolean saveRoi = true;
-    private int minTime = 0;
-    private int maxTime = Integer.MAX_VALUE;
+    private int minTime = MIN_TIME_DEFAULT;
+    private int maxTime = MAX_TIME_DEFAULT;
 
     public MCATPreprocessingParameters() {
 
@@ -57,7 +59,7 @@ public class MCATPreprocessingParameters implements MCATParameterCollection {
 
     @MCATDocumentation(name = "Channel of interest")
     @JsonGetter("channel-of-interest")
-    @MCATParameter(value = "channel-of-interest", shortKey = "iCh")
+    @MCATParameter(value = "channel-of-interest", shortKey = "signalCh")
     public int getChannelOfInterest() {
         return channelOfInterest;
     }
@@ -71,7 +73,7 @@ public class MCATPreprocessingParameters implements MCATParameterCollection {
 
     @MCATDocumentation(name = "Anatomic channel")
     @JsonGetter("anatomic-channel")
-    @MCATParameter(value = "anatomic-channel", shortKey = "aCh")
+    @MCATParameter(value = "anatomic-channel", shortKey = "anatomyCh")
     public int getAnatomicChannel() {
         return anatomicChannel;
     }
@@ -148,4 +150,12 @@ public class MCATPreprocessingParameters implements MCATParameterCollection {
     public String toString() {
         return MCATCustomParameterCollection.parametersToString((new MCATTraversedParameterCollection(this)).getParameters().values(), "_", "-");
     }
+
+	public String toShortenedString() {
+		String minT = minTime == MIN_TIME_DEFAULT? "" : "_minTime-" + minTime;
+		String maxT = maxTime == MAX_TIME_DEFAULT? "" : "_maxTime-" + maxTime;
+		
+		return "_anatomyCh-" + anatomicChannel + "_signalCh-" + channelOfInterest + 
+				"_down-" + downsamplingFactor + minT + maxT;
+	}
 }
