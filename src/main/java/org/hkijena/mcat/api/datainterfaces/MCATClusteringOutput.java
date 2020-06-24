@@ -17,7 +17,6 @@ public class MCATClusteringOutput implements MCATDataInterface {
     private final String groupTreatment;
     private Map<String, MCATClusteringOutputDataSetEntry> dataSetEntries = new HashMap<>();
     private MCATDataSlot clusterCenters = new MCATDataSlot("cluster-centers", ClusterCentersData.class);
-    private MCATDataSlot clusterImages = new MCATDataSlot("cluster-image", HyperstackData.class);
 //    private MCATDataSlot singleClusterImage = new MCATDataSlot("single-cluster-image", HyperstackData.class);
 
     private int minLength = -1;
@@ -31,9 +30,6 @@ public class MCATClusteringOutput implements MCATDataInterface {
         return clusterCenters;
     }
 
-    public MCATDataSlot getClusterImages() {
-        return clusterImages;
-    }
 
 //    public MCATDataSlot getSingleClusterImage() {
 //        return singleClusterImage;
@@ -43,7 +39,6 @@ public class MCATClusteringOutput implements MCATDataInterface {
     public Map<String, MCATDataSlot> getSlots() {
         Map<String, MCATDataSlot> result = new HashMap<>();
         result.put(clusterCenters.getName(), clusterCenters);
-        result.put(clusterImages.getName(), clusterImages);
 //        result.put(singleClusterImage.getName(), singleClusterImage);
         for (Map.Entry<String, MCATClusteringOutputDataSetEntry> entry : dataSetEntries.entrySet()) {
             Map<String, MCATDataSlot> slots = entry.getValue().getSlots();

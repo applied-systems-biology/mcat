@@ -40,28 +40,10 @@ public class TimeDerivativePlotData implements MCATData {
     public TimeDerivativePlotData() {
     }
 
-    /**
-     * Loads from an output folder
-     *
-     * @param folderName the output folder
-     */
-    public TimeDerivativePlotData(Path folderName) {
-        TypeReference<Map<String, Series>> typeReference = new TypeReference<Map<String, Series>>() {
-        };
-        try {
-            dataSeries = JsonUtils.getObjectMapper().readValue(folderName.resolve("series.json").toFile(), typeReference);
-            for (Map.Entry<String, Series> entry : dataSeries.entrySet()) {
-                entry.getValue().table = ResultsTable.open(folderName.resolve(entry.getKey()).toString());
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     @Override
-    public void saveTo(Path folder, String name, String identifier) {
+    public void saveTo(Path folder, Path fileName) {
         try {
-            JsonUtils.getObjectMapper().writeValue(folder.resolve("series.json").toFile(), dataSeries);
+            JsonUtils.getObjectMapper().writeValue(folder.resolve(fileName.toString() + "Data.json").toFile(), dataSeries);
 
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -70,8 +52,8 @@ public class TimeDerivativePlotData implements MCATData {
             entry.getValue().getTable().save(folder.resolve(entry.getKey()).toString());
         }
 
-        writeChartAsPNG(folder.resolve(identifier + ".png"));
-        writeChartAsSVG(folder.resolve(identifier + ".svg"));
+        writeChartAsPNG(folder.resolve(fileName + ".png"));
+        writeChartAsSVG(folder.resolve(fileName + ".svg"));
     }
 
     public void writeChartAsPNG(Path fileName) {

@@ -43,22 +43,6 @@ public class AUCPlotData implements MCATData {
         }
     }
 
-    /**
-     * Loads plot data from a folder
-     *
-     * @param folderPath the output folder
-     */
-    public AUCPlotData(Path folderPath) {
-        try {
-            table = ResultsTable.open(folderPath.resolve("plot-data.csv").toString());
-            TypeReference<Map<String, Object>> typeReference = new TypeReference<Map<String, Object>>() {
-            };
-            parameterValues = JsonUtils.getObjectMapper().readValue(folderPath.resolve("parameters.json").toFile(), typeReference);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     public void addRow(String subject, String treatment, double auc, double cumAUC) {
         table.incrementCounter();
         int row = table.getCounter() - 1;
@@ -125,7 +109,7 @@ public class AUCPlotData implements MCATData {
     }
 
     private int getAutoChartWidth(JFreeChart chart) {
-        return 128 * chart.getCategoryPlot().getDataset().getColumnCount();
+        return Math.max(128, 128 * chart.getCategoryPlot().getDataset().getColumnCount());
     }
 
     public void autoSaveChartToPNG(JFreeChart chart, Path fileName) {
@@ -151,21 +135,21 @@ public class AUCPlotData implements MCATData {
     }
 
     @Override
-    public void saveTo(Path folder, String name, String identifier) {
-        table.save(folder.resolve(identifier + "plot-data.csv").toString());
+    public void saveTo(Path folder, Path fileName) {
+        table.save(folder.resolve(fileName + "Data.csv").toString());
 
         try {
-            JsonUtils.getObjectMapper().writeValue(folder.resolve("parameters.json").toFile(), parameterValues);
+            JsonUtils.getObjectMapper().writeValue(folder.resolve("Data.json").toFile(), parameterValues);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
         JFreeChart perTreatmentRender = renderChartPerTreatment();
-        autoSaveChartToPNG(perTreatmentRender, folder.resolve(identifier + "per-treatment.png"));
-        autoSaveChartToSVG(perTreatmentRender, folder.resolve(identifier + "per-treatment.svg"));
+        autoSaveChartToPNG(perTreatmentRender, folder.resolve(fileName + "_perTreatment.png"));
+        autoSaveChartToSVG(perTreatmentRender, folder.resolve(fileName + "_perTreatment.svg"));
 
         JFreeChart perSubjectRender = renderChartPerSubject();
-        autoSaveChartToPNG(perSubjectRender, folder.resolve(identifier + "per-subject.png"));
-        autoSaveChartToSVG(perSubjectRender, folder.resolve(identifier + "per-subject.svg"));
+        autoSaveChartToPNG(perSubjectRender, folder.resolve(fileName + "_perSubject.png"));
+        autoSaveChartToSVG(perSubjectRender, folder.resolve(fileName + "_perSubject.svg"));
     }
 }

@@ -15,14 +15,16 @@ import java.nio.file.Path;
 public class ROIData implements MCATData {
 
     private Roi roi;
+    private String name;
 
-    public ROIData(Roi roi) {
+    public ROIData(Roi roi, String name) {
+        this.name = name;
         this.setRoi(roi);
     }
 
     @Override
-    public void saveTo(Path folder, String name, String identifier) {
-        RoiEncoder re = new RoiEncoder(folder.resolve(identifier + name + ".roi").toString());
+    public void saveTo(Path folder, Path fileName) {
+        RoiEncoder re = new RoiEncoder(folder.resolve(fileName).toString());
         try {
             re.write(getRoi());
         } catch (IOException e) {
@@ -36,5 +38,9 @@ public class ROIData implements MCATData {
 
     public void setRoi(Roi roi) {
         this.roi = roi;
+    }
+
+    public String getName() {
+        return name;
     }
 }

@@ -241,19 +241,9 @@ public class MCATPostprocessingAlgorithm extends MCATAlgorithm {
 
         System.out.println("treatment: " + getClusteringOutput().getGroupTreatment());
         System.out.println("subject: " + getClusteringOutput().getGroupSubject());
-        
-        String group = "";
-        if(getClusteringOutput().getGroupTreatment() == "")
-        	group = getClusteringOutput().getGroupSubject();
-        else
-        	group = getClusteringOutput().getGroupTreatment();
-        	
-        String identifier = group + getPreprocessingParameters().toShortenedString() +
-        					getClusteringParameters().toShortenedString() +
-        					getPostprocessingParameters().toShortenedString();
 
         getPostprocessingOutput().getAuc().setData(aucData);
-        getPostprocessingOutput().getAuc().flush(identifier);
+        getPostprocessingOutput().getAuc().flush();
     }
 
     @Override

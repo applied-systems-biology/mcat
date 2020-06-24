@@ -22,6 +22,7 @@ public class MCATDataSlot {
     private Class<? extends MCATData> acceptedDataType;
     private MCATData data;
     private MCATDataProvider dataProvider;
+    private Path fileName;
 
     /**
      * The path where the slot stores its data
@@ -113,8 +114,12 @@ public class MCATDataSlot {
     /**
      * Stores the data to the storageFilePath
      */
-    public void flush(String identifier) {
-        data.saveTo(storageFilePath, getName(), identifier);
+    public void flush() {
+        if(storageFilePath == null || fileName == null) {
+            System.err.println("Skipping to flush() data slot " + name + " containing " + acceptedDataType + ": No storage location or file name defined!");
+            return;
+        }
+        data.saveTo(storageFilePath, getFileName());
     }
 
     public String getName() {
@@ -136,6 +141,14 @@ public class MCATDataSlot {
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    public Path getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(Path fileName) {
+        this.fileName = fileName;
     }
 
     public static class Serializer extends JsonSerializer<MCATDataSlot> {

@@ -7,10 +7,10 @@ import java.nio.file.Path;
  */
 public interface MCATData {
     /**
-     * Stores the data to the specified <strong>folder</strong>
+     * Stores the data to the specified folder with provided filename
+     *  @param folder the folder where the data is saved
+     * @param fileName the file name
      *
-     * @param folder
-     * @param name   optional name that is considered during generating the output file name
      */
-    void saveTo(Path folder, String name, String identifier);
+    void saveTo(Path folder, Path fileName);
 }

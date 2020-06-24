@@ -65,9 +65,9 @@ public class ClusterAbundanceData implements MCATData {
     }
 
     @Override
-    public void saveTo(Path folder, String name, String identifier) {
+    public void saveTo(Path folder, Path fileName) {
         try {
-            BufferedWriter bw = new BufferedWriter(new FileWriter(new File(folder.resolve(identifier + name + ".csv").toString())));
+            BufferedWriter bw = new BufferedWriter(new FileWriter(new File(folder.resolve(fileName).toString())));
             bw.write(this.toString());
             bw.close();
         } catch (IOException e) {

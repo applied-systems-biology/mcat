@@ -21,6 +21,6 @@ public class ROIFromFileDataProvider extends FileDataProvider {
     @Override
     public ROIData get() {
         Opener opener = new Opener();
-        return new ROIData(opener.openRoi(getFilePath().toString()));
+        return new ROIData(opener.openRoi(getFilePath().toString()), getFilePath().getFileName().toString());
     }
 }

@@ -9,9 +9,11 @@ import ij.gui.Roi;
 import ij.plugin.ImageCalculator;
 import ij.process.ImageStatistics;
 
+import java.nio.file.Paths;
 import java.util.Set;
 
 import org.hkijena.mcat.api.MCATAlgorithm;
+import org.hkijena.mcat.api.MCATDataSlot;
 import org.hkijena.mcat.api.MCATRun;
 import org.hkijena.mcat.api.MCATValidityReport;
 import org.hkijena.mcat.api.datainterfaces.MCATPreprocessingInput;
@@ -32,7 +34,6 @@ public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
     private int channelAnatomy, channelOfInterest = -1;
     private Roi roi = null;
     private String roiName = "noROI";
-    private String identifier = "";
 
     public MCATPreprocessingAlgorithm(MCATRun run,
                                       MCATPreprocessingParameters preprocessingParameters,
@@ -159,13 +160,13 @@ public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
 
     private void saveTimeDerivativeMatrix() {
         System.out.println("\tWriting time derivative matrix...");
-        getPreprocessingOutput().getDerivativeMatrix().flush(identifier);
+        getPreprocessingOutput().getDerivativeMatrix().flush();
     }
 
     private void saveImage(ImagePlus imp) {
         System.out.println("\tWriting pre-processed image...");
         getPreprocessingOutput().getPreprocessedImage().setData(new HyperstackData(imp));
-        getPreprocessingOutput().getPreprocessedImage().flush(identifier);
+        getPreprocessingOutput().getPreprocessedImage().flush();
     }
 
     @Override
@@ -177,15 +178,16 @@ public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
         saveRoi = getPreprocessingParameters().isSaveRoi();
         channelAnatomy = getPreprocessingParameters().getAnatomicChannel();
         channelOfInterest = getPreprocessingParameters().getChannelOfInterest();
+
+        MCATDataSlot tissueROI = getPreprocessingInput().getTissueROI();
+        tissueROI.resetFromCurrentProvider();
         
-        getPreprocessingInput().getTissueROI().resetFromCurrentProvider();
-        
-        roi = getPreprocessingInput().getTissueROI().getData(ROIData.class).getRoi();
+        roi = tissueROI.getData(ROIData.class).getRoi();
         
         //TODO check what happens if there is no ROI
         if(roi != null)
         	roiName = roi.getName();
-        getPreprocessingInput().getTissueROI().setData(new ROIData(roi));
+        tissueROI.setData(new ROIData(roi, roi.getName()));
 
         System.out.println("Start pre-processing for " + imp.getTitle() +
                 " width " + imp.getWidth() +
@@ -248,10 +250,7 @@ public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
         for (String key : keys) {
 			System.out.println(getPreprocessingInput().getSlots().get(key).toString());
 		}
-        
-        identifier = imp.getShortTitle() + 
-        			getPreprocessingParameters().toShortenedString() +
-        			"_roi-" + roiName + "_";
+
         /*
          * save pre-processed image
          */
@@ -268,9 +267,13 @@ public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
         saveTimeDerivativeMatrix();
 
         if (saveRaw)
-            getPreprocessingInput().getRawImage().flush(getName() + "_");
-        if (saveRoi)
-            getPreprocessingInput().getTissueROI().flush(getName() + "_" + roiName + "_");
+            getPreprocessingInput().getRawImage().flush();
+        if (saveRoi && tissueROI.getFileName() != null) {
+            String name = tissueROI.getFileName().toString();
+            name += "_" + tissueROI.getData(ROIData.class).getName() + "_roiFile.roi";
+            tissueROI.setFileName(Paths.get(name));
+            tissueROI.flush();
+        }
 
         interest.close();
 

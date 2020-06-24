@@ -1,6 +1,7 @@
 package org.hkijena.mcat.api;
 
 import org.hkijena.mcat.api.parameters.MCATParameterCollection;
+import org.hkijena.mcat.api.parameters.MCATPreprocessingParameters;
 
 import java.util.*;
 
@@ -67,5 +68,9 @@ public class MCATDataInterfaceKey {
     @Override
     public String toString() {
         return getDataInterfaceName() + " -> @(" + String.join(",", dataSetNames) + ") # " + parameters;
+    }
+
+    public <T extends MCATParameterCollection> T getParameterOfType(Class<? extends MCATParameterCollection> parametersClass) {
+        return (T) parameters.stream().filter(p -> parametersClass.isAssignableFrom(p.getClass())).findFirst().orElse(null);
     }
 }

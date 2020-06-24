@@ -197,13 +197,7 @@ public class MCATClusteringAlgorithm extends MCATAlgorithm {
                 }
             }
 
-            String identifier = outputEntry.getDataSetName() + "_roi-" +
-                    inputEntry.getRawDataInterface().getTissueROI().getData(ROIData.class).getRoi().getName() +
-                    getPreprocessingParameters().toShortenedString() +
-                    getClusteringParameters().toShortenedString();
-
-
-            outputEntry.getClusterAbundance().flush(identifier);
+            outputEntry.getClusterAbundance().flush();
 
             ImagePlus clusteredImage = IJ.createImage(imp.getTitle() + "_clusteredImage", "RGB white", w, h, 1);
             clusteredImage.getProcessor().setPixels(clusteredPixels);
@@ -219,7 +213,7 @@ public class MCATClusteringAlgorithm extends MCATAlgorithm {
         System.out.println("\tSaving clustering results...");
 
         String group = "";
-        if(getClusteringOutput().getGroupTreatment() == "")
+        if(getClusteringOutput().getGroupTreatment().equals(""))
         	group = getClusteringOutput().getGroupSubject();
         else
         	group = getClusteringOutput().getGroupTreatment();
@@ -228,13 +222,13 @@ public class MCATClusteringAlgorithm extends MCATAlgorithm {
         		getPreprocessingParameters().toShortenedString() +
         		getClusteringParameters().toShortenedString();
         
-        getClusteringOutput().getClusterCenters().flush(identifier);
+        getClusteringOutput().getClusterCenters().flush();
 
-        Path storageFilePathClusteredImage = getClusteringOutput().getClusterImages().getStorageFilePath();
-
-        for (String string : clustered.keySet()) {
-            String outNameClusteredImage = string + "_" + identifier + "_clusteredImage.png";
-            IJ.save(clustered.get(string), storageFilePathClusteredImage.toString() + System.getProperty("file.separator") + outNameClusteredImage);
+        // Clustered images per dataset
+        for (Map.Entry<String, ImagePlus> entry : clustered.entrySet()) {
+            MCATClusteringOutputDataSetEntry dataSetEntry = getClusteringOutput().getDataSetEntries().get(entry.getKey());
+            dataSetEntry.getClusterImages().setData(new HyperstackData(entry.getValue()));
+            dataSetEntry.getClusterImages().flush();
         }
     }
 

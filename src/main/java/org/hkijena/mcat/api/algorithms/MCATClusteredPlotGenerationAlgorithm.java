@@ -39,7 +39,7 @@ public class MCATClusteredPlotGenerationAlgorithm extends MCATAlgorithm {
         }
 
         output.getTimeDerivativePlot().setData(plotData);
-        output.getTimeDerivativePlot().flush("cluster-centers-plot");
+        output.getTimeDerivativePlot().flush();
     }
 
     @Override

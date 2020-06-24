@@ -20,7 +20,7 @@ public class AUCData implements MCATData {
     private Map<MCATDataInterfaceKey, Row> aucMap = new HashMap<>();
 
     @Override
-    public void saveTo(Path folder, String name, String identifier) {
+    public void saveTo(Path folder, Path fileName) {
         ResultsTable table = new ResultsTable();
         int index = 0;
         for (Map.Entry<MCATDataInterfaceKey, Row> entry : aucMap.entrySet()) {
@@ -37,7 +37,7 @@ public class AUCData implements MCATData {
         }
 
         try {
-            table.saveAs(folder.resolve(identifier + name + ".csv").toString());
+            table.saveAs(folder.resolve(fileName).toString());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

@@ -89,9 +89,8 @@ See the LICENSE file provided with this code for the full license.
             <url>http://maven.imagej.net/content/groups/public</url>
         </repository>
         <repository>
-            <id>external-jars</id>
-            <name>External JAR files</name>
-            <url>file://${project.basedir}/external-dependencies</url>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
         </repository>
     </repositories>
 
@@ -209,11 +208,11 @@ See the LICENSE file provided with this code for the full license.
             <version>2.6.0</version>
         </dependency>
         <dependency>
-        	<groupId>com.github.cmci</groupId>
-        	<artifactId>MultiStackRegistration</artifactId>
-        	<version>v1.46.2</version>
+            <groupId>com.github.miura</groupId>
+            <artifactId>MultiStackRegistration</artifactId>
+            <version>v1.46.2</version>
         </dependency>
-		<dependency>
+        <dependency>
 		    <groupId>net.sf.ij-plugins</groupId>
 		    <artifactId>ijp-toolkit_2.10</artifactId>
 		    <version>2.1.2</version>

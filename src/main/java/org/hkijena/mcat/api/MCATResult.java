@@ -10,27 +10,14 @@ import java.nio.file.Path;
  */
 public class MCATResult {
     private Path outputFolder;
-    private MCATResultDataInterfaces resultDataInterfaces;
     private MCATProject project;
 
     public MCATResult(Path outputFolder) {
         this.outputFolder = outputFolder;
-        try {
-            this.resultDataInterfaces = JsonUtils.getObjectMapper()
-                    .readValue(outputFolder.resolve("data.json").toFile(), MCATResultDataInterfaces.class);
-            this.project = JsonUtils.getObjectMapper().readValue(outputFolder.resolve("project.json").toFile(),
-                    MCATProject.class);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     public Path getOutputFolder() {
         return outputFolder;
-    }
-
-    public MCATResultDataInterfaces getResultDataInterfaces() {
-        return resultDataInterfaces;
     }
 
     public MCATProject getProject() {
