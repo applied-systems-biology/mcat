@@ -35,7 +35,7 @@ public class MCATClusteredPlotGenerationAlgorithm extends MCATAlgorithm {
             series.setGroup(entry.getKey());
             series.setData(clusterCentersData.getCentroids());
             
-            plotData.getDataSeries().put(entry.getKey() + ".csv", series);
+            plotData.getDataSeries().put(entry.getKey(), series);
         }
 
         output.getTimeDerivativePlot().setData(plotData);

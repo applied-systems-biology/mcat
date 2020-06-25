@@ -49,7 +49,7 @@ public class TimeDerivativePlotData implements MCATData {
             throw new RuntimeException(e);
         }
         for (Map.Entry<String, Series> entry : dataSeries.entrySet()) {
-            entry.getValue().getTable().save(folder.resolve(entry.getKey()).toString());
+            entry.getValue().getTable().save(folder.resolve(fileName + "_" + entry.getKey() + "_" + "Data.csv").toString());
         }
 
         writeChartAsPNG(folder.resolve(fileName + ".png"));

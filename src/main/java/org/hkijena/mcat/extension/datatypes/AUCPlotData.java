@@ -139,7 +139,7 @@ public class AUCPlotData implements MCATData {
         table.save(folder.resolve(fileName + "Data.csv").toString());
 
         try {
-            JsonUtils.getObjectMapper().writeValue(folder.resolve("Data.json").toFile(), parameterValues);
+            JsonUtils.getObjectMapper().writeValue(folder.resolve(fileName + "Data.json").toFile(), parameterValues);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

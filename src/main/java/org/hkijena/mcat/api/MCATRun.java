@@ -344,7 +344,8 @@ public class MCATRun implements MCATValidatable {
         plotDataInterfaceKey.addParameters(postprocessingDataInterfaceKey.getParameters());
         plotDataInterfaceKey.addParameter(conditions);
 
-        MCATPostprocessedPlotGenerationOutput plotGenerationOutput = new MCATPostprocessedPlotGenerationOutput();
+        MCATPostprocessedPlotGenerationOutput plotGenerationOutput = new MCATPostprocessedPlotGenerationOutput(postprocessingAlgorithm.getPostprocessingOutput().getGroupSubject(),
+                postprocessingAlgorithm.getPostprocessingOutput().getGroupTreatment());
         registerUniqueDataInterface(plotDataInterfaceKey, plotGenerationOutput);
         savedDataInterfaces.add(plotDataInterfaceKey);
 
@@ -433,6 +434,20 @@ public class MCATRun implements MCATValidatable {
                 }
             }
         }
+        Set<Path> outputFileNames = new HashSet<>();
+        for (MCATDataInterfaceKey key : savedDataInterfaces) {
+            MCATDataInterface dataInterface = uniqueDataInterfaces.get(key);
+            for (Map.Entry<String, MCATDataSlot> entry : dataInterface.getSlots().entrySet()) {
+                if(entry.getValue().getStorageFilePath() != null && entry.getValue().getFileName() != null) {
+                    Path outputFileName = entry.getValue().getStorageFilePath().resolve(entry.getValue().getFileName());
+                    if(outputFileNames.contains(outputFileName)) {
+                        System.err.println("Duplicate output file name: " + outputFileName + ", slot-id=" + entry.getKey() + ", key=" + key);
+                    }
+                    outputFileNames.add(outputFileName);
+                }
+            }
+
+        }
 
 
 //        MCATResultDataInterfaces exportedSavedInterfaces = new MCATResultDataInterfaces();
@@ -479,10 +494,7 @@ public class MCATRun implements MCATValidatable {
            String identifier = getClusteringIdentifier(key);
 
 
-           String treatment = clusteringOutput.getGroupTreatment();
-           if(StringUtils.isNullOrEmpty(treatment)) {
-               treatment = "ALL";
-           }
+           String group = getGroupIdentifier(clusteringOutput.getGroupTreatment(), clusteringOutput.getGroupSubject());
 
            for (Map.Entry<String, MCATClusteringOutputDataSetEntry> entry : clusteringOutput.getDataSetEntries().entrySet()) {
                String subjects = entry.getKey();
@@ -490,17 +502,17 @@ public class MCATRun implements MCATValidatable {
                MCATClusteringOutputDataSetEntry dataSetEntry = entry.getValue();
 
                // Cluster abundance clusteringOutput/clusterAbundance/<treatment>/<subject>_anatomyCh_<x>-signalCh-<x>_down-<x>_grouping-<x>_minT-<x>_maxT-<x>_clusterAbundance.csv
-               dataSetEntry.getClusterAbundance().setStorageFilePath(outputPath.resolve("clusteringOutput").resolve("clusterAbundance").resolve(treatment));
+               dataSetEntry.getClusterAbundance().setStorageFilePath(outputPath.resolve("clusteringOutput").resolve("clusterAbundance").resolve(group));
                dataSetEntry.getClusterAbundance().setFileName(Paths.get(subjects + "_" + identifier + "_clusterAbundance.csv"));
 
                // Cluster images clusteringOutput/clusteredImages/<treatment>/<subject>_anatomyCh_<x>-signalCh-<x>_down-<x>_grouping-<x>_minT-<x>_maxT-<x>_clusterAbundance.csv
-               dataSetEntry.getClusterImages().setStorageFilePath(outputPath.resolve("clusteringOutput").resolve("clusteredImages").resolve(treatment));
+               dataSetEntry.getClusterImages().setStorageFilePath(outputPath.resolve("clusteringOutput").resolve("clusteredImages").resolve(group));
                dataSetEntry.getClusterImages().setFileName(Paths.get(subjects + "_" + identifier + "_clusteredImage.tif"));
            }
 
            // Cluster centers clusteringOutput/clusterCenters/<treatment>_anatomyCh_<x>-signalCh-<x>_down-<x>_grouping-<x>_minT-<x>_maxT-<x>_clusterCenters.csv
            clusteringOutput.getClusterCenters().setStorageFilePath(outputPath.resolve("clusteringOutput").resolve("clusterCenters"));
-           clusteringOutput.getClusterCenters().setFileName(Paths.get(treatment + "_" + identifier + "_clusterCenters.csv"));
+           clusteringOutput.getClusterCenters().setFileName(Paths.get(group + "_" + identifier + "_clusterCenters.csv"));
        }
        else if(dataInterface instanceof MCATClusteredPlotGenerationOutput) {
            MCATClusteredPlotGenerationOutput plotGenerationOutput = (MCATClusteredPlotGenerationOutput) dataInterface;
@@ -512,23 +524,36 @@ public class MCATRun implements MCATValidatable {
        else if(dataInterface instanceof MCATPostprocessingOutput) {
            MCATPostprocessingOutput postprocessingOutput = (MCATPostprocessingOutput) dataInterface;
 
-           String treatment = postprocessingOutput.getGroupTreatment();
-           if(StringUtils.isNullOrEmpty(treatment)) {
-               treatment = "ALL";
-           }
+           String group = getGroupIdentifier(postprocessingOutput.getGroupTreatment(), postprocessingOutput.getGroupSubject());
 
            // Clustering plots postprocessingOutput/<treatment>_anatomyCh_<x>-signalCh-<x>_down-<x>_grouping-<x>_minT-<x>_maxT-<x>_aucData.csv
            postprocessingOutput.getAuc().setStorageFilePath(outputPath.resolve("postprocessingOutput"));
-           postprocessingOutput.getAuc().setFileName(Paths.get(treatment + "_" + getClusteringIdentifier(key) + "_aucData.csv"));
+           postprocessingOutput.getAuc().setFileName(Paths.get(group + "_" + getClusteringIdentifier(key) + "_aucData.csv"));
 
        }
        else if(dataInterface instanceof MCATPostprocessedPlotGenerationOutput) {
            MCATPostprocessedPlotGenerationOutput plotGenerationOutput = (MCATPostprocessedPlotGenerationOutput) dataInterface;
+           String group = getGroupIdentifier(plotGenerationOutput.getGroupTreatment(), plotGenerationOutput.getGroupSubject());
 
            // AUC plot postprocessingPlots/anatomyCh_<x>-signalCh-<x>_down-<x>_grouping-<x>_minT-<x>_maxT-<x>_aucPlot.<png/svg/csv,...>
            plotGenerationOutput.getAucPlotData().setStorageFilePath(outputPath.resolve("postprocessingPlots"));
-           plotGenerationOutput.getAucPlotData().setFileName(Paths.get(getClusteringIdentifier(key) + "_aucPlot"));
+           plotGenerationOutput.getAucPlotData().setFileName(Paths.get(group + "_" + getClusteringIdentifier(key) + "_aucPlot"));
        }
+    }
+
+    private String getGroupIdentifier(String groupTreatment, String groupSubject) {
+        if(StringUtils.isNullOrEmpty(groupTreatment) && StringUtils.isNullOrEmpty(groupSubject)) {
+            return "ALL";
+        }
+        else if(StringUtils.isNullOrEmpty(groupTreatment)) {
+            return groupSubject;
+        }
+        else if(StringUtils.isNullOrEmpty(groupSubject)){
+            return groupTreatment;
+        }
+        else {
+            return groupTreatment + "-" + groupSubject;
+        }
     }
 
     private String getPreprocessingIdentifier(MCATDataInterfaceKey key, String subjects) {
