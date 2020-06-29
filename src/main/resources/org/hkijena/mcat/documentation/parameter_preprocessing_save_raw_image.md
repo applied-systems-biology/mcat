@@ -1,3 +1,3 @@
 # Save raw image
 
-Check box to save raw images in output folder.
+If this parameter is checked, the original raw image will be saved in the output folder.

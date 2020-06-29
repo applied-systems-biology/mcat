@@ -43,7 +43,7 @@ public class MCATPreprocessingParameters implements MCATParameterCollection {
         this.maxTime = other.maxTime;
     }
 
-    @MCATDocumentation(name = "Downsamping factor")
+    @MCATDocumentation(name = "Downsampling factor", description = "res:///org/hkijena/mcat/documentation/parameter_preprocessing_downsampling_factor.md")
     @JsonGetter("downsampling-factor")
     @MCATParameter(value = "downsampling-factor", shortKey = "down")
     public int getDownsamplingFactor() {
@@ -57,7 +57,7 @@ public class MCATPreprocessingParameters implements MCATParameterCollection {
         eventBus.post(new ParameterChangedEvent(this, "downsampling-factor"));
     }
 
-    @MCATDocumentation(name = "Channel of interest")
+    @MCATDocumentation(name = "Channel of interest", description = "res:///org/hkijena/mcat/documentation/parameter_preprocessing_channel_of_interest.md")
     @JsonGetter("channel-of-interest")
     @MCATParameter(value = "channel-of-interest", shortKey = "signalCh")
     public int getChannelOfInterest() {
@@ -71,7 +71,7 @@ public class MCATPreprocessingParameters implements MCATParameterCollection {
         eventBus.post(new ParameterChangedEvent(this, "channel-of-interest"));
     }
 
-    @MCATDocumentation(name = "Anatomic channel")
+    @MCATDocumentation(name = "Anatomic channel", description = "res:///org/hkijena/mcat/documentation/parameter_preprocessing_anatomic_channel.md")
     @JsonGetter("anatomic-channel")
     @MCATParameter(value = "anatomic-channel", shortKey = "anatomyCh")
     public int getAnatomicChannel() {
@@ -85,7 +85,7 @@ public class MCATPreprocessingParameters implements MCATParameterCollection {
         eventBus.post(new ParameterChangedEvent(this, "anatomic-channel"));
     }
 
-    @MCATDocumentation(name = "Save raw image")
+    @MCATDocumentation(name = "Save raw image", description = "res:///org/hkijena/mcat/documentation/parameter_preprocessing_save_raw_image.md")
     @JsonGetter("save-raw-image")
     @MCATParameter(value = "save-raw-image", shortKey = "sRaw")
     public boolean isSaveRawImage() {
@@ -99,7 +99,7 @@ public class MCATPreprocessingParameters implements MCATParameterCollection {
         eventBus.post(new ParameterChangedEvent(this, "save-raw-image"));
     }
 
-    @MCATDocumentation(name = "Save ROI")
+    @MCATDocumentation(name = "Save ROI", description = "res:///org/hkijena/mcat/documentation/parameter_preprocessing_save_roi.md")
     @JsonGetter("save-roi")
     @MCATParameter(value = "save-roi", shortKey = "sRoi")
     public boolean isSaveRoi() {
@@ -113,7 +113,7 @@ public class MCATPreprocessingParameters implements MCATParameterCollection {
         eventBus.post(new ParameterChangedEvent(this, "save-roi"));
     }
 
-    @MCATDocumentation(name = "Minimum time")
+    @MCATDocumentation(name = "Minimum time", description = "res:///org/hkijena/mcat/documentation/parameter_preprocessing_minimum_time.md")
     @JsonGetter("min-time")
     @MCATParameter(value = "min-time", shortKey = "minTime")
     public int getMinTime() {
@@ -127,7 +127,7 @@ public class MCATPreprocessingParameters implements MCATParameterCollection {
         eventBus.post(new ParameterChangedEvent(this, "min-time"));
     }
 
-    @MCATDocumentation(name = "Maximum time")
+    @MCATDocumentation(name = "Maximum time", description = "res:///org/hkijena/mcat/documentation/parameter_preprocessing_maximum_time.md")
     @JsonGetter("max-time")
     @MCATParameter(value = "max-time", shortKey = "maxTime")
     public int getMaxTime() {

@@ -52,7 +52,7 @@ public class MCATClusteringParameters implements MCATParameterCollection {
         eventBus.post(new ParameterChangedEvent(this, "clustering-hierarchy"));
     }
 
-    @MCATDocumentation(name = "K-Means groups (K)")
+    @MCATDocumentation(name = "K-Means k", description = "res:///org/hkijena/mcat/documentation/parameter_clustering_k.md")
     @MCATParameter(value = "kmeans-k", shortKey = "k")
     @JsonGetter("kmeans-k")
     public int getkMeansK() {

@@ -214,14 +214,14 @@ public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
 
 //    	commented to save time when testing
 //    	
-//    	if(anatomyProvided) {
-//    		ImagePlus anatomy = channels[channelAnatomy - 1];
-//    		interest = registerImages(transforms, anatomy, interest);
-//    		anatomy.close();
-//    	}else{
-//    		System.out.println("WARNING: no anatomy channel provided for image registration. Will register channel of interest without anatomy information.");
-//    		interest = registerImages(transforms, interest);
-//    	}
+    	if(anatomyProvided) {
+    		ImagePlus anatomy = channels[channelAnatomy - 1];
+    		interest = registerImages(transforms, anatomy, interest);
+    		anatomy.close();
+    	}else{
+    		System.out.println("WARNING: no anatomy channel provided for image registration. Will register channel of interest without anatomy information.");
+    		interest = registerImages(transforms, interest);
+    	}
 
         /*
          * perform z-transformation on pixel values of channel of interest

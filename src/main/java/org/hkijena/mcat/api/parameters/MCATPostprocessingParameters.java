@@ -44,7 +44,7 @@ public class MCATPostprocessingParameters implements MCATParameterCollection {
         this.cutoffValue = other.cutoffValue;
     }
 
-    @MCATDocumentation(name = "Analyze net increase")
+    @MCATDocumentation(name = "Analyze net increase", description = "res:///org/hkijena/mcat/documentation/parameter_postprocessing_net_increase.md")
     @MCATParameter(value = "analyze-net-increase", shortKey = "netInc")
     @JsonGetter("analyze-net-increase")
     public boolean isAnalyzeNetIncrease() {
@@ -58,7 +58,7 @@ public class MCATPostprocessingParameters implements MCATParameterCollection {
         eventBus.post(new ParameterChangedEvent(this, "analyze-net-increase"));
     }
 
-    @MCATDocumentation(name = "Analyze net decrease")
+    @MCATDocumentation(name = "Analyze net decrease", description = "res:///org/hkijena/mcat/documentation/parameter_postprocessing_analyze_net_decrease.md")
     @MCATParameter(value = "analyze-net-decrease", shortKey = "netDec")
     @JsonGetter("analyze-net-decrease")
     public boolean isAnalyzeNetDecrease() {
@@ -72,7 +72,7 @@ public class MCATPostprocessingParameters implements MCATParameterCollection {
         eventBus.post(new ParameterChangedEvent(this, "analyze-net-decrease"));
     }
 
-    @MCATDocumentation(name = "Analyze max increase")
+    @MCATDocumentation(name = "Analyze max increase", description = "res:///org/hkijena/mcat/documentation/parameter_postprocessing_analyze_max_increase.md")
     @MCATParameter(value = "analyze-max-increase", shortKey = "maxInc")
     @JsonGetter("analyze-max-increase")
     public boolean isAnalyzeMaxIncrease() {
@@ -86,7 +86,7 @@ public class MCATPostprocessingParameters implements MCATParameterCollection {
         eventBus.post(new ParameterChangedEvent(this, "analyze-max-increase"));
     }
 
-    @MCATDocumentation(name = "Analyze max decrease")
+    @MCATDocumentation(name = "Analyze max decrease", description = "res:///org/hkijena/mcat/documentation/parameter_postprocessing_analyze_max_decrease.md")
     @MCATParameter(value = "analyze-max-decrease", shortKey = "maxDec")
     @JsonGetter("analyze-max-decrease")
     public boolean isAnalyzeMaxDecrease() {
@@ -100,7 +100,7 @@ public class MCATPostprocessingParameters implements MCATParameterCollection {
         eventBus.post(new ParameterChangedEvent(this, "analyze-max-decrease"));
     }
 
-    @MCATDocumentation(name = "Perform cluster morphology analysis")
+    @MCATDocumentation(name = "Perform cluster morphology analysis", description = "res:///org/hkijena/mcat/documentation/parameter_postprocessing_perform_cluster_morphology_analysis.md")
     @MCATParameter(value = "perform-cluster-morphology-analysis", shortKey = "cma")
     @JsonGetter("perform-cluster-morphology-analysis")
     public boolean isPerformClusterMorphologyAnalysis() {
@@ -114,7 +114,7 @@ public class MCATPostprocessingParameters implements MCATParameterCollection {
         eventBus.post(new ParameterChangedEvent(this, "perform-morphology-analysis"));
     }
 
-    @MCATDocumentation(name = "Cutoff value")
+    @MCATDocumentation(name = "Cutoff value", description = "res:///org/hkijena/mcat/documentation/parameter_postprocessing_cutoff_value.md")
     @MCATParameter(value = "cutoff-value", shortKey = "cutoff")
     @JsonGetter("cutoff-value")
     @NumberParameterSettings(step = 0.1)

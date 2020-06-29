@@ -1,3 +1,3 @@
-# Save tissue ROI
+# Save ROI file
 
-Check box to save tissue ROI in output folder.
+If this parameter is checked, the original ROI file will be saved in the output folder.

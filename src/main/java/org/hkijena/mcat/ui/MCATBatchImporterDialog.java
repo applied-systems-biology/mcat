@@ -29,7 +29,7 @@ public class MCATBatchImporterDialog extends JDialog {
     }
 
     private void initialize() {
-        setSize(400, 300);
+        setSize(1200, 800);
         getContentPane().setLayout(new BorderLayout(8, 8));
         setTitle("Batch import samples");
         setIconImage(UIUtils.getIconFromResources("mcat.png").getImage());
@@ -102,27 +102,27 @@ public class MCATBatchImporterDialog extends JDialog {
                 batchImporter::getRoiPattern,
                 batchImporter::setRoiPattern,
                 null);
-        addToggleForPattern(formPanel,
-                "preprocessed images",
-                batchImporter::isImportPreprocessedImages,
-                batchImporter::setImportPreprocessedImages,
-                batchImporter::getPreprocessedImagesPattern,
-                batchImporter::setPreprocessedImagesPattern,
-                null);
-        addToggleForPattern(formPanel,
-                "derivative matrix",
-                batchImporter::isImportDerivativeMatrix,
-                batchImporter::setImportDerivativeMatrix,
-                batchImporter::getDerivativeMatrixPattern,
-                batchImporter::setDerivativeMatrixPattern,
-                null);
-        addToggleForPattern(formPanel,
-                "clusters",
-                batchImporter::isImportClusters,
-                batchImporter::setImportClusters,
-                batchImporter::getClustersPattern,
-                batchImporter::setClustersPattern,
-                null);
+//        addToggleForPattern(formPanel,
+//                "preprocessed images",
+//                batchImporter::isImportPreprocessedImages,
+//                batchImporter::setImportPreprocessedImages,
+//                batchImporter::getPreprocessedImagesPattern,
+//                batchImporter::setPreprocessedImagesPattern,
+//                null);
+//        addToggleForPattern(formPanel,
+//                "derivative matrix",
+//                batchImporter::isImportDerivativeMatrix,
+//                batchImporter::setImportDerivativeMatrix,
+//                batchImporter::getDerivativeMatrixPattern,
+//                batchImporter::setDerivativeMatrixPattern,
+//                null);
+//        addToggleForPattern(formPanel,
+//                "clusters",
+//                batchImporter::isImportClusters,
+//                batchImporter::setImportClusters,
+//                batchImporter::getClustersPattern,
+//                batchImporter::setClustersPattern,
+//                null);
 
         formPanel.addVerticalGlue();
         add(formPanel, BorderLayout.CENTER);

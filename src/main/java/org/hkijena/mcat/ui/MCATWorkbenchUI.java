@@ -29,7 +29,7 @@ public class MCATWorkbenchUI extends JFrame {
     }
 
     private void initialize() {
-        getContentPane().setLayout(new BorderLayout(8, 8));
+	    getContentPane().setLayout(new BorderLayout(8, 8));
         setTitle("MSOT Clustering Analysis Tool (MCAT)");
         setIconImage(UIUtils.getIconFromResources("mcat.png").getImage());
         UIUtils.setToAskOnClose(this, "Do you really want to close MCAT?", "Close window");

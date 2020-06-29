@@ -1,9 +1,9 @@
 # Clustering hierarchy
 
-Determines how data is combined for clustering.
+Defines how data is combined for clustering.
 
 | Method        | Description                             |
 | ------------- | --------------------------------------- |
-| All in one    | Put all data together and cluster.      |
-| Per treatment | Put all data from a treatment together. |
-| Per sample    | Cluster each sample individually.       | 
+| All in one    | All datasets are put together and one cluster result is generated.      |
+| Per treatment | All datasets from one treatment are put together and one cluster result per treatment is generated. |
+| Per sample    | Each sample is treated individually and there are as many cluster results generated as samples are there. | 
