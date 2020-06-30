@@ -106,8 +106,8 @@ public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
     private ImagePlus downsample(ImagePlus imp) {
         downFactor = getPreprocessingParameters().getDownsamplingFactor();
         System.out.println("\tPerforming downsampling by factor " + downFactor + "...");
-        if (downFactor < 0)
-            throw new IllegalArgumentException("Downsampling factor must be specified and > 0!");
+        if (downFactor < 1)
+            throw new IllegalArgumentException("Downsampling factor must be specified and > 1!");
         else {
             int newFrames = imp.getNFrames() / downFactor;
             imp = new ij.plugin.Resizer().zScale(imp, newFrames, 1);

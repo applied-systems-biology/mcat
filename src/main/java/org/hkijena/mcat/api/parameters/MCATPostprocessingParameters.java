@@ -44,7 +44,7 @@ public class MCATPostprocessingParameters implements MCATParameterCollection {
         this.cutoffValue = other.cutoffValue;
     }
 
-    @MCATDocumentation(name = "Analyze net increase", description = "res:///org/hkijena/mcat/documentation/parameter_postprocessing_net_increase.md")
+    @MCATDocumentation(name = "Analyze net increase", description = "res:///org/hkijena/mcat/documentation/parameter_postprocessing_analyze_net_increase.md")
     @MCATParameter(value = "analyze-net-increase", shortKey = "netInc")
     @JsonGetter("analyze-net-increase")
     public boolean isAnalyzeNetIncrease() {
