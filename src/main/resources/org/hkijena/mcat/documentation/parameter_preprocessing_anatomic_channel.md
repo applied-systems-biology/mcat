@@ -1,1 +1,1 @@
-# Anatomic channel
+# Anatomy channel

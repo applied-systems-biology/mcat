@@ -43,21 +43,25 @@ public class MCATPreprocessingParameters implements MCATParameterCollection {
         this.maxTime = other.maxTime;
     }
 
-    @MCATDocumentation(name = "Downsampling factor", description = "res:///org/hkijena/mcat/documentation/parameter_preprocessing_downsampling_factor.md")
+    @MCATDocumentation(name = "Smoothing factor", description = "res:///org/hkijena/mcat/documentation/parameter_preprocessing_downsampling_factor.md")
     @JsonGetter("downsampling-factor")
-    @MCATParameter(value = "downsampling-factor", shortKey = "down")
+    @MCATParameter(value = "downsampling-factor", shortKey = "smooth")
     public int getDownsamplingFactor() {
         return downsamplingFactor;
     }
 
     @JsonSetter("downsampling-factor")
     @MCATParameter("downsampling-factor")
-    public void setDownsamplingFactor(int downsamplingFactor) {
+    public boolean setDownsamplingFactor(int downsamplingFactor) {
+    	if (downsamplingFactor <= 0) {
+            return false;
+        }
         this.downsamplingFactor = downsamplingFactor;
         eventBus.post(new ParameterChangedEvent(this, "downsampling-factor"));
+        return true;
     }
 
-    @MCATDocumentation(name = "Channel of interest", description = "res:///org/hkijena/mcat/documentation/parameter_preprocessing_channel_of_interest.md")
+    @MCATDocumentation(name = "Signal channel", description = "res:///org/hkijena/mcat/documentation/parameter_preprocessing_channel_of_interest.md")
     @JsonGetter("channel-of-interest")
     @MCATParameter(value = "channel-of-interest", shortKey = "signalCh")
     public int getChannelOfInterest() {
@@ -66,12 +70,16 @@ public class MCATPreprocessingParameters implements MCATParameterCollection {
 
     @JsonSetter("channel-of-interest")
     @MCATParameter("channel-of-interest")
-    public void setChannelOfInterest(int channelOfInterest) {
+    public boolean setChannelOfInterest(int channelOfInterest) {
+    	if (channelOfInterest <= 0) {
+            return false;
+        }
         this.channelOfInterest = channelOfInterest;
         eventBus.post(new ParameterChangedEvent(this, "channel-of-interest"));
+        return true;
     }
 
-    @MCATDocumentation(name = "Anatomic channel", description = "res:///org/hkijena/mcat/documentation/parameter_preprocessing_anatomic_channel.md")
+    @MCATDocumentation(name = "Anatomy channel", description = "res:///org/hkijena/mcat/documentation/parameter_preprocessing_anatomic_channel.md")
     @JsonGetter("anatomic-channel")
     @MCATParameter(value = "anatomic-channel", shortKey = "anatomyCh")
     public int getAnatomicChannel() {
@@ -80,9 +88,13 @@ public class MCATPreprocessingParameters implements MCATParameterCollection {
 
     @JsonSetter("anatomic-channel")
     @MCATParameter("anatomic-channel")
-    public void setAnatomicChannel(int anatomicChannel) {
+    public boolean setAnatomicChannel(int anatomicChannel) {
+    	if (anatomicChannel <= 0) {
+            return false;
+        }
         this.anatomicChannel = anatomicChannel;
         eventBus.post(new ParameterChangedEvent(this, "anatomic-channel"));
+        return true;
     }
 
     @MCATDocumentation(name = "Save raw image", description = "res:///org/hkijena/mcat/documentation/parameter_preprocessing_save_raw_image.md")
@@ -113,32 +125,40 @@ public class MCATPreprocessingParameters implements MCATParameterCollection {
         eventBus.post(new ParameterChangedEvent(this, "save-roi"));
     }
 
-    @MCATDocumentation(name = "Minimum time", description = "res:///org/hkijena/mcat/documentation/parameter_preprocessing_minimum_time.md")
+    @MCATDocumentation(name = "Start time frame", description = "res:///org/hkijena/mcat/documentation/parameter_preprocessing_minimum_time.md")
     @JsonGetter("min-time")
-    @MCATParameter(value = "min-time", shortKey = "minTime")
+    @MCATParameter(value = "min-time", shortKey = "startTime")
     public int getMinTime() {
         return minTime;
     }
 
     @JsonSetter("min-time")
     @MCATParameter("min-time")
-    public void setMinTime(int minTime) {
+    public boolean setMinTime(int minTime) {
+    	if (minTime < 0) {
+            return false;
+        }
         this.minTime = minTime;
         eventBus.post(new ParameterChangedEvent(this, "min-time"));
+        return true;
     }
 
-    @MCATDocumentation(name = "Maximum time", description = "res:///org/hkijena/mcat/documentation/parameter_preprocessing_maximum_time.md")
+    @MCATDocumentation(name = "End time frame", description = "res:///org/hkijena/mcat/documentation/parameter_preprocessing_maximum_time.md")
     @JsonGetter("max-time")
-    @MCATParameter(value = "max-time", shortKey = "maxTime")
+    @MCATParameter(value = "max-time", shortKey = "endTime")
     public int getMaxTime() {
         return maxTime;
     }
 
     @JsonSetter("max-time")
     @MCATParameter("max-time")
-    public void setMaxTime(int maxTime) {
+    public boolean setMaxTime(int maxTime) {
+    	if (maxTime < 0) {
+            return false;
+        }
         this.maxTime = maxTime;
         eventBus.post(new ParameterChangedEvent(this, "max-time"));
+        return true;
     }
 
     @Override

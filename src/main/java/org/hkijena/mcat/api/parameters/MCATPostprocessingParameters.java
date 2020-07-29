@@ -28,7 +28,7 @@ public class MCATPostprocessingParameters implements MCATParameterCollection {
     private boolean analyzeNetDecrease = false;
     private boolean analyzeMaxIncrease = false;
     private boolean analyzeMaxDecrease = false;
-    private boolean performClusterMorphologyAnalysis = false;
+//    private boolean performClusterMorphologyAnalysis = false;
     private double cutoffValue = CUTOFF_DEFAULT;
 
     public MCATPostprocessingParameters() {
@@ -40,7 +40,7 @@ public class MCATPostprocessingParameters implements MCATParameterCollection {
         this.analyzeNetDecrease = other.analyzeNetDecrease;
         this.analyzeMaxIncrease = other.analyzeMaxIncrease;
         this.analyzeMaxDecrease = other.analyzeMaxDecrease;
-        this.performClusterMorphologyAnalysis = other.performClusterMorphologyAnalysis;
+//        this.performClusterMorphologyAnalysis = other.performClusterMorphologyAnalysis;
         this.cutoffValue = other.cutoffValue;
     }
 
@@ -99,20 +99,20 @@ public class MCATPostprocessingParameters implements MCATParameterCollection {
         this.analyzeMaxDecrease = analyzeMaxDecrease;
         eventBus.post(new ParameterChangedEvent(this, "analyze-max-decrease"));
     }
+//
+//    @MCATDocumentation(name = "Perform cluster morphology analysis", description = "res:///org/hkijena/mcat/documentation/parameter_postprocessing_perform_cluster_morphology_analysis.md")
+//    @MCATParameter(value = "perform-cluster-morphology-analysis", shortKey = "cma")
+//    @JsonGetter("perform-cluster-morphology-analysis")
+//    public boolean isPerformClusterMorphologyAnalysis() {
+//        return performClusterMorphologyAnalysis;
+//    }
 
-    @MCATDocumentation(name = "Perform cluster morphology analysis", description = "res:///org/hkijena/mcat/documentation/parameter_postprocessing_perform_cluster_morphology_analysis.md")
-    @MCATParameter(value = "perform-cluster-morphology-analysis", shortKey = "cma")
-    @JsonGetter("perform-cluster-morphology-analysis")
-    public boolean isPerformClusterMorphologyAnalysis() {
-        return performClusterMorphologyAnalysis;
-    }
-
-    @MCATParameter("perform-cluster-morphology-analysis")
-    @JsonSetter("perform-cluster-morphology-analysis")
-    public void setPerformClusterMorphologyAnalysis(boolean performClusterMorphologyAnalysis) {
-        this.performClusterMorphologyAnalysis = performClusterMorphologyAnalysis;
-        eventBus.post(new ParameterChangedEvent(this, "perform-morphology-analysis"));
-    }
+//    @MCATParameter("perform-cluster-morphology-analysis")
+//    @JsonSetter("perform-cluster-morphology-analysis")
+//    public void setPerformClusterMorphologyAnalysis(boolean performClusterMorphologyAnalysis) {
+//        this.performClusterMorphologyAnalysis = performClusterMorphologyAnalysis;
+//        eventBus.post(new ParameterChangedEvent(this, "perform-morphology-analysis"));
+//    }
 
     @MCATDocumentation(name = "Cutoff value", description = "res:///org/hkijena/mcat/documentation/parameter_postprocessing_cutoff_value.md")
     @MCATParameter(value = "cutoff-value", shortKey = "cutoff")
@@ -124,9 +124,13 @@ public class MCATPostprocessingParameters implements MCATParameterCollection {
 
     @MCATParameter("cutoff-value")
     @JsonSetter("cutoff-value")
-    public void setCutoffValue(double cutoffValue) {
+    public boolean setCutoffValue(double cutoffValue) {
+    	if (cutoffValue < 0 | cutoffValue > 1) {
+            return false;
+        }
         this.cutoffValue = cutoffValue;
         eventBus.post(new ParameterChangedEvent(this, "cutoff-value"));
+        return true;
     }
 
     @Override
@@ -138,13 +142,15 @@ public class MCATPostprocessingParameters implements MCATParameterCollection {
                 analyzeNetDecrease == that.analyzeNetDecrease &&
                 analyzeMaxIncrease == that.analyzeMaxIncrease &&
                 analyzeMaxDecrease == that.analyzeMaxDecrease &&
-                performClusterMorphologyAnalysis == that.performClusterMorphologyAnalysis &&
+//                performClusterMorphologyAnalysis == that.performClusterMorphologyAnalysis &&
                 Double.compare(that.cutoffValue, cutoffValue) == 0;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(analyzeNetIncrease, analyzeNetDecrease, analyzeMaxIncrease, analyzeMaxDecrease, performClusterMorphologyAnalysis, cutoffValue);
+        return Objects.hash(analyzeNetIncrease, analyzeNetDecrease, analyzeMaxIncrease, analyzeMaxDecrease, 
+//        		performClusterMorphologyAnalysis, 
+        		cutoffValue);
     }
 
     @Override
