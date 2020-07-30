@@ -45,7 +45,7 @@ public class MCATPreprocessingParameters implements MCATParameterCollection {
 
     @MCATDocumentation(name = "Smoothing factor", description = "res:///org/hkijena/mcat/documentation/parameter_preprocessing_downsampling_factor.md")
     @JsonGetter("downsampling-factor")
-    @MCATParameter(value = "downsampling-factor", shortKey = "smooth")
+    @MCATParameter(value = "downsampling-factor", shortKey = "smooth", uiOrder = 3)
     public int getDownsamplingFactor() {
         return downsamplingFactor;
     }
@@ -63,7 +63,7 @@ public class MCATPreprocessingParameters implements MCATParameterCollection {
 
     @MCATDocumentation(name = "Signal channel", description = "res:///org/hkijena/mcat/documentation/parameter_preprocessing_channel_of_interest.md")
     @JsonGetter("channel-of-interest")
-    @MCATParameter(value = "channel-of-interest", shortKey = "signalCh")
+    @MCATParameter(value = "channel-of-interest", shortKey = "signalCh", uiOrder = 2)
     public int getChannelOfInterest() {
         return channelOfInterest;
     }
@@ -81,7 +81,7 @@ public class MCATPreprocessingParameters implements MCATParameterCollection {
 
     @MCATDocumentation(name = "Anatomy channel", description = "res:///org/hkijena/mcat/documentation/parameter_preprocessing_anatomic_channel.md")
     @JsonGetter("anatomic-channel")
-    @MCATParameter(value = "anatomic-channel", shortKey = "anatomyCh")
+    @MCATParameter(value = "anatomic-channel", shortKey = "anatomyCh", uiOrder = 1)
     public int getAnatomicChannel() {
         return anatomicChannel;
     }
@@ -99,7 +99,7 @@ public class MCATPreprocessingParameters implements MCATParameterCollection {
 
     @MCATDocumentation(name = "Save raw image", description = "res:///org/hkijena/mcat/documentation/parameter_preprocessing_save_raw_image.md")
     @JsonGetter("save-raw-image")
-    @MCATParameter(value = "save-raw-image", shortKey = "sRaw")
+    @MCATParameter(value = "save-raw-image", shortKey = "sRaw", uiOrder = 7)
     public boolean isSaveRawImage() {
         return saveRawImage;
     }
@@ -113,7 +113,7 @@ public class MCATPreprocessingParameters implements MCATParameterCollection {
 
     @MCATDocumentation(name = "Save ROI", description = "res:///org/hkijena/mcat/documentation/parameter_preprocessing_save_roi.md")
     @JsonGetter("save-roi")
-    @MCATParameter(value = "save-roi", shortKey = "sRoi")
+    @MCATParameter(value = "save-roi", shortKey = "sRoi", uiOrder = 6)
     public boolean isSaveRoi() {
         return saveRoi;
     }
@@ -127,7 +127,7 @@ public class MCATPreprocessingParameters implements MCATParameterCollection {
 
     @MCATDocumentation(name = "Start time frame", description = "res:///org/hkijena/mcat/documentation/parameter_preprocessing_minimum_time.md")
     @JsonGetter("min-time")
-    @MCATParameter(value = "min-time", shortKey = "startTime")
+    @MCATParameter(value = "min-time", shortKey = "startTime", uiOrder = 4)
     public int getMinTime() {
         return minTime;
     }
@@ -145,7 +145,7 @@ public class MCATPreprocessingParameters implements MCATParameterCollection {
 
     @MCATDocumentation(name = "End time frame", description = "res:///org/hkijena/mcat/documentation/parameter_preprocessing_maximum_time.md")
     @JsonGetter("max-time")
-    @MCATParameter(value = "max-time", shortKey = "endTime")
+    @MCATParameter(value = "max-time", shortKey = "endTime", uiOrder = 5)
     public int getMaxTime() {
         return maxTime;
     }

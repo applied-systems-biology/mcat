@@ -138,13 +138,13 @@ public class ParameterPanel extends FormPanel implements Contextual {
     private MarkdownDocument generateParameterDocumentation(MCATParameterAccess access) {
         StringBuilder markdownString = new StringBuilder();
         markdownString.append("# Parameter '").append(access.getName()).append("'\n\n");
-        MCATDocumentation documentation = MCATUIParametertypeRegistry.getInstance().getDocumentationFor(access.getFieldClass());
-        if (documentation != null) {
-            markdownString.append("<table><tr>");
-            markdownString.append("<td><img src=\"").append(ResourceUtils.getPluginResource("icons/wrench.png")).append("\" /></td>");
-            markdownString.append("<td><strong>").append(HtmlEscapers.htmlEscaper().escape(documentation.name())).append("</strong>: ");
-            markdownString.append(HtmlEscapers.htmlEscaper().escape(documentation.description())).append("</td></tr></table>\n\n");
-        }
+//        MCATDocumentation documentation = MCATUIParametertypeRegistry.getInstance().getDocumentationFor(access.getFieldClass());
+//        if (documentation != null) {
+//            markdownString.append("<table><tr>");
+//            markdownString.append("<td><img src=\"").append(ResourceUtils.getPluginResource("icons/wrench.png")).append("\" /></td>");
+//            markdownString.append("<td><strong>").append(HtmlEscapers.htmlEscaper().escape(documentation.name())).append("</strong>: ");
+//            markdownString.append(HtmlEscapers.htmlEscaper().escape(documentation.description())).append("</td></tr></table>\n\n");
+//        }
         if (access.getDescription() != null && !access.getDescription().isEmpty()) {
             markdownString.append(StringUtils.getDocumentation(access.getDescription()).getMarkdown());
         } else {

@@ -70,14 +70,14 @@ public class MCATClusteringParameters implements MCATParameterCollection {
         return true;
     }
 
-    @MCATDocumentation(name = "Minimum length")
-    @MCATParameter(value = "min-length", shortKey = "mlength")
+//    @MCATDocumentation(name = "Minimum length")
+//    @MCATParameter(value = "min-length", shortKey = "mlength")
     @JsonGetter("min-length")
     public int getMinLength() {
         return minLength;
     }
 
-    @MCATParameter("min-length")
+//    @MCATParameter("min-length")
     @JsonSetter("min-length")
     public void setMinLength(int minLength) {
         this.minLength = minLength;

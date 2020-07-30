@@ -58,8 +58,10 @@ public class FormPanel extends JPanel {
         helpPanel.add(parameterHelp, BorderLayout.CENTER);
 
         Component content;
-        if ((flags & WITH_SCROLLING) == WITH_SCROLLING)
+        if ((flags & WITH_SCROLLING) == WITH_SCROLLING) {
             content = new JScrollPane(forms);
+            ((JScrollPane)content).getVerticalScrollBar().setUnitIncrement(25);
+        }
         else
             content = forms;
 

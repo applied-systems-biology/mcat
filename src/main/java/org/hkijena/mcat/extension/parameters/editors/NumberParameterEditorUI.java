@@ -3,9 +3,15 @@ package org.hkijena.mcat.extension.parameters.editors;
 import org.hkijena.mcat.api.parameters.MCATParameterAccess;
 import org.hkijena.mcat.ui.parameters.MCATParameterEditorUI;
 import org.scijava.Context;
+import scala.Int;
 
 import javax.swing.*;
+import javax.swing.text.DefaultFormatterFactory;
+import javax.swing.text.NumberFormatter;
 import java.awt.*;
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.util.Objects;
 
 /**
  * Editor for a {@link Double} parameter
@@ -145,7 +151,54 @@ public class NumberParameterEditorUI extends MCATParameterEditorUI {
                 }
             }
         });
+        ((JSpinner.NumberEditor)spinner.getEditor()).getTextField().setFormatterFactory(new DefaultFormatterFactory(new NumberEditorFormatter(model, NumberFormat.getInstance())));
         spinner.setPreferredSize(new Dimension(100, spinner.getPreferredSize().height));
         add(spinner, BorderLayout.CENTER);
+    }
+
+    private static class NumberEditorFormatter extends NumberFormatter {
+        private final SpinnerNumberModel model;
+
+        NumberEditorFormatter(SpinnerNumberModel model, NumberFormat format) {
+            super(format);
+            this.model = model;
+            setValueClass(model.getValue().getClass());
+        }
+
+        public void setMinimum(Comparable min) {
+            model.setMinimum(min);
+        }
+
+        public Comparable getMinimum() {
+            return  model.getMinimum();
+        }
+
+        public void setMaximum(Comparable max) {
+            model.setMaximum(max);
+        }
+
+        public Comparable getMaximum() {
+            return model.getMaximum();
+        }
+
+        @Override
+        public String valueToString(Object value) throws ParseException {
+            if(value instanceof Integer && (int)value == Integer.MAX_VALUE) {
+                return "Unlimited";
+            }
+            else {
+                return super.valueToString(value);
+            }
+        }
+
+        @Override
+        public Object stringToValue(String text) throws ParseException {
+            if(Objects.equals(text, "Unlimited")) {
+                return Integer.MAX_VALUE;
+            }
+            else {
+                return super.stringToValue(text);
+            }
+        }
     }
 }

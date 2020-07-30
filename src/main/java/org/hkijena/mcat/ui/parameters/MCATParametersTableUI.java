@@ -5,6 +5,7 @@ import org.hkijena.mcat.api.MCATDocumentation;
 import org.hkijena.mcat.api.events.ParameterChangedEvent;
 import org.hkijena.mcat.api.parameters.MCATParameterCollection;
 import org.hkijena.mcat.api.parameters.MCATParametersTable;
+import org.hkijena.mcat.api.parameters.MCATParametersTableRow;
 import org.hkijena.mcat.api.registries.MCATUIParametertypeRegistry;
 import org.hkijena.mcat.ui.MCATWorkbenchUI;
 import org.hkijena.mcat.ui.MCATWorkbenchUIPanel;
@@ -56,7 +57,7 @@ public class MCATParametersTableUI extends MCATWorkbenchUIPanel {
 
         JButton addButton = new JButton("Add column", UIUtils.getIconFromResources("add.png"));
         addButton.setToolTipText("Adds a new column to the table. It contains the default values.");
-        addButton.addActionListener(e -> addRow());
+        addButton.addActionListener(e -> addParameterSet());
         toolBar.add(addButton);
 
         JButton generateButton = new JButton("Generate columns", UIUtils.getIconFromResources("add.png"));
@@ -91,7 +92,7 @@ public class MCATParametersTableUI extends MCATWorkbenchUIPanel {
         table.getColumnModel().getSelectionModel().addListSelectionListener(e -> onTableCellSelected());
         table.setRowHeight(32);
         table.setModel(transposedTableModel);
-//        table.packAll();
+        table.getColumns().get(0).setMaxWidth(200);
         tablePanel.add(table, BorderLayout.CENTER);
         tablePanel.add(table.getTableHeader(), BorderLayout.NORTH);
         contentPanel.add(new JScrollPane(tablePanel), BorderLayout.CENTER);
@@ -120,8 +121,24 @@ public class MCATParametersTableUI extends MCATWorkbenchUIPanel {
         }
     }
 
-    private void addRow() {
-        getWorkbenchUI().getProject().getParametersTable().addRow();
+    private void addParameterSet() {
+        int selectedColumn = table.getSelectedColumn();
+        MCATParametersTableRow row;
+        if(selectedColumn >= 1) {
+            int modelColumn = table.convertColumnIndexToModel(selectedColumn) - 1;
+            if(modelColumn >= 0) {
+                MCATParametersTableRow existing = getWorkbenchUI().getProject().getParametersTable().getRows().get(modelColumn);
+                row = new MCATParametersTableRow(existing);
+            }
+            else {
+                row = new MCATParametersTableRow();
+            }
+        }
+        else {
+            row = new MCATParametersTableRow();
+        }
+        getWorkbenchUI().getProject().getParametersTable().addRow(row);
+        table.getColumns().get(0).setMaxWidth(200);
     }
 
     private void replaceColumnValues(int column, Class<? extends MCATParameterGeneratorUI> generator) {
@@ -205,6 +222,7 @@ public class MCATParametersTableUI extends MCATWorkbenchUIPanel {
             }
             tableIsReloading = false;
             table.packAll();
+            table.getColumns().get(0).setMaxWidth(200);
         }
     }
 
