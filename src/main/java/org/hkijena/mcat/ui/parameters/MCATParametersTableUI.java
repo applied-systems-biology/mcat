@@ -86,16 +86,17 @@ public class MCATParametersTableUI extends MCATWorkbenchUIPanel {
         table = new JXTable();
         table.setDefaultRenderer(Object.class, new MCATParametersTableCellRenderer());
 //        table.setAutoCreateRowSorter(false);
-        table.setSortable(false);
+        table.setSortable(true);
         table.setCellSelectionEnabled(true);
         table.getSelectionModel().addListSelectionListener(e -> onTableCellSelected());
         table.getColumnModel().getSelectionModel().addListSelectionListener(e -> onTableCellSelected());
         table.setRowHeight(32);
         table.setModel(transposedTableModel);
-        table.getColumns().get(0).setMaxWidth(200);
+        table.setAutoResizeMode(JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
+        packColumns();
         tablePanel.add(table, BorderLayout.CENTER);
-        tablePanel.add(table.getTableHeader(), BorderLayout.NORTH);
-        contentPanel.add(new JScrollPane(tablePanel), BorderLayout.CENTER);
+//        tablePanel.add(table.getTableHeader(), BorderLayout.NORTH);
+        contentPanel.add(new JScrollPane(table), BorderLayout.CENTER);
 
         // Create split pane
         splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, contentPanel,
@@ -111,6 +112,10 @@ public class MCATParametersTableUI extends MCATWorkbenchUIPanel {
         });
 
         add(splitPane, BorderLayout.CENTER);
+    }
+
+    private void packColumns() {
+        table.packAll();
     }
 
     private void removeSelectedRows() {
@@ -138,7 +143,7 @@ public class MCATParametersTableUI extends MCATWorkbenchUIPanel {
             row = new MCATParametersTableRow();
         }
         getWorkbenchUI().getProject().getParametersTable().addRow(row);
-        table.getColumns().get(0).setMaxWidth(200);
+        packColumns();
     }
 
     private void replaceColumnValues(int column, Class<? extends MCATParameterGeneratorUI> generator) {
@@ -221,8 +226,7 @@ public class MCATParametersTableUI extends MCATWorkbenchUIPanel {
                 table.changeSelection(selection.x, selection.y, false, false);
             }
             tableIsReloading = false;
-            table.packAll();
-            table.getColumns().get(0).setMaxWidth(200);
+            packColumns();
         }
     }
 
