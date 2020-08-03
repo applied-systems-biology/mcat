@@ -16,7 +16,7 @@ public class MCATParametersTableCellRenderer extends JLabel implements TableCell
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 
         if(value instanceof Integer && (int)value == Integer.MAX_VALUE) {
-            setText("Unlimited");
+            setText("Max");
         }
         else {
             setText("" + value);

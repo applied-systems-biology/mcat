@@ -184,7 +184,7 @@ public class NumberParameterEditorUI extends MCATParameterEditorUI {
         @Override
         public String valueToString(Object value) throws ParseException {
             if(value instanceof Integer && (int)value == Integer.MAX_VALUE) {
-                return "Unlimited";
+                return "Max";
             }
             else {
                 return super.valueToString(value);
@@ -193,7 +193,7 @@ public class NumberParameterEditorUI extends MCATParameterEditorUI {
 
         @Override
         public Object stringToValue(String text) throws ParseException {
-            if(Objects.equals(text, "Unlimited")) {
+            if(Objects.equals(text, "Max")) {
                 return Integer.MAX_VALUE;
             }
             else {
