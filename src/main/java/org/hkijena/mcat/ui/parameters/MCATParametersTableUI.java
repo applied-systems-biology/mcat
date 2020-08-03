@@ -92,7 +92,7 @@ public class MCATParametersTableUI extends MCATWorkbenchUIPanel {
         table.getColumnModel().getSelectionModel().addListSelectionListener(e -> onTableCellSelected());
         table.setRowHeight(32);
         table.setModel(transposedTableModel);
-        table.setAutoResizeMode(JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
+        table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         packColumns();
         tablePanel.add(table, BorderLayout.CENTER);
 //        tablePanel.add(table.getTableHeader(), BorderLayout.NORTH);
