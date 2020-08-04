@@ -11,12 +11,15 @@ import org.hkijena.mcat.ui.MCATWorkbenchUI;
 import org.hkijena.mcat.ui.MCATWorkbenchUIPanel;
 import org.hkijena.mcat.ui.components.MarkdownDocument;
 import org.hkijena.mcat.ui.components.MarkdownReader;
+import org.hkijena.mcat.ui.components.ParameterColumnSorter;
 import org.hkijena.mcat.ui.components.TransposedTableModel;
 import org.hkijena.mcat.utils.UIUtils;
 import org.jdesktop.swingx.JXTable;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -92,6 +95,7 @@ public class MCATParametersTableUI extends MCATWorkbenchUIPanel {
         table.getColumnModel().getSelectionModel().addListSelectionListener(e -> onTableCellSelected());
         table.setRowHeight(32);
         table.setModel(transposedTableModel);
+        updateRowSorter();
         table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         packColumns();
         tablePanel.add(table, BorderLayout.CENTER);
@@ -112,6 +116,13 @@ public class MCATParametersTableUI extends MCATWorkbenchUIPanel {
         });
 
         add(splitPane, BorderLayout.CENTER);
+    }
+
+    private void updateRowSorter() {
+        TableRowSorter<TableModel> rowSorter = new TableRowSorter<>();
+        rowSorter.setModel(table.getModel());
+        rowSorter.setComparator(0, new ParameterColumnSorter(getWorkbenchUI().getProject().getParametersTable()));
+        table.setRowSorter(rowSorter);
     }
 
     private void packColumns() {
@@ -222,6 +233,7 @@ public class MCATParametersTableUI extends MCATWorkbenchUIPanel {
             tableIsReloading = true;
             table.setModel(new DefaultTableModel());
             table.setModel(transposedTableModel);
+            updateRowSorter();
             if (selection.x >= 0 && selection.x < table.getRowCount() && selection.y >= 0 && selection.y < table.getColumnCount()) {
                 table.changeSelection(selection.x, selection.y, false, false);
             }

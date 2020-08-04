@@ -10,6 +10,7 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -92,7 +93,7 @@ public class MCATParametersTable implements TableModel {
         MCATTraversedParameterCollection parameterCollection = new MCATTraversedParameterCollection(row);
         columnKeys = parameterCollection.getParameters().keySet().stream()
                 .sorted(Comparator.comparing(k -> parameterCollection.getSourceUIOrder(parameterCollection.getParameters().get(k).getSource()))
-                        .thenComparing(k -> parameterCollection.getParameters().get(k).getName())).collect(Collectors.toList());
+                        .thenComparing(k -> parameterCollection.getParameters().get(k).getUIOrder())).collect(Collectors.toList());
         for (String key : columnKeys) {
             columnClasses.add(parameterCollection.getParameters().get(key).getFieldClass());
             int slashIndex = key.indexOf('/');
@@ -112,6 +113,10 @@ public class MCATParametersTable implements TableModel {
                 return;
             }
         }
+    }
+
+    public List<String> getColumnNames() {
+        return Collections.unmodifiableList(columnNames);
     }
 
     @Override
