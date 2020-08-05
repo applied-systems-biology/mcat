@@ -1,3 +1,1 @@
-# Save raw image
-
-If this parameter is checked, the original raw image will be saved in the output folder.
+Defines if the raw image data is saved to the output folder.

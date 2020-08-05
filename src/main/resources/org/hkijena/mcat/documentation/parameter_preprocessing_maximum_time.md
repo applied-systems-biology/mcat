@@ -1,3 +1,3 @@
-# End time frame
+Defines if time frames from the end of the image stack are excluded. 
 
-This parameter specifies how many time frames are omitted at the end of the image data stack. If this parameter is set to a number equal or larger than the number of time frames, no time frames are omitted at the stack end.
+This parameter has to be in the range of 1 and total number of time frames. All time frames after the _End time frame_ will be excluded from the analysis. _End time frame_ must not be smaller than  _Start time frame_.

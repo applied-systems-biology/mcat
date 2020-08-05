@@ -1,3 +1,3 @@
-# Analyze net decrease
+Defines if all kinetic cluster centers with a signal net decrease should be used for AUC calculation.
 
-Main kinetic curves are extracted by k-means clustering. If analyze net decrease is checked, only those kinetic curves with signal net decrease are statistically analyzed.
+If it is enabled, a weighted curve is calculated for each subject with the weights being the corresponding pixel abundance values for all kinetic cluster centers with a signal net decrease. These curves are then normalized by the total number of pixels of the respective subjects and the AUC is calculated, taken into account the cutoff value.

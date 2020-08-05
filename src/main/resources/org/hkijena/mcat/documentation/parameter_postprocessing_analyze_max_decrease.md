@@ -1,3 +1,3 @@
-# Analyze max decrease
+Defines if the kinetic cluster center with the maximum signal decrease should be used for AUC calculation. 
 
-Main kinetic curves are extracted by k-means clustering. If analyze max decrease is checked, only the kinetic curve with maximum signal decrease is statistically analyzed.  
+If it is enabled, a weighted curve is calculated for each subject with the weight being the corresponding pixel abundance value for the kinetic cluster center with the maximum decrease. These curves are then normalized by the total number of pixels of the respective subjects and the AUC is calculated, taken into account the cutoff value.

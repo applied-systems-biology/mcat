@@ -18,7 +18,7 @@ import org.hkijena.mcat.api.events.ParameterChangedEvent;
  * Add the variable to getHashCode() and equals()
  */
 public class MCATPreprocessingParameters implements MCATParameterCollection {
-	public static final int MIN_TIME_DEFAULT = 0, MAX_TIME_DEFAULT = Integer.MAX_VALUE;
+	public static final int MIN_TIME_DEFAULT = 1, MAX_TIME_DEFAULT = Integer.MAX_VALUE;
 	
     private EventBus eventBus = new EventBus();
     private int downsamplingFactor = 4;
@@ -89,7 +89,7 @@ public class MCATPreprocessingParameters implements MCATParameterCollection {
     @JsonSetter("anatomic-channel")
     @MCATParameter("anatomic-channel")
     public boolean setAnatomicChannel(int anatomicChannel) {
-    	if (anatomicChannel <= 0) {
+    	if (anatomicChannel < 0) {
             return false;
         }
         this.anatomicChannel = anatomicChannel;
@@ -135,7 +135,7 @@ public class MCATPreprocessingParameters implements MCATParameterCollection {
     @JsonSetter("min-time")
     @MCATParameter("min-time")
     public boolean setMinTime(int minTime) {
-    	if (minTime < 0) {
+    	if (minTime < 1) {
             return false;
         }
         this.minTime = minTime;
@@ -153,7 +153,7 @@ public class MCATPreprocessingParameters implements MCATParameterCollection {
     @JsonSetter("max-time")
     @MCATParameter("max-time")
     public boolean setMaxTime(int maxTime) {
-    	if (maxTime < 0) {
+    	if (maxTime < 1) {
             return false;
         }
         this.maxTime = maxTime;

@@ -1,3 +1,3 @@
-# Perform cluster morphology analysis
+Defines if spatial distribution of cluster centers should be performed.
 
-If this option is checked, the spatial distribution of the resulting clusters is analyzed per sample.
+Not implemented yet.

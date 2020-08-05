@@ -1,3 +1,0 @@
-# Derivative matrix
-
-test

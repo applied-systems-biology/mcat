@@ -1,3 +1,3 @@
-# Smoothing factor
+Defines how strongly image data is smoothed in the time domain.
 
-This parameter defines by which factor the original images are downsampled and averaged in time domain. Set this parameter to zero to disable smoothing.
+This parameter is used to reduce breathing artifacts by performing downsampling and averaging over _s_ consecutive time frames. Set this value to 1 if the image data shall not be smoothed. Smaller values lead to increased computation time and possibly strong fluctuations in the extracted kinetic curves, while larger values decrease computation time but lead to reduced time resolution.

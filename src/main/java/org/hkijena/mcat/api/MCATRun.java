@@ -558,10 +558,17 @@ public class MCATRun implements MCATValidatable {
 
     private String getPreprocessingIdentifier(MCATDataInterfaceKey key, String subjects) {
         MCATPreprocessingParameters preprocessingParameters = key.getParameterOfType(MCATPreprocessingParameters.class);
-        return subjects + "_" +
+        String identifier =  subjects + "_" +
                 "anatomyCh-" + preprocessingParameters.getAnatomicChannel() + "_" +
                 "signalCh-" + preprocessingParameters.getChannelOfInterest() + "_" +
                 "down-" + preprocessingParameters.getDownsamplingFactor();
+        if(preprocessingParameters.getMinTime() != MCATPreprocessingParameters.MIN_TIME_DEFAULT) {
+            identifier += "_" + "startT" + "-" + preprocessingParameters.getMinTime();
+        }
+        if(preprocessingParameters.getMaxTime() != MCATPreprocessingParameters.MAX_TIME_DEFAULT) {
+            identifier += "_" + "endT" + "-" + preprocessingParameters.getMaxTime();
+        }
+        return  identifier;
     }
 
     private String getClusteringIdentifier(MCATDataInterfaceKey key) {
@@ -573,10 +580,10 @@ public class MCATRun implements MCATValidatable {
                 "grouping-" + clusteringParameters.getClusteringHierarchy().name() + "_" +
                 "k-" + clusteringParameters.getkMeansK();
         if(preprocessingParameters.getMinTime() != MCATPreprocessingParameters.MIN_TIME_DEFAULT) {
-            identifier += "_" + "minT" + "-" + preprocessingParameters.getMinTime();
+            identifier += "_" + "startT" + "-" + preprocessingParameters.getMinTime();
         }
         if(preprocessingParameters.getMaxTime() != MCATPreprocessingParameters.MAX_TIME_DEFAULT) {
-            identifier += "_" + "maxT" + "-" + preprocessingParameters.getMaxTime();
+            identifier += "_" + "endT" + "-" + preprocessingParameters.getMaxTime();
         }
         return  identifier;
     }

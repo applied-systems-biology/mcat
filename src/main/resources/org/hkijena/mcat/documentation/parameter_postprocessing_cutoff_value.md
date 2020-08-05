@@ -1,3 +1,3 @@
-# Cutoff value
+Defines which part of the kinetic curves is used for calculation of area under the curve (AUC) statistics. 
 
-This parameter defines how many time frames should be omitted from the beginning of a kinetic curve when calculating area under the curve (AUC) statistics. The cutoff is specified as portion of the curve, e.g. a cutoff value 0.2 means the first 20% of time frames are ignored. If this parameter is set to 0, the AUC is calculated for the entire curve.
+This parameter can be set to a floating point number between 0 and 1 and controls which portion at the beginning of the curves is excluded from AUC calculation. If this parameter is set to 0, the whole curve is taken into account. If it is set to 0.5, the first half of the curve is omitted. This option can for example be useful to analyze initial photoabsorber uptake and its excretion separately or to limit a study to certain phases of signal change.

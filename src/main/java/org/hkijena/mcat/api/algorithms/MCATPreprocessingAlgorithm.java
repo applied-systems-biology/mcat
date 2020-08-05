@@ -6,6 +6,7 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.gui.Roi;
+import ij.plugin.Duplicator;
 import ij.plugin.ImageCalculator;
 import ij.process.ImageStatistics;
 
@@ -34,6 +35,7 @@ public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
     private int channelAnatomy, channelOfInterest = -1;
     private Roi roi = null;
     private String roiName = "noROI";
+    private int startFrame = -1, endFrame = -1;
 
     public MCATPreprocessingAlgorithm(MCATRun run,
                                       MCATPreprocessingParameters preprocessingParameters,
@@ -45,6 +47,16 @@ public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
         this.preprocessingOutput = preprocessingOutput;
     }
 
+    private ImagePlus cropTimeFrames(ImagePlus imp) {
+    	System.out.println("\tCropping stack to time range " + startFrame + " - " + endFrame + "...");
+    	if(startFrame < 1 | startFrame >= imp.getNFrames() | startFrame > endFrame | endFrame < 1 | endFrame >= imp.getNFrames() | endFrame < startFrame)
+        	throw new IllegalArgumentException("Illegal value for Start time frame and/or End time frame! Will not exclude time frames from stack.");
+
+    	ImagePlus imp2 = new Duplicator().run(imp, 1, imp.getNChannels(), 1, 1, startFrame, endFrame);
+  
+    	return imp2;
+    }
+    
     private ImagePlus registerImages(String transformFile, ImagePlus... imps) {
         System.out.println("\tRegistering channels...");
         MultiStackReg_ msr = new MultiStackReg_();
@@ -178,6 +190,8 @@ public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
         saveRoi = getPreprocessingParameters().isSaveRoi();
         channelAnatomy = getPreprocessingParameters().getAnatomicChannel();
         channelOfInterest = getPreprocessingParameters().getChannelOfInterest();
+        startFrame = getPreprocessingParameters().getMinTime();
+        endFrame = getPreprocessingParameters().getMaxTime();
 
         MCATDataSlot tissueROI = getPreprocessingInput().getTissueROI();
         tissueROI.resetFromCurrentProvider();
@@ -190,12 +204,25 @@ public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
         tissueROI.setData(new ROIData(roi, roi.getName()));
 
         System.out.println("Start pre-processing for " + imp.getTitle() +
+        		" dimensions " + imp.getNDimensions() +
                 " width " + imp.getWidth() +
                 " height " + imp.getHeight() +
                 " frames " + imp.getNFrames() +
                 " channels " + imp.getNChannels() +
                 " roi name: " + roiName);
-
+        
+        /*
+         * remove slices before Start time frame and after End time frame if necessary
+         */
+        if(startFrame != getPreprocessingParameters().MIN_TIME_DEFAULT | endFrame != getPreprocessingParameters().MAX_TIME_DEFAULT) {
+        	try {
+        		imp = cropTimeFrames(imp);
+    		} catch (Exception e) {
+    			System.err.println(e.getMessage());
+    		}
+        }
+        
+        
         ImagePlus[] channels = ij.plugin.ChannelSplitter.split(imp.duplicate());
 
         /*
@@ -212,15 +239,15 @@ public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
         ImagePlus interest = channels[channelOfInterest - 1];
         String transforms = System.getProperty("java.io.tmpdir") + "transform.txt";
 
-//    	commented to save time when testing
-//    	
+        /*
+         * check if anatomic channel is provided and perform rigid registration
+         */
     	if(anatomyProvided) {
     		ImagePlus anatomy = channels[channelAnatomy - 1];
     		interest = registerImages(transforms, anatomy, interest);
     		anatomy.close();
     	}else{
-    		System.out.println("WARNING: no anatomy channel provided for image registration. Will register channel of interest without anatomy information.");
-    		interest = registerImages(transforms, interest);
+    		System.out.println("WARNING: no anatomy channel provided. Images will not be registered.");
     	}
 
         /*
@@ -244,13 +271,6 @@ public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
          */
         interest = toTimeDerivativeImage(interest);
         
-        Set<String> keys = getPreprocessingInput().getSlots().keySet();
-        
-        
-        for (String key : keys) {
-			System.out.println(getPreprocessingInput().getSlots().get(key).toString());
-		}
-
         /*
          * save pre-processed image
          */

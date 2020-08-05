@@ -1,3 +1,3 @@
-# Start time frame
+Defines if time frames from the start of the image stack are excluded. 
 
-This parameter specifies how many time frames are omitted at the beginning of the image data stack. If this parameter is set to 0, no time frames are omitted at the stack beginning.
+This parameter has to be in the range of 1 and total number of time frames. All time frames before the _Start time frame_ will be excluded from the analysis. _Start time frame_ must not be larger than  _End time frame_.

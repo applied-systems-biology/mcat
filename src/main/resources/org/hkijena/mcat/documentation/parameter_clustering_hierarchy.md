@@ -1,5 +1,3 @@
-# Clustering hierarchy
-
 Defines how data is combined for clustering.
 
 | Method        | Description                             |
