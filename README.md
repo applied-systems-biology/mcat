@@ -1,4 +1,4 @@
-# *M*sot *c*lustering *a*nalysis *t*oolkit - Mcat
+# **M**sot **c**lustering **a**nalysis **t**oolkit - Mcat
 
 Mcat is an ImageJ-based toolkit for objective and quantitative analysis of multispectral 
 optoacoustic tomography (MSOT) image data. It comes as a ready-to-use plugin for 
