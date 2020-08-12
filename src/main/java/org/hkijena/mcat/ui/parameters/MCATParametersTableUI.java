@@ -77,7 +77,7 @@ public class MCATParametersTableUI extends MCATWorkbenchUIPanel {
         toolBar.add(Box.createHorizontalGlue());
 
         JButton removeButton = new JButton(UIUtils.getIconFromResources("delete.png"));
-        removeButton.addActionListener(e -> removeSelectedRows());
+        removeButton.addActionListener(e -> removeSelectedColumns());
         toolBar.add(removeButton);
 
         contentPanel.add(toolBar, BorderLayout.NORTH);
@@ -129,11 +129,13 @@ public class MCATParametersTableUI extends MCATWorkbenchUIPanel {
         table.packAll();
     }
 
-    private void removeSelectedRows() {
-        int[] selectedRows = getSelectedRows(true);
+    private void removeSelectedColumns() {
+        int[] selectedColumns = selectedColumns(true);
         MCATParametersTable parametersTable = getWorkbenchUI().getProject().getParametersTable();
-        for (int i = selectedRows.length - 1; i >= 0; --i) {
-            parametersTable.removeRowAt(i);
+        for (int i = selectedColumns.length - 1; i >= 0; --i) {
+            int row = selectedColumns[i] - 1;
+            if(row >= 0)
+                parametersTable.removeRowAt(row);
         }
     }
 
@@ -158,7 +160,7 @@ public class MCATParametersTableUI extends MCATWorkbenchUIPanel {
     }
 
     private void replaceColumnValues(int column, Class<? extends MCATParameterGeneratorUI> generator) {
-        if (table.getSelectedRowCount() == 0 || table.getSelectedColumnCount() > 1) {
+        if (table.getSelectedRowCount() > 1 || table.getSelectedColumnCount() == 0) {
             return;
         }
 
@@ -167,9 +169,11 @@ public class MCATParametersTableUI extends MCATWorkbenchUIPanel {
             return;
 
         MCATParametersTable parametersTable = getWorkbenchUI().getProject().getParametersTable();
-        int[] rows = getSelectedRows(false);
-        for (int i = 0; i < Math.min(generatedObjects.size(), rows.length); ++i) {
-            parametersTable.setValueAt(generatedObjects.get(i), rows[i], column);
+        int[] cols = selectedColumns(false);
+        for (int i = 0; i < Math.min(generatedObjects.size(), cols.length); ++i) {
+            int row = cols[i] - 1;
+            if(row >= 0)
+                parametersTable.setValueAt(generatedObjects.get(i), row, column);
         }
     }
 
@@ -178,14 +182,14 @@ public class MCATParametersTableUI extends MCATWorkbenchUIPanel {
      *
      * @return selected rows in model indices
      */
-    private int[] getSelectedRows(boolean sort) {
-        int[] displayRows = table.getSelectedRows();
-        for (int i = 0; i < displayRows.length; ++i) {
-            displayRows[i] = table.getRowSorter().convertRowIndexToModel(displayRows[i]);
+    private int[] selectedColumns(boolean sort) {
+        int[] displayColumns = table.getSelectedColumns();
+        for (int i = 0; i < displayColumns.length; ++i) {
+            displayColumns[i] = table.getRowSorter().convertRowIndexToModel(displayColumns[i]);
         }
         if (sort)
-            Arrays.sort(displayRows);
-        return displayRows;
+            Arrays.sort(displayColumns);
+        return displayColumns;
     }
 
 
