@@ -45,7 +45,7 @@ public class MCATPostprocessingParameters implements MCATParameterCollection {
     }
 
     @MCATDocumentation(name = "Analyze net increase", description = "res:///org/hkijena/mcat/documentation/parameter_postprocessing_analyze_net_increase.md")
-    @MCATParameter(value = "analyze-net-increase", shortKey = "netInc")
+    @MCATParameter(value = "analyze-net-increase", shortKey = "netInc", uiOrder = 3)
     @JsonGetter("analyze-net-increase")
     public boolean isAnalyzeNetIncrease() {
         return analyzeNetIncrease;
@@ -59,7 +59,7 @@ public class MCATPostprocessingParameters implements MCATParameterCollection {
     }
 
     @MCATDocumentation(name = "Analyze net decrease", description = "res:///org/hkijena/mcat/documentation/parameter_postprocessing_analyze_net_decrease.md")
-    @MCATParameter(value = "analyze-net-decrease", shortKey = "netDec")
+    @MCATParameter(value = "analyze-net-decrease", shortKey = "netDec", uiOrder = 2)
     @JsonGetter("analyze-net-decrease")
     public boolean isAnalyzeNetDecrease() {
         return analyzeNetDecrease;
@@ -73,7 +73,7 @@ public class MCATPostprocessingParameters implements MCATParameterCollection {
     }
 
     @MCATDocumentation(name = "Analyze max increase", description = "res:///org/hkijena/mcat/documentation/parameter_postprocessing_analyze_max_increase.md")
-    @MCATParameter(value = "analyze-max-increase", shortKey = "maxInc")
+    @MCATParameter(value = "analyze-max-increase", shortKey = "maxInc", uiOrder = 1)
     @JsonGetter("analyze-max-increase")
     public boolean isAnalyzeMaxIncrease() {
         return analyzeMaxIncrease;
@@ -87,7 +87,7 @@ public class MCATPostprocessingParameters implements MCATParameterCollection {
     }
 
     @MCATDocumentation(name = "Analyze max decrease", description = "res:///org/hkijena/mcat/documentation/parameter_postprocessing_analyze_max_decrease.md")
-    @MCATParameter(value = "analyze-max-decrease", shortKey = "maxDec")
+    @MCATParameter(value = "analyze-max-decrease", shortKey = "maxDec", uiOrder = 0)
     @JsonGetter("analyze-max-decrease")
     public boolean isAnalyzeMaxDecrease() {
         return analyzeMaxDecrease;
