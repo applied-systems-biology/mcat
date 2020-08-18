@@ -115,7 +115,7 @@ public class MCATPostprocessingParameters implements MCATParameterCollection {
 //    }
 
     @MCATDocumentation(name = "Cutoff value", description = "res:///org/hkijena/mcat/documentation/parameter_postprocessing_cutoff_value.md")
-    @MCATParameter(value = "cutoff-value", shortKey = "cutoff")
+    @MCATParameter(value = "cutoff-value", shortKey = "cutoff", uiOrder = -1)
     @JsonGetter("cutoff-value")
     @NumberParameterSettings(step = 0.1)
     public double getCutoffValue() {
