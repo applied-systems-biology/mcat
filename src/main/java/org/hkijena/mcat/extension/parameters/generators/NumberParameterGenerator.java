@@ -17,7 +17,7 @@ import java.util.Map;
 
 /**
  * Generator that creates instances of {@link Number}.
- * This cannot be used directly in {@link MCATUIParametertypeRegistry}, as the constructor does
+ * This cannot be used directly in as the constructor does
  * not match. You have to inherit from this type and define the number type.
  */
 public class NumberParameterGenerator<T extends Number & Comparable<T>> extends MCATParameterGeneratorUI implements MCATCustomParameterCollection {
@@ -49,10 +49,13 @@ public class NumberParameterGenerator<T extends Number & Comparable<T>> extends 
 
     private void initializeParameters() {
         MCATMutableParameterAccess minParameter = parameters.addParameter("min", numberClass);
+        minParameter.setUIOrder(0);
         minParameter.setName("Minimum value");
         MCATMutableParameterAccess maxParameter = parameters.addParameter("max", numberClass);
+        maxParameter.setUIOrder(1);
         maxParameter.setName("Maximum value");
         MCATMutableParameterAccess stepSizeParameter = parameters.addParameter("step-size", numberClass);
+        stepSizeParameter.setUIOrder(2);
         stepSizeParameter.setName("Step size");
         parameters.setAllowUserModification(false);
     }
@@ -83,13 +86,13 @@ public class NumberParameterGenerator<T extends Number & Comparable<T>> extends 
 
     @Override
     public void reportValidity(MCATValidityReport report) {
-        if (getCurrentMin().compareTo(getCurrentMax()) > 0) {
+        if (!isZero(getCurrentStepSize()) && getCurrentMin().compareTo(getCurrentMax()) > 0) {
             report.reportIsInvalid("Invalid minimum and maximum values!",
                     "The minimum value must be less or equal to the maximum value.",
                     "Please ensure that the minimum value is less or equal to the maximum value.",
                     this);
         }
-        if (isZero(getCurrentStepSize()) || isNegative(getCurrentStepSize())) {
+        if (isNegative(getCurrentStepSize())) {
             report.reportIsInvalid("Invalid step size!",
                     "The step size cannot be zero or negative.",
                     "Please ensure that the step size is greater than zero.",
@@ -172,10 +175,15 @@ public class NumberParameterGenerator<T extends Number & Comparable<T>> extends 
     @Override
     public List<Object> get() {
         List<Object> result = new ArrayList<>();
-        Number current = getCurrentMin();
-        while (((T) current).compareTo(getCurrentMax()) <= 0) {
-            result.add(current);
-            current = getIncremented(current);
+        if(isZero(getCurrentStepSize())) {
+            result.add(getCurrentMin());
+        }
+        else {
+            Number current = getCurrentMin();
+            while (((T) current).compareTo(getCurrentMax()) <= 0) {
+                result.add(current);
+                current = getIncremented(current);
+            }
         }
         return result;
     }

@@ -165,11 +165,44 @@ public class MCATParametersTableUI extends MCATWorkbenchUIPanel {
         }
 
         List<Object> generatedObjects = MCATParameterGeneratorUI.showDialog(this, getWorkbenchUI().getContext(), generator);
-        if (generatedObjects == null)
+        if (generatedObjects == null || generatedObjects.isEmpty())
             return;
 
-        MCATParametersTable parametersTable = getWorkbenchUI().getProject().getParametersTable();
         int[] cols = selectedColumns(false);
+        if(generatedObjects.size() < cols.length) {
+            String[] options = new String[] {
+                    "Repeat last",
+                    "Repeat periodic",
+                    "Ignore",
+                    "Cancel"
+            };
+            int response = JOptionPane.showOptionDialog(this,
+                    "The generator generated " + generatedObjects.size() + " parameters, but you have " + cols.length + " columns selected. What to do with the extra columns?",
+                    "Replace cells",
+                    JOptionPane.DEFAULT_OPTION,
+                    JOptionPane.QUESTION_MESSAGE,
+                    null,
+                    options,
+                    options[0]);
+            if(response == 3)
+                return;
+            else if(response == 0) {
+                while (generatedObjects.size() < cols.length) {
+                    generatedObjects.add(generatedObjects.get(generatedObjects.size() - 1));
+                }
+            }
+            else if(response == 1) {
+                int sz = generatedObjects.size();
+                for (int i = 0; i < cols.length; i++) {
+                    if(i >= sz) {
+                        generatedObjects.add(generatedObjects.get(i % sz));
+                    }
+                }
+            }
+        }
+
+        MCATParametersTable parametersTable = getWorkbenchUI().getProject().getParametersTable();
+
         for (int i = 0; i < Math.min(generatedObjects.size(), cols.length); ++i) {
             int row = cols[i] - 1;
             if(row >= 0)
