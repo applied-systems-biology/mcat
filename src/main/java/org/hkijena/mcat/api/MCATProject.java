@@ -13,10 +13,30 @@
  *******************************************************************************/
 package org.hkijena.mcat.api;
 
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.hkijena.mcat.api.events.DataSetAddedEvent;
+import org.hkijena.mcat.api.events.DataSetRemovedEvent;
+import org.hkijena.mcat.api.events.DataSetRenamedEvent;
+import org.hkijena.mcat.api.parameters.MCATParametersTable;
+import org.hkijena.mcat.utils.JsonUtils;
+
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.collect.BiMap;
@@ -24,15 +44,6 @@ import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.eventbus.EventBus;
-import org.hkijena.mcat.api.events.DataSetAddedEvent;
-import org.hkijena.mcat.api.events.DataSetRemovedEvent;
-import org.hkijena.mcat.api.events.DataSetRenamedEvent;
-import org.hkijena.mcat.api.parameters.MCATParametersTable;
-import org.hkijena.mcat.utils.JsonUtils;
-
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.*;
 
 /**
  * An MCAT5 project.

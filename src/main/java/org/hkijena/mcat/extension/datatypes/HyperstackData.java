@@ -13,12 +13,13 @@
  *******************************************************************************/
 package org.hkijena.mcat.extension.datatypes;
 
-import ij.IJ;
-import ij.ImagePlus;
+import java.nio.file.Path;
+
 import org.hkijena.mcat.api.MCATData;
 import org.hkijena.mcat.api.MCATDocumentation;
 
-import java.nio.file.Path;
+import ij.IJ;
+import ij.ImagePlus;
 
 /**
  * Contains a hyperstack as {@link ImagePlus}

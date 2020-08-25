@@ -13,6 +13,26 @@
  *******************************************************************************/
 package org.hkijena.mcat.ui;
 
+import java.awt.BorderLayout;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.List;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ExecutionException;
+
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
+
 import org.hkijena.mcat.api.MCATResult;
 import org.hkijena.mcat.api.MCATRun;
 import org.hkijena.mcat.api.MCATValidityReport;
@@ -21,14 +41,6 @@ import org.hkijena.mcat.ui.components.FormPanel;
 import org.hkijena.mcat.ui.components.MarkdownDocument;
 import org.hkijena.mcat.ui.resultanalysis.MCATResultUI;
 import org.hkijena.mcat.utils.UIUtils;
-
-import javax.swing.*;
-import java.awt.*;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.List;
-import java.util.concurrent.CancellationException;
-import java.util.concurrent.ExecutionException;
 
 public class MCATRunUI extends MCATWorkbenchUIPanel {
 

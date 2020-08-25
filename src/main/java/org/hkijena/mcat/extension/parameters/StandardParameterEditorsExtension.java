@@ -14,16 +14,26 @@
 package org.hkijena.mcat.extension.parameters;
 
 
+import java.io.File;
+import java.nio.file.Path;
+
 import org.hkijena.mcat.api.MCATClusteringHierarchy;
 import org.hkijena.mcat.api.MCATDefaultDocumentation;
 import org.hkijena.mcat.api.registries.MCATUIParametertypeRegistry;
-import org.hkijena.mcat.extension.parameters.editors.*;
-import org.hkijena.mcat.extension.parameters.generators.*;
+import org.hkijena.mcat.extension.parameters.editors.BooleanParameterEditorUI;
+import org.hkijena.mcat.extension.parameters.editors.EnumParameterEditorUI;
+import org.hkijena.mcat.extension.parameters.editors.FileParameterEditorUI;
+import org.hkijena.mcat.extension.parameters.editors.FilePathParameterEditorUI;
+import org.hkijena.mcat.extension.parameters.editors.NumberParameterEditorUI;
+import org.hkijena.mcat.extension.parameters.editors.StringParameterEditorUI;
+import org.hkijena.mcat.extension.parameters.generators.ByteParameterGenerator;
+import org.hkijena.mcat.extension.parameters.generators.DoubleParameterGenerator;
+import org.hkijena.mcat.extension.parameters.generators.FloatParameterGenerator;
+import org.hkijena.mcat.extension.parameters.generators.IntegerParameterGenerator;
+import org.hkijena.mcat.extension.parameters.generators.LongParameterGenerator;
+import org.hkijena.mcat.extension.parameters.generators.ShortParameterGenerator;
 import org.hkijena.mcat.ui.parameters.MCATParameterEditorUI;
 import org.hkijena.mcat.ui.parameters.MCATParameterGeneratorUI;
-
-import java.io.File;
-import java.nio.file.Path;
 
 /**
  * Provides some standard parameters

@@ -13,7 +13,23 @@
  *******************************************************************************/
 package org.hkijena.mcat.ui;
 
-import com.google.common.eventbus.Subscribe;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import javax.swing.Box;
+import javax.swing.JButton;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JToolBar;
+import javax.swing.JTree;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreePath;
+
 import org.hkijena.mcat.api.MCATProjectDataSet;
 import org.hkijena.mcat.api.events.DataSetAddedEvent;
 import org.hkijena.mcat.api.events.DataSetRemovedEvent;
@@ -23,15 +39,7 @@ import org.hkijena.mcat.api.parameters.MCATSampleParameters;
 import org.hkijena.mcat.ui.components.MCATSampleTreeCellRenderer;
 import org.hkijena.mcat.utils.UIUtils;
 
-import javax.swing.*;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreePath;
-import java.awt.*;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
+import com.google.common.eventbus.Subscribe;
 
 /**
  * UI that manages the samples in a {@link org.hkijena.mcat.api.MCATProject}

@@ -13,7 +13,30 @@
  *******************************************************************************/
 package org.hkijena.mcat.ui.parameters;
 
-import com.google.common.eventbus.Subscribe;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Point;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+
+import javax.swing.Box;
+import javax.swing.JButton;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTable;
+import javax.swing.JToolBar;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
+
 import org.hkijena.mcat.api.MCATDocumentation;
 import org.hkijena.mcat.api.events.ParameterChangedEvent;
 import org.hkijena.mcat.api.parameters.MCATParameterCollection;
@@ -29,16 +52,7 @@ import org.hkijena.mcat.ui.components.TransposedTableModel;
 import org.hkijena.mcat.utils.UIUtils;
 import org.jdesktop.swingx.JXTable;
 
-import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
-import javax.swing.table.TableRowSorter;
-import java.awt.*;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import com.google.common.eventbus.Subscribe;
 
 public class MCATParametersTableUI extends MCATWorkbenchUIPanel {
 

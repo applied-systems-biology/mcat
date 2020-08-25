@@ -13,25 +13,48 @@
  *******************************************************************************/
 package org.hkijena.mcat.api;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
-import com.google.common.eventbus.Subscribe;
-
-import org.hkijena.mcat.api.algorithms.*;
-import org.hkijena.mcat.api.datainterfaces.*;
-import org.hkijena.mcat.api.events.ParameterChangedEvent;
-import org.hkijena.mcat.api.parameters.*;
-import org.hkijena.mcat.utils.JsonUtils;
-import org.hkijena.mcat.utils.StringUtils;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+
+import org.hkijena.mcat.api.algorithms.MCATClusteredPlotGenerationAlgorithm;
+import org.hkijena.mcat.api.algorithms.MCATClusteringAlgorithm;
+import org.hkijena.mcat.api.algorithms.MCATPostprocessedPlotGenerationAlgorithm;
+import org.hkijena.mcat.api.algorithms.MCATPostprocessingAlgorithm;
+import org.hkijena.mcat.api.algorithms.MCATPreprocessingAlgorithm;
+import org.hkijena.mcat.api.datainterfaces.MCATClusteredPlotGenerationInput;
+import org.hkijena.mcat.api.datainterfaces.MCATClusteredPlotGenerationOutput;
+import org.hkijena.mcat.api.datainterfaces.MCATClusteringInput;
+import org.hkijena.mcat.api.datainterfaces.MCATClusteringInputDataSetEntry;
+import org.hkijena.mcat.api.datainterfaces.MCATClusteringOutput;
+import org.hkijena.mcat.api.datainterfaces.MCATClusteringOutputDataSetEntry;
+import org.hkijena.mcat.api.datainterfaces.MCATPostprocessedPlotGenerationOutput;
+import org.hkijena.mcat.api.datainterfaces.MCATPostprocessingOutput;
+import org.hkijena.mcat.api.datainterfaces.MCATPreprocessingInput;
+import org.hkijena.mcat.api.datainterfaces.MCATPreprocessingOutput;
+import org.hkijena.mcat.api.events.ParameterChangedEvent;
+import org.hkijena.mcat.api.parameters.MCATAUCDataConditions;
+import org.hkijena.mcat.api.parameters.MCATClusteringParameters;
+import org.hkijena.mcat.api.parameters.MCATParametersTable;
+import org.hkijena.mcat.api.parameters.MCATParametersTableRow;
+import org.hkijena.mcat.api.parameters.MCATPostprocessingParameters;
+import org.hkijena.mcat.api.parameters.MCATPreprocessingParameters;
+import org.hkijena.mcat.utils.JsonUtils;
+import org.hkijena.mcat.utils.StringUtils;
+
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+import com.google.common.eventbus.Subscribe;
 
 public class MCATRun implements MCATValidatable {
     private MCATProject project;

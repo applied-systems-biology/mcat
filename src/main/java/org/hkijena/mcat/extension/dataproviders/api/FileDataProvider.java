@@ -13,9 +13,10 @@
  *******************************************************************************/
 package org.hkijena.mcat.extension.dataproviders.api;
 
-import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonSetter;
-import com.google.common.eventbus.EventBus;
+import java.lang.reflect.InvocationTargetException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
 import org.hkijena.mcat.api.MCATDataProvider;
 import org.hkijena.mcat.api.MCATDocumentation;
 import org.hkijena.mcat.api.MCATValidityReport;
@@ -25,9 +26,9 @@ import org.hkijena.mcat.api.parameters.MCATParameterCollection;
 import org.hkijena.mcat.extension.parameters.editors.FilePathParameterSettings;
 import org.hkijena.mcat.ui.components.FileSelection;
 
-import java.lang.reflect.InvocationTargetException;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.google.common.eventbus.EventBus;
 
 public abstract class FileDataProvider implements MCATParameterCollection, MCATDataProvider {
     private EventBus eventBus = new EventBus();

@@ -13,15 +13,19 @@
  *******************************************************************************/
 package org.hkijena.mcat.ui.components;
 
+import java.awt.Color;
+import java.awt.Component;
+import java.util.Collection;
+
+import javax.swing.BorderFactory;
+import javax.swing.JLabel;
+import javax.swing.JTree;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreeCellRenderer;
+
 import org.hkijena.mcat.api.MCATProjectDataSet;
 import org.hkijena.mcat.ui.MCATDataSetManagerUI;
 import org.hkijena.mcat.utils.UIUtils;
-
-import javax.swing.*;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreeCellRenderer;
-import java.awt.*;
-import java.util.Collection;
 
 /**
  * Renders a sample in the {@link MCATDataSetManagerUI}

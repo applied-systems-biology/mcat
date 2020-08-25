@@ -13,20 +13,22 @@
  *******************************************************************************/
 package org.hkijena.mcat.api.parameters;
 
-import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonSetter;
-import com.google.common.eventbus.Subscribe;
-import org.hkijena.mcat.api.events.ParameterChangedEvent;
-import org.hkijena.mcat.utils.StringUtils;
-
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
-import javax.swing.table.TableModel;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
+import javax.swing.table.TableModel;
+
+import org.hkijena.mcat.api.events.ParameterChangedEvent;
+import org.hkijena.mcat.utils.StringUtils;
+
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.google.common.eventbus.Subscribe;
 
 public class MCATParametersTable implements TableModel {
 

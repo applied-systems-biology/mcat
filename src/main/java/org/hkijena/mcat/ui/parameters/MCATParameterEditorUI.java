@@ -14,15 +14,17 @@
 package org.hkijena.mcat.ui.parameters;
 
 
-import com.google.common.eventbus.Subscribe;
+import java.util.Objects;
+
+import javax.swing.JPanel;
+
 import org.hkijena.mcat.api.events.ParameterChangedEvent;
 import org.hkijena.mcat.api.parameters.MCATParameterAccess;
 import org.hkijena.mcat.api.parameters.MCATParameterCollection;
 import org.scijava.Context;
 import org.scijava.Contextual;
 
-import javax.swing.*;
-import java.util.Objects;
+import com.google.common.eventbus.Subscribe;
 
 /**
  * A UI for a parameter type

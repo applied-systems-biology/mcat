@@ -14,14 +14,15 @@
 
 package org.hkijena.mcat.utils;
 
-import com.google.common.html.HtmlEscapers;
+import java.net.URL;
+import java.util.Collection;
+import java.util.function.Predicate;
+
 import org.apache.commons.lang.WordUtils;
 import org.hkijena.mcat.api.MCATDocumentation;
 import org.hkijena.mcat.ui.components.MarkdownDocument;
 
-import java.net.URL;
-import java.util.Collection;
-import java.util.function.Predicate;
+import com.google.common.html.HtmlEscapers;
 
 public class StringUtils {
     public static final char[] INVALID_FILESYSTEM_CHARACTERS = new char[]{'<', '>', ':', '"', '/', '\\', '|', '?', '*', '{', '}'};

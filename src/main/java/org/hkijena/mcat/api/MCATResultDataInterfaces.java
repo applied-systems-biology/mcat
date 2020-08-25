@@ -13,19 +13,20 @@
  *******************************************************************************/
 package org.hkijena.mcat.api;
 
-import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonSetter;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import org.hkijena.mcat.api.parameters.MCATParameterAccess;
 import org.hkijena.mcat.api.parameters.MCATParameterCollection;
 import org.hkijena.mcat.api.parameters.MCATTraversedParameterCollection;
 import org.hkijena.mcat.utils.JsonUtils;
 
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * Contains information where data was saved in the results folder

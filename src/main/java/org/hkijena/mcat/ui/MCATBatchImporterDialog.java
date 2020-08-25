@@ -13,6 +13,23 @@
  *******************************************************************************/
 package org.hkijena.mcat.ui;
 
+import java.awt.BorderLayout;
+import java.awt.Font;
+import java.io.IOException;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JDialog;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.event.DocumentEvent;
+
 import org.hkijena.mcat.api.MCATBatchImporter;
 import org.hkijena.mcat.ui.components.DocumentChangeListener;
 import org.hkijena.mcat.ui.components.FileSelection;
@@ -20,13 +37,6 @@ import org.hkijena.mcat.ui.components.FormPanel;
 import org.hkijena.mcat.ui.components.MarkdownDocument;
 import org.hkijena.mcat.utils.StringUtils;
 import org.hkijena.mcat.utils.UIUtils;
-
-import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import java.awt.*;
-import java.io.IOException;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 /**
  * UI for {@link MCATBatchImporter}

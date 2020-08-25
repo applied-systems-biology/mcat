@@ -14,10 +14,14 @@
 
 package org.hkijena.mcat.api;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
-
-import java.util.*;
 
 /**
  * Report about the validity of an object

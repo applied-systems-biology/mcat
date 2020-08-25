@@ -13,12 +13,13 @@
  *******************************************************************************/
 package org.hkijena.mcat.ui.components;
 
-import com.google.common.eventbus.EventBus;
-import org.hkijena.mcat.api.events.ParameterChangedEvent;
-
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
+
+import org.hkijena.mcat.api.events.ParameterChangedEvent;
+
+import com.google.common.eventbus.EventBus;
 
 public class TransposedTableModel implements TableModel, TableModelListener {
 

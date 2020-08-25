@@ -13,13 +13,13 @@
  *******************************************************************************/
 package org.hkijena.mcat.utils;
 
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
 import ij.IJ;
 import ij.ImagePlus;
 import ij.WindowManager;
 import ij.plugin.PlugIn;
-
-import java.util.Arrays;
-import java.util.stream.Collectors;
 
 public class ImageJUtils {
     private ImageJUtils() {

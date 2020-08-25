@@ -19,7 +19,7 @@ See the LICENSE file provided with this code for the full license.
     <artifactId>mcat</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <name>mcat</name>
-    <description>MSOT Cluster Analysis Tool</description>
+    <description>MSOT Cluster Analysis Toolkit</description>
     <url>https://applied-systems-biology.github.io/mcat/</url>
     <inceptionYear>2020</inceptionYear>
     <organization>
@@ -40,15 +40,15 @@ See the LICENSE file provided with this code for the full license.
             <url>https://www.leibniz-hki.de/en/institut-staff-details.html?member=205</url>
         </developer>
         <developer>
-            <id>Zseresnyes</id>
-            <name>Zoltán Cseresnyés</name>
-            <url>https://www.leibniz-hki.de/en/asb-staff-details.html?member=144</url>
-        </developer>
-        <developer>
             <id>RGerst</id>
             <name>Ruman Gerst</name>
             <url>https://www.leibniz-hki.de/en/asb-staff-details.html?member=1027</url>
-        </developer>        
+        </developer>  
+        <developer>
+            <id>Zseresnyes</id>
+            <name>Zoltán Cseresnyés</name>
+            <url>https://www.leibniz-hki.de/en/asb-staff-details.html?member=144</url>
+        </developer>      
     </developers>
     <contributors>
         <contributor>
@@ -79,7 +79,7 @@ See the LICENSE file provided with this code for the full license.
     <parent>
         <groupId>org.scijava</groupId>
         <artifactId>pom-scijava</artifactId>
-        <version>26.0.0</version>
+        <version>27.0.1</version>
         <relativePath />
     </parent>
 
@@ -98,6 +98,12 @@ See the LICENSE file provided with this code for the full license.
         <dependency>
             <groupId>net.imagej</groupId>
             <artifactId>imagej</artifactId>
+            <exclusions>
+		        <exclusion>
+		          <groupId>org.scijava</groupId>
+		          <artifactId>scripting-scala</artifactId>
+		        </exclusion>
+		      </exclusions> 
         </dependency>
         <dependency>
             <groupId>net.imglib2</groupId>
@@ -206,12 +212,12 @@ See the LICENSE file provided with this code for the full license.
             <groupId>org.apache.commons</groupId>
             <artifactId>com.springsource.org.apache.commons.lang</artifactId>
             <version>2.6.0</version>
-        </dependency>
-        <dependency>
+        </dependency>   
+		<!--dependency>
             <groupId>com.github.miura</groupId>
             <artifactId>MultiStackRegistration</artifactId>
             <version>v1.46.2</version>
-        </dependency>
+        </dependency-->
         <dependency>
 		    <groupId>net.sf.ij-plugins</groupId>
 		    <artifactId>ijp-toolkit_2.10</artifactId>
@@ -234,7 +240,9 @@ See the LICENSE file provided with this code for the full license.
         <maven.compiler.target>1.8</maven.compiler.target>
         <license.licenseName>BSD-2-Clause</license.licenseName>
         <license.copyrightOwners>N/A</license.copyrightOwners>
-        <license.projectName>MISA ImageJ</license.projectName>
+        <license.projectName>Mcat</license.projectName>
+        <package-name>Mcat</package-name>
+        <main-class>MCATCommand</main-class>
     </properties>
 
     <build>
@@ -260,6 +268,7 @@ See the LICENSE file provided with this code for the full license.
                     </execution>
                 </executions>
             </plugin>
+            
             <plugin>
                 <groupId>org.scijava</groupId>
                 <artifactId>scijava-maven-plugin</artifactId>

@@ -13,9 +13,6 @@
  *******************************************************************************/
 package org.hkijena.mcat.api;
 
-import org.hkijena.mcat.utils.JsonUtils;
-
-import java.io.IOException;
 import java.nio.file.Path;
 
 /**

@@ -14,12 +14,19 @@
 
 package org.hkijena.mcat.ui;
 
-import org.hkijena.mcat.utils.UIUtils;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+
+import org.hkijena.mcat.utils.UIUtils;
 
 /**
  * Allows adding one or multiple samples manually by providing name(s)

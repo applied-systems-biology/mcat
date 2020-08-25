@@ -13,16 +13,17 @@
  *******************************************************************************/
 package org.hkijena.mcat.ui.resultanalysis;
 
+import java.awt.BorderLayout;
+import java.awt.Desktop;
+import java.io.IOException;
+
+import javax.swing.JButton;
+import javax.swing.JToolBar;
+
 import org.hkijena.mcat.api.MCATResult;
 import org.hkijena.mcat.ui.MCATWorkbenchUI;
 import org.hkijena.mcat.ui.MCATWorkbenchUIPanel;
 import org.hkijena.mcat.utils.UIUtils;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.io.IOException;
 
 public class MCATResultUI extends MCATWorkbenchUIPanel {
     private MCATResult result;

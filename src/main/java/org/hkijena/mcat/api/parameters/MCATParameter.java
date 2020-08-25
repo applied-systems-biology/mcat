@@ -13,12 +13,12 @@
  *******************************************************************************/
 package org.hkijena.mcat.api.parameters;
 
-import org.scijava.Priority;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+
+import org.scijava.Priority;
 
 /**
  * Annotates a getter or setter function as parameter.

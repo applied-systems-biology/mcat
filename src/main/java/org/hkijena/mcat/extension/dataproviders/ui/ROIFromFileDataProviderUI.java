@@ -13,12 +13,12 @@
  *******************************************************************************/
 package org.hkijena.mcat.extension.dataproviders.ui;
 
+import java.awt.BorderLayout;
+
 import org.hkijena.mcat.api.MCATProjectDataSet;
 import org.hkijena.mcat.extension.dataproviders.api.ROIFromFileDataProvider;
 import org.hkijena.mcat.ui.MCATDataProviderUI;
 import org.hkijena.mcat.ui.components.FileSelection;
-
-import java.awt.*;
 
 /**
  * UI for {@link ROIFromFileDataProvider}

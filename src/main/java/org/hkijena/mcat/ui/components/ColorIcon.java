@@ -14,8 +14,12 @@
 
 package org.hkijena.mcat.ui.components;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.Insets;
+
+import javax.swing.Icon;
 
 /**
  * Icon that is only one specific color, including border

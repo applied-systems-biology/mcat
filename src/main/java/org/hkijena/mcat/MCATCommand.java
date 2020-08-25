@@ -13,19 +13,21 @@
  *******************************************************************************/
 package org.hkijena.mcat;
 
-import net.imagej.ImageJ;
+import javax.swing.SwingUtilities;
+import javax.swing.ToolTipManager;
+
 import org.hkijena.mcat.api.MCATProject;
 import org.scijava.Context;
 import org.scijava.command.Command;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 
-import javax.swing.*;
+import net.imagej.ImageJ;
 
 /**
  * Plugin main entry point
  */
-@Plugin(type = Command.class, menuPath = "Plugins>MSOT Cluster Analysis Tool (MCAT)")
+@Plugin(type = Command.class, menuPath = "Plugins>MSOT Cluster Analysis Toolkit (MCAT)")
 public class MCATCommand implements Command {
 
     @Parameter

@@ -13,9 +13,10 @@
  *******************************************************************************/
 package org.hkijena.mcat.extension.dataproviders.api;
 
-import ij.io.Opener;
 import org.hkijena.mcat.api.MCATDocumentation;
 import org.hkijena.mcat.extension.datatypes.ROIData;
+
+import ij.io.Opener;
 
 /**
  * Loads a {@link ROIData} from a file

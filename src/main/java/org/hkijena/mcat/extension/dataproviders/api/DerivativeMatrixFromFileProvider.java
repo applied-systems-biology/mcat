@@ -13,15 +13,15 @@
  *******************************************************************************/
 package org.hkijena.mcat.extension.dataproviders.api;
 
-import org.hkijena.mcat.api.MCATDocumentation;
-import org.hkijena.mcat.extension.datatypes.DerivativeMatrixData;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.stream.Stream;
+
+import org.hkijena.mcat.api.MCATDocumentation;
+import org.hkijena.mcat.extension.datatypes.DerivativeMatrixData;
 
 /**
  * Loads a {@link DerivativeMatrixData} from a file

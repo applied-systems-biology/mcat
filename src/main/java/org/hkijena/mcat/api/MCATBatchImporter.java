@@ -13,9 +13,6 @@
  *******************************************************************************/
 package org.hkijena.mcat.api;
 
-import org.hkijena.mcat.extension.dataproviders.api.HyperstackFromTifDataProvider;
-import org.hkijena.mcat.extension.dataproviders.api.ROIFromFileDataProvider;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -24,6 +21,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import org.hkijena.mcat.extension.dataproviders.api.HyperstackFromTifDataProvider;
+import org.hkijena.mcat.extension.dataproviders.api.ROIFromFileDataProvider;
 
 /**
  * Imports samples from a folder

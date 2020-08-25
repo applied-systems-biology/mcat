@@ -13,10 +13,13 @@
  *******************************************************************************/
 package org.hkijena.mcat.api;
 
-import org.hkijena.mcat.api.parameters.MCATParameterCollection;
-import org.hkijena.mcat.api.parameters.MCATPreprocessingParameters;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
-import java.util.*;
+import org.hkijena.mcat.api.parameters.MCATParameterCollection;
 
 /**
  * Key used to uniquely identify a {@link MCATDataInterface}

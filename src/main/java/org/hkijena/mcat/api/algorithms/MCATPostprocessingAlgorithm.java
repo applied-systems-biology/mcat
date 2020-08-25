@@ -13,8 +13,17 @@
  *******************************************************************************/
 package org.hkijena.mcat.api.algorithms;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 import org.apache.commons.math3.ml.clustering.DoublePoint;
-import org.hkijena.mcat.api.*;
+import org.hkijena.mcat.api.MCATAlgorithm;
+import org.hkijena.mcat.api.MCATCentroidCluster;
+import org.hkijena.mcat.api.MCATDataInterfaceKey;
+import org.hkijena.mcat.api.MCATPostprocessingMethod;
+import org.hkijena.mcat.api.MCATRun;
+import org.hkijena.mcat.api.MCATValidityReport;
 import org.hkijena.mcat.api.datainterfaces.MCATClusteringOutput;
 import org.hkijena.mcat.api.datainterfaces.MCATClusteringOutputDataSetEntry;
 import org.hkijena.mcat.api.datainterfaces.MCATPostprocessingOutput;
@@ -25,12 +34,6 @@ import org.hkijena.mcat.api.parameters.MCATPreprocessingParameters;
 import org.hkijena.mcat.extension.datatypes.AUCData;
 import org.hkijena.mcat.extension.datatypes.ClusterAbundanceData;
 import org.hkijena.mcat.extension.datatypes.ClusterCentersData;
-import org.hkijena.mcat.extension.datatypes.ROIData;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
 
 public class MCATPostprocessingAlgorithm extends MCATAlgorithm {
 

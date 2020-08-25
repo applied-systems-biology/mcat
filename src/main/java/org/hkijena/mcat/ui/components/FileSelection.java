@@ -14,11 +14,8 @@
 
 package org.hkijena.mcat.ui.components;
 
-import org.hkijena.mcat.utils.UIUtils;
-
-import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import java.awt.*;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -27,6 +24,14 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.Set;
+
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.event.DocumentEvent;
+
+import org.hkijena.mcat.utils.UIUtils;
 
 /**
  * Text field with a file selection

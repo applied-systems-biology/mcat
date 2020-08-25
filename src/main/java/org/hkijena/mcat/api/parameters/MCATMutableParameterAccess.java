@@ -13,6 +13,16 @@
  *******************************************************************************/
 package org.hkijena.mcat.api.parameters;
 
+import java.io.IOException;
+import java.lang.annotation.Annotation;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.hkijena.mcat.api.events.ParameterChangedEvent;
+import org.hkijena.mcat.utils.JsonUtils;
+import org.hkijena.mcat.utils.StringUtils;
+import org.scijava.Priority;
+
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.core.JsonParser;
@@ -21,15 +31,6 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import org.hkijena.mcat.api.events.ParameterChangedEvent;
-import org.hkijena.mcat.utils.JsonUtils;
-import org.hkijena.mcat.utils.StringUtils;
-import org.scijava.Priority;
-
-import java.io.IOException;
-import java.lang.annotation.Annotation;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * A mutable implementation of {@link MCATParameterAccess}

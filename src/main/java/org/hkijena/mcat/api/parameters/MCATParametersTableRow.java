@@ -13,12 +13,13 @@
  *******************************************************************************/
 package org.hkijena.mcat.api.parameters;
 
+import org.hkijena.mcat.api.MCATDocumentation;
+import org.hkijena.mcat.api.events.ParameterChangedEvent;
+
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
-import org.hkijena.mcat.api.MCATDocumentation;
-import org.hkijena.mcat.api.events.ParameterChangedEvent;
 
 /**
  * Row in {@link MCATParametersTable}

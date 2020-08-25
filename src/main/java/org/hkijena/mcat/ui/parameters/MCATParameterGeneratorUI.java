@@ -13,16 +13,26 @@
  *******************************************************************************/
 package org.hkijena.mcat.ui.parameters;
 
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Window;
+import java.lang.reflect.InvocationTargetException;
+import java.util.List;
+import java.util.function.Supplier;
+
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
+
 import org.hkijena.mcat.api.MCATValidatable;
 import org.hkijena.mcat.api.MCATValidityReport;
 import org.hkijena.mcat.utils.UIUtils;
 import org.scijava.Context;
-
-import javax.swing.*;
-import java.awt.*;
-import java.lang.reflect.InvocationTargetException;
-import java.util.List;
-import java.util.function.Supplier;
 
 /**
  * UI that generates a set of parameter values

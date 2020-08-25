@@ -13,6 +13,9 @@
  *******************************************************************************/
 package org.hkijena.mcat.api.algorithms;
 
+import java.util.Arrays;
+import java.util.Map;
+
 import org.hkijena.mcat.api.MCATAlgorithm;
 import org.hkijena.mcat.api.MCATDataInterfaceKey;
 import org.hkijena.mcat.api.MCATRun;
@@ -26,9 +29,6 @@ import org.hkijena.mcat.api.parameters.MCATPostprocessingParameters;
 import org.hkijena.mcat.api.parameters.MCATPreprocessingParameters;
 import org.hkijena.mcat.extension.datatypes.AUCData;
 import org.hkijena.mcat.extension.datatypes.AUCPlotData;
-
-import java.util.Arrays;
-import java.util.Map;
 
 /**
  * Plots generated for each {@link MCATPostprocessingAlgorithm} run

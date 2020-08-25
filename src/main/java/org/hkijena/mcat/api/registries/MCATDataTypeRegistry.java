@@ -13,14 +13,19 @@
  *******************************************************************************/
 package org.hkijena.mcat.api.registries;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import org.hkijena.mcat.api.MCATData;
 import org.hkijena.mcat.api.MCATDataProvider;
 import org.hkijena.mcat.extension.dataproviders.StandardDataProvidersExtension;
 import org.hkijena.mcat.extension.datatypes.StandardDataTypeExtension;
 
-import java.util.*;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 
 /**
  * Manages {@link org.hkijena.mcat.api.MCATDataSlot} and {@link org.hkijena.mcat.api.MCATDataProvider} types

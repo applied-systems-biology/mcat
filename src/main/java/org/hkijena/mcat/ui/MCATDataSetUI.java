@@ -13,17 +13,27 @@
  *******************************************************************************/
 package org.hkijena.mcat.ui;
 
-import com.google.common.eventbus.Subscribe;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JToolBar;
+import javax.swing.SwingConstants;
+
 import org.hkijena.mcat.api.MCATProjectDataSet;
 import org.hkijena.mcat.api.events.DataSetRenamedEvent;
 import org.hkijena.mcat.ui.components.FormPanel;
 import org.hkijena.mcat.ui.components.MarkdownDocument;
 import org.hkijena.mcat.utils.UIUtils;
 
-import javax.swing.*;
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
+import com.google.common.eventbus.Subscribe;
 
 /**
  * UI for a {@link MCATProjectDataSet}

@@ -13,12 +13,13 @@
  *******************************************************************************/
 package org.hkijena.mcat.extension.parameters.editors;
 
+import java.awt.BorderLayout;
+
+import javax.swing.JComboBox;
+
 import org.hkijena.mcat.api.parameters.MCATParameterAccess;
 import org.hkijena.mcat.ui.parameters.MCATParameterEditorUI;
 import org.scijava.Context;
-
-import javax.swing.*;
-import java.awt.*;
 
 /**
  * A parameter editor UI that works for all enumerations

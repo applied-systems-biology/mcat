@@ -13,18 +13,20 @@
  *******************************************************************************/
 package org.hkijena.mcat.extension.parameters.editors;
 
-import org.hkijena.mcat.api.parameters.MCATParameterAccess;
-import org.hkijena.mcat.ui.parameters.MCATParameterEditorUI;
-import org.scijava.Context;
-import scala.Int;
-
-import javax.swing.*;
-import javax.swing.text.DefaultFormatterFactory;
-import javax.swing.text.NumberFormatter;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.Objects;
+
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.text.DefaultFormatterFactory;
+import javax.swing.text.NumberFormatter;
+
+import org.hkijena.mcat.api.parameters.MCATParameterAccess;
+import org.hkijena.mcat.ui.parameters.MCATParameterEditorUI;
+import org.scijava.Context;
 
 /**
  * Editor for a {@link Double} parameter

@@ -14,7 +14,23 @@
 
 package org.hkijena.mcat.ui.components;
 
-import com.google.common.eventbus.EventBus;
+import java.awt.BorderLayout;
+import java.awt.Graphics2D;
+import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
+import java.io.BufferedOutputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.List;
+
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.Icon;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JPanel;
+
 import org.hkijena.mcat.api.MCATDocumentation;
 import org.hkijena.mcat.api.parameters.MCATParameter;
 import org.hkijena.mcat.api.parameters.MCATParameterCollection;
@@ -29,14 +45,7 @@ import org.jfree.graphics2d.svg.SVGGraphics2D;
 import org.jfree.graphics2d.svg.SVGUtils;
 import org.scijava.Context;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.BufferedOutputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.List;
+import com.google.common.eventbus.EventBus;
 
 /**
  * Dialog that exports plots as image

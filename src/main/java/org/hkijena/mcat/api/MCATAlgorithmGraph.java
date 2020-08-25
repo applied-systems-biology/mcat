@@ -13,12 +13,16 @@
  *******************************************************************************/
 package org.hkijena.mcat.api;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.traverse.GraphIterator;
 import org.jgrapht.traverse.TopologicalOrderIterator;
-
-import java.util.*;
 
 /**
  * Manages multiple {@link MCATAlgorithm} instances as graph

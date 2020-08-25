@@ -13,13 +13,14 @@
  *******************************************************************************/
 package org.hkijena.mcat.extension.datatypes;
 
-import ij.gui.Roi;
-import ij.io.RoiEncoder;
+import java.io.IOException;
+import java.nio.file.Path;
+
 import org.hkijena.mcat.api.MCATData;
 import org.hkijena.mcat.api.MCATDocumentation;
 
-import java.io.IOException;
-import java.nio.file.Path;
+import ij.gui.Roi;
+import ij.io.RoiEncoder;
 
 /**
  * Contains a {@link Roi}

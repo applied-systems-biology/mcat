@@ -13,25 +13,38 @@
  *******************************************************************************/
 package org.hkijena.mcat.ui.parameters;
 
-import com.google.common.eventbus.Subscribe;
-import com.google.common.html.HtmlEscapers;
+import java.awt.BorderLayout;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+
 import org.hkijena.mcat.api.MCATDocumentation;
 import org.hkijena.mcat.api.events.ParameterStructureChangedEvent;
-import org.hkijena.mcat.api.parameters.*;
+import org.hkijena.mcat.api.parameters.MCATDynamicParameterCollection;
+import org.hkijena.mcat.api.parameters.MCATMutableParameterAccess;
+import org.hkijena.mcat.api.parameters.MCATParameterAccess;
+import org.hkijena.mcat.api.parameters.MCATParameterCollection;
+import org.hkijena.mcat.api.parameters.MCATTraversedParameterCollection;
 import org.hkijena.mcat.api.registries.MCATUIParametertypeRegistry;
 import org.hkijena.mcat.ui.components.FormPanel;
 import org.hkijena.mcat.ui.components.MarkdownDocument;
-import org.hkijena.mcat.utils.ResourceUtils;
 import org.hkijena.mcat.utils.StringUtils;
 import org.hkijena.mcat.utils.UIUtils;
 import org.scijava.Context;
 import org.scijava.Contextual;
 
-import javax.swing.*;
-import java.awt.*;
-import java.util.List;
-import java.util.*;
-import java.util.stream.Collectors;
+import com.google.common.eventbus.Subscribe;
 
 /**
  * UI around a {@link MCATParameterCollection}

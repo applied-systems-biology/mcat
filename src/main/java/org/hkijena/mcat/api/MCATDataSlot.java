@@ -13,17 +13,18 @@
  *******************************************************************************/
 package org.hkijena.mcat.api;
 
+import java.io.IOException;
+import java.nio.file.Path;
+
+import org.hkijena.mcat.api.registries.MCATDataTypeRegistry;
+import org.hkijena.mcat.utils.StringUtils;
+
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.hkijena.mcat.api.registries.MCATDataTypeRegistry;
-import org.hkijena.mcat.utils.StringUtils;
-
-import java.io.IOException;
-import java.nio.file.Path;
 
 /**
  * A slot holds data and also have the capability to load data from an MCATDataProvider if data is requested, but not set

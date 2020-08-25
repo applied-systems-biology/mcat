@@ -13,14 +13,14 @@
  *******************************************************************************/
 package org.hkijena.mcat.extension.datatypes;
 
-import org.hkijena.mcat.api.MCATData;
-import org.hkijena.mcat.api.MCATDocumentation;
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
+
+import org.hkijena.mcat.api.MCATData;
+import org.hkijena.mcat.api.MCATDocumentation;
 
 /**
  * Contains a derivation matrix

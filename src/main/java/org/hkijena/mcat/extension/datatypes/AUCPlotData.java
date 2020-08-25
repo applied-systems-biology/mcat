@@ -13,8 +13,15 @@
  *******************************************************************************/
 package org.hkijena.mcat.extension.datatypes;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import ij.measure.ResultsTable;
+import java.awt.Rectangle;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.hkijena.mcat.api.MCATData;
 import org.hkijena.mcat.api.MCATDocumentation;
 import org.hkijena.mcat.api.parameters.MCATParameterAccess;
@@ -29,11 +36,7 @@ import org.jfree.data.statistics.DefaultBoxAndWhiskerCategoryDataset;
 import org.jfree.graphics2d.svg.SVGGraphics2D;
 import org.jfree.graphics2d.svg.SVGUtils;
 
-import java.awt.*;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.List;
-import java.util.*;
+import ij.measure.ResultsTable;
 
 /**
  * Contains plots for {@link AUCData}

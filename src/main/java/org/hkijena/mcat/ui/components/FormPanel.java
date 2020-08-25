@@ -14,14 +14,35 @@
 package org.hkijena.mcat.ui.components;
 
 
-import org.hkijena.mcat.utils.UIUtils;
+import static org.hkijena.mcat.utils.UIUtils.UI_PADDING;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.AWTEvent;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Point;
+import java.awt.Toolkit;
+import java.awt.event.AWTEventListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.lang.ref.WeakReference;
 
-import static org.hkijena.mcat.utils.UIUtils.UI_PADDING;
+import javax.swing.BorderFactory;
+import javax.swing.Icon;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
+import javax.swing.JSplitPane;
+import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
+
+import org.hkijena.mcat.utils.UIUtils;
 
 /**
  * Organizes UI in a form layout with integrated help functionality, and grouping with conditional visibility

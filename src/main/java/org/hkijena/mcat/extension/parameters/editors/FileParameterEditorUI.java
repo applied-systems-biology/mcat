@@ -13,13 +13,13 @@
  *******************************************************************************/
 package org.hkijena.mcat.extension.parameters.editors;
 
+import java.awt.BorderLayout;
+import java.io.File;
+
 import org.hkijena.mcat.api.parameters.MCATParameterAccess;
 import org.hkijena.mcat.ui.components.FileSelection;
 import org.hkijena.mcat.ui.parameters.MCATParameterEditorUI;
 import org.scijava.Context;
-
-import java.awt.*;
-import java.io.File;
 
 /**
  * Editor for a {@link File} parameter

@@ -13,6 +13,17 @@
  *******************************************************************************/
 package org.hkijena.mcat.ui;
 
+import java.awt.BorderLayout;
+import java.io.IOException;
+
+import javax.swing.Box;
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+import javax.swing.JToolBar;
+
 import org.hkijena.mcat.MCATCommand;
 import org.hkijena.mcat.api.MCATProject;
 import org.hkijena.mcat.api.MCATResult;
@@ -21,10 +32,6 @@ import org.hkijena.mcat.ui.parameters.MCATParametersTableUI;
 import org.hkijena.mcat.ui.resultanalysis.MCATResultUI;
 import org.hkijena.mcat.utils.UIUtils;
 import org.scijava.Context;
-
-import javax.swing.*;
-import java.awt.*;
-import java.io.IOException;
 
 /**
  * Main MCAT window

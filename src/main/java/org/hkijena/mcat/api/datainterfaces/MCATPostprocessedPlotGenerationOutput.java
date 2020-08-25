@@ -13,12 +13,12 @@
  *******************************************************************************/
 package org.hkijena.mcat.api.datainterfaces;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.hkijena.mcat.api.MCATDataInterface;
 import org.hkijena.mcat.api.MCATDataSlot;
 import org.hkijena.mcat.extension.datatypes.AUCPlotData;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class MCATPostprocessedPlotGenerationOutput implements MCATDataInterface {
 

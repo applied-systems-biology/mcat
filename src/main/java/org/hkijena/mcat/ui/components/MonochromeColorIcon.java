@@ -14,9 +14,14 @@
 
 package org.hkijena.mcat.ui.components;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 
 /**
  * Icon that takes an existing image icon and uses it as mask for recoloring

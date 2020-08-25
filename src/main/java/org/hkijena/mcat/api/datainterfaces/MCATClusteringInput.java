@@ -13,13 +13,13 @@
  *******************************************************************************/
 package org.hkijena.mcat.api.datainterfaces;
 
-import org.hkijena.mcat.api.MCATDataInterface;
-import org.hkijena.mcat.api.MCATDataSlot;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.hkijena.mcat.api.MCATDataInterface;
+import org.hkijena.mcat.api.MCATDataSlot;
 
 /**
  * A data interface that contains the input of an {@link org.hkijena.mcat.api.algorithms.MCATClusteringAlgorithm}

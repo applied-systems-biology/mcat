@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.hkijena.mcat.api.algorithms;
 
+import java.util.Map;
+
 import org.hkijena.mcat.api.MCATAlgorithm;
 import org.hkijena.mcat.api.MCATRun;
 import org.hkijena.mcat.api.MCATValidityReport;
@@ -21,8 +23,6 @@ import org.hkijena.mcat.api.datainterfaces.MCATClusteredPlotGenerationOutput;
 import org.hkijena.mcat.api.datainterfaces.MCATClusteringOutput;
 import org.hkijena.mcat.extension.datatypes.ClusterCentersData;
 import org.hkijena.mcat.extension.datatypes.TimeDerivativePlotData;
-
-import java.util.Map;
 
 /**
  * Plots that are generated for each generated cluster of a preprocessing data group

@@ -13,7 +13,11 @@
  *******************************************************************************/
 package org.hkijena.mcat.extension.parameters.generators;
 
-import com.google.common.eventbus.EventBus;
+import java.awt.BorderLayout;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import org.hkijena.mcat.api.MCATValidityReport;
 import org.hkijena.mcat.api.parameters.MCATCustomParameterCollection;
 import org.hkijena.mcat.api.parameters.MCATDynamicParameterCollection;
@@ -23,10 +27,7 @@ import org.hkijena.mcat.ui.parameters.MCATParameterGeneratorUI;
 import org.hkijena.mcat.ui.parameters.ParameterPanel;
 import org.scijava.Context;
 
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import com.google.common.eventbus.EventBus;
 
 /**
  * Generator that creates instances of {@link Number}.

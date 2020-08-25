@@ -13,6 +13,16 @@
  *******************************************************************************/
 package org.hkijena.mcat.ui.components;
 
+import java.io.IOException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.hkijena.mcat.utils.ResourceUtils;
+
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import com.vladsch.flexmark.ast.Node;
@@ -23,15 +33,6 @@ import com.vladsch.flexmark.html.HtmlRenderer;
 import com.vladsch.flexmark.parser.Parser;
 import com.vladsch.flexmark.util.options.MutableDataHolder;
 import com.vladsch.flexmark.util.options.MutableDataSet;
-import org.hkijena.mcat.utils.ResourceUtils;
-
-import java.io.IOException;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Contains Markdown data

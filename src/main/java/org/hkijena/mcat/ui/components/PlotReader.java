@@ -14,16 +14,19 @@
 
 package org.hkijena.mcat.ui.components;
 
+import java.awt.BorderLayout;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.JButton;
+import javax.swing.JToolBar;
+import javax.swing.SwingUtilities;
+
 import org.hkijena.mcat.ui.MCATWorkbenchUI;
 import org.hkijena.mcat.ui.MCATWorkbenchUIPanel;
 import org.hkijena.mcat.utils.UIUtils;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
-
-import javax.swing.*;
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Displays a plot

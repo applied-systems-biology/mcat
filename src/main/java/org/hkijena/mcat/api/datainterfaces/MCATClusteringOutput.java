@@ -13,13 +13,12 @@
  *******************************************************************************/
 package org.hkijena.mcat.api.datainterfaces;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.hkijena.mcat.api.MCATDataInterface;
 import org.hkijena.mcat.api.MCATDataSlot;
 import org.hkijena.mcat.extension.datatypes.ClusterCentersData;
-import org.hkijena.mcat.extension.datatypes.HyperstackData;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * A data interface that contains the input of an {@link org.hkijena.mcat.api.algorithms.MCATClusteringAlgorithm}

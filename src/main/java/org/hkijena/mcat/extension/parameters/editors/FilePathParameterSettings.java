@@ -13,12 +13,12 @@
  *******************************************************************************/
 package org.hkijena.mcat.extension.parameters.editors;
 
-import org.hkijena.mcat.ui.components.FileSelection;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+
+import org.hkijena.mcat.ui.components.FileSelection;
 
 /**
  * Attached to the getter or setter of {@link java.nio.file.Path} parameter to setup the GUI

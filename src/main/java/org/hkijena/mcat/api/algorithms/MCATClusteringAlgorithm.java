@@ -13,16 +13,19 @@
  *******************************************************************************/
 package org.hkijena.mcat.api.algorithms;
 
-import ij.IJ;
-import ij.ImagePlus;
-import ij.ImageStack;
-import ij.plugin.SubstackMaker;
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.IntStream;
+
 import org.apache.commons.math3.ml.clustering.CentroidCluster;
 import org.apache.commons.math3.ml.clustering.DoublePoint;
 import org.apache.commons.math3.ml.clustering.KMeansPlusPlusClusterer;
-import org.apache.commons.math3.ml.clustering.KMeansPlusPlusClusterer.EmptyClusterStrategy;
 import org.apache.commons.math3.ml.distance.EuclideanDistance;
-import org.apache.commons.math3.random.JDKRandomGenerator;
 import org.hkijena.mcat.api.MCATAlgorithm;
 import org.hkijena.mcat.api.MCATCentroidCluster;
 import org.hkijena.mcat.api.MCATRun;
@@ -37,13 +40,11 @@ import org.hkijena.mcat.api.parameters.MCATPreprocessingParameters;
 import org.hkijena.mcat.extension.datatypes.ClusterAbundanceData;
 import org.hkijena.mcat.extension.datatypes.ClusterCentersData;
 import org.hkijena.mcat.extension.datatypes.HyperstackData;
-import org.hkijena.mcat.extension.datatypes.ROIData;
 
-import java.awt.*;
-import java.nio.file.Path;
-import java.util.List;
-import java.util.*;
-import java.util.stream.IntStream;
+import ij.IJ;
+import ij.ImagePlus;
+import ij.ImageStack;
+import ij.plugin.SubstackMaker;
 
 public class MCATClusteringAlgorithm extends MCATAlgorithm {
 

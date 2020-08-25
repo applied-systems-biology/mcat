@@ -13,12 +13,12 @@
  *******************************************************************************/
 package org.hkijena.mcat.utils;
 
-import org.apache.commons.lang.reflect.ConstructorUtils;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+
+import org.apache.commons.lang.reflect.ConstructorUtils;
 
 /**
  * Utilities around reflection

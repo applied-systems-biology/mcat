@@ -13,15 +13,17 @@
  *******************************************************************************/
 package org.hkijena.mcat.api;
 
-import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonSetter;
+import java.awt.Color;
+
+import javax.swing.Icon;
+
 import org.hkijena.mcat.api.datainterfaces.MCATPreprocessingInput;
 import org.hkijena.mcat.api.parameters.MCATSampleParameters;
 import org.hkijena.mcat.ui.components.MonochromeColorIcon;
 import org.hkijena.mcat.utils.UIUtils;
 
-import javax.swing.*;
-import java.awt.*;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
 
 /**
  * Manages one sample/subject

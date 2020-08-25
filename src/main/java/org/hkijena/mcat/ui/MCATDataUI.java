@@ -13,13 +13,16 @@
  *******************************************************************************/
 package org.hkijena.mcat.ui;
 
-import com.google.common.eventbus.Subscribe;
+import java.awt.BorderLayout;
+
+import javax.swing.JPanel;
+import javax.swing.JSplitPane;
+import javax.swing.tree.DefaultMutableTreeNode;
+
 import org.hkijena.mcat.api.MCATProjectDataSet;
 import org.hkijena.mcat.api.events.DataSetRemovedEvent;
 
-import javax.swing.*;
-import javax.swing.tree.DefaultMutableTreeNode;
-import java.awt.*;
+import com.google.common.eventbus.Subscribe;
 
 /**
  * UI that contains a {@link MCATDataSetManagerUI} and allows changing sample settings

@@ -13,9 +13,9 @@
  *******************************************************************************/
 package org.hkijena.mcat.api.parameters;
 
-import org.scijava.Priority;
-
 import java.lang.annotation.Annotation;
+
+import org.scijava.Priority;
 
 /**
  * Interface around accessing a parameter

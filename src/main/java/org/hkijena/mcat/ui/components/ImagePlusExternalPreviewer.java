@@ -13,10 +13,11 @@
  *******************************************************************************/
 package org.hkijena.mcat.ui.components;
 
+import java.awt.Dimension;
+import java.awt.Point;
+
 import ij.IJ;
 import ij.ImagePlus;
-
-import java.awt.*;
 
 /**
  * Allows preview of multiple {@link ImagePlus} instances.

@@ -13,6 +13,10 @@
  *******************************************************************************/
 package org.hkijena.mcat.ui.registries;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.hkijena.mcat.api.MCATDataProvider;
 import org.hkijena.mcat.api.MCATProjectDataSet;
 import org.hkijena.mcat.api.registries.MCATDataTypeRegistry;
@@ -25,10 +29,6 @@ import org.hkijena.mcat.extension.dataproviders.ui.DerivationMatrixFromFileDataP
 import org.hkijena.mcat.extension.dataproviders.ui.HyperstackFromTifDataProviderUI;
 import org.hkijena.mcat.extension.dataproviders.ui.ROIFromFileDataProviderUI;
 import org.hkijena.mcat.ui.MCATDataProviderUI;
-
-import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Contains definitions that link a {@link MCATDataProvider} to its respective UI class

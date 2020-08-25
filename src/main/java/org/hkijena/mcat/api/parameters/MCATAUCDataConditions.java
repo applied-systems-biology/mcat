@@ -13,14 +13,15 @@
  *******************************************************************************/
 package org.hkijena.mcat.api.parameters;
 
-import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonSetter;
-import com.google.common.eventbus.EventBus;
+import java.util.Objects;
+
 import org.hkijena.mcat.api.MCATDocumentation;
 import org.hkijena.mcat.api.MCATPostprocessingMethod;
 import org.hkijena.mcat.api.events.ParameterChangedEvent;
 
-import java.util.Objects;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.google.common.eventbus.EventBus;
 
 /**
  * Additional parameters used to generate an {@link org.hkijena.mcat.extension.datatypes.AUCData}

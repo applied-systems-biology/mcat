@@ -13,6 +13,14 @@
  *******************************************************************************/
 package org.hkijena.mcat.ui;
 
+import java.awt.BorderLayout;
+
+import javax.swing.JButton;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.SwingConstants;
+
 import org.hkijena.mcat.api.MCATDataProvider;
 import org.hkijena.mcat.api.MCATDataSlot;
 import org.hkijena.mcat.api.MCATDocumentation;
@@ -20,9 +28,6 @@ import org.hkijena.mcat.api.MCATProjectDataSet;
 import org.hkijena.mcat.api.registries.MCATDataTypeRegistry;
 import org.hkijena.mcat.ui.registries.MCATDataProviderUIRegistry;
 import org.hkijena.mcat.utils.UIUtils;
-
-import javax.swing.*;
-import java.awt.*;
 
 /**
  * UI for a {@link MCATDataSlot}

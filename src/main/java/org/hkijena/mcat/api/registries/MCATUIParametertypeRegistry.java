@@ -13,6 +13,13 @@
  *******************************************************************************/
 package org.hkijena.mcat.api.registries;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import org.hkijena.mcat.api.MCATDefaultDocumentation;
 import org.hkijena.mcat.api.MCATDocumentation;
 import org.hkijena.mcat.api.parameters.MCATParameterAccess;
@@ -20,9 +27,6 @@ import org.hkijena.mcat.extension.parameters.StandardParameterEditorsExtension;
 import org.hkijena.mcat.ui.parameters.MCATParameterEditorUI;
 import org.hkijena.mcat.ui.parameters.MCATParameterGeneratorUI;
 import org.scijava.Context;
-
-import java.lang.reflect.InvocationTargetException;
-import java.util.*;
 
 /**
  * Registry for parameter types

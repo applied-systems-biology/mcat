@@ -13,11 +13,11 @@
  *******************************************************************************/
 package org.hkijena.mcat.api.datainterfaces;
 
-import org.hkijena.mcat.api.MCATDataInterface;
-import org.hkijena.mcat.api.MCATDataSlot;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import org.hkijena.mcat.api.MCATDataInterface;
+import org.hkijena.mcat.api.MCATDataSlot;
 
 /**
  * Contains multiple {@link MCATClusteringOutput}

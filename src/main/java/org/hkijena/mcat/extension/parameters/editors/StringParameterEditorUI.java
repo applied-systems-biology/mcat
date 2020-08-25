@@ -13,15 +13,19 @@
  *******************************************************************************/
 package org.hkijena.mcat.extension.parameters.editors;
 
+import java.awt.BorderLayout;
+import java.awt.Font;
+
+import javax.swing.BorderFactory;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.event.DocumentEvent;
+import javax.swing.text.JTextComponent;
+
 import org.hkijena.mcat.api.parameters.MCATParameterAccess;
 import org.hkijena.mcat.ui.components.DocumentChangeListener;
 import org.hkijena.mcat.ui.parameters.MCATParameterEditorUI;
 import org.scijava.Context;
-
-import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.text.JTextComponent;
-import java.awt.*;
 
 /**
  * Parameter editor for {@link String}

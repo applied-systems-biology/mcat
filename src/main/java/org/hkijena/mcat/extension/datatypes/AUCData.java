@@ -13,16 +13,17 @@
  *******************************************************************************/
 package org.hkijena.mcat.extension.datatypes;
 
-import ij.measure.ResultsTable;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.hkijena.mcat.api.MCATData;
 import org.hkijena.mcat.api.MCATDataInterfaceKey;
 import org.hkijena.mcat.api.MCATDocumentation;
 import org.hkijena.mcat.api.parameters.MCATCustomParameterCollection;
 
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Map;
+import ij.measure.ResultsTable;
 
 @MCATDocumentation(name = "AUC")
 public class AUCData implements MCATData {

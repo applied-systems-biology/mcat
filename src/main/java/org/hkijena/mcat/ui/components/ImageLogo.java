@@ -13,8 +13,11 @@
  *******************************************************************************/
 package org.hkijena.mcat.ui.components;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.Image;
+
+import javax.swing.JPanel;
 
 /**
  * Draws an image fit into the panel's boundaries

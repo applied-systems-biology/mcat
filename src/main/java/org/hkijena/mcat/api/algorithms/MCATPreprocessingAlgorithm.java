@@ -14,17 +14,7 @@
 package org.hkijena.mcat.api.algorithms;
 
 
-import de.embl.cmci.registration.MultiStackReg_;
-import ij.IJ;
-import ij.ImagePlus;
-import ij.ImageStack;
-import ij.gui.Roi;
-import ij.plugin.Duplicator;
-import ij.plugin.ImageCalculator;
-import ij.process.ImageStatistics;
-
 import java.nio.file.Paths;
-import java.util.Set;
 
 import org.hkijena.mcat.api.MCATAlgorithm;
 import org.hkijena.mcat.api.MCATDataSlot;
@@ -36,6 +26,15 @@ import org.hkijena.mcat.api.parameters.MCATPreprocessingParameters;
 import org.hkijena.mcat.extension.datatypes.DerivativeMatrixData;
 import org.hkijena.mcat.extension.datatypes.HyperstackData;
 import org.hkijena.mcat.extension.datatypes.ROIData;
+
+import de.embl.cmci.registration.MultiStackReg_;
+import ij.IJ;
+import ij.ImagePlus;
+import ij.ImageStack;
+import ij.gui.Roi;
+import ij.plugin.Duplicator;
+import ij.plugin.ImageCalculator;
+import ij.process.ImageStatistics;
 
 public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
 

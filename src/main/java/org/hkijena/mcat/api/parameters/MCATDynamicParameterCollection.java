@@ -13,6 +13,16 @@
  *******************************************************************************/
 package org.hkijena.mcat.api.parameters;
 
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import org.hkijena.mcat.api.events.ParameterStructureChangedEvent;
+import org.hkijena.mcat.utils.JsonUtils;
+
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -20,11 +30,6 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.eventbus.EventBus;
-import org.hkijena.mcat.api.events.ParameterStructureChangedEvent;
-import org.hkijena.mcat.utils.JsonUtils;
-
-import java.io.IOException;
-import java.util.*;
 
 /**
  * Holds a user-definable set of parameters
