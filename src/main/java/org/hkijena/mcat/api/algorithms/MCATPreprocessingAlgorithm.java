@@ -196,6 +196,7 @@ public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
 
     @Override
     public void run() {
+    	
         getPreprocessingInput().getRawImage().resetFromCurrentProvider();
         ImagePlus imp = getPreprocessingInput().getRawImage().getData(HyperstackData.class).getImage();
         
@@ -211,18 +212,18 @@ public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
         
         roi = tissueROI.getData(ROIData.class).getRoi();
         
-        //TODO check what happens if there is no ROI
         if(roi != null)
         	roiName = roi.getName();
         tissueROI.setData(new ROIData(roi, roi.getName()));
+        
+        String sample = imp.getTitle();
 
-        System.out.println("Start pre-processing for " + imp.getTitle() +
-        		" dimensions " + imp.getNDimensions() +
-                " width " + imp.getWidth() +
-                " height " + imp.getHeight() +
-                " frames " + imp.getNFrames() +
-                " channels " + imp.getNChannels() +
-                " roi name: " + roiName);
+        System.out.println("Start pre-processing for " + sample +
+                "; width = " + imp.getWidth() +
+                "; height = " + imp.getHeight() +
+                "; frames = " + imp.getNFrames() +
+                "; channels = " + imp.getNChannels() +
+                "; roi name = " + roiName);
         
         /*
          * remove slices before Start time frame and after End time frame if necessary
@@ -234,7 +235,6 @@ public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
     			System.err.println(e.getMessage());
     		}
         }
-        
         
         ImagePlus[] channels = ij.plugin.ChannelSplitter.split(imp.duplicate());
 
@@ -252,9 +252,6 @@ public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
         ImagePlus interest = channels[channelOfInterest - 1];
         String transforms = System.getProperty("java.io.tmpdir") + "transform.txt";
 
-        /*
-         * check if anatomic channel is provided and perform rigid registration
-         */
     	if(anatomyProvided) {
     		ImagePlus anatomy = channels[channelAnatomy - 1];
     		interest = registerImages(transforms, anatomy, interest);
@@ -315,7 +312,7 @@ public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
         IJ.freeMemory();
         System.gc();
 
-        System.out.println("Finished Preprocessing.");
+        System.out.println("Finished pre-processing for " + sample);
     }
 
     @Override

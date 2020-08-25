@@ -1,4 +1,4 @@
-# Run MCAT
+# Run Mcat
 
 Please provide a valid folder where the output files will be written into.
 

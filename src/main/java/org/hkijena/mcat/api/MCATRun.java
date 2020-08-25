@@ -612,6 +612,7 @@ public class MCATRun implements MCATValidatable {
             ++counter;
             onProgress.accept(new Status(counter, graph.size(), algorithm.getName() + " done"));
         }
+        System.out.println("Finished Run!");
     }
 
     public MCATProject getProject() {

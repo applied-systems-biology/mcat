@@ -153,7 +153,7 @@ public class MCATWorkbenchUI extends JFrame {
         quickHelp.addActionListener(e -> documentTabPane.selectSingletonTab("INTRODUCTION"));
         menu.add(quickHelp);
 
-        toolBar.add(helpButton);
+//        toolBar.add(helpButton);
     }
 
     public DocumentTabPane getDocumentTabPane() {

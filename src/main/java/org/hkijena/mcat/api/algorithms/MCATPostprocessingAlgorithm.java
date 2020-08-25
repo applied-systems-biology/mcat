@@ -34,7 +34,7 @@ import java.util.Set;
 
 public class MCATPostprocessingAlgorithm extends MCATAlgorithm {
 
-    // compensate for rounding errors when checking which curves have net decrease/increase; omit zero line
+    // compensate for slight fluctuations when checking which curves have net decrease/increase; omit zero lines
     private final double epsilon = 0.1;
     private final MCATPostprocessingOutput postprocessingOutput;
     private final MCATPreprocessingParameters preprocessingParameters;
@@ -108,6 +108,7 @@ public class MCATPostprocessingAlgorithm extends MCATAlgorithm {
     }
 
     private void postProcessMaxDecrease(List<MCATCentroidCluster<DoublePoint>> clusterCenters) {
+    	System.out.println("\tLooking for curve with max decrease...");
         ArrayList<Integer> indices = new ArrayList<Integer>();
 
         double min = Double.MAX_VALUE;
@@ -128,12 +129,11 @@ public class MCATPostprocessingAlgorithm extends MCATAlgorithm {
             
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
-		} finally {
-			//TODO
-		}
+		} 
     }
 
     private void postProcessMaxIncrease(List<MCATCentroidCluster<DoublePoint>> clusterCenters) {
+    	System.out.println("\tLooking for curve with max increase...");
         ArrayList<Integer> indices = new ArrayList<Integer>();
 
         double max = 0;
@@ -154,12 +154,11 @@ public class MCATPostprocessingAlgorithm extends MCATAlgorithm {
             
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
-		} finally {
-			//TODO
-		}
+		} 
     }
 
     private void postProcessNetDecrease(List<MCATCentroidCluster<DoublePoint>> clusterCenters) {
+    	System.out.println("\tLooking for curves with net decrease...");
         ArrayList<Integer> indices = new ArrayList<Integer>();
         for (int i = 0; i < clusterCenters.size(); i++) {
             if (clusterCenters.get(i).getCumSum() < 0 && Math.abs(clusterCenters.get(i).getMeanDifferenceFromZero()) > epsilon) {
@@ -174,13 +173,11 @@ public class MCATPostprocessingAlgorithm extends MCATAlgorithm {
             
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
-		} finally {
-			//TODO
-		}
+		} 
     }
 
     private void postProcessNetIncrease(List<MCATCentroidCluster<DoublePoint>> clusterCenters) {
-        System.out.println("netIncrease");
+        System.out.println("\tLooking for curves with net increase...");
 
         ArrayList<Integer> indices = new ArrayList<Integer>();
 
@@ -197,13 +194,11 @@ public class MCATPostprocessingAlgorithm extends MCATAlgorithm {
             
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
-		} finally {
-			//TODO
-		}
+		} 
     }
 
     private void getAUC(ArrayList<Integer> indices, MCATPostprocessingMethod postprocessingMethod) {
-        System.out.println("Getting AUCS...");
+        System.out.println("\tGetting AUCS...");
 
         Set<String> keys = getClusteringOutput().getDataSetEntries().keySet();
 
@@ -246,17 +241,16 @@ public class MCATPostprocessingAlgorithm extends MCATAlgorithm {
 
     @Override
     public void run() {
+    	System.out.println("Starting " + getName());
 
         clusterCenters = getClusteringOutput().getClusterCenters()
                 .getData(ClusterCentersData.class).getCentroids();
 
         postProcess();
 
-        System.out.println("treatment: " + getClusteringOutput().getGroupTreatment());
-        System.out.println("subject: " + getClusteringOutput().getGroupSubject());
-
         getPostprocessingOutput().getAuc().setData(aucData);
         getPostprocessingOutput().getAuc().flush();
+        
     }
 
     @Override

@@ -115,8 +115,6 @@ public class MCATClusteringAlgorithm extends MCATAlgorithm {
             int width = imp.getWidth();
             int height = imp.getHeight();
             
-            System.out.println("minLength: " + minLength);
-
             float[] tmp;
 
             for (int x = 0; x < width; x++) {
@@ -132,7 +130,6 @@ public class MCATClusteringAlgorithm extends MCATAlgorithm {
                     	for (int j = 0; j < tmp.length; j++) {
                     		print = print + tmp[j] + "; ";
                     	}
-                    	System.out.println(imp.getTitle() + " values: " + print);
                     } 
 
                     points.add(new DoublePoint(pixels));
@@ -149,7 +146,7 @@ public class MCATClusteringAlgorithm extends MCATAlgorithm {
 
     private void runKMeans() {
 
-        System.out.println("\tPerforming k-means algorithm...");
+        System.out.println("\tPerforming k-means clustering with k = " + k + "...");
 
         KMeansPlusPlusClusterer<DoublePoint> kmpp = new KMeansPlusPlusClusterer<DoublePoint>(k, 50, new EuclideanDistance());
 
@@ -225,15 +222,15 @@ public class MCATClusteringAlgorithm extends MCATAlgorithm {
     private void saveData() {
         System.out.println("\tSaving clustering results...");
 
-        String group = "";
-        if(getClusteringOutput().getGroupTreatment().equals(""))
-        	group = getClusteringOutput().getGroupSubject();
-        else
-        	group = getClusteringOutput().getGroupTreatment();
+//        String group = "";
+//        if(getClusteringOutput().getGroupTreatment().equals(""))
+//        	group = getClusteringOutput().getGroupSubject();
+//        else
+//        	group = getClusteringOutput().getGroupTreatment();
         	
-        String identifier = group + 
-        		getPreprocessingParameters().toShortenedString() +
-        		getClusteringParameters().toShortenedString();
+//        String identifier = group + 
+//        		getPreprocessingParameters().toShortenedString() +
+//        		getClusteringParameters().toShortenedString();
         
         getClusteringOutput().getClusterCenters().flush();
 
@@ -248,19 +245,16 @@ public class MCATClusteringAlgorithm extends MCATAlgorithm {
     @Override
     public void run() {
 
-        //TODO implement clustering from derivative matrix, check which algorithm to use (from image or from matrix)
-
         System.out.println("Starting " + getName());
 
         k = getClusteringParameters().getkMeansK();
 
-        // Horrible hack (aka workaround) for the issues?
         minLength = getClusteringParameters().getMinLength();
         for (MCATPreprocessingOutput preprocessingOutput : getClusteringInput().getAllPreprocessingOutputs()) {
             minLength = Math.min(preprocessingOutput.getNSlices(), minLength);
         }
-        minLength = Math.min(getPreprocessingParameters().getMaxTime(), minLength); // Min time as requested :D
-        getClusteringOutput().setMinLength(minLength); // Pass the calculated result to the data interface
+        minLength = Math.min(getPreprocessingParameters().getMaxTime(), minLength); 
+        getClusteringOutput().setMinLength(minLength); 
         minLength = minLength - 1; //subtract one because of differences in indexing and slice number measurement
 
         loadImages();
