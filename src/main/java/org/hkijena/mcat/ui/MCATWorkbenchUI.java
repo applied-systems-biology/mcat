@@ -50,7 +50,7 @@ public class MCATWorkbenchUI extends JFrame {
 
     private void initialize() {
 	    getContentPane().setLayout(new BorderLayout(8, 8));
-        setTitle("MSOT Clustering Analysis Tool (MCAT)");
+        setTitle("MSOT Cluster Analysis Toolkit (Mcat)");
         setIconImage(UIUtils.getIconFromResources("mcat.png").getImage());
         UIUtils.setToAskOnClose(this, "Do you really want to close MCAT?", "Close window");
 
@@ -90,9 +90,9 @@ public class MCATWorkbenchUI extends JFrame {
         toolBar.add(saveProjectButton);
 
         // "Open project" entry
-        JButton importButton = new JButton("Open result ...", UIUtils.getIconFromResources("import.png"));
-        importButton.addActionListener(e -> openResult());
-        toolBar.add(importButton);
+//        JButton importButton = new JButton("Open result ...", UIUtils.getIconFromResources("import.png"));
+//        importButton.addActionListener(e -> openResult());
+//        toolBar.add(importButton);
 
         toolBar.add(Box.createHorizontalGlue());
 
