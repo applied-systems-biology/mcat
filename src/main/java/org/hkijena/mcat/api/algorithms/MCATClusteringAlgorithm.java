@@ -149,7 +149,7 @@ public class MCATClusteringAlgorithm extends MCATAlgorithm {
 
         System.out.println("\tPerforming k-means clustering with k = " + k + "...");
 
-        KMeansPlusPlusClusterer<DoublePoint> kmpp = new KMeansPlusPlusClusterer<DoublePoint>(k, 50, new EuclideanDistance());
+        KMeansPlusPlusClusterer<DoublePoint> kmpp = new KMeansPlusPlusClusterer<DoublePoint>(k, 150, new EuclideanDistance());
 
         List<CentroidCluster<DoublePoint>> tmpCentroidCluster = kmpp.cluster(points);
 
