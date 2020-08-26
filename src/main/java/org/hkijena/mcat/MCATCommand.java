@@ -27,7 +27,7 @@ import net.imagej.ImageJ;
 /**
  * Plugin main entry point
  */
-@Plugin(type = Command.class, menuPath = "Plugins>MSOT Cluster Analysis Toolkit (MCAT)")
+@Plugin(type = Command.class, menuPath = "Plugins>MSOT Cluster Analysis Toolkit (Mcat)")
 public class MCATCommand implements Command {
 
     @Parameter

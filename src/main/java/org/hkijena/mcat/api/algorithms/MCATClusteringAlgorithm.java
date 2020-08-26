@@ -104,7 +104,7 @@ public class MCATClusteringAlgorithm extends MCATAlgorithm {
     private void loadImages() {
         System.out.println("\tLoading images...");
         List<String> keys = new ArrayList<>(clusteringInput.getDataSetEntries().keySet());
-        Collections.sort(keys);
+//        Collections.sort(keys);
         
         String[] names = new String[keys.size()];
         ImagePlus[] imps = new ImagePlus[keys.size()];
@@ -152,20 +152,67 @@ public class MCATClusteringAlgorithm extends MCATAlgorithm {
     private void runKMeans() {
 
         System.out.println("\tPerforming k-means clustering with k = " + k + "...");
-
-        KMeansPlusPlusClusterer<DoublePoint> kmpp = new KMeansPlusPlusClusterer<DoublePoint>(k, 150, new EuclideanDistance());
-
-        List<CentroidCluster<DoublePoint>> tmpCentroidCluster = kmpp.cluster(points);
         
+        
+        int iterations = 100;
+        int minSSE = Integer.MAX_VALUE;
+        List<MCATCentroidCluster<DoublePoint>> finalCentroids = new ArrayList<>();
+        
+        for (int j = 0; j < iterations; j++) {
+        	
+        	int sse = 0;
+        	KMeansPlusPlusClusterer<DoublePoint> kmpp = new KMeansPlusPlusClusterer<DoublePoint>(k, 50, new EuclideanDistance());
 
-        List<MCATCentroidCluster<DoublePoint>> centroids = new ArrayList<MCATCentroidCluster<DoublePoint>>();
-        for (CentroidCluster<DoublePoint> centroidCluster : tmpCentroidCluster) {
-            centroids.add(new MCATCentroidCluster<>(centroidCluster.getCenter()));
+            List<CentroidCluster<DoublePoint>> tmpCentroidCluster = kmpp.cluster(points);
+            
+            List<MCATCentroidCluster<DoublePoint>> centroids = new ArrayList<MCATCentroidCluster<DoublePoint>>();
+            for (CentroidCluster<DoublePoint> centroidCluster : tmpCentroidCluster) {
+                centroids.add(new MCATCentroidCluster<>(centroidCluster.getCenter()));
+            }
+
+            Set<String> keys = getClusteringInput().getDataSetEntries().keySet();
+            for (String key : keys) {
+                MCATClusteringInputDataSetEntry inputEntry = getClusteringInput().getDataSetEntries().get(key);
+                
+                ImagePlus imp = inputEntry.getPreprocessedDataInterface().getPreprocessedImage().getData(HyperstackData.class).getImage();
+
+                ImageStack is = imp.getStack();
+                int w = imp.getWidth();
+                int h = imp.getHeight();
+                
+                for (int x = 0; x < w; x++) {
+                    for (int y = 0; y < h; y++) {
+
+                        float[] tmp = is.getVoxels(x, y, 0, 1, 1, minLength, new float[minLength]);
+                        double[] pixels = new double[tmp.length];
+                        IntStream.range(0, tmp.length).forEach(index -> pixels[index] = tmp[index]);
+
+                        double minDist = Double.MAX_VALUE;
+
+                        for (int i = 0; i < centroids.size(); i++) {
+
+                            double[] center = centroids.get(i).getCenter().getPoint();
+                            double dist = new EuclideanDistance().compute(center, pixels);
+                            if (dist < minDist) {
+                                minDist = dist;
+                            }
+                        } 
+                        sse += minDist;
+                    }
+                }
+            }
+            
+            if(sse < minSSE) {
+            	minSSE = sse;
+            	finalCentroids = centroids;
+            }
+            
+//            System.out.println(j + " SSE: " + sse + "; minSSE: " + minSSE);
         }
+        
+        finalCentroids.sort(Comparator.comparingDouble(MCATCentroidCluster::getCumSum));
 
-        centroids.sort(Comparator.comparingDouble(MCATCentroidCluster::getCumSum));
-
-        getClusteringOutput().getClusterCenters().setData(new ClusterCentersData(centroids));
+        getClusteringOutput().getClusterCenters().setData(new ClusterCentersData(finalCentroids));
 
         Set<String> keys = getClusteringInput().getDataSetEntries().keySet();
 
@@ -173,7 +220,7 @@ public class MCATClusteringAlgorithm extends MCATAlgorithm {
             MCATClusteringInputDataSetEntry inputEntry = getClusteringInput().getDataSetEntries().get(key);
             MCATClusteringOutputDataSetEntry outputEntry = getClusteringOutput().getDataSetEntries().get(key);
 
-            outputEntry.getClusterAbundance().setData(new ClusterAbundanceData(centroids, new int[centroids.size()]));
+            outputEntry.getClusterAbundance().setData(new ClusterAbundanceData(finalCentroids, new int[finalCentroids.size()]));
 
             ImagePlus imp = inputEntry.getPreprocessedDataInterface().getPreprocessedImage().getData(HyperstackData.class).getImage();
 
@@ -192,9 +239,9 @@ public class MCATClusteringAlgorithm extends MCATAlgorithm {
                     double minDist = Double.MAX_VALUE;
                     int closestCluster = -1;
 
-                    for (int i = 0; i < centroids.size(); i++) {
+                    for (int i = 0; i < finalCentroids.size(); i++) {
 
-                        double[] center = centroids.get(i).getCenter().getPoint();
+                        double[] center = finalCentroids.get(i).getCenter().getPoint();
                         double dist = new EuclideanDistance().compute(center, pixels);
                         if (dist < minDist) {
                             minDist = dist;
@@ -207,8 +254,15 @@ public class MCATClusteringAlgorithm extends MCATAlgorithm {
                     }
 
                     outputEntry.getClusterAbundance().getData(ClusterAbundanceData.class).incrementAbundance(closestCluster);
-                    centroids.get(closestCluster).addMember();
+                    finalCentroids.get(closestCluster).addMember();
                     int colIndex = Math.round(colors.length / k) * closestCluster;
+                    
+                    /*
+                     * for colorblind-friendly coloring of spatial cluster distribution 
+                     */
+//                    String[] colors2 = new String[]{"#dedc49", "#c35831", "#18171c", "#61bce0", "#7d7d7d"};   
+//                    colIndex = closestCluster;
+                    
                     clusteredPixels[y * w + x] = hexToRGB(colors[colIndex]);
                 }
             }

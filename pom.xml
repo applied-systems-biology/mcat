@@ -213,11 +213,6 @@ See the LICENSE file provided with this code for the full license.
             <artifactId>com.springsource.org.apache.commons.lang</artifactId>
             <version>2.6.0</version>
         </dependency>   
-		<dependency>
-            <groupId>com.github.miura</groupId>
-            <artifactId>MultiStackRegistration</artifactId>
-            <version>v1.46.2</version>
-        </dependency>
         <dependency>
 		    <groupId>net.sf.ij-plugins</groupId>
 		    <artifactId>ijp-toolkit_2.10</artifactId>
@@ -232,6 +227,16 @@ See the LICENSE file provided with this code for the full license.
             <groupId>org.jfree</groupId>
             <artifactId>jfreesvg</artifactId>
             <version>3.4</version>
+        </dependency>
+        <dependency>
+		    <groupId>sc.fiji</groupId>
+		    <artifactId>TurboReg_</artifactId>
+		    <version>2.0.0</version>
+		</dependency>
+        <dependency>
+            <groupId>com.github.miura</groupId>
+            <artifactId>MultiStackRegistration</artifactId>
+            <version>v1.46.2</version>
         </dependency>
     </dependencies>
 
