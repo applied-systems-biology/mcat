@@ -15,6 +15,8 @@ package org.hkijena.mcat.api.algorithms;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -102,9 +104,11 @@ public class MCATClusteringAlgorithm extends MCATAlgorithm {
     private void loadImages() {
         System.out.println("\tLoading images...");
         List<String> keys = new ArrayList<>(clusteringInput.getDataSetEntries().keySet());
+        Collections.sort(keys);
+        
         String[] names = new String[keys.size()];
         ImagePlus[] imps = new ImagePlus[keys.size()];
-
+        
         for (int i = 0; i < keys.size(); i++) {
             MCATClusteringInputDataSetEntry samp = clusteringInput.getDataSetEntries().get(keys.get(i));
             System.out.println("\t\tSubject: " + samp.getDataSetName());
@@ -152,6 +156,7 @@ public class MCATClusteringAlgorithm extends MCATAlgorithm {
         KMeansPlusPlusClusterer<DoublePoint> kmpp = new KMeansPlusPlusClusterer<DoublePoint>(k, 150, new EuclideanDistance());
 
         List<CentroidCluster<DoublePoint>> tmpCentroidCluster = kmpp.cluster(points);
+        
 
         List<MCATCentroidCluster<DoublePoint>> centroids = new ArrayList<MCATCentroidCluster<DoublePoint>>();
         for (CentroidCluster<DoublePoint> centroidCluster : tmpCentroidCluster) {
