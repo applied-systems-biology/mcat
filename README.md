@@ -1,18 +1,13 @@
-# MSOT Cluster Analysis Tool (MCAT)
+# MSOT Cluster Analysis Toolkit (Mcat)
+[![DOI](https://zenodo.org/badge/290702041.svg)](https://zenodo.org/badge/latestdoi/290702041)
 
 ## Copyright
 
-Copyright by Bianca Hoffmann, Zoltán Cseresnyés, Ruman Gerst
+Copyright by Bianca Hoffmann, Ruman Gerst, Zoltán Cseresnyés and Marc Thilo Figge
 
-Research Group Applied Systems Biology - Head: Prof. Dr. Marc Thilo Figge
-
-https://www.leibniz-hki.de/en/applied-systems-biology.html
-
-HKI-Center for Systems Biology of Infection
-
+[Research Group Applied Systems Biology](https://www.leibniz-hki.de/en/applied-systems-biology.html)
 Leibniz Institute for Natural Product Research and Infection Biology - Hans Knöll Insitute (HKI)
-
-Adolf-Reichwein-Straße 23, 07745 Jena, Germany
+Beutenbergstr. 11a, 07745 Jena, Germany
 
 The project code is licensed under BSD 2-Clause.
 See the LICENSE file provided with the code for the full license.
