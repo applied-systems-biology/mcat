@@ -1,5 +1,4 @@
 # MSOT Cluster Analysis Toolkit (Mcat)
-[![DOI](https://zenodo.org/badge/290702041.svg)](https://zenodo.org/badge/latestdoi/290702041)
 
 ## Copyright
 
