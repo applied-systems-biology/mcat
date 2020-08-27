@@ -17,7 +17,7 @@ See the LICENSE file provided with this code for the full license.
 
     <groupId>org.hkijena</groupId>
     <artifactId>mcat</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>mcat</name>
     <description>MSOT Cluster Analysis Toolkit</description>
     <url>https://applied-systems-biology.github.io/mcat/</url>
