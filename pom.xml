@@ -239,6 +239,12 @@ See the LICENSE file provided with the code for the full license.
             <groupId>com.github.miura</groupId>
             <artifactId>MultiStackRegistration</artifactId>
             <version>v1.46.2</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>sc.fiji</groupId>
+                    <artifactId>TurboReg_</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 
