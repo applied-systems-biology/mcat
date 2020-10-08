@@ -164,7 +164,7 @@ public class MCATPostprocessingAlgorithm extends MCATAlgorithm {
     	System.out.println("\tLooking for curves with net decrease...");
         ArrayList<Integer> indices = new ArrayList<Integer>();
         for (int i = 0; i < clusterCenters.size(); i++) {
-            if (clusterCenters.get(i).getCumSum() < 0 && Math.abs(clusterCenters.get(i).getMeanDifferenceFromZero()) > epsilon) {
+            if (clusterCenters.get(i).getCumSum() < -epsilon) {
                 indices.add(i);
             }
         }
@@ -185,7 +185,7 @@ public class MCATPostprocessingAlgorithm extends MCATAlgorithm {
         ArrayList<Integer> indices = new ArrayList<Integer>();
 
         for (int i = 0; i < clusterCenters.size(); i++) {
-            if (clusterCenters.get(i).getCumSum() > 0 && Math.abs(clusterCenters.get(i).getMeanDifferenceFromZero()) > epsilon) {
+            if (clusterCenters.get(i).getCumSum() > epsilon) {
                 indices.add(i);
             }
         }
