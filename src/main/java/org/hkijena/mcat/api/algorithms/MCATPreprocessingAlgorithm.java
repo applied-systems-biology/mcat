@@ -14,6 +14,9 @@
 package org.hkijena.mcat.api.algorithms;
 
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.hkijena.mcat.api.MCATAlgorithm;
@@ -249,7 +252,13 @@ public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
             throw new IllegalArgumentException("Channel of interest has to be specified for image processing!");
 
         ImagePlus interest = channels[channelOfInterest - 1];
-        String transforms = System.getProperty("java.io.tmpdir") + "transform.txt";
+        Path tempFile;
+        try {
+            tempFile = Files.createTempFile("mcat", "transform");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        String transforms = tempFile.toString();
 
     	if(anatomyProvided) {
     		ImagePlus anatomy = channels[channelAnatomy - 1];
