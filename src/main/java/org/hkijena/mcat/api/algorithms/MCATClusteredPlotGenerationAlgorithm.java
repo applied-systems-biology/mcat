@@ -47,6 +47,8 @@ public class MCATClusteredPlotGenerationAlgorithm extends MCATAlgorithm {
             TimeDerivativePlotData.Series series = new TimeDerivativePlotData.Series();
             series.setGroup(entry.getKey());
             series.setData(clusterCentersData.getCentroids());
+            // Hier Farben
+            series.setColors(entry.getValue().getColors());
             
             plotData.getDataSeries().put(entry.getKey(), series);
         }

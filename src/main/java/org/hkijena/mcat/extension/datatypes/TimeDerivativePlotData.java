@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.hkijena.mcat.extension.datatypes;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
@@ -20,6 +21,7 @@ import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +34,8 @@ import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.encoders.EncoderUtil;
 import org.jfree.chart.encoders.ImageFormat;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.graphics2d.svg.SVGGraphics2D;
@@ -122,6 +126,7 @@ public class TimeDerivativePlotData implements MCATData {
     public static class Series {
         private String group;
         private ResultsTable table = new ResultsTable();
+        private List<Integer> colors = new ArrayList<Integer>();
 
         @JsonGetter("group")
         public String getGroup() {
@@ -168,17 +173,35 @@ public class TimeDerivativePlotData implements MCATData {
             int nSeries = table.getLastColumn() + 1;
             for (int col = 0; col < nSeries; col++) {
                 XYSeries series = new XYSeries("C" + col);
+                series.add(0,0);
                 for (int row = 0; row < table.getCounter(); row++) {
-                    series.add(row, table.getValueAsDouble(col, row));
+                    series.add(row + 1, table.getValueAsDouble(col, row));
                 }
                 dataset.addSeries(series);
             }
 
-            return ChartFactory.createXYLineChart("Time derivative (" + group + ")",
+            JFreeChart chart = (ChartFactory.createXYLineChart("Time derivative (" + group + ")",
                     "Time (downsampled)",
                     "Time derivative",
-                    dataset);
+                    dataset));
+            XYPlot plot = (XYPlot)chart.getPlot();
+            XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
+            for (int col = 0; col < nSeries; col++) {
+            	renderer.setSeriesPaint(col, new Color(colors.get(col)));
+            }
+            plot.setRenderer(renderer);
+            return chart;
         }
+
+		@JsonGetter("colors")	
+		public List<Integer> getColors() {
+			return colors;
+		}
+
+		@JsonSetter("colors")
+		public void setColors(List<Integer> colors) {
+			this.colors = colors;
+		}
     }
 
 }

@@ -158,6 +158,13 @@ public class MCATClusteringAlgorithm extends MCATAlgorithm {
         int minSSE = Integer.MAX_VALUE;
         List<MCATCentroidCluster<DoublePoint>> finalCentroids = new ArrayList<>();
         
+        List<Integer> currentColors = new ArrayList<Integer>();
+        for (int i = 0; i < k; i++) {
+        	int colIndex = Math.round(colors.length / k) * i;
+        	currentColors.add(hexToRGB(colors[colIndex]));
+		}
+        getClusteringOutput().setColors(currentColors);
+        
         for (int j = 0; j < iterations; j++) {
         	
         	int sse = 0;
@@ -215,6 +222,7 @@ public class MCATClusteringAlgorithm extends MCATAlgorithm {
         getClusteringOutput().getClusterCenters().setData(new ClusterCentersData(finalCentroids));
 
         Set<String> keys = getClusteringInput().getDataSetEntries().keySet();
+   
 
         for (String key : keys) {
             MCATClusteringInputDataSetEntry inputEntry = getClusteringInput().getDataSetEntries().get(key);
@@ -255,7 +263,7 @@ public class MCATClusteringAlgorithm extends MCATAlgorithm {
 
                     outputEntry.getClusterAbundance().getData(ClusterAbundanceData.class).incrementAbundance(closestCluster);
                     finalCentroids.get(closestCluster).addMember();
-                    int colIndex = Math.round(colors.length / k) * closestCluster;
+//                    int colIndex = Math.round(colors.length / k) * closestCluster;
                     
                     /*
                      * for colorblind-friendly coloring of spatial cluster distribution 
@@ -263,7 +271,7 @@ public class MCATClusteringAlgorithm extends MCATAlgorithm {
 //                    String[] colors2 = new String[]{"#dedc49", "#c35831", "#18171c", "#61bce0", "#7d7d7d"};   
 //                    colIndex = closestCluster;
                     
-                    clusteredPixels[y * w + x] = hexToRGB(colors[colIndex]);
+                    clusteredPixels[y * w + x] = currentColors.get(closestCluster);
                 }
             }
 

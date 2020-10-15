@@ -235,6 +235,17 @@ See the LICENSE file provided with the code for the full license.
 		    <artifactId>TurboReg_</artifactId>
 		    <version>2.0.0</version>
 		</dependency>
+		<dependency>
+		    <groupId>com.github.cmci</groupId>
+		    <artifactId>MultiStackRegistration</artifactId>
+		    <version>v1.46.2</version>
+		          <exclusions>
+			        <exclusion>  <!-- declare the exclusion here -->
+			          <groupId>sc.fiji</groupId>
+			          <artifactId>TurboReg_</artifactId>
+			        </exclusion>
+			      </exclusions> 
+		</dependency>
     </dependencies>
 
     <properties>

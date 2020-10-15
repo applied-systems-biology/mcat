@@ -13,7 +13,9 @@
  *******************************************************************************/
 package org.hkijena.mcat.api.datainterfaces;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.hkijena.mcat.api.MCATDataInterface;
@@ -29,6 +31,7 @@ public class MCATClusteringOutput implements MCATDataInterface {
     private final String groupTreatment;
     private Map<String, MCATClusteringOutputDataSetEntry> dataSetEntries = new HashMap<>();
     private MCATDataSlot clusterCenters = new MCATDataSlot("cluster-centers", ClusterCentersData.class);
+    private List<Integer> colors;
 //    private MCATDataSlot singleClusterImage = new MCATDataSlot("single-cluster-image", HyperstackData.class);
 
     private int minLength = -1;
@@ -92,4 +95,12 @@ public class MCATClusteringOutput implements MCATDataInterface {
     public void setMinLength(int minLength) {
         this.minLength = minLength;
     }
+
+	public List<Integer> getColors() {
+		return colors;
+	}
+
+	public void setColors(List<Integer> colors) {
+		this.colors = colors;
+	}
 }
