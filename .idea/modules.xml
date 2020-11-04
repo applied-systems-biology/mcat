@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/Mcat.iml" filepath="$PROJECT_DIR$/Mcat.iml" />
       <module fileurl="file://$PROJECT_DIR$/mcat.iml" filepath="$PROJECT_DIR$/mcat.iml" />
     </modules>
   </component>
