@@ -34,6 +34,7 @@ public class HyperstackFromTifDataProvider extends FileDataProvider {
 
     @Override
     public HyperstackData get() {
+        System.out.println("Loading image from " + getFilePath());
         return new HyperstackData(IJ.openImage(getFilePath().toString()));
     }
 

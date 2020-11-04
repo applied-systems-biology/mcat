@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 
 import org.hkijena.mcat.api.registries.MCATDataTypeRegistry;
+import org.hkijena.mcat.utils.JsonUtils;
 import org.hkijena.mcat.utils.StringUtils;
 
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -150,9 +151,16 @@ public class MCATDataSlot {
         if (!StringUtils.isNullOrEmpty(providerId)) {
             Class<? extends MCATDataProvider> providerClass = MCATDataTypeRegistry.getInstance().getRegisteredDataProviders().get(providerId);
             try {
-                setCurrentProvider(providerClass.newInstance());
-            } catch (InstantiationException | IllegalAccessException e) {
-                throw new RuntimeException(e);
+                Object provider = JsonUtils.getObjectMapper().readerFor(providerClass).readValue(jsonNode.get("current-provider"));
+                setCurrentProvider((MCATDataProvider) provider);
+            }
+            catch (Exception e2) {
+                e2.printStackTrace();
+                try {
+                    setCurrentProvider(providerClass.newInstance());
+                } catch (InstantiationException | IllegalAccessException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
     }
