@@ -24,8 +24,8 @@
     <orderEntry type="library" name="Maven: net.imglib2:imglib2-algorithm:0.11.1" level="project" />
     <orderEntry type="library" name="Maven: net.imglib2:imglib2-algorithm-fft:0.2.0" level="project" />
     <orderEntry type="library" name="Maven: edu.mines:mines-jtk:20151125" level="project" />
-    <orderEntry type="library" name="Maven: net.imglib2:imglib2-realtransform:2.1.0" level="project" />
-    <orderEntry type="library" name="Maven: jitk:jitk-tps:3.0.0" level="project" />
+    <orderEntry type="library" name="Maven: net.imglib2:imglib2-realtransform:2.2.1" level="project" />
+    <orderEntry type="library" name="Maven: jitk:jitk-tps:3.0.1" level="project" />
     <orderEntry type="library" name="Maven: com.googlecode.efficient-java-matrix-library:ejml:0.24" level="project" />
     <orderEntry type="library" name="Maven: log4j:log4j:1.2.17" level="project" />
     <orderEntry type="library" name="Maven: org.scijava:parsington:1.0.4" level="project" />
@@ -122,10 +122,6 @@
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.renjin:utils:0.8.1906" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.renjin:grDevices:0.8.1906" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.renjin:graphics:0.8.1906" level="project" />
-    <orderEntry type="library" scope="RUNTIME" name="Maven: org.scijava:scripting-scala:0.2.1" level="project" />
-    <orderEntry type="library" scope="RUNTIME" name="Maven: org.scala-lang:scala-compiler:2.12.1" level="project" />
-    <orderEntry type="library" scope="RUNTIME" name="Maven: org.scala-lang:scala-reflect:2.12.1" level="project" />
-    <orderEntry type="library" scope="RUNTIME" name="Maven: org.scala-lang.modules:scala-xml_2.12:1.0.6" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: net.imagej:imagej-ui-swing:0.22.0" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.scijava:scijava-ui-awt:0.1.6" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.scijava:scijava-ui-swing:0.12.0" level="project" />
@@ -149,7 +145,7 @@
     <orderEntry type="library" name="Maven: net.imglib2:imglib2:5.6.3" level="project" />
     <orderEntry type="library" name="Maven: net.imglib2:imglib2-cache:1.0.0-beta-11" level="project" />
     <orderEntry type="library" name="Maven: com.github.ben-manes.caffeine:caffeine:2.4.0" level="project" />
-    <orderEntry type="library" name="Maven: net.imagej:ij:1.52i" level="project" />
+    <orderEntry type="library" name="Maven: net.imagej:ij:1.52o" level="project" />
     <orderEntry type="library" name="Maven: org.scijava:scijava-log-slf4j:1.0.5" level="project" />
     <orderEntry type="library" name="Maven: com.google.guava:guava:26.0-jre" level="project" />
     <orderEntry type="library" name="Maven: com.google.code.findbugs:jsr305:3.0.2" level="project" />
@@ -160,9 +156,9 @@
     <orderEntry type="library" name="Maven: fr.inra.ijpb:MorphoLibJ_:1.4.1" level="project" />
     <orderEntry type="library" name="Maven: gov.nist.math:jama:1.0.3" level="project" />
     <orderEntry type="library" name="Maven: sc.fiji:FeatureJ_:2.0.0" level="project" />
-    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-core:2.7.3" level="project" />
-    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.7.3" level="project" />
-    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.7.0" level="project" />
+    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-core:2.11.2" level="project" />
+    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.11.2" level="project" />
+    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.11.2" level="project" />
     <orderEntry type="library" name="Maven: sc.fiji:MTrackJ_:1.5.4" level="project" />
     <orderEntry type="library" name="Maven: sc.fiji:RandomJ_:2.0.0" level="project" />
     <orderEntry type="library" name="Maven: sc.fiji:imagescience:3.0.0" level="project" />
@@ -199,8 +195,6 @@
     <orderEntry type="library" name="Maven: org.antlr:antlr4-runtime:4.7.2" level="project" />
     <orderEntry type="library" name="Maven: org.apache.commons:commons-text:1.6" level="project" />
     <orderEntry type="library" name="Maven: org.apache.commons:com.springsource.org.apache.commons.lang:2.6.0" level="project" />
-    <orderEntry type="library" name="Maven: com.github.miura:MultiStackRegistration:v1.46.2" level="project" />
-    <orderEntry type="library" name="Maven: sc.fiji:TurboReg_:2.0.1-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: net.sf.ij-plugins:ijp-toolkit_2.10:2.1.2" level="project" />
     <orderEntry type="library" name="Maven: org.scala-lang:scala-library:2.10.7" level="project" />
     <orderEntry type="library" name="Maven: org.apache.commons:commons-math3:3.6.1" level="project" />
@@ -208,5 +202,7 @@
     <orderEntry type="library" name="Maven: com.jgoodies:jgoodies-common:1.8.1" level="project" />
     <orderEntry type="library" name="Maven: org.jfree:jfreechart:1.5.0" level="project" />
     <orderEntry type="library" name="Maven: org.jfree:jfreesvg:3.4" level="project" />
+    <orderEntry type="library" name="Maven: sc.fiji:TurboReg_:2.0.0" level="project" />
+    <orderEntry type="library" name="Maven: com.github.cmci:MultiStackRegistration:v1.46.2" level="project" />
   </component>
 </module>
