@@ -5,7 +5,7 @@
 You can run an MCAT project from command line:
 
 ```
-./ImageJ-macosx --pass-classpath --full-classpath --main-class org.hkijena.mcat.Main --project-file=<Project file> --output-path=<Output path>
+./ImageJ-linux64 --pass-classpath --full-classpath --main-class org.hkijena.mcat.Main --project-file=<Project file> --output-path=<Output path>
 ```
 
 ## Copyright
