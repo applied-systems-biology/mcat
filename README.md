@@ -1,5 +1,13 @@
 # MSOT Cluster Analysis Toolkit (Mcat)
 
+## Running MCAT from command line
+
+You can run an MCAT project from command line:
+
+```
+./ImageJ-macosx --pass-classpath --full-classpath --main-class org.hkijena.mcat.Main --project-file=<Project file> --output-path=<Output path>
+```
+
 ## Copyright
 
 Copyright by Bianca Hoffmann, Ruman Gerst, Zoltán Cseresnyés and Marc Thilo Figge

@@ -25,8 +25,10 @@ public class Main {
             throw new IllegalArgumentException("Project file does not exist: " + projectFilePath);
         if(outputPath == null)
             throw new IllegalArgumentException("Output path not provided!");
+        System.out.println("Loading project from " + projectFilePath);
         MCATProject project = MCATProject.loadProject(projectFilePath);
         MCATValidityReport report = new MCATValidityReport();
+        System.out.println("Output will be written to " + outputPath);
         MCATRun run = new MCATRun(project);
         run.setOutputPath(outputPath);
         run.reportValidity(report);
