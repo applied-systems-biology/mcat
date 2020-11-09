@@ -68,6 +68,7 @@ public class MCATRun implements MCATValidatable {
     private MCATParametersTable parametersTable;
     private BiMap<MCATDataInterfaceKey, MCATDataInterface> uniqueDataInterfaces = HashBiMap.create();
     private BiMap<MCATDataInterfaceKey, MCATPreprocessingAlgorithm> preprocessingAlgorithmMap = HashBiMap.create();
+    private BiMap<MCATDataInterfaceKey, MCATClusteringAlgorithm> clusteringAlgorithmMap = HashBiMap.create();
     private Set<MCATDataInterfaceKey> savedDataInterfaces = new HashSet<>();
     private boolean isReady = false;
     private Path outputPath;
@@ -91,7 +92,9 @@ public class MCATRun implements MCATValidatable {
         Set<MCATPreprocessingParameters> uniquePreprocessingParameters =
                 parametersTable.getRows().stream().map(MCATParametersTableRow::getPreprocessingParameters).collect(Collectors.toSet());
         for (MCATPreprocessingParameters preprocessingParameters : uniquePreprocessingParameters) {
+            System.out.println("Visiting preprocessing parameters: " + preprocessingParameters.toShortenedString());
             initializePreprocessing(preprocessingParameters);
+            System.out.println("Finished visiting preprocessing parameters: " + preprocessingParameters.toShortenedString());
         }
 
         // Install some functionality to lock the parameters (which completely ruins some assumptions)
@@ -108,6 +111,7 @@ public class MCATRun implements MCATValidatable {
 
     private MCATDataInterface getOrCreateDataInterface(MCATDataInterfaceKey key, MCATDataInterface defaultEntry) {
         if(!uniqueDataInterfaces.containsKey(key)) {
+            System.out.println("New data interface: " + key.toString());
             uniqueDataInterfaces.put(key, defaultEntry);
             return defaultEntry;
         }
@@ -119,6 +123,7 @@ public class MCATRun implements MCATValidatable {
     private MCATPreprocessingAlgorithm getOrCreatePreprocessingAlgorithm(MCATDataInterfaceKey key, MCATPreprocessingParameters preprocessingParameters, MCATPreprocessingInput rawDataInterface, MCATPreprocessingOutput preprocessedDataInterface) {
         MCATPreprocessingAlgorithm existing = preprocessingAlgorithmMap.getOrDefault(key, null);
         if(existing == null) {
+            System.out.println("New preprocessing algorithm @ " + key + " input=" + preprocessingParameters.toShortenedString());
             existing = new MCATPreprocessingAlgorithm(this,
                     preprocessingParameters,
                     rawDataInterface,
@@ -157,7 +162,9 @@ public class MCATRun implements MCATValidatable {
 
         // Go through unique clustering parameters
         for (MCATClusteringParameters clusteringParameters : uniqueClusteringParameters) {
+            System.out.println("Visiting clustering parameters: " + clusteringParameters.toShortenedString());
             initializeClustering(preprocessingParameters, clusteringParameters);
+            System.out.println("Finished visiting clustering parameters: " + clusteringParameters.toShortenedString());
         }
     }
 
@@ -292,7 +299,7 @@ public class MCATRun implements MCATValidatable {
             savedDataInterfaces.add(preprocessingOutputInterfaceKey);
 
             // Preprocessing
-            MCATPreprocessingAlgorithm preprocessingAlgorithm = getOrCreatePreprocessingAlgorithm(preprocessingInputInterfaceKey,
+            MCATPreprocessingAlgorithm preprocessingAlgorithm = getOrCreatePreprocessingAlgorithm(preprocessingOutputInterfaceKey,
                     preprocessingParameters,
                     rawDataInterface,
                     preprocessedDataInterface);
@@ -313,13 +320,11 @@ public class MCATRun implements MCATValidatable {
             savedDataInterfaces.add(clusteringOutputInterfaceKey);
 
             // Create clustering algorithm node, insert it, and let it depend on preprocessing
-            MCATClusteringAlgorithm clusteringAlgorithm = new MCATClusteringAlgorithm(this,
+            MCATClusteringAlgorithm clusteringAlgorithm = getOrCreateClusteringAlgorithm(clusteringOutputInterfaceKey,
                     preprocessingParameters,
                     clusteringParameters,
                     clusteringInputInterface,
                     clusteringOutputInterface);
-
-            graph.insertNode(clusteringAlgorithm);
             allClusteringAlgorithms.add(clusteringAlgorithm);
             for (MCATPreprocessingAlgorithm preprocessingAlgorithm : preprocessingAlgorithmList) {
                 graph.connect(preprocessingAlgorithm, clusteringAlgorithm);
@@ -359,6 +364,21 @@ public class MCATRun implements MCATValidatable {
 
         // Pass clustering algorithms to plot generation
         initializeClusteredPlotGeneration(preprocessingParameters, clusteringParameters, allClusteringAlgorithms);
+    }
+
+    private MCATClusteringAlgorithm getOrCreateClusteringAlgorithm(MCATDataInterfaceKey key, MCATPreprocessingParameters preprocessingParameters, MCATClusteringParameters clusteringParameters, MCATClusteringInput clusteringInputInterface, MCATClusteringOutput clusteringOutputInterface) {
+        MCATClusteringAlgorithm existing = clusteringAlgorithmMap.getOrDefault(key, null);
+        if(existing == null) {
+            System.out.println("New clustering algorithm @ " + key + " input=" + preprocessingParameters.toShortenedString() + "_" + clusteringParameters.toShortenedString());
+            existing =  new MCATClusteringAlgorithm(this,
+                    preprocessingParameters,
+                    clusteringParameters,
+                    clusteringInputInterface,
+                    clusteringOutputInterface);
+            clusteringAlgorithmMap.put(key, existing);
+            graph.insertNode(existing);
+        }
+        return existing;
     }
 
     private void initializeClusteredPlotGeneration(MCATPreprocessingParameters preprocessingParameters,
