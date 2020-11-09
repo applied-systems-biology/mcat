@@ -13,7 +13,6 @@
  *******************************************************************************/
 package org.hkijena.mcat.api;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -68,6 +67,7 @@ public class MCATRun implements MCATValidatable {
 
     private MCATParametersTable parametersTable;
     private BiMap<MCATDataInterfaceKey, MCATDataInterface> uniqueDataInterfaces = HashBiMap.create();
+    private BiMap<MCATDataInterfaceKey, MCATPreprocessingAlgorithm> preprocessingAlgorithmMap = HashBiMap.create();
     private Set<MCATDataInterfaceKey> savedDataInterfaces = new HashSet<>();
     private boolean isReady = false;
     private Path outputPath;
@@ -114,6 +114,20 @@ public class MCATRun implements MCATValidatable {
         else {
             return uniqueDataInterfaces.get(key);
         }
+    }
+
+    private MCATPreprocessingAlgorithm getOrCreatePreprocessingAlgorithm(MCATDataInterfaceKey key, MCATPreprocessingParameters preprocessingParameters, MCATPreprocessingInput rawDataInterface, MCATPreprocessingOutput preprocessedDataInterface) {
+        MCATPreprocessingAlgorithm existing = preprocessingAlgorithmMap.getOrDefault(key, null);
+        if(existing == null) {
+            existing = new MCATPreprocessingAlgorithm(this,
+                    preprocessingParameters,
+                    rawDataInterface,
+                    preprocessedDataInterface);
+            graph.insertNode(existing);
+            preprocessingAlgorithmMap.put(key, existing);
+            return existing;
+        }
+        return existing;
     }
 
     /**
@@ -278,11 +292,10 @@ public class MCATRun implements MCATValidatable {
             savedDataInterfaces.add(preprocessingOutputInterfaceKey);
 
             // Preprocessing
-            MCATPreprocessingAlgorithm preprocessingAlgorithm = new MCATPreprocessingAlgorithm(this,
+            MCATPreprocessingAlgorithm preprocessingAlgorithm = getOrCreatePreprocessingAlgorithm(preprocessingInputInterfaceKey,
                     preprocessingParameters,
                     rawDataInterface,
                     preprocessedDataInterface);
-            graph.insertNode(preprocessingAlgorithm);
             preprocessingAlgorithmList.add(preprocessingAlgorithm);
         }
 
