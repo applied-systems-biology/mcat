@@ -62,6 +62,10 @@ public class MCATAlgorithmGraph implements MCATValidatable {
         return result;
     }
 
+    public DefaultDirectedGraph<MCATAlgorithm, DefaultEdge> getGraph() {
+        return graph;
+    }
+
     public int size() {
         return graph.vertexSet().size();
     }

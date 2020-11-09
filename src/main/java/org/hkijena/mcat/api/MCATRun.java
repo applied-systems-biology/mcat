@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.hkijena.mcat.api;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -55,6 +56,11 @@ import org.hkijena.mcat.utils.StringUtils;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.eventbus.Subscribe;
+import org.jgrapht.graph.DefaultEdge;
+import org.jgrapht.io.DOTExporter;
+import org.jgrapht.io.ExportException;
+import org.jgrapht.io.IntegerComponentNameProvider;
+import org.jgrapht.io.StringComponentNameProvider;
 
 public class MCATRun implements MCATValidatable {
     private MCATProject project;
@@ -78,7 +84,7 @@ public class MCATRun implements MCATValidatable {
             MCATPreprocessingInput rawDataInterface = new MCATPreprocessingInput(entry.getValue().getRawDataInterface());
             MCATDataInterfaceKey rawDataInterfaceKey = new MCATDataInterfaceKey("preprocessing-input");
             rawDataInterfaceKey.addDataSet(entry.getKey());
-            registerUniqueDataInterface(rawDataInterfaceKey, rawDataInterface);
+            getOrCreateDataInterface(rawDataInterfaceKey, rawDataInterface);
         }
 
         // Iterate through unique preprocessing parameters
@@ -100,10 +106,14 @@ public class MCATRun implements MCATValidatable {
         }
     }
 
-    private void registerUniqueDataInterface(MCATDataInterfaceKey key, MCATDataInterface dataInterface) {
-        if (uniqueDataInterfaces.containsKey(key))
-            throw new RuntimeException("Found data interface key " + key + " in set! This should not be possible.");
-        uniqueDataInterfaces.put(key, dataInterface);
+    private MCATDataInterface getOrCreateDataInterface(MCATDataInterfaceKey key, MCATDataInterface defaultEntry) {
+        if(!uniqueDataInterfaces.containsKey(key)) {
+            uniqueDataInterfaces.put(key, defaultEntry);
+            return defaultEntry;
+        }
+        else {
+            return uniqueDataInterfaces.get(key);
+        }
     }
 
     /**
@@ -120,7 +130,7 @@ public class MCATRun implements MCATValidatable {
             MCATDataInterfaceKey preprocessedDataInterfaceKey = new MCATDataInterfaceKey("preprocessing-output");
             preprocessedDataInterfaceKey.addDataSet(entry.getKey());
             preprocessedDataInterfaceKey.addParameter(preprocessingParameters);
-            registerUniqueDataInterface(preprocessedDataInterfaceKey, preprocessedDataInterface);
+            getOrCreateDataInterface(preprocessedDataInterfaceKey, preprocessedDataInterface);
         }
 
         // Find all unique clustering parameters with prepending preprocessing
@@ -223,14 +233,14 @@ public class MCATRun implements MCATValidatable {
                 MCATDataInterfaceKey clusteringInputKey = new MCATDataInterfaceKey("clustering-input");
                 clusteringInputKey.addParameter(preprocessingParameters);
                 clusteringInputKey.addDataSets(clusteringInput.getDataSetEntries().keySet());
-                registerUniqueDataInterface(clusteringInputKey, clusteringInput);
+                getOrCreateDataInterface(clusteringInputKey, clusteringInput);
 
                 MCATClusteringOutput clusteringOutput = outputGroups.get(subject).get(treatment);
                 MCATDataInterfaceKey clusteringOutputKey = new MCATDataInterfaceKey("clustering-output");
                 clusteringOutputKey.addParameter(preprocessingParameters);
                 clusteringOutputKey.addParameter(clusteringParameters);
                 clusteringOutputKey.addDataSets(clusteringInput.getDataSetEntries().keySet());
-                registerUniqueDataInterface(clusteringOutputKey, clusteringOutput);
+                getOrCreateDataInterface(clusteringOutputKey, clusteringOutput);
             }
         }
 
@@ -308,7 +318,7 @@ public class MCATRun implements MCATValidatable {
             postprocessingDataInterfaceKey.addDataSets(clusteringOutputInterfaceKey.getDataSetNames());
             postprocessingDataInterfaceKey.addParameters(clusteringOutputInterfaceKey.getParameters());
             postprocessingDataInterfaceKey.addParameter(postprocessingParameters);
-            registerUniqueDataInterface(postprocessingDataInterfaceKey, postprocessingDataInterface);
+            postprocessingDataInterface = (MCATPostprocessingOutput) getOrCreateDataInterface(postprocessingDataInterfaceKey, postprocessingDataInterface);
             savedDataInterfaces.add(postprocessingDataInterfaceKey);
 
             MCATPostprocessingAlgorithm postprocessingAlgorithm = new MCATPostprocessingAlgorithm(this,
@@ -346,7 +356,7 @@ public class MCATRun implements MCATValidatable {
         outputKey.addParameter(preprocessingParameters);
         outputKey.addParameter(clusteringParameters);
         MCATClusteredPlotGenerationOutput output = new MCATClusteredPlotGenerationOutput();
-        registerUniqueDataInterface(outputKey, output);
+        output = (MCATClusteredPlotGenerationOutput) getOrCreateDataInterface(outputKey, output);
         savedDataInterfaces.add(outputKey);
 
         // Create the input interface
@@ -382,7 +392,7 @@ public class MCATRun implements MCATValidatable {
 
         MCATPostprocessedPlotGenerationOutput plotGenerationOutput = new MCATPostprocessedPlotGenerationOutput(postprocessingAlgorithm.getPostprocessingOutput().getGroupSubject(),
                 postprocessingAlgorithm.getPostprocessingOutput().getGroupTreatment());
-        registerUniqueDataInterface(plotDataInterfaceKey, plotGenerationOutput);
+        plotGenerationOutput = (MCATPostprocessedPlotGenerationOutput) getOrCreateDataInterface(plotDataInterfaceKey, plotGenerationOutput);
         savedDataInterfaces.add(plotDataInterfaceKey);
 
         // Create the algorithm instance
@@ -625,6 +635,25 @@ public class MCATRun implements MCATValidatable {
     }
 
     public void run(Consumer<Status> onProgress, Supplier<Boolean> isCancelled) {
+        // Save graph dot file for debugging
+        DOTExporter<MCATAlgorithm, DefaultEdge> exporter = new DOTExporter<>(new IntegerComponentNameProvider<>(), new StringComponentNameProvider<MCATAlgorithm>() {
+            @Override
+            public String getName(MCATAlgorithm component) {
+                if(component instanceof MCATPreprocessingAlgorithm)
+                    return component.getName() + " " + ((MCATPreprocessingAlgorithm) component).getPreprocessingParameters().toShortenedString();
+                else if(component instanceof MCATClusteringAlgorithm)
+                    return component.getName() + " " + ((MCATClusteringAlgorithm) component).getPreprocessingParameters().toShortenedString() + " " + ((MCATClusteringAlgorithm) component).getClusteringParameters().toShortenedString();
+                else if(component instanceof MCATPostprocessingAlgorithm)
+                    return component.getName() + " " + ((MCATPostprocessingAlgorithm) component).getPreprocessingParameters().toShortenedString() + " " +
+                            ((MCATPostprocessingAlgorithm) component).getClusteringParameters().toShortenedString() + " " + ((MCATPostprocessingAlgorithm) component).getPostprocessingParameters().toShortenedString();
+                return component.getName();
+            }
+        }, null);
+        try {
+            exporter.exportGraph(graph.getGraph(),outputPath.resolve("graph.dot").toFile());
+        } catch (ExportException e) {
+            e.printStackTrace();
+        }
         prepare();
         int counter = 0;
         for (MCATAlgorithm algorithm : graph.traverse()) {

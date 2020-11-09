@@ -20,6 +20,8 @@ import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.google.common.eventbus.EventBus;
 
+import java.util.Objects;
+
 /**
  * Contains preprocessing parameters
  * <p>
@@ -185,7 +187,26 @@ public class MCATPreprocessingParameters implements MCATParameterCollection {
         return MCATCustomParameterCollection.parametersToString((new MCATTraversedParameterCollection(this)).getParameters().values(), "_", "-");
     }
 
-	public String toShortenedString() {
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MCATPreprocessingParameters that = (MCATPreprocessingParameters) o;
+        return downsamplingFactor == that.downsamplingFactor &&
+                channelOfInterest == that.channelOfInterest &&
+                anatomicChannel == that.anatomicChannel &&
+                saveRawImage == that.saveRawImage &&
+                saveRoi == that.saveRoi &&
+                minTime == that.minTime &&
+                maxTime == that.maxTime;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(downsamplingFactor, channelOfInterest, anatomicChannel, saveRawImage, saveRoi, minTime, maxTime);
+    }
+
+    public String toShortenedString() {
 		String minT = minTime == MIN_TIME_DEFAULT? "" : "_minTime-" + minTime;
 		String maxT = maxTime == MAX_TIME_DEFAULT? "" : "_maxTime-" + maxTime;
 		
