@@ -308,10 +308,12 @@ public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
         if (saveRaw)
             getPreprocessingInput().getRawImage().flush();
         if (saveRoi && tissueROI.getFileName() != null) {
-            String name = tissueROI.getFileName().toString();
-            name += "_" + tissueROI.getData(ROIData.class).getName() + "_roiFile.roi";
-            tissueROI.setFileName(Paths.get(name));
+        	String pureName = tissueROI.getFileName().toString();
+            String completeName = tissueROI.getFileName().toString();
+            completeName += "_" + tissueROI.getData(ROIData.class).getName() + "_roiFile.roi";
+            tissueROI.setFileName(Paths.get(completeName));
             tissueROI.flush();
+            tissueROI.setFileName(Paths.get(pureName));
         }
 
         interest.close();

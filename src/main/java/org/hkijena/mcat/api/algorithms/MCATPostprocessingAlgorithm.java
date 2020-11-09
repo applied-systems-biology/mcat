@@ -123,16 +123,9 @@ public class MCATPostprocessingAlgorithm extends MCATAlgorithm {
                 index = i;
             }
         }
-        try {
-        	if (index != -1) {
-        		indices.add(index);
-        		getAUC(indices, MCATPostprocessingMethod.MaxDecrease);
-        	}else
-                throw new IllegalArgumentException("No cluster with max decrease found. Please select other post-processing type.");
-            
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-		} 
+        if (index != -1)
+        	indices.add(index);
+        getAUC(indices, MCATPostprocessingMethod.MaxDecrease);
     }
 
     private void postProcessMaxIncrease(List<MCATCentroidCluster<DoublePoint>> clusterCenters) {
@@ -148,16 +141,9 @@ public class MCATPostprocessingAlgorithm extends MCATAlgorithm {
                 index = i;
             }
         }
-        try {
-        	if (index != -1) {
+        if (index != -1)
         		indices.add(index);
-        		getAUC(indices, MCATPostprocessingMethod.MaxIncrease);
-        	}else
-                throw new IllegalArgumentException("No cluster with max increase found. Please select other post-processing type.");
-            
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-		} 
+        getAUC(indices, MCATPostprocessingMethod.MaxIncrease);
     }
 
     private void postProcessNetDecrease(List<MCATCentroidCluster<DoublePoint>> clusterCenters) {
@@ -168,15 +154,7 @@ public class MCATPostprocessingAlgorithm extends MCATAlgorithm {
                 indices.add(i);
             }
         }
-        try {
-        	if (indices.size() > 0) {
-        		getAUC(indices, MCATPostprocessingMethod.NetDecrease);
-        	}else
-                throw new IllegalArgumentException("No cluster with net decrease found. Please select other post-processing type.");
-            
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-		} 
+        getAUC(indices, MCATPostprocessingMethod.NetDecrease);
     }
 
     private void postProcessNetIncrease(List<MCATCentroidCluster<DoublePoint>> clusterCenters) {
@@ -189,46 +167,46 @@ public class MCATPostprocessingAlgorithm extends MCATAlgorithm {
                 indices.add(i);
             }
         }
-        try {
-        	if (indices.size() > 0) {
-        		getAUC(indices, MCATPostprocessingMethod.NetIncrease);
-        	}else
-                throw new IllegalArgumentException("No cluster with net increase found. Please select other post-processing type.");
-            
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-		} 
+        getAUC(indices, MCATPostprocessingMethod.NetIncrease);
     }
 
     private void getAUC(ArrayList<Integer> indices, MCATPostprocessingMethod postprocessingMethod) {
         System.out.println("\tGetting AUCS...");
+        
+        if(indices.size() == 0)
+        	System.err.println("\tNo cluster center with "+ postprocessingMethod + " found.");
 
         Set<String> keys = getClusteringOutput().getDataSetEntries().keySet();
 
         for (String key : keys) {
             MCATClusteringOutputDataSetEntry samp = getClusteringOutput().getDataSetEntries().get(key);
+            
+            double auc = Double.NaN;
+            double aucCum = Double.NaN;
+            
+            if(indices.size() != 0) {
+            	ClusterAbundanceData clusterAbundance = samp.getClusterAbundance().getData(ClusterAbundanceData.class);
 
-            ClusterAbundanceData clusterAbundance = samp.getClusterAbundance().getData(ClusterAbundanceData.class);
+                int sumAbundance = 0;
+                for (int i = 0; i < clusterAbundance.getAbundance().length; i++) {
+                    sumAbundance += clusterAbundance.getAbundance()[i];
+                }
 
-            int sumAbundance = 0;
-            for (int i = 0; i < clusterAbundance.getAbundance().length; i++) {
-                sumAbundance += clusterAbundance.getAbundance()[i];
+                double[] weightedAverage = new double[getClusteringOutput().getMinLength() - 1];
+                for (Integer index : indices) {
+                    int abun = clusterAbundance.getAbundance()[index];
+
+                    double[] weighted = clusterAbundance.getCentroids().get(index).multiply(abun);
+                    weightedAverage = addDoubleArrays(weightedAverage, weighted);
+                }
+
+                weightedAverage = divideDoubleArray(weightedAverage, sumAbundance);
+
+                double[] cumCurve = getCumulativeCurve(weightedAverage);
+
+                auc = getAucValue(weightedAverage);
+                aucCum = getAucValue(cumCurve);
             }
-
-            double[] weightedAverage = new double[getClusteringOutput().getMinLength() - 1];
-            for (Integer index : indices) {
-                int abun = clusterAbundance.getAbundance()[index];
-
-                double[] weighted = clusterAbundance.getCentroids().get(index).multiply(abun);
-                weightedAverage = addDoubleArrays(weightedAverage, weighted);
-            }
-
-            weightedAverage = divideDoubleArray(weightedAverage, sumAbundance);
-
-            double[] cumCurve = getCumulativeCurve(weightedAverage);
-
-            double auc = getAucValue(weightedAverage);
-            double aucCum = getAucValue(cumCurve);
 
             // Create the output object
             MCATDataInterfaceKey outputKey = new MCATDataInterfaceKey("auc");
