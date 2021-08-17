@@ -138,6 +138,7 @@ public class MCATSettingsDialog extends JDialog {
             @Override
             public <T> boolean set(T value) {
                 MCATSettings.getInstance().setCellposeEnvironment((PythonEnvironment) value);
+                MCATSettings.saveProperties();
                 return true;
             }
 
@@ -211,6 +212,7 @@ public class MCATSettingsDialog extends JDialog {
             @Override
             public <T> boolean set(T value) {
                 MCATSettings.getInstance().setCellposeEnvironment((PythonEnvironment) value);
+                MCATSettings.saveProperties();
                 return true;
             }
 
