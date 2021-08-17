@@ -380,7 +380,7 @@ public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
                 Double.POSITIVE_INFINITY,
                 0,
                 Double.POSITIVE_INFINITY);
-        analyzer.analyze(probabilities, maskProcessor);
+        analyzer.analyze(new ImagePlus("mask", maskProcessor), maskProcessor);
         return manager.getRoisAsArray()[0];
     }
 
