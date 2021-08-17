@@ -17,9 +17,17 @@ import de.embl.cmci.registration.MultiStackReg_;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
+import ij.Prefs;
 import ij.gui.Roi;
+import ij.measure.ResultsTable;
 import ij.plugin.Duplicator;
 import ij.plugin.ImageCalculator;
+import ij.plugin.filter.ParticleAnalyzer;
+import ij.plugin.frame.RoiManager;
+import ij.process.AutoThresholder;
+import ij.process.FloatProcessor;
+import ij.process.ImageConverter;
+import ij.process.ImageProcessor;
 import ij.process.ImageStatistics;
 import org.hkijena.mcat.api.MCATAlgorithm;
 import org.hkijena.mcat.api.MCATDataSlot;
@@ -31,6 +39,7 @@ import org.hkijena.mcat.api.parameters.MCATPreprocessingParameters;
 import org.hkijena.mcat.extension.datatypes.DerivativeMatrixData;
 import org.hkijena.mcat.extension.datatypes.HyperstackData;
 import org.hkijena.mcat.extension.datatypes.ROIData;
+import org.hkijena.mcat.utils.Cellpose;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -207,14 +216,6 @@ public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
         startFrame = getPreprocessingParameters().getMinTime();
         endFrame = getPreprocessingParameters().getMaxTime();
 
-        MCATDataSlot tissueROI = getPreprocessingInput().getTissueROI();
-        tissueROI.resetFromCurrentProvider();
-        roi = tissueROI.getData(ROIData.class).getRoi();
-
-        if (roi != null)
-            roiName = roi.getName();
-        tissueROI.setData(new ROIData(roi, roi.getName()));
-
         String sample = imp.getTitle();
 
         System.out.println("Start pre-processing for " + sample +
@@ -233,6 +234,25 @@ public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
             } catch (Exception e) {
                 System.err.println(e.getMessage());
             }
+        }
+
+        MCATDataSlot tissueROI = getPreprocessingInput().getTissueROI();
+
+        if(tissueROI != null && tissueROI.hasData()) {
+            System.out.println("Using user-provided ROI ...");
+            tissueROI.resetFromCurrentProvider();
+            roi = tissueROI.getData(ROIData.class).getRoi();
+
+            if (roi != null)
+                roiName = roi.getName();
+            tissueROI.setData(new ROIData(roi, roi.getName()));
+        }
+        else {
+            System.out.println("Segmenting tissue ...");
+            roi = segmentTissue(imp);
+            if (roi != null)
+                roiName = roi.getName();
+            tissueROI.setData(new ROIData(roi, roi.getName()));
         }
 
         ImagePlus[] channels = ij.plugin.ChannelSplitter.split(imp.duplicate());
@@ -286,7 +306,7 @@ public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
         interest = toTimeDerivativeImage(interest);
 
         /*
-         * save pre-processed image
+         * save pre-processed image & roi
          */
         saveImage(interest);
 
@@ -319,6 +339,48 @@ public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
         System.gc();
 
         System.out.println("Finished pre-processing for " + sample);
+    }
+
+    private Roi segmentTissue(ImagePlus imp) {
+        // The image is already time-cropped
+        ImagePlus firstSlice = new ImagePlus(imp.getTitle(), imp.getProcessor());
+
+        // Run cellpose
+        Cellpose cellpose = new Cellpose(getRun().getScratch("cellpose"));
+        cellpose.addInputImage(firstSlice);
+        cellpose.run();
+
+        // Get probabilities
+        ImagePlus probabilities = cellpose.getOutputProbabilities().get(0);
+        ImageConverter converter = new ImageConverter(probabilities);
+        converter.convertToGray8();
+
+        // TODO: Proper processing
+
+        // Thresholding (float -> 8 bit -> otsu)
+        AutoThresholder autoThresholder = new AutoThresholder();
+        int[] histogram = probabilities.getProcessor().getHistogram();
+        int threshold = autoThresholder.getThreshold(AutoThresholder.Method.Otsu, histogram);
+
+        ImageProcessor maskProcessor = probabilities.getProcessor().duplicate();
+        maskProcessor.threshold(threshold);
+
+        // Particle finder
+        // Otherwise we might get issues
+        Prefs.blackBackground = true;
+        RoiManager manager = new RoiManager(true);
+        ResultsTable table = new ResultsTable();
+        ParticleAnalyzer.setRoiManager(manager);
+        ParticleAnalyzer.setResultsTable(table);
+        ParticleAnalyzer analyzer = new ParticleAnalyzer(0,
+                0,
+                table,
+                0,
+                Double.POSITIVE_INFINITY,
+                0,
+                Double.POSITIVE_INFINITY);
+        analyzer.analyze(imp, maskProcessor);
+        return manager.getRoisAsArray()[0];
     }
 
     @Override

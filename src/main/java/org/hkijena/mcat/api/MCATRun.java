@@ -62,6 +62,7 @@ public class MCATRun implements MCATValidatable {
     private boolean isReady = false;
     private Path outputPath;
 
+
     public MCATRun(MCATProject project) {
         this.project = project;
         this.parametersTable = new MCATParametersTable(project.getParametersTable());
@@ -95,6 +96,14 @@ public class MCATRun implements MCATValidatable {
                             "If you want to pass data between algorithms, use a data interface.");
                 }
             });
+        }
+    }
+
+    public Path getScratch(String name) {
+        try {
+            return Files.createTempDirectory(getOutputPath().resolve("_scratch"), name);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
