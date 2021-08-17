@@ -20,7 +20,7 @@ public class PathUtils {
 
     }
 
-    public static Path createTempFile(String prefix, String suffix) {
+    public static Path generateTempFile(String prefix, String suffix) {
         try {
             return Files.createTempFile("MCAT" + prefix, suffix);
         } catch (IOException e) {

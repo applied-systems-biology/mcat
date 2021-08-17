@@ -25,7 +25,7 @@ public class PythonUtils {
 
     public static void runPython(String code, PythonEnvironment environment) {
         System.out.println(code);
-        Path codeFilePath = PathUtils.createTempFile("py", ".py");
+        Path codeFilePath = PathUtils.generateTempFile("py", ".py");
         try {
             Files.write(codeFilePath, code.getBytes(StandardCharsets.UTF_8));
         } catch (IOException e) {

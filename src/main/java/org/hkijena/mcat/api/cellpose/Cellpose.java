@@ -1,7 +1,11 @@
-package org.hkijena.mcat.utils;
+package org.hkijena.mcat.api.cellpose;
 
 import ij.IJ;
 import ij.ImagePlus;
+import org.hkijena.mcat.utils.PathUtils;
+import org.hkijena.mcat.utils.PythonEnvironment;
+import org.hkijena.mcat.utils.PythonUtils;
+import org.hkijena.mcat.utils.ResourceUtils;
 
 import java.io.IOException;
 import java.nio.file.Files;

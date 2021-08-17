@@ -14,7 +14,9 @@ package org.hkijena.mcat.ui;
 
 import org.hkijena.mcat.MCATCommand;
 import org.hkijena.mcat.api.MCATProject;
+import org.hkijena.mcat.api.MCATProjectDataSet;
 import org.hkijena.mcat.api.MCATResult;
+import org.hkijena.mcat.api.MCATSettings;
 import org.hkijena.mcat.ui.components.DocumentTabPane;
 import org.hkijena.mcat.ui.parameters.MCATParametersTableUI;
 import org.hkijena.mcat.ui.resultanalysis.MCATResultUI;
@@ -88,6 +90,10 @@ public class MCATWorkbenchUI extends JFrame {
 
         toolBar.add(Box.createHorizontalGlue());
 
+        JButton settingsButton = new JButton("Settings", UIUtils.getIconFromResources("cog.png"));
+        settingsButton.addActionListener(e -> openSettingsUI());
+        toolBar.add(settingsButton);
+
         // "Run" entry
         JButton runProject = new JButton("Run", UIUtils.getIconFromResources("run.png"));
         runProject.addActionListener(e -> openRunUI());
@@ -96,6 +102,11 @@ public class MCATWorkbenchUI extends JFrame {
         initializeToolbarHelpMenu(toolBar);
 
         add(toolBar, BorderLayout.NORTH);
+    }
+
+    private void openSettingsUI() {
+        MCATSettingsDialog dialog = new MCATSettingsDialog(getContext(), this);
+        dialog.setVisible(true);
     }
 
     private void openResult() {
@@ -137,7 +148,25 @@ public class MCATWorkbenchUI extends JFrame {
         }
     }
 
+    private boolean checkRunForCellpose() {
+        boolean cellPoseIsValid = MCATSettings.getInstance().getCellposeEnvironment().isValid();
+
+        for (MCATProjectDataSet dataSet : project.getDataSets().values()) {
+            if(dataSet.getRawDataInterface().getTissueROI() == null || !dataSet.getRawDataInterface().getTissueROI().hasData()) {
+                if(!cellPoseIsValid) {
+                    JOptionPane.showMessageDialog(this, "You have data sets without a user-defined ROI. MCAT will automatically segement the tissue ROIs, which requires Cellpose to be configured.\n" +
+                            "Please click the 'Settings' button and configure/install Cellpose.", "Cellpose not installed", JOptionPane.ERROR_MESSAGE);
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     private void openRunUI() {
+        if(!checkRunForCellpose()) {
+            return;
+        }
         MCATRunUI ui = new MCATRunUI(this);
         documentTabPane.addTab("Run", UIUtils.getIconFromResources("run.png"), ui,
                 DocumentTabPane.CloseMode.withAskOnCloseButton, false);

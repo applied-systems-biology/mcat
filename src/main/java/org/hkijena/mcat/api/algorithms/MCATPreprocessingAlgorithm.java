@@ -25,13 +25,13 @@ import ij.plugin.ImageCalculator;
 import ij.plugin.filter.ParticleAnalyzer;
 import ij.plugin.frame.RoiManager;
 import ij.process.AutoThresholder;
-import ij.process.FloatProcessor;
 import ij.process.ImageConverter;
 import ij.process.ImageProcessor;
 import ij.process.ImageStatistics;
 import org.hkijena.mcat.api.MCATAlgorithm;
 import org.hkijena.mcat.api.MCATDataSlot;
 import org.hkijena.mcat.api.MCATRun;
+import org.hkijena.mcat.api.MCATSettings;
 import org.hkijena.mcat.api.MCATValidityReport;
 import org.hkijena.mcat.api.datainterfaces.MCATPreprocessingInput;
 import org.hkijena.mcat.api.datainterfaces.MCATPreprocessingOutput;
@@ -39,7 +39,7 @@ import org.hkijena.mcat.api.parameters.MCATPreprocessingParameters;
 import org.hkijena.mcat.extension.datatypes.DerivativeMatrixData;
 import org.hkijena.mcat.extension.datatypes.HyperstackData;
 import org.hkijena.mcat.extension.datatypes.ROIData;
-import org.hkijena.mcat.utils.Cellpose;
+import org.hkijena.mcat.api.cellpose.Cellpose;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -236,25 +236,6 @@ public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
             }
         }
 
-        MCATDataSlot tissueROI = getPreprocessingInput().getTissueROI();
-
-        if(tissueROI != null && tissueROI.hasData()) {
-            System.out.println("Using user-provided ROI ...");
-            tissueROI.resetFromCurrentProvider();
-            roi = tissueROI.getData(ROIData.class).getRoi();
-
-            if (roi != null)
-                roiName = roi.getName();
-            tissueROI.setData(new ROIData(roi, roi.getName()));
-        }
-        else {
-            System.out.println("Segmenting tissue ...");
-            roi = segmentTissue(imp);
-            if (roi != null)
-                roiName = roi.getName();
-            tissueROI.setData(new ROIData(roi, roi.getName()));
-        }
-
         ImagePlus[] channels = ij.plugin.ChannelSplitter.split(imp.duplicate());
 
         /*
@@ -283,6 +264,27 @@ public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
         } else {
             System.out.println("WARNING: no anatomy channel provided. Images will not be registered.");
         }
+
+        ////////////////////// TODO: I DON'T KNOW WHERE TO PUT THIS
+        MCATDataSlot tissueROI = getPreprocessingInput().getTissueROI();
+
+        if(tissueROI != null && tissueROI.hasData()) {
+            System.out.println("Using user-provided ROI ...");
+            tissueROI.resetFromCurrentProvider();
+            roi = tissueROI.getData(ROIData.class).getRoi();
+
+            if (roi != null)
+                roiName = roi.getName();
+            tissueROI.setData(new ROIData(roi, roi.getName()));
+        }
+        else {
+            System.out.println("Segmenting tissue ...");
+            roi = segmentTissue(imp);
+            if (roi != null)
+                roiName = roi.getName();
+            tissueROI.setData(new ROIData(roi, roi.getName()));
+        }
+        //////////////////////
 
         /*
          * perform z-transformation on pixel values of channel of interest
@@ -347,6 +349,7 @@ public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
 
         // Run cellpose
         Cellpose cellpose = new Cellpose(getRun().getScratch("cellpose"));
+        cellpose.setPythonEnvironment(MCATSettings.getInstance().getCellposeEnvironment());
         cellpose.addInputImage(firstSlice);
         cellpose.run();
 

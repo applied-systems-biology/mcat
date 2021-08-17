@@ -7,6 +7,10 @@
       <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/resources" type="java-resource" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
+      <excludeFolder url="file://$MODULE_DIR$/mcat/cellpose-cpu" />
+      <excludeFolder url="file://$MODULE_DIR$/mcat/cellpose-cpu/pkgs/conda-4.10.3-py37h06a4308_0/info/test/tests/integration/proxy/squid_log" />
+      <excludeFolder url="file://$MODULE_DIR$/mcat/cellpose-cpu/pkgs/conda-4.10.3-py39h06a4308_0/info/test/tests/integration/proxy/squid_log" />
+      <excludeFolder url="file://$MODULE_DIR$/mcat/target" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

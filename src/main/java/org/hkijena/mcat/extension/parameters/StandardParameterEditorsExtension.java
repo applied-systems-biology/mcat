@@ -21,6 +21,7 @@ import org.hkijena.mcat.extension.parameters.editors.EnumParameterEditorUI;
 import org.hkijena.mcat.extension.parameters.editors.FileParameterEditorUI;
 import org.hkijena.mcat.extension.parameters.editors.FilePathParameterEditorUI;
 import org.hkijena.mcat.extension.parameters.editors.NumberParameterEditorUI;
+import org.hkijena.mcat.extension.parameters.editors.OptionalParameterEditorUI;
 import org.hkijena.mcat.extension.parameters.editors.StringParameterEditorUI;
 import org.hkijena.mcat.extension.parameters.generators.ByteParameterGenerator;
 import org.hkijena.mcat.extension.parameters.generators.DoubleParameterGenerator;
@@ -28,8 +29,11 @@ import org.hkijena.mcat.extension.parameters.generators.FloatParameterGenerator;
 import org.hkijena.mcat.extension.parameters.generators.IntegerParameterGenerator;
 import org.hkijena.mcat.extension.parameters.generators.LongParameterGenerator;
 import org.hkijena.mcat.extension.parameters.generators.ShortParameterGenerator;
+import org.hkijena.mcat.extension.parameters.optional.OptionalPathParameter;
+import org.hkijena.mcat.extension.parameters.optional.OptionalStringParameter;
 import org.hkijena.mcat.ui.parameters.MCATParameterEditorUI;
 import org.hkijena.mcat.ui.parameters.MCATParameterGeneratorUI;
+import org.hkijena.mcat.utils.PythonEnvironmentType;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -94,5 +98,12 @@ public class StandardParameterEditorsExtension {
         registerParameterGenerator(Long.class, LongParameterGenerator.class, "Generate 64-bit integral number sequence", "Generates 64-bit integer numbers");
         registerParameterGenerator(Float.class, FloatParameterGenerator.class, "Generate single precision floating point number sequence", "Generates 32-bit floating point numbers");
         registerParameterGenerator(Double.class, DoubleParameterGenerator.class, "Generate double precision floating point number sequence", "Generates 64-bit floating point numbers");
+
+        // Python
+        registerParameterType(PythonEnvironmentType.class, EnumParameterEditorUI.class, "Python environment type", "Python environment type");
+
+        // Optionals
+        registerParameterType(OptionalPathParameter.class, OptionalParameterEditorUI.class, "Optional path", "An optional path");
+        registerParameterType(OptionalStringParameter.class, OptionalParameterEditorUI.class, "Optional string", "An optional string");
     }
 }

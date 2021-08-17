@@ -30,12 +30,15 @@ import org.scijava.Contextual;
 
 import javax.swing.*;
 import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 /**
@@ -243,5 +246,47 @@ public class ParameterPanel extends FormPanel implements Contextual {
 
     private static List<String> getParameterKeysSortedByParameterName(Map<String, MCATParameterAccess> parameters, Collection<String> keys) {
         return keys.stream().sorted(Comparator.comparing(k0 -> parameters.get(k0).getName())).collect(Collectors.toList());
+    }
+
+    public static boolean showDialog(Component parent, Context context, MCATParameterCollection parameterCollection, MarkdownDocument defaultDocumentation, String title, int flags) {
+        JDialog dialog = new JDialog(SwingUtilities.getWindowAncestor(parent));
+        ParameterPanel parameterPanel = new ParameterPanel(context, parameterCollection, defaultDocumentation, flags);
+
+        JPanel panel = new JPanel(new BorderLayout(8, 8));
+        panel.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
+        panel.add(parameterPanel, BorderLayout.CENTER);
+
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
+        buttonPanel.add(Box.createHorizontalGlue());
+
+        AtomicBoolean clickedOK = new AtomicBoolean(false);
+
+        JButton cancelButton = new JButton("Cancel", UIUtils.getIconFromResources("remove.png"));
+        cancelButton.addActionListener(e -> {
+            clickedOK.set(false);
+            dialog.setVisible(false);
+        });
+        buttonPanel.add(cancelButton);
+
+        JButton confirmButton = new JButton("OK", UIUtils.getIconFromResources("checkmark.png"));
+        confirmButton.addActionListener(e -> {
+            clickedOK.set(true);
+            dialog.setVisible(false);
+        });
+        buttonPanel.add(confirmButton);
+
+        panel.add(buttonPanel, BorderLayout.SOUTH);
+
+        dialog.setContentPane(panel);
+        dialog.setTitle(title);
+        dialog.setModal(true);
+        dialog.pack();
+        dialog.setSize(new Dimension(800, 600));
+        dialog.setLocationRelativeTo(panel);
+        UIUtils.addEscapeListener(dialog);
+        dialog.setVisible(true);
+
+        return clickedOK.get();
     }
 }
