@@ -1,17 +1,23 @@
 /*******************************************************************************
  * Copyright by Dr. Bianca Hoffmann, Ruman Gerst, Dr. Zoltán Cseresnyés and Prof. Dr. Marc Thilo Figge
- * 
+ *
  * Research Group Applied Systems Biology - Head: Prof. Dr. Marc Thilo Figge
  * https://www.leibniz-hki.de/en/applied-systems-biology.html
  * HKI-Center for Systems Biology of Infection
  * Leibniz Institute for Natural Product Research and Infection Biology - Hans Knöll Insitute (HKI)
  * Adolf-Reichwein-Straße 23, 07745 Jena, Germany
- * 
+ *
  * The project code is licensed under BSD 2-Clause.
  * See the LICENSE file provided with the code for the full license.
  ******************************************************************************/
 package org.hkijena.mcat.ui.parameters;
 
+import org.hkijena.mcat.api.MCATValidatable;
+import org.hkijena.mcat.api.MCATValidityReport;
+import org.hkijena.mcat.utils.UIUtils;
+import org.scijava.Context;
+
+import javax.swing.*;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -19,19 +25,6 @@ import java.awt.Window;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.function.Supplier;
-
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
-
-import org.hkijena.mcat.api.MCATValidatable;
-import org.hkijena.mcat.api.MCATValidityReport;
-import org.hkijena.mcat.utils.UIUtils;
-import org.scijava.Context;
 
 /**
  * UI that generates a set of parameter values

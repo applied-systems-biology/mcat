@@ -1,17 +1,23 @@
 /*******************************************************************************
  * Copyright by Dr. Bianca Hoffmann, Ruman Gerst, Dr. Zoltán Cseresnyés and Prof. Dr. Marc Thilo Figge
- * 
+ *
  * Research Group Applied Systems Biology - Head: Prof. Dr. Marc Thilo Figge
  * https://www.leibniz-hki.de/en/applied-systems-biology.html
  * HKI-Center for Systems Biology of Infection
  * Leibniz Institute for Natural Product Research and Infection Biology - Hans Knöll Insitute (HKI)
  * Adolf-Reichwein-Straße 23, 07745 Jena, Germany
- * 
+ *
  * The project code is licensed under BSD 2-Clause.
  * See the LICENSE file provided with the code for the full license.
  ******************************************************************************/
 package org.hkijena.mcat.utils;
 
+import org.hkijena.mcat.ui.components.ColorIcon;
+
+import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
@@ -26,25 +32,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.function.Predicate;
-
-import javax.swing.AbstractButton;
-import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JTextArea;
-import javax.swing.JTree;
-import javax.swing.KeyStroke;
-import javax.swing.WindowConstants;
-import javax.swing.border.Border;
-import javax.swing.border.CompoundBorder;
-import javax.swing.border.EmptyBorder;
-
-import org.hkijena.mcat.ui.components.ColorIcon;
 
 public class UIUtils {
 

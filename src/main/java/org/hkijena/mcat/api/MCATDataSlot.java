@@ -1,23 +1,16 @@
 /*******************************************************************************
  * Copyright by Dr. Bianca Hoffmann, Ruman Gerst, Dr. Zoltán Cseresnyés and Prof. Dr. Marc Thilo Figge
- * 
+ *
  * Research Group Applied Systems Biology - Head: Prof. Dr. Marc Thilo Figge
  * https://www.leibniz-hki.de/en/applied-systems-biology.html
  * HKI-Center for Systems Biology of Infection
  * Leibniz Institute for Natural Product Research and Infection Biology - Hans Knöll Insitute (HKI)
  * Adolf-Reichwein-Straße 23, 07745 Jena, Germany
- * 
+ *
  * The project code is licensed under BSD 2-Clause.
  * See the LICENSE file provided with the code for the full license.
  ******************************************************************************/
 package org.hkijena.mcat.api;
-
-import java.io.IOException;
-import java.nio.file.Path;
-
-import org.hkijena.mcat.api.registries.MCATDataTypeRegistry;
-import org.hkijena.mcat.utils.JsonUtils;
-import org.hkijena.mcat.utils.StringUtils;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -25,6 +18,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.hkijena.mcat.api.registries.MCATDataTypeRegistry;
+import org.hkijena.mcat.utils.JsonUtils;
+import org.hkijena.mcat.utils.StringUtils;
+
+import java.io.IOException;
+import java.nio.file.Path;
 
 /**
  * A slot holds data and also have the capability to load data from an MCATDataProvider if data is requested, but not set
@@ -129,7 +128,7 @@ public class MCATDataSlot {
      * Stores the data to the storageFilePath
      */
     public void flush() {
-        if(storageFilePath == null || fileName == null) {
+        if (storageFilePath == null || fileName == null) {
             System.err.println("Skipping to flush() data slot " + name + " containing " + acceptedDataType + ": No storage location or file name defined!");
             return;
         }
@@ -152,8 +151,7 @@ public class MCATDataSlot {
             try {
                 Object provider = JsonUtils.getObjectMapper().readerFor(providerClass).readValue(jsonNode.get("current-provider"));
                 setCurrentProvider((MCATDataProvider) provider);
-            }
-            catch (Exception e2) {
+            } catch (Exception e2) {
                 e2.printStackTrace();
                 try {
                     setCurrentProvider(providerClass.newInstance());
@@ -174,7 +172,7 @@ public class MCATDataSlot {
 
     public static class Serializer extends JsonSerializer<MCATDataSlot> {
         @Override
-        public void serialize(MCATDataSlot value, JsonGenerator gen, SerializerProvider serializers) throws IOException, JsonProcessingException {
+        public void serialize(MCATDataSlot value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
             gen.writeStartObject();
             if (value.getCurrentProvider() != null) {
                 String providerId = MCATDataTypeRegistry.getInstance().getProviderId(value.getCurrentProvider().getClass());

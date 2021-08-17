@@ -1,33 +1,18 @@
 /*******************************************************************************
  * Copyright by Dr. Bianca Hoffmann, Ruman Gerst, Dr. Zoltán Cseresnyés and Prof. Dr. Marc Thilo Figge
- * 
+ *
  * Research Group Applied Systems Biology - Head: Prof. Dr. Marc Thilo Figge
  * https://www.leibniz-hki.de/en/applied-systems-biology.html
  * HKI-Center for Systems Biology of Infection
  * Leibniz Institute for Natural Product Research and Infection Biology - Hans Knöll Insitute (HKI)
  * Adolf-Reichwein-Straße 23, 07745 Jena, Germany
- * 
+ *
  * The project code is licensed under BSD 2-Clause.
  * See the LICENSE file provided with the code for the full license.
  ******************************************************************************/
 package org.hkijena.mcat.ui.parameters;
 
-import java.awt.BorderLayout;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-
+import com.google.common.eventbus.Subscribe;
 import org.hkijena.mcat.api.MCATDocumentation;
 import org.hkijena.mcat.api.events.ParameterStructureChangedEvent;
 import org.hkijena.mcat.api.parameters.MCATDynamicParameterCollection;
@@ -43,7 +28,15 @@ import org.hkijena.mcat.utils.UIUtils;
 import org.scijava.Context;
 import org.scijava.Contextual;
 
-import com.google.common.eventbus.Subscribe;
+import javax.swing.*;
+import java.awt.BorderLayout;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * UI around a {@link MCATParameterCollection}
@@ -94,8 +87,8 @@ public class ParameterPanel extends FormPanel implements Contextual {
         }
 
         for (MCATParameterCollection collection : groupedBySource.keySet().stream().sorted(
-                Comparator.comparing(parameterCollection::getSourceUIOrder).thenComparing(
-                        Comparator.nullsFirst(Comparator.comparing(parameterCollection::getSourceDocumentationName))))
+                        Comparator.comparing(parameterCollection::getSourceUIOrder).thenComparing(
+                                Comparator.nullsFirst(Comparator.comparing(parameterCollection::getSourceDocumentationName))))
                 .collect(Collectors.toList())) {
             if (collection == this.parameterCollection)
                 continue;

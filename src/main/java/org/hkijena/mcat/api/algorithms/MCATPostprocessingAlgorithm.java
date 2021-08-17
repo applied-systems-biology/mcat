@@ -1,20 +1,16 @@
 /*******************************************************************************
  * Copyright by Dr. Bianca Hoffmann, Ruman Gerst, Dr. Zoltán Cseresnyés and Prof. Dr. Marc Thilo Figge
- * 
+ *
  * Research Group Applied Systems Biology - Head: Prof. Dr. Marc Thilo Figge
  * https://www.leibniz-hki.de/en/applied-systems-biology.html
  * HKI-Center for Systems Biology of Infection
  * Leibniz Institute for Natural Product Research and Infection Biology - Hans Knöll Insitute (HKI)
  * Adolf-Reichwein-Straße 23, 07745 Jena, Germany
- * 
+ *
  * The project code is licensed under BSD 2-Clause.
  * See the LICENSE file provided with the code for the full license.
  ******************************************************************************/
 package org.hkijena.mcat.api.algorithms;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 
 import org.apache.commons.math3.ml.clustering.DoublePoint;
 import org.hkijena.mcat.api.MCATAlgorithm;
@@ -33,6 +29,10 @@ import org.hkijena.mcat.api.parameters.MCATPreprocessingParameters;
 import org.hkijena.mcat.extension.datatypes.AUCData;
 import org.hkijena.mcat.extension.datatypes.ClusterAbundanceData;
 import org.hkijena.mcat.extension.datatypes.ClusterCentersData;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 public class MCATPostprocessingAlgorithm extends MCATAlgorithm {
 
@@ -110,7 +110,7 @@ public class MCATPostprocessingAlgorithm extends MCATAlgorithm {
     }
 
     private void postProcessMaxDecrease(List<MCATCentroidCluster<DoublePoint>> clusterCenters) {
-    	System.out.println("\tLooking for curve with max decrease...");
+        System.out.println("\tLooking for curve with max decrease...");
         ArrayList<Integer> indices = new ArrayList<Integer>();
 
         double min = Double.MAX_VALUE;
@@ -123,12 +123,12 @@ public class MCATPostprocessingAlgorithm extends MCATAlgorithm {
             }
         }
         if (index != -1)
-        	indices.add(index);
+            indices.add(index);
         getAUC(indices, MCATPostprocessingMethod.MaxDecrease);
     }
 
     private void postProcessMaxIncrease(List<MCATCentroidCluster<DoublePoint>> clusterCenters) {
-    	System.out.println("\tLooking for curve with max increase...");
+        System.out.println("\tLooking for curve with max increase...");
         ArrayList<Integer> indices = new ArrayList<Integer>();
 
         double max = 0;
@@ -141,12 +141,12 @@ public class MCATPostprocessingAlgorithm extends MCATAlgorithm {
             }
         }
         if (index != -1)
-        		indices.add(index);
+            indices.add(index);
         getAUC(indices, MCATPostprocessingMethod.MaxIncrease);
     }
 
     private void postProcessNetDecrease(List<MCATCentroidCluster<DoublePoint>> clusterCenters) {
-    	System.out.println("\tLooking for curves with net decrease...");
+        System.out.println("\tLooking for curves with net decrease...");
         ArrayList<Integer> indices = new ArrayList<Integer>();
         for (int i = 0; i < clusterCenters.size(); i++) {
             if (clusterCenters.get(i).getCumSum() < -epsilon) {
@@ -171,20 +171,20 @@ public class MCATPostprocessingAlgorithm extends MCATAlgorithm {
 
     private void getAUC(ArrayList<Integer> indices, MCATPostprocessingMethod postprocessingMethod) {
         System.out.println("\tGetting AUCS...");
-        
-        if(indices.size() == 0)
-        	System.err.println("\tNo cluster center with "+ postprocessingMethod + " found.");
+
+        if (indices.size() == 0)
+            System.err.println("\tNo cluster center with " + postprocessingMethod + " found.");
 
         Set<String> keys = getClusteringOutput().getDataSetEntries().keySet();
 
         for (String key : keys) {
             MCATClusteringOutputDataSetEntry samp = getClusteringOutput().getDataSetEntries().get(key);
-            
+
             double auc = Double.NaN;
             double aucCum = Double.NaN;
-            
-            if(indices.size() != 0) {
-            	ClusterAbundanceData clusterAbundance = samp.getClusterAbundance().getData(ClusterAbundanceData.class);
+
+            if (indices.size() != 0) {
+                ClusterAbundanceData clusterAbundance = samp.getClusterAbundance().getData(ClusterAbundanceData.class);
 
                 int sumAbundance = 0;
                 for (int i = 0; i < clusterAbundance.getAbundance().length; i++) {
@@ -221,7 +221,7 @@ public class MCATPostprocessingAlgorithm extends MCATAlgorithm {
 
     @Override
     public void run() {
-    	System.out.println("Starting " + getName());
+        System.out.println("Starting " + getName());
 
         clusterCenters = getClusteringOutput().getClusterCenters()
                 .getData(ClusterCentersData.class).getCentroids();
@@ -230,7 +230,7 @@ public class MCATPostprocessingAlgorithm extends MCATAlgorithm {
 
         getPostprocessingOutput().getAuc().setData(aucData);
         getPostprocessingOutput().getAuc().flush();
-        
+
     }
 
     @Override

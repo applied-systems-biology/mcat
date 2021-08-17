@@ -1,23 +1,26 @@
 /*******************************************************************************
  * Copyright by Dr. Bianca Hoffmann, Ruman Gerst, Dr. Zoltán Cseresnyés and Prof. Dr. Marc Thilo Figge
- * 
+ *
  * Research Group Applied Systems Biology - Head: Prof. Dr. Marc Thilo Figge
  * https://www.leibniz-hki.de/en/applied-systems-biology.html
  * HKI-Center for Systems Biology of Infection
  * Leibniz Institute for Natural Product Research and Infection Biology - Hans Knöll Insitute (HKI)
  * Adolf-Reichwein-Straße 23, 07745 Jena, Germany
- * 
+ *
  * The project code is licensed under BSD 2-Clause.
  * See the LICENSE file provided with the code for the full license.
  ******************************************************************************/
 package org.hkijena.mcat.api.algorithms;
 
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
+import de.embl.cmci.registration.MultiStackReg_;
+import ij.IJ;
+import ij.ImagePlus;
+import ij.ImageStack;
+import ij.gui.Roi;
+import ij.plugin.Duplicator;
+import ij.plugin.ImageCalculator;
+import ij.process.ImageStatistics;
 import org.hkijena.mcat.api.MCATAlgorithm;
 import org.hkijena.mcat.api.MCATDataSlot;
 import org.hkijena.mcat.api.MCATRun;
@@ -29,14 +32,10 @@ import org.hkijena.mcat.extension.datatypes.DerivativeMatrixData;
 import org.hkijena.mcat.extension.datatypes.HyperstackData;
 import org.hkijena.mcat.extension.datatypes.ROIData;
 
-import de.embl.cmci.registration.MultiStackReg_;
-import ij.IJ;
-import ij.ImagePlus;
-import ij.ImageStack;
-import ij.gui.Roi;
-import ij.plugin.Duplicator;
-import ij.plugin.ImageCalculator;
-import ij.process.ImageStatistics;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
 
@@ -62,15 +61,15 @@ public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
     }
 
     private ImagePlus cropTimeFrames(ImagePlus imp) {
-    	System.out.println("\tCropping stack to time range " + startFrame + " - " + endFrame + "...");
-    	if(startFrame < 1 | startFrame >= imp.getNFrames() | startFrame > endFrame | endFrame < 1 | endFrame >= imp.getNFrames() | endFrame < startFrame)
-        	throw new IllegalArgumentException("Illegal value for Start time frame and/or End time frame! Will not exclude time frames from stack.");
+        System.out.println("\tCropping stack to time range " + startFrame + " - " + endFrame + "...");
+        if (startFrame < 1 | startFrame >= imp.getNFrames() | startFrame > endFrame | endFrame < 1 | endFrame >= imp.getNFrames() | endFrame < startFrame)
+            throw new IllegalArgumentException("Illegal value for Start time frame and/or End time frame! Will not exclude time frames from stack.");
 
-    	ImagePlus imp2 = new Duplicator().run(imp, 1, imp.getNChannels(), 1, 1, startFrame, endFrame);
-  
-    	return imp2;
+        ImagePlus imp2 = new Duplicator().run(imp, 1, imp.getNChannels(), 1, 1, startFrame, endFrame);
+
+        return imp2;
     }
-    
+
     private ImagePlus registerImages(String transformFile, ImagePlus... imps) {
         System.out.println("\tRegistering channels...");
         MultiStackReg_ msr = new MultiStackReg_();
@@ -138,7 +137,7 @@ public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
             int newFrames = imp.getNFrames() / downFactor;
             imp = new ij.plugin.Resizer().zScale(imp, newFrames, 1);
         }
-        
+
         int slices = imp.getNSlices();
         getPreprocessingOutput().setNSlices(slices);
 
@@ -197,10 +196,10 @@ public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
 
     @Override
     public void run() {
-    	
+
         getPreprocessingInput().getRawImage().resetFromCurrentProvider();
         ImagePlus imp = getPreprocessingInput().getRawImage().getData(HyperstackData.class).getImage();
-        
+
         saveRaw = getPreprocessingParameters().isSaveRawImage();
         saveRoi = getPreprocessingParameters().isSaveRoi();
         channelAnatomy = getPreprocessingParameters().getAnatomicChannel();
@@ -210,13 +209,12 @@ public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
 
         MCATDataSlot tissueROI = getPreprocessingInput().getTissueROI();
         tissueROI.resetFromCurrentProvider();
-        
         roi = tissueROI.getData(ROIData.class).getRoi();
-        
-        if(roi != null)
-        	roiName = roi.getName();
+
+        if (roi != null)
+            roiName = roi.getName();
         tissueROI.setData(new ROIData(roi, roi.getName()));
-        
+
         String sample = imp.getTitle();
 
         System.out.println("Start pre-processing for " + sample +
@@ -225,33 +223,31 @@ public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
                 "; frames = " + imp.getNFrames() +
                 "; channels = " + imp.getNChannels() +
                 "; roi name = " + roiName);
-        
+
         /*
          * remove slices before Start time frame and after End time frame if necessary
          */
-        if(startFrame != getPreprocessingParameters().MIN_TIME_DEFAULT | endFrame != getPreprocessingParameters().MAX_TIME_DEFAULT) {
-        	try {
-        		imp = cropTimeFrames(imp);
-    		} catch (Exception e) {
-    			System.err.println(e.getMessage());
-    		}
+        if (startFrame != MCATPreprocessingParameters.MIN_TIME_DEFAULT | endFrame != MCATPreprocessingParameters.MAX_TIME_DEFAULT) {
+            try {
+                imp = cropTimeFrames(imp);
+            } catch (Exception e) {
+                System.err.println(e.getMessage());
+            }
         }
-        
+
         ImagePlus[] channels = ij.plugin.ChannelSplitter.split(imp.duplicate());
 
         /*
          * check if anatomy channel should be used for registration and if channel of interest is specified
          * perform image registration accordingly
          */
-        boolean anatomyProvided = false;
-        if (channelAnatomy > 0 && channelAnatomy < channels.length + 1)
-            anatomyProvided = true;
+        boolean anatomyProvided = channelAnatomy > 0 && channelAnatomy < channels.length + 1;
 
         if (!(channelOfInterest > 0 && channelOfInterest < channels.length + 1))
             throw new IllegalArgumentException("Channel of interest has to be specified for image processing!");
 
         ImagePlus interest = channels[channelOfInterest - 1];
-        
+
         Path tempFile;
         try {
             tempFile = Files.createTempFile("mcat", "transform");
@@ -260,13 +256,13 @@ public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
         }
         String transforms = tempFile.toString();
 
-    	if(anatomyProvided) {
-    		ImagePlus anatomy = channels[channelAnatomy - 1];
-    		interest = registerImages(transforms, anatomy, interest);
-    		anatomy.close();
-    	}else{
-    		System.out.println("WARNING: no anatomy channel provided. Images will not be registered.");
-    	}
+        if (anatomyProvided) {
+            ImagePlus anatomy = channels[channelAnatomy - 1];
+            interest = registerImages(transforms, anatomy, interest);
+            anatomy.close();
+        } else {
+            System.out.println("WARNING: no anatomy channel provided. Images will not be registered.");
+        }
 
         /*
          * perform z-transformation on pixel values of channel of interest
@@ -288,7 +284,7 @@ public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
          * convert to time derivative
          */
         interest = toTimeDerivativeImage(interest);
-        
+
         /*
          * save pre-processed image
          */
@@ -307,7 +303,7 @@ public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
         if (saveRaw)
             getPreprocessingInput().getRawImage().flush();
         if (saveRoi && tissueROI.getFileName() != null) {
-        	String pureName = tissueROI.getFileName().toString();
+            String pureName = tissueROI.getFileName().toString();
             String completeName = tissueROI.getFileName().toString();
             completeName += "_" + tissueROI.getData(ROIData.class).getName() + "_roiFile.roi";
             tissueROI.setFileName(Paths.get(completeName));

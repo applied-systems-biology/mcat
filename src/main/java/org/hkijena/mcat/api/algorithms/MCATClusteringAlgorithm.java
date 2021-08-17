@@ -1,28 +1,21 @@
 /*******************************************************************************
  * Copyright by Dr. Bianca Hoffmann, Ruman Gerst, Dr. Zoltán Cseresnyés and Prof. Dr. Marc Thilo Figge
- * 
+ *
  * Research Group Applied Systems Biology - Head: Prof. Dr. Marc Thilo Figge
  * https://www.leibniz-hki.de/en/applied-systems-biology.html
  * HKI-Center for Systems Biology of Infection
  * Leibniz Institute for Natural Product Research and Infection Biology - Hans Knöll Insitute (HKI)
  * Adolf-Reichwein-Straße 23, 07745 Jena, Germany
- * 
+ *
  * The project code is licensed under BSD 2-Clause.
  * See the LICENSE file provided with the code for the full license.
  ******************************************************************************/
 package org.hkijena.mcat.api.algorithms;
 
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.IntStream;
-
+import ij.IJ;
+import ij.ImagePlus;
+import ij.ImageStack;
+import ij.plugin.SubstackMaker;
 import org.apache.commons.math3.ml.clustering.CentroidCluster;
 import org.apache.commons.math3.ml.clustering.DoublePoint;
 import org.apache.commons.math3.ml.clustering.KMeansPlusPlusClusterer;
@@ -42,10 +35,14 @@ import org.hkijena.mcat.extension.datatypes.ClusterAbundanceData;
 import org.hkijena.mcat.extension.datatypes.ClusterCentersData;
 import org.hkijena.mcat.extension.datatypes.HyperstackData;
 
-import ij.IJ;
-import ij.ImagePlus;
-import ij.ImageStack;
-import ij.plugin.SubstackMaker;
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.IntStream;
 
 public class MCATClusteringAlgorithm extends MCATAlgorithm {
 
@@ -104,10 +101,10 @@ public class MCATClusteringAlgorithm extends MCATAlgorithm {
         System.out.println("\tLoading images...");
         List<String> keys = new ArrayList<>(clusteringInput.getDataSetEntries().keySet());
 //        Collections.sort(keys);
-        
+
         String[] names = new String[keys.size()];
         ImagePlus[] imps = new ImagePlus[keys.size()];
-        
+
         for (int i = 0; i < keys.size(); i++) {
             MCATClusteringInputDataSetEntry samp = clusteringInput.getDataSetEntries().get(keys.get(i));
             System.out.println("\t\tSubject: " + samp.getDataSetName());
@@ -118,7 +115,7 @@ public class MCATClusteringAlgorithm extends MCATAlgorithm {
 
             int width = imp.getWidth();
             int height = imp.getHeight();
-            
+
             float[] tmp;
 
             for (int x = 0; x < width; x++) {
@@ -129,12 +126,12 @@ public class MCATClusteringAlgorithm extends MCATAlgorithm {
                         pixels[j] = tmp[j];
                     }
 
-                    if(x == 150 && y == 150) {
-                    	String print = "";
-                    	for (int j = 0; j < tmp.length; j++) {
-                    		print = print + tmp[j] + "; ";
-                    	}
-                    } 
+                    if (x == 150 && y == 150) {
+                        String print = "";
+                        for (int j = 0; j < tmp.length; j++) {
+                            print = print + tmp[j] + "; ";
+                        }
+                    }
 
                     points.add(new DoublePoint(pixels));
                 }
@@ -151,26 +148,26 @@ public class MCATClusteringAlgorithm extends MCATAlgorithm {
     private void runKMeans() {
 
         System.out.println("\tPerforming k-means clustering with k = " + k + "...");
-        
-        
+
+
         int iterations = 100;
         int minSSE = Integer.MAX_VALUE;
         List<MCATCentroidCluster<DoublePoint>> finalCentroids = new ArrayList<>();
-        
+
         List<Integer> currentColors = new ArrayList<Integer>();
         for (int i = 0; i < k; i++) {
-        	int colIndex = Math.round(colors.length / k) * i;
-        	currentColors.add(hexToRGB(colors[colIndex]));
-		}
+            int colIndex = Math.round(colors.length / k) * i;
+            currentColors.add(hexToRGB(colors[colIndex]));
+        }
         getClusteringOutput().setColors(currentColors);
-        
+
         for (int j = 0; j < iterations; j++) {
-        	
-        	int sse = 0;
-        	KMeansPlusPlusClusterer<DoublePoint> kmpp = new KMeansPlusPlusClusterer<DoublePoint>(k, 50, new EuclideanDistance());
+
+            int sse = 0;
+            KMeansPlusPlusClusterer<DoublePoint> kmpp = new KMeansPlusPlusClusterer<DoublePoint>(k, 50, new EuclideanDistance());
 
             List<CentroidCluster<DoublePoint>> tmpCentroidCluster = kmpp.cluster(points);
-            
+
             List<MCATCentroidCluster<DoublePoint>> centroids = new ArrayList<MCATCentroidCluster<DoublePoint>>();
             for (CentroidCluster<DoublePoint> centroidCluster : tmpCentroidCluster) {
                 centroids.add(new MCATCentroidCluster<>(centroidCluster.getCenter()));
@@ -179,13 +176,13 @@ public class MCATClusteringAlgorithm extends MCATAlgorithm {
             Set<String> keys = getClusteringInput().getDataSetEntries().keySet();
             for (String key : keys) {
                 MCATClusteringInputDataSetEntry inputEntry = getClusteringInput().getDataSetEntries().get(key);
-                
+
                 ImagePlus imp = inputEntry.getPreprocessedDataInterface().getPreprocessedImage().getData(HyperstackData.class).getImage();
 
                 ImageStack is = imp.getStack();
                 int w = imp.getWidth();
                 int h = imp.getHeight();
-                
+
                 for (int x = 0; x < w; x++) {
                     for (int y = 0; y < h; y++) {
 
@@ -202,26 +199,26 @@ public class MCATClusteringAlgorithm extends MCATAlgorithm {
                             if (dist < minDist) {
                                 minDist = dist;
                             }
-                        } 
+                        }
                         sse += minDist;
                     }
                 }
             }
-            
-            if(sse < minSSE) {
-            	minSSE = sse;
-            	finalCentroids = centroids;
+
+            if (sse < minSSE) {
+                minSSE = sse;
+                finalCentroids = centroids;
             }
-            
+
 //            System.out.println(j + " SSE: " + sse + "; minSSE: " + minSSE);
         }
-        
+
         finalCentroids.sort(Comparator.comparingDouble(MCATCentroidCluster::getCumSum));
 
         getClusteringOutput().getClusterCenters().setData(new ClusterCentersData(finalCentroids));
 
         Set<String> keys = getClusteringInput().getDataSetEntries().keySet();
-   
+
 
         for (String key : keys) {
             MCATClusteringInputDataSetEntry inputEntry = getClusteringInput().getDataSetEntries().get(key);
@@ -263,13 +260,13 @@ public class MCATClusteringAlgorithm extends MCATAlgorithm {
                     outputEntry.getClusterAbundance().getData(ClusterAbundanceData.class).incrementAbundance(closestCluster);
                     finalCentroids.get(closestCluster).addMember();
 //                    int colIndex = Math.round(colors.length / k) * closestCluster;
-                    
+
                     /*
-                     * for colorblind-friendly coloring of spatial cluster distribution 
+                     * for colorblind-friendly coloring of spatial cluster distribution
                      */
 //                    String[] colors2 = new String[]{"#dedc49", "#c35831", "#18171c", "#61bce0", "#7d7d7d"};   
 //                    colIndex = closestCluster;
-                    
+
                     clusteredPixels[y * w + x] = currentColors.get(closestCluster);
                 }
             }
@@ -294,11 +291,11 @@ public class MCATClusteringAlgorithm extends MCATAlgorithm {
 //        	group = getClusteringOutput().getGroupSubject();
 //        else
 //        	group = getClusteringOutput().getGroupTreatment();
-        	
+
 //        String identifier = group + 
 //        		getPreprocessingParameters().toShortenedString() +
 //        		getClusteringParameters().toShortenedString();
-        
+
         getClusteringOutput().getClusterCenters().flush();
 
         // Clustered images per dataset
@@ -320,8 +317,8 @@ public class MCATClusteringAlgorithm extends MCATAlgorithm {
         for (MCATPreprocessingOutput preprocessingOutput : getClusteringInput().getAllPreprocessingOutputs()) {
             minLength = Math.min(preprocessingOutput.getNSlices(), minLength);
         }
-        minLength = Math.min(getPreprocessingParameters().getMaxTime(), minLength); 
-        getClusteringOutput().setMinLength(minLength); 
+        minLength = Math.min(getPreprocessingParameters().getMaxTime(), minLength);
+        getClusteringOutput().setMinLength(minLength);
         minLength = minLength - 1; //subtract one because of differences in indexing and slice number measurement
 
         loadImages();

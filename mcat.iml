@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module type="JAVA_MODULE" version="4">
+<module org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" type="JAVA_MODULE" version="4">
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8">
     <output url="file://$MODULE_DIR$/target/classes" />
     <output-test url="file://$MODULE_DIR$/target/test-classes" />
@@ -203,6 +203,7 @@
     <orderEntry type="library" name="Maven: org.jfree:jfreechart:1.5.0" level="project" />
     <orderEntry type="library" name="Maven: org.jfree:jfreesvg:3.4" level="project" />
     <orderEntry type="library" name="Maven: sc.fiji:TurboReg_:2.0.0" level="project" />
-    <orderEntry type="library" name="Maven: com.github.cmci:MultiStackRegistration:v1.46.2" level="project" />
+    <orderEntry type="library" name="Maven: com.github.miura:MultiStackRegistration:v1.46.2" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.commons:commons-exec:1.3" level="project" />
   </component>
 </module>

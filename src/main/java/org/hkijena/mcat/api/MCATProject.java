@@ -1,31 +1,16 @@
 /*******************************************************************************
  * Copyright by Dr. Bianca Hoffmann, Ruman Gerst, Dr. Zoltán Cseresnyés and Prof. Dr. Marc Thilo Figge
- * 
+ *
  * Research Group Applied Systems Biology - Head: Prof. Dr. Marc Thilo Figge
  * https://www.leibniz-hki.de/en/applied-systems-biology.html
  * HKI-Center for Systems Biology of Infection
  * Leibniz Institute for Natural Product Research and Infection Biology - Hans Knöll Insitute (HKI)
  * Adolf-Reichwein-Straße 23, 07745 Jena, Germany
- * 
+ *
  * The project code is licensed under BSD 2-Clause.
  * See the LICENSE file provided with the code for the full license.
  ******************************************************************************/
 package org.hkijena.mcat.api;
-
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.hkijena.mcat.api.events.DataSetAddedEvent;
-import org.hkijena.mcat.api.events.DataSetRemovedEvent;
-import org.hkijena.mcat.api.events.DataSetRenamedEvent;
-import org.hkijena.mcat.api.parameters.MCATParametersTable;
-import org.hkijena.mcat.utils.JsonUtils;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
@@ -43,6 +28,20 @@ import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.eventbus.EventBus;
+import org.hkijena.mcat.api.events.DataSetAddedEvent;
+import org.hkijena.mcat.api.events.DataSetRemovedEvent;
+import org.hkijena.mcat.api.events.DataSetRenamedEvent;
+import org.hkijena.mcat.api.parameters.MCATParametersTable;
+import org.hkijena.mcat.utils.JsonUtils;
+
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * An MCAT5 project.
@@ -147,7 +146,7 @@ public class MCATProject {
 
     public static class Deserializer extends JsonDeserializer<MCATProject> {
         @Override
-        public MCATProject deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
+        public MCATProject deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
             MCATProject project = new MCATProject();
             JsonNode node = jsonParser.readValueAsTree();
             project.parametersTable = JsonUtils.getObjectMapper().readerFor(MCATParametersTable.class).readValue(node.get("parameters"));
@@ -162,7 +161,7 @@ public class MCATProject {
 
     public static class Serializer extends JsonSerializer<MCATProject> {
         @Override
-        public void serialize(MCATProject project, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException, JsonProcessingException {
+        public void serialize(MCATProject project, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
             jsonGenerator.writeStartObject();
             jsonGenerator.writeObjectField("parameters", project.parametersTable);
             jsonGenerator.writeFieldName("data-sets");

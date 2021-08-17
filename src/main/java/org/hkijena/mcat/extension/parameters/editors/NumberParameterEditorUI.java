@@ -1,31 +1,29 @@
 /*******************************************************************************
  * Copyright by Dr. Bianca Hoffmann, Ruman Gerst, Dr. Zoltán Cseresnyés and Prof. Dr. Marc Thilo Figge
- * 
+ *
  * Research Group Applied Systems Biology - Head: Prof. Dr. Marc Thilo Figge
  * https://www.leibniz-hki.de/en/applied-systems-biology.html
  * HKI-Center for Systems Biology of Infection
  * Leibniz Institute for Natural Product Research and Infection Biology - Hans Knöll Insitute (HKI)
  * Adolf-Reichwein-Straße 23, 07745 Jena, Germany
- * 
+ *
  * The project code is licensed under BSD 2-Clause.
  * See the LICENSE file provided with the code for the full license.
  ******************************************************************************/
 package org.hkijena.mcat.extension.parameters.editors;
 
+import org.hkijena.mcat.api.parameters.MCATParameterAccess;
+import org.hkijena.mcat.ui.parameters.MCATParameterEditorUI;
+import org.scijava.Context;
+
+import javax.swing.*;
+import javax.swing.text.DefaultFormatterFactory;
+import javax.swing.text.NumberFormatter;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.Objects;
-
-import javax.swing.JSpinner;
-import javax.swing.SpinnerNumberModel;
-import javax.swing.text.DefaultFormatterFactory;
-import javax.swing.text.NumberFormatter;
-
-import org.hkijena.mcat.api.parameters.MCATParameterAccess;
-import org.hkijena.mcat.ui.parameters.MCATParameterEditorUI;
-import org.scijava.Context;
 
 /**
  * Editor for a {@link Double} parameter
@@ -165,7 +163,7 @@ public class NumberParameterEditorUI extends MCATParameterEditorUI {
                 }
             }
         });
-        ((JSpinner.NumberEditor)spinner.getEditor()).getTextField().setFormatterFactory(new DefaultFormatterFactory(new NumberEditorFormatter(model, NumberFormat.getInstance())));
+        ((JSpinner.NumberEditor) spinner.getEditor()).getTextField().setFormatterFactory(new DefaultFormatterFactory(new NumberEditorFormatter(model, NumberFormat.getInstance())));
         spinner.setPreferredSize(new Dimension(100, spinner.getPreferredSize().height));
         add(spinner, BorderLayout.CENTER);
     }
@@ -179,38 +177,36 @@ public class NumberParameterEditorUI extends MCATParameterEditorUI {
             setValueClass(model.getValue().getClass());
         }
 
+        public Comparable getMinimum() {
+            return model.getMinimum();
+        }
+
         public void setMinimum(Comparable min) {
             model.setMinimum(min);
-        }
-
-        public Comparable getMinimum() {
-            return  model.getMinimum();
-        }
-
-        public void setMaximum(Comparable max) {
-            model.setMaximum(max);
         }
 
         public Comparable getMaximum() {
             return model.getMaximum();
         }
 
+        public void setMaximum(Comparable max) {
+            model.setMaximum(max);
+        }
+
         @Override
         public String valueToString(Object value) throws ParseException {
-            if(value instanceof Integer && (int)value == Integer.MAX_VALUE) {
+            if (value instanceof Integer && (int) value == Integer.MAX_VALUE) {
                 return "Max";
-            }
-            else {
+            } else {
                 return super.valueToString(value);
             }
         }
 
         @Override
         public Object stringToValue(String text) throws ParseException {
-            if(Objects.equals(text, "Max")) {
+            if (Objects.equals(text, "Max")) {
                 return Integer.MAX_VALUE;
-            }
-            else {
+            } else {
                 return super.stringToValue(text);
             }
         }

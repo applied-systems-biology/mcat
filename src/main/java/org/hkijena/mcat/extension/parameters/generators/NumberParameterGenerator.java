@@ -1,22 +1,18 @@
 /*******************************************************************************
  * Copyright by Dr. Bianca Hoffmann, Ruman Gerst, Dr. Zoltán Cseresnyés and Prof. Dr. Marc Thilo Figge
- * 
+ *
  * Research Group Applied Systems Biology - Head: Prof. Dr. Marc Thilo Figge
  * https://www.leibniz-hki.de/en/applied-systems-biology.html
  * HKI-Center for Systems Biology of Infection
  * Leibniz Institute for Natural Product Research and Infection Biology - Hans Knöll Insitute (HKI)
  * Adolf-Reichwein-Straße 23, 07745 Jena, Germany
- * 
+ *
  * The project code is licensed under BSD 2-Clause.
  * See the LICENSE file provided with the code for the full license.
  ******************************************************************************/
 package org.hkijena.mcat.extension.parameters.generators;
 
-import java.awt.BorderLayout;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
+import com.google.common.eventbus.EventBus;
 import org.hkijena.mcat.api.MCATValidityReport;
 import org.hkijena.mcat.api.parameters.MCATCustomParameterCollection;
 import org.hkijena.mcat.api.parameters.MCATDynamicParameterCollection;
@@ -26,7 +22,10 @@ import org.hkijena.mcat.ui.parameters.MCATParameterGeneratorUI;
 import org.hkijena.mcat.ui.parameters.ParameterPanel;
 import org.scijava.Context;
 
-import com.google.common.eventbus.EventBus;
+import java.awt.BorderLayout;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Generator that creates instances of {@link Number}.
@@ -188,10 +187,9 @@ public class NumberParameterGenerator<T extends Number & Comparable<T>> extends 
     @Override
     public List<Object> get() {
         List<Object> result = new ArrayList<>();
-        if(isZero(getCurrentStepSize())) {
+        if (isZero(getCurrentStepSize())) {
             result.add(getCurrentMin());
-        }
-        else {
+        } else {
             Number current = getCurrentMin();
             while (((T) current).compareTo(getCurrentMax()) <= 0) {
                 result.add(current);

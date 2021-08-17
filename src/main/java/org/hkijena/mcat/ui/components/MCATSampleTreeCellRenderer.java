@@ -1,30 +1,27 @@
 /*******************************************************************************
  * Copyright by Dr. Bianca Hoffmann, Ruman Gerst, Dr. Zoltán Cseresnyés and Prof. Dr. Marc Thilo Figge
- * 
+ *
  * Research Group Applied Systems Biology - Head: Prof. Dr. Marc Thilo Figge
  * https://www.leibniz-hki.de/en/applied-systems-biology.html
  * HKI-Center for Systems Biology of Infection
  * Leibniz Institute for Natural Product Research and Infection Biology - Hans Knöll Insitute (HKI)
  * Adolf-Reichwein-Straße 23, 07745 Jena, Germany
- * 
+ *
  * The project code is licensed under BSD 2-Clause.
  * See the LICENSE file provided with the code for the full license.
  ******************************************************************************/
 package org.hkijena.mcat.ui.components;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.util.Collection;
-
-import javax.swing.BorderFactory;
-import javax.swing.JLabel;
-import javax.swing.JTree;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreeCellRenderer;
-
 import org.hkijena.mcat.api.MCATProjectDataSet;
 import org.hkijena.mcat.ui.MCATDataSetManagerUI;
 import org.hkijena.mcat.utils.UIUtils;
+
+import javax.swing.*;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreeCellRenderer;
+import java.awt.Color;
+import java.awt.Component;
+import java.util.Collection;
 
 /**
  * Renders a sample in the {@link MCATDataSetManagerUI}

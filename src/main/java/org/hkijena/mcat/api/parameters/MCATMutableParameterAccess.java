@@ -1,26 +1,16 @@
 /*******************************************************************************
  * Copyright by Dr. Bianca Hoffmann, Ruman Gerst, Dr. Zoltán Cseresnyés and Prof. Dr. Marc Thilo Figge
- * 
+ *
  * Research Group Applied Systems Biology - Head: Prof. Dr. Marc Thilo Figge
  * https://www.leibniz-hki.de/en/applied-systems-biology.html
  * HKI-Center for Systems Biology of Infection
  * Leibniz Institute for Natural Product Research and Infection Biology - Hans Knöll Insitute (HKI)
  * Adolf-Reichwein-Straße 23, 07745 Jena, Germany
- * 
+ *
  * The project code is licensed under BSD 2-Clause.
  * See the LICENSE file provided with the code for the full license.
  ******************************************************************************/
 package org.hkijena.mcat.api.parameters;
-
-import java.io.IOException;
-import java.lang.annotation.Annotation;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.hkijena.mcat.api.events.ParameterChangedEvent;
-import org.hkijena.mcat.utils.JsonUtils;
-import org.hkijena.mcat.utils.StringUtils;
-import org.scijava.Priority;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
@@ -30,6 +20,15 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import org.hkijena.mcat.api.events.ParameterChangedEvent;
+import org.hkijena.mcat.utils.JsonUtils;
+import org.hkijena.mcat.utils.StringUtils;
+import org.scijava.Priority;
+
+import java.io.IOException;
+import java.lang.annotation.Annotation;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A mutable implementation of {@link MCATParameterAccess}
@@ -264,7 +263,7 @@ public class MCATMutableParameterAccess implements MCATParameterAccess {
      */
     public static class Deserializer extends JsonDeserializer<MCATMutableParameterAccess> {
         @Override
-        public MCATMutableParameterAccess deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+        public MCATMutableParameterAccess deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
             JsonNode jsonNode = p.readValueAsTree();
             MCATMutableParameterAccess result = new MCATMutableParameterAccess();
             result.setName(jsonNode.get("name").textValue());

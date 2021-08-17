@@ -1,41 +1,18 @@
 /*******************************************************************************
  * Copyright by Dr. Bianca Hoffmann, Ruman Gerst, Dr. Zoltán Cseresnyés and Prof. Dr. Marc Thilo Figge
- * 
+ *
  * Research Group Applied Systems Biology - Head: Prof. Dr. Marc Thilo Figge
  * https://www.leibniz-hki.de/en/applied-systems-biology.html
  * HKI-Center for Systems Biology of Infection
  * Leibniz Institute for Natural Product Research and Infection Biology - Hans Knöll Insitute (HKI)
  * Adolf-Reichwein-Straße 23, 07745 Jena, Germany
- * 
+ *
  * The project code is licensed under BSD 2-Clause.
  * See the LICENSE file provided with the code for the full license.
  ******************************************************************************/
 package org.hkijena.mcat.ui.parameters;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.Point;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-
-import javax.swing.Box;
-import javax.swing.JButton;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.JTable;
-import javax.swing.JToolBar;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
-import javax.swing.table.TableRowSorter;
-
+import com.google.common.eventbus.Subscribe;
 import org.hkijena.mcat.api.MCATDocumentation;
 import org.hkijena.mcat.api.events.ParameterChangedEvent;
 import org.hkijena.mcat.api.parameters.MCATParameterCollection;
@@ -51,7 +28,18 @@ import org.hkijena.mcat.ui.components.TransposedTableModel;
 import org.hkijena.mcat.utils.UIUtils;
 import org.jdesktop.swingx.JXTable;
 
-import com.google.common.eventbus.Subscribe;
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Point;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 
 public class MCATParametersTableUI extends MCATWorkbenchUIPanel {
 
@@ -160,7 +148,7 @@ public class MCATParametersTableUI extends MCATWorkbenchUIPanel {
         MCATParametersTable parametersTable = getWorkbenchUI().getProject().getParametersTable();
         for (int i = selectedColumns.length - 1; i >= 0; --i) {
             int row = selectedColumns[i] - 1;
-            if(row >= 0)
+            if (row >= 0)
                 parametersTable.removeRowAt(row);
         }
     }
@@ -168,17 +156,15 @@ public class MCATParametersTableUI extends MCATWorkbenchUIPanel {
     private void addParameterSet() {
         int selectedColumn = table.getSelectedColumn();
         MCATParametersTableRow row;
-        if(selectedColumn >= 1) {
+        if (selectedColumn >= 1) {
             int modelColumn = table.convertColumnIndexToModel(selectedColumn) - 1;
-            if(modelColumn >= 0) {
+            if (modelColumn >= 0) {
                 MCATParametersTableRow existing = getWorkbenchUI().getProject().getParametersTable().getRows().get(modelColumn);
                 row = new MCATParametersTableRow(existing);
-            }
-            else {
+            } else {
                 row = new MCATParametersTableRow();
             }
-        }
-        else {
+        } else {
             row = new MCATParametersTableRow();
         }
         getWorkbenchUI().getProject().getParametersTable().addRow(row);
@@ -195,8 +181,8 @@ public class MCATParametersTableUI extends MCATWorkbenchUIPanel {
             return;
 
         int[] cols = selectedColumns(false);
-        if(generatedObjects.size() < cols.length) {
-            String[] options = new String[] {
+        if (generatedObjects.size() < cols.length) {
+            String[] options = new String[]{
                     "Repeat last",
                     "Repeat periodic",
                     "Ignore",
@@ -210,17 +196,16 @@ public class MCATParametersTableUI extends MCATWorkbenchUIPanel {
                     null,
                     options,
                     options[0]);
-            if(response == 3)
+            if (response == 3)
                 return;
-            else if(response == 0) {
+            else if (response == 0) {
                 while (generatedObjects.size() < cols.length) {
                     generatedObjects.add(generatedObjects.get(generatedObjects.size() - 1));
                 }
-            }
-            else if(response == 1) {
+            } else if (response == 1) {
                 int sz = generatedObjects.size();
                 for (int i = 0; i < cols.length; i++) {
-                    if(i >= sz) {
+                    if (i >= sz) {
                         generatedObjects.add(generatedObjects.get(i % sz));
                     }
                 }
@@ -231,7 +216,7 @@ public class MCATParametersTableUI extends MCATWorkbenchUIPanel {
 
         for (int i = 0; i < Math.min(generatedObjects.size(), cols.length); ++i) {
             int row = cols[i] - 1;
-            if(row >= 0)
+            if (row >= 0)
                 parametersTable.setValueAt(generatedObjects.get(i), row, column);
         }
     }

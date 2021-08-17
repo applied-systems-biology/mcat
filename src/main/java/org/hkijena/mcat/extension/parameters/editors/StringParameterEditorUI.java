@@ -1,30 +1,27 @@
 /*******************************************************************************
  * Copyright by Dr. Bianca Hoffmann, Ruman Gerst, Dr. Zoltán Cseresnyés and Prof. Dr. Marc Thilo Figge
- * 
+ *
  * Research Group Applied Systems Biology - Head: Prof. Dr. Marc Thilo Figge
  * https://www.leibniz-hki.de/en/applied-systems-biology.html
  * HKI-Center for Systems Biology of Infection
  * Leibniz Institute for Natural Product Research and Infection Biology - Hans Knöll Insitute (HKI)
  * Adolf-Reichwein-Straße 23, 07745 Jena, Germany
- * 
+ *
  * The project code is licensed under BSD 2-Clause.
  * See the LICENSE file provided with the code for the full license.
  ******************************************************************************/
 package org.hkijena.mcat.extension.parameters.editors;
 
-import java.awt.BorderLayout;
-import java.awt.Font;
-
-import javax.swing.BorderFactory;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.event.DocumentEvent;
-import javax.swing.text.JTextComponent;
-
 import org.hkijena.mcat.api.parameters.MCATParameterAccess;
 import org.hkijena.mcat.ui.components.DocumentChangeListener;
 import org.hkijena.mcat.ui.parameters.MCATParameterEditorUI;
 import org.scijava.Context;
+
+import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.text.JTextComponent;
+import java.awt.BorderLayout;
+import java.awt.Font;
 
 /**
  * Parameter editor for {@link String}

@@ -1,20 +1,21 @@
 /*******************************************************************************
  * Copyright by Dr. Bianca Hoffmann, Ruman Gerst, Dr. Zoltán Cseresnyés and Prof. Dr. Marc Thilo Figge
- * 
+ *
  * Research Group Applied Systems Biology - Head: Prof. Dr. Marc Thilo Figge
  * https://www.leibniz-hki.de/en/applied-systems-biology.html
  * HKI-Center for Systems Biology of Infection
  * Leibniz Institute for Natural Product Research and Infection Biology - Hans Knöll Insitute (HKI)
  * Adolf-Reichwein-Straße 23, 07745 Jena, Germany
- * 
+ *
  * The project code is licensed under BSD 2-Clause.
  * See the LICENSE file provided with the code for the full license.
  ******************************************************************************/
 package org.hkijena.mcat.ui.components;
 
 
-import static org.hkijena.mcat.utils.UIUtils.UI_PADDING;
+import org.hkijena.mcat.utils.UIUtils;
 
+import javax.swing.*;
 import java.awt.AWTEvent;
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -31,17 +32,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.lang.ref.WeakReference;
 
-import javax.swing.BorderFactory;
-import javax.swing.Icon;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
-import javax.swing.JSplitPane;
-import javax.swing.JTextArea;
-import javax.swing.SwingUtilities;
-
-import org.hkijena.mcat.utils.UIUtils;
+import static org.hkijena.mcat.utils.UIUtils.UI_PADDING;
 
 /**
  * Organizes UI in a form layout with integrated help functionality, and grouping with conditional visibility
@@ -93,9 +84,8 @@ public class FormPanel extends JPanel {
         Component content;
         if ((flags & WITH_SCROLLING) == WITH_SCROLLING) {
             content = new JScrollPane(forms);
-            ((JScrollPane)content).getVerticalScrollBar().setUnitIncrement(25);
-        }
-        else
+            ((JScrollPane) content).getVerticalScrollBar().setUnitIncrement(25);
+        } else
             content = forms;
 
         if ((flags & WITH_DOCUMENTATION) == WITH_DOCUMENTATION) {

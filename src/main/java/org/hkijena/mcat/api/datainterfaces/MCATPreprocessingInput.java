@@ -1,25 +1,16 @@
 /*******************************************************************************
  * Copyright by Dr. Bianca Hoffmann, Ruman Gerst, Dr. Zoltán Cseresnyés and Prof. Dr. Marc Thilo Figge
- * 
+ *
  * Research Group Applied Systems Biology - Head: Prof. Dr. Marc Thilo Figge
  * https://www.leibniz-hki.de/en/applied-systems-biology.html
  * HKI-Center for Systems Biology of Infection
  * Leibniz Institute for Natural Product Research and Infection Biology - Hans Knöll Insitute (HKI)
  * Adolf-Reichwein-Straße 23, 07745 Jena, Germany
- * 
+ *
  * The project code is licensed under BSD 2-Clause.
  * See the LICENSE file provided with the code for the full license.
  ******************************************************************************/
 package org.hkijena.mcat.api.datainterfaces;
-
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.hkijena.mcat.api.MCATDataInterface;
-import org.hkijena.mcat.api.MCATDataSlot;
-import org.hkijena.mcat.extension.datatypes.HyperstackData;
-import org.hkijena.mcat.extension.datatypes.ROIData;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
@@ -31,6 +22,14 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.hkijena.mcat.api.MCATDataInterface;
+import org.hkijena.mcat.api.MCATDataSlot;
+import org.hkijena.mcat.extension.datatypes.HyperstackData;
+import org.hkijena.mcat.extension.datatypes.ROIData;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Organizes raw data
@@ -69,7 +68,7 @@ public class MCATPreprocessingInput implements MCATDataInterface {
 
     public static class Serializer extends JsonSerializer<MCATPreprocessingInput> {
         @Override
-        public void serialize(MCATPreprocessingInput value, JsonGenerator gen, SerializerProvider serializers) throws IOException, JsonProcessingException {
+        public void serialize(MCATPreprocessingInput value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
             gen.writeStartObject();
             gen.writeObjectField("raw-image", value.rawImage);
             gen.writeObjectField("tissue-roi", value.tissueROI);
@@ -79,7 +78,7 @@ public class MCATPreprocessingInput implements MCATDataInterface {
 
     public static class Deserializer extends JsonDeserializer<MCATPreprocessingInput> {
         @Override
-        public MCATPreprocessingInput deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+        public MCATPreprocessingInput deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
             MCATPreprocessingInput preprocessingInput = new MCATPreprocessingInput();
             JsonNode node = p.readValueAsTree();
             preprocessingInput.getRawImage().fromJson(node.get("raw-image"));

@@ -1,26 +1,25 @@
 /*******************************************************************************
  * Copyright by Dr. Bianca Hoffmann, Ruman Gerst, Dr. Zoltán Cseresnyés and Prof. Dr. Marc Thilo Figge
- * 
+ *
  * Research Group Applied Systems Biology - Head: Prof. Dr. Marc Thilo Figge
  * https://www.leibniz-hki.de/en/applied-systems-biology.html
  * HKI-Center for Systems Biology of Infection
  * Leibniz Institute for Natural Product Research and Infection Biology - Hans Knöll Insitute (HKI)
  * Adolf-Reichwein-Straße 23, 07745 Jena, Germany
- * 
+ *
  * The project code is licensed under BSD 2-Clause.
  * See the LICENSE file provided with the code for the full license.
  ******************************************************************************/
 package org.hkijena.mcat.api.parameters;
 
-import java.util.Objects;
-
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.google.common.eventbus.EventBus;
 import org.hkijena.mcat.api.MCATClusteringHierarchy;
 import org.hkijena.mcat.api.MCATDocumentation;
 import org.hkijena.mcat.api.events.ParameterChangedEvent;
 
-import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonSetter;
-import com.google.common.eventbus.EventBus;
+import java.util.Objects;
 
 /**
  * Class that contains all clustering parameters.
@@ -34,8 +33,8 @@ import com.google.common.eventbus.EventBus;
  * Add the variable to getHashCode() and equals()
  */
 public class MCATClusteringParameters implements MCATParameterCollection {
-	public static final int MIN_LENGTH_DEFAULT = Integer.MAX_VALUE;
-	
+    public static final int MIN_LENGTH_DEFAULT = Integer.MAX_VALUE;
+
     private EventBus eventBus = new EventBus();
     private int kMeansK = 5;
     private int minLength = MIN_LENGTH_DEFAULT;
@@ -83,14 +82,14 @@ public class MCATClusteringParameters implements MCATParameterCollection {
         return true;
     }
 
-//    @MCATDocumentation(name = "Minimum length")
+    //    @MCATDocumentation(name = "Minimum length")
 //    @MCATParameter(value = "min-length", shortKey = "mlength")
     @JsonGetter("min-length")
     public int getMinLength() {
         return minLength;
     }
 
-//    @MCATParameter("min-length")
+    //    @MCATParameter("min-length")
     @JsonSetter("min-length")
     public void setMinLength(int minLength) {
         this.minLength = minLength;
@@ -121,8 +120,8 @@ public class MCATClusteringParameters implements MCATParameterCollection {
     public String toString() {
         return MCATCustomParameterCollection.parametersToString((new MCATTraversedParameterCollection(this)).getParameters().values(), "_", "-");
     }
-    
+
     public String toShortenedString() {
-		return "_k-" + kMeansK + "_hierarchy-" + clusteringHierarchy;
-	}
+        return "_k-" + kMeansK + "_hierarchy-" + clusteringHierarchy;
+    }
 }

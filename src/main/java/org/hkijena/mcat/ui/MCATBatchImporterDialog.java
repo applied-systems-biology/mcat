@@ -1,33 +1,16 @@
 /*******************************************************************************
  * Copyright by Dr. Bianca Hoffmann, Ruman Gerst, Dr. Zoltán Cseresnyés and Prof. Dr. Marc Thilo Figge
- * 
+ *
  * Research Group Applied Systems Biology - Head: Prof. Dr. Marc Thilo Figge
  * https://www.leibniz-hki.de/en/applied-systems-biology.html
  * HKI-Center for Systems Biology of Infection
  * Leibniz Institute for Natural Product Research and Infection Biology - Hans Knöll Insitute (HKI)
  * Adolf-Reichwein-Straße 23, 07745 Jena, Germany
- * 
+ *
  * The project code is licensed under BSD 2-Clause.
  * See the LICENSE file provided with the code for the full license.
  ******************************************************************************/
 package org.hkijena.mcat.ui;
-
-import java.awt.BorderLayout;
-import java.awt.Font;
-import java.io.IOException;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JDialog;
-import javax.swing.JFileChooser;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.event.DocumentEvent;
 
 import org.hkijena.mcat.api.MCATBatchImporter;
 import org.hkijena.mcat.ui.components.DocumentChangeListener;
@@ -36,6 +19,14 @@ import org.hkijena.mcat.ui.components.FormPanel;
 import org.hkijena.mcat.ui.components.MarkdownDocument;
 import org.hkijena.mcat.utils.StringUtils;
 import org.hkijena.mcat.utils.UIUtils;
+
+import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import java.awt.BorderLayout;
+import java.awt.Font;
+import java.io.IOException;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 /**
  * UI for {@link MCATBatchImporter}

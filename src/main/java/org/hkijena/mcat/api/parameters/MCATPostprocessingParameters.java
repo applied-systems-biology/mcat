@@ -1,26 +1,25 @@
 /*******************************************************************************
  * Copyright by Dr. Bianca Hoffmann, Ruman Gerst, Dr. Zoltán Cseresnyés and Prof. Dr. Marc Thilo Figge
- * 
+ *
  * Research Group Applied Systems Biology - Head: Prof. Dr. Marc Thilo Figge
  * https://www.leibniz-hki.de/en/applied-systems-biology.html
  * HKI-Center for Systems Biology of Infection
  * Leibniz Institute for Natural Product Research and Infection Biology - Hans Knöll Insitute (HKI)
  * Adolf-Reichwein-Straße 23, 07745 Jena, Germany
- * 
+ *
  * The project code is licensed under BSD 2-Clause.
  * See the LICENSE file provided with the code for the full license.
  ******************************************************************************/
 package org.hkijena.mcat.api.parameters;
 
-import java.util.Objects;
-
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.google.common.eventbus.EventBus;
 import org.hkijena.mcat.api.MCATDocumentation;
 import org.hkijena.mcat.api.events.ParameterChangedEvent;
 import org.hkijena.mcat.extension.parameters.editors.NumberParameterSettings;
 
-import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonSetter;
-import com.google.common.eventbus.EventBus;
+import java.util.Objects;
 
 /**
  * Contains postprocessing parameters
@@ -34,14 +33,14 @@ import com.google.common.eventbus.EventBus;
  * Add the variable to getHashCode() and equals()
  */
 public class MCATPostprocessingParameters implements MCATParameterCollection {
-	public static final double CUTOFF_DEFAULT = 0.0;
-	
+    public static final double CUTOFF_DEFAULT = 0.0;
+
     private EventBus eventBus = new EventBus();
     private boolean analyzeNetIncrease = true;
     private boolean analyzeNetDecrease = false;
     private boolean analyzeMaxIncrease = false;
     private boolean analyzeMaxDecrease = false;
-//    private boolean performClusterMorphologyAnalysis = false;
+    //    private boolean performClusterMorphologyAnalysis = false;
     private double cutoffValue = CUTOFF_DEFAULT;
 
     public MCATPostprocessingParameters() {
@@ -138,7 +137,7 @@ public class MCATPostprocessingParameters implements MCATParameterCollection {
     @MCATParameter("cutoff-value")
     @JsonSetter("cutoff-value")
     public boolean setCutoffValue(double cutoffValue) {
-    	if (cutoffValue < 0 | cutoffValue > 1) {
+        if (cutoffValue < 0 | cutoffValue > 1) {
             return false;
         }
         this.cutoffValue = cutoffValue;
@@ -161,9 +160,9 @@ public class MCATPostprocessingParameters implements MCATParameterCollection {
 
     @Override
     public int hashCode() {
-        return Objects.hash(analyzeNetIncrease, analyzeNetDecrease, analyzeMaxIncrease, analyzeMaxDecrease, 
+        return Objects.hash(analyzeNetIncrease, analyzeNetDecrease, analyzeMaxIncrease, analyzeMaxDecrease,
 //        		performClusterMorphologyAnalysis, 
-        		cutoffValue);
+                cutoffValue);
     }
 
     @Override
@@ -173,16 +172,16 @@ public class MCATPostprocessingParameters implements MCATParameterCollection {
 
     @Override
     public String toString() {
-    	return MCATCustomParameterCollection.parametersToString((new MCATTraversedParameterCollection(this)).getParameters().values(), "_", "-");
+        return MCATCustomParameterCollection.parametersToString((new MCATTraversedParameterCollection(this)).getParameters().values(), "_", "-");
     }
-    
+
     public String toShortenedString() {
-    	String cutoff = cutoffValue == CUTOFF_DEFAULT ? "" : "_cutoff-" + cutoffValue;
-    	String netInc = analyzeNetIncrease ? "_netInc" : "";
-    	String netDec = analyzeNetDecrease ? "_netDec" : "";
-    	String maxInc = analyzeMaxIncrease ? "_maxInc" : "";
-    	String maxDec = analyzeMaxDecrease ? "_maxDec" : "";
-    	
-		return cutoff + netInc + netDec + maxInc + maxDec;
-	}
+        String cutoff = cutoffValue == CUTOFF_DEFAULT ? "" : "_cutoff-" + cutoffValue;
+        String netInc = analyzeNetIncrease ? "_netInc" : "";
+        String netDec = analyzeNetDecrease ? "_netDec" : "";
+        String maxInc = analyzeMaxIncrease ? "_maxInc" : "";
+        String maxDec = analyzeMaxDecrease ? "_maxDec" : "";
+
+        return cutoff + netInc + netDec + maxInc + maxDec;
+    }
 }

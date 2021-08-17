@@ -1,34 +1,18 @@
 /*******************************************************************************
  * Copyright by Dr. Bianca Hoffmann, Ruman Gerst, Dr. Zoltán Cseresnyés and Prof. Dr. Marc Thilo Figge
- * 
+ *
  * Research Group Applied Systems Biology - Head: Prof. Dr. Marc Thilo Figge
  * https://www.leibniz-hki.de/en/applied-systems-biology.html
  * HKI-Center for Systems Biology of Infection
  * Leibniz Institute for Natural Product Research and Infection Biology - Hans Knöll Insitute (HKI)
  * Adolf-Reichwein-Straße 23, 07745 Jena, Germany
- * 
+ *
  * The project code is licensed under BSD 2-Clause.
  * See the LICENSE file provided with the code for the full license.
  ******************************************************************************/
 package org.hkijena.mcat.ui;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import javax.swing.Box;
-import javax.swing.JButton;
-import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
-import javax.swing.JToolBar;
-import javax.swing.JTree;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreePath;
-
+import com.google.common.eventbus.Subscribe;
 import org.hkijena.mcat.api.MCATProjectDataSet;
 import org.hkijena.mcat.api.events.DataSetAddedEvent;
 import org.hkijena.mcat.api.events.DataSetRemovedEvent;
@@ -38,7 +22,16 @@ import org.hkijena.mcat.api.parameters.MCATSampleParameters;
 import org.hkijena.mcat.ui.components.MCATSampleTreeCellRenderer;
 import org.hkijena.mcat.utils.UIUtils;
 
-import com.google.common.eventbus.Subscribe;
+import javax.swing.*;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreePath;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * UI that manages the samples in a {@link org.hkijena.mcat.api.MCATProject}
@@ -89,7 +82,6 @@ public class MCATDataSetManagerUI extends MCATWorkbenchUIPanel {
 
         JButton removeButton = new JButton(UIUtils.getIconFromResources("delete.png"));
         removeButton.setToolTipText("Remove selected data sets");
-        ;
         removeButton.addActionListener(e -> removeSelectedSamples());
         toolBar.add(removeButton);
 

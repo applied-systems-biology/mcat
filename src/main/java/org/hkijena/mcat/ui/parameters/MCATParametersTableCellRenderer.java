@@ -1,25 +1,22 @@
 /*******************************************************************************
  * Copyright by Dr. Bianca Hoffmann, Ruman Gerst, Dr. Zoltán Cseresnyés and Prof. Dr. Marc Thilo Figge
- * 
+ *
  * Research Group Applied Systems Biology - Head: Prof. Dr. Marc Thilo Figge
  * https://www.leibniz-hki.de/en/applied-systems-biology.html
  * HKI-Center for Systems Biology of Infection
  * Leibniz Institute for Natural Product Research and Infection Biology - Hans Knöll Insitute (HKI)
  * Adolf-Reichwein-Straße 23, 07745 Jena, Germany
- * 
+ *
  * The project code is licensed under BSD 2-Clause.
  * See the LICENSE file provided with the code for the full license.
  ******************************************************************************/
 package org.hkijena.mcat.ui.parameters;
 
+import javax.swing.*;
+import javax.swing.table.TableCellRenderer;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
-
-import javax.swing.BorderFactory;
-import javax.swing.JLabel;
-import javax.swing.JTable;
-import javax.swing.table.TableCellRenderer;
 
 public class MCATParametersTableCellRenderer extends JLabel implements TableCellRenderer {
 
@@ -32,10 +29,9 @@ public class MCATParametersTableCellRenderer extends JLabel implements TableCell
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 
-        if(value instanceof Integer && (int)value == Integer.MAX_VALUE) {
+        if (value instanceof Integer && (int) value == Integer.MAX_VALUE) {
             setText("Max");
-        }
-        else {
+        } else {
             setText("" + value);
         }
         if (isSelected) {

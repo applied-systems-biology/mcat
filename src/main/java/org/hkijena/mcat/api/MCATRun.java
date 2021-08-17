@@ -1,16 +1,40 @@
 /*******************************************************************************
  * Copyright by Dr. Bianca Hoffmann, Ruman Gerst, Dr. Zoltán Cseresnyés and Prof. Dr. Marc Thilo Figge
- * 
+ *
  * Research Group Applied Systems Biology - Head: Prof. Dr. Marc Thilo Figge
  * https://www.leibniz-hki.de/en/applied-systems-biology.html
  * HKI-Center for Systems Biology of Infection
  * Leibniz Institute for Natural Product Research and Infection Biology - Hans Knöll Insitute (HKI)
  * Adolf-Reichwein-Straße 23, 07745 Jena, Germany
- * 
+ *
  * The project code is licensed under BSD 2-Clause.
  * See the LICENSE file provided with the code for the full license.
  ******************************************************************************/
 package org.hkijena.mcat.api;
+
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+import com.google.common.eventbus.Subscribe;
+import org.hkijena.mcat.api.algorithms.MCATClusteredPlotGenerationAlgorithm;
+import org.hkijena.mcat.api.algorithms.MCATClusteringAlgorithm;
+import org.hkijena.mcat.api.algorithms.MCATPostprocessedPlotGenerationAlgorithm;
+import org.hkijena.mcat.api.algorithms.MCATPostprocessingAlgorithm;
+import org.hkijena.mcat.api.algorithms.MCATPreprocessingAlgorithm;
+import org.hkijena.mcat.api.datainterfaces.*;
+import org.hkijena.mcat.api.events.ParameterChangedEvent;
+import org.hkijena.mcat.api.parameters.MCATAUCDataConditions;
+import org.hkijena.mcat.api.parameters.MCATClusteringParameters;
+import org.hkijena.mcat.api.parameters.MCATParametersTable;
+import org.hkijena.mcat.api.parameters.MCATParametersTableRow;
+import org.hkijena.mcat.api.parameters.MCATPostprocessingParameters;
+import org.hkijena.mcat.api.parameters.MCATPreprocessingParameters;
+import org.hkijena.mcat.utils.JsonUtils;
+import org.hkijena.mcat.utils.StringUtils;
+import org.jgrapht.graph.DefaultEdge;
+import org.jgrapht.io.DOTExporter;
+import org.jgrapht.io.ExportException;
+import org.jgrapht.io.IntegerComponentNameProvider;
+import org.jgrapht.io.StringComponentNameProvider;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -25,40 +49,6 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-
-import org.hkijena.mcat.api.algorithms.MCATClusteredPlotGenerationAlgorithm;
-import org.hkijena.mcat.api.algorithms.MCATClusteringAlgorithm;
-import org.hkijena.mcat.api.algorithms.MCATPostprocessedPlotGenerationAlgorithm;
-import org.hkijena.mcat.api.algorithms.MCATPostprocessingAlgorithm;
-import org.hkijena.mcat.api.algorithms.MCATPreprocessingAlgorithm;
-import org.hkijena.mcat.api.datainterfaces.MCATClusteredPlotGenerationInput;
-import org.hkijena.mcat.api.datainterfaces.MCATClusteredPlotGenerationOutput;
-import org.hkijena.mcat.api.datainterfaces.MCATClusteringInput;
-import org.hkijena.mcat.api.datainterfaces.MCATClusteringInputDataSetEntry;
-import org.hkijena.mcat.api.datainterfaces.MCATClusteringOutput;
-import org.hkijena.mcat.api.datainterfaces.MCATClusteringOutputDataSetEntry;
-import org.hkijena.mcat.api.datainterfaces.MCATPostprocessedPlotGenerationOutput;
-import org.hkijena.mcat.api.datainterfaces.MCATPostprocessingOutput;
-import org.hkijena.mcat.api.datainterfaces.MCATPreprocessingInput;
-import org.hkijena.mcat.api.datainterfaces.MCATPreprocessingOutput;
-import org.hkijena.mcat.api.events.ParameterChangedEvent;
-import org.hkijena.mcat.api.parameters.MCATAUCDataConditions;
-import org.hkijena.mcat.api.parameters.MCATClusteringParameters;
-import org.hkijena.mcat.api.parameters.MCATParametersTable;
-import org.hkijena.mcat.api.parameters.MCATParametersTableRow;
-import org.hkijena.mcat.api.parameters.MCATPostprocessingParameters;
-import org.hkijena.mcat.api.parameters.MCATPreprocessingParameters;
-import org.hkijena.mcat.utils.JsonUtils;
-import org.hkijena.mcat.utils.StringUtils;
-
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
-import com.google.common.eventbus.Subscribe;
-import org.jgrapht.graph.DefaultEdge;
-import org.jgrapht.io.DOTExporter;
-import org.jgrapht.io.ExportException;
-import org.jgrapht.io.IntegerComponentNameProvider;
-import org.jgrapht.io.StringComponentNameProvider;
 
 public class MCATRun implements MCATValidatable {
     private MCATProject project;
@@ -109,19 +99,18 @@ public class MCATRun implements MCATValidatable {
     }
 
     private MCATDataInterface getOrCreateDataInterface(MCATDataInterfaceKey key, MCATDataInterface defaultEntry) {
-        if(!uniqueDataInterfaces.containsKey(key)) {
+        if (!uniqueDataInterfaces.containsKey(key)) {
             System.out.println("New data interface: " + key.toString());
             uniqueDataInterfaces.put(key, defaultEntry);
             return defaultEntry;
-        }
-        else {
+        } else {
             return uniqueDataInterfaces.get(key);
         }
     }
 
     private MCATPreprocessingAlgorithm getOrCreatePreprocessingAlgorithm(MCATDataInterfaceKey key, MCATPreprocessingParameters preprocessingParameters, MCATPreprocessingInput rawDataInterface, MCATPreprocessingOutput preprocessedDataInterface) {
         MCATPreprocessingAlgorithm existing = preprocessingAlgorithmMap.getOrDefault(key, null);
-        if(existing == null) {
+        if (existing == null) {
             System.out.println("New preprocessing algorithm @ " + key + " input=" + preprocessingParameters.toShortenedString());
             existing = new MCATPreprocessingAlgorithm(this,
                     preprocessingParameters,
@@ -308,7 +297,7 @@ public class MCATRun implements MCATValidatable {
         List<MCATClusteringAlgorithm> allClusteringAlgorithms = new ArrayList<>();
 
         for (MCATDataInterfaceKey clusteringOutputInterfaceKey : uniqueDataInterfaces.keySet().stream().filter(k ->
-                "clustering-output".equals(k.getDataInterfaceName()) && k.getParameters().contains(clusteringParameters))
+                        "clustering-output".equals(k.getDataInterfaceName()) && k.getParameters().contains(clusteringParameters))
                 .collect(Collectors.toSet())) {
             MCATDataInterfaceKey clusteringInputInterfaceKey = new MCATDataInterfaceKey("clustering-input");
             clusteringInputInterfaceKey.addDataSets(clusteringOutputInterfaceKey.getDataSetNames());
@@ -367,9 +356,9 @@ public class MCATRun implements MCATValidatable {
 
     private MCATClusteringAlgorithm getOrCreateClusteringAlgorithm(MCATDataInterfaceKey key, MCATPreprocessingParameters preprocessingParameters, MCATClusteringParameters clusteringParameters, MCATClusteringInput clusteringInputInterface, MCATClusteringOutput clusteringOutputInterface) {
         MCATClusteringAlgorithm existing = clusteringAlgorithmMap.getOrDefault(key, null);
-        if(existing == null) {
+        if (existing == null) {
             System.out.println("New clustering algorithm @ " + key + " input=" + preprocessingParameters.toShortenedString() + "_" + clusteringParameters.toShortenedString());
-            existing =  new MCATClusteringAlgorithm(this,
+            existing = new MCATClusteringAlgorithm(this,
                     preprocessingParameters,
                     clusteringParameters,
                     clusteringInputInterface,
@@ -501,8 +490,8 @@ public class MCATRun implements MCATValidatable {
         }
         for (MCATDataInterface dataInterface : uniqueDataInterfaces.values()) {
             for (MCATDataSlot dataSlot : dataInterface.getSlots().values()) {
-                if(dataSlot.getStorageFilePath() != null) {
-                    if(!Files.isDirectory(dataSlot.getStorageFilePath())) {
+                if (dataSlot.getStorageFilePath() != null) {
+                    if (!Files.isDirectory(dataSlot.getStorageFilePath())) {
                         try {
                             Files.createDirectories(dataSlot.getStorageFilePath());
                         } catch (IOException e) {
@@ -516,9 +505,9 @@ public class MCATRun implements MCATValidatable {
         for (MCATDataInterfaceKey key : savedDataInterfaces) {
             MCATDataInterface dataInterface = uniqueDataInterfaces.get(key);
             for (Map.Entry<String, MCATDataSlot> entry : dataInterface.getSlots().entrySet()) {
-                if(entry.getValue().getStorageFilePath() != null && entry.getValue().getFileName() != null) {
+                if (entry.getValue().getStorageFilePath() != null && entry.getValue().getFileName() != null) {
                     Path outputFileName = entry.getValue().getStorageFilePath().resolve(entry.getValue().getFileName());
-                    if(outputFileNames.contains(outputFileName)) {
+                    if (outputFileNames.contains(outputFileName)) {
                         System.err.println("Duplicate output file name: " + outputFileName + ", slot-id=" + entry.getKey() + ", key=" + key);
                     }
                     outputFileNames.add(outputFileName);
@@ -542,8 +531,8 @@ public class MCATRun implements MCATValidatable {
 
     private void setDataInterfaceStoragePath(MCATDataInterfaceKey key, MCATDataInterface dataInterface) {
 
-       if(dataInterface instanceof MCATPreprocessingInput) {
-           String subjects = key.getDataSetNames().stream().sorted().collect(Collectors.joining(","));
+        if (dataInterface instanceof MCATPreprocessingInput) {
+            String subjects = key.getDataSetNames().stream().sorted().collect(Collectors.joining(","));
             MCATPreprocessingInput preprocessingInput = (MCATPreprocessingInput) dataInterface;
 
             // Raw images preprocessingInput/rawImages/<subject>_rawImage.tif
@@ -551,119 +540,111 @@ public class MCATRun implements MCATValidatable {
             preprocessingInput.getRawImage().setFileName(Paths.get(subjects + "_rawImage.tif"));
 
             // Tissue ROIs preprocessingInput/tissueRois/<subject>_<roiName>_roiFile.roi
-           preprocessingInput.getTissueROI().setStorageFilePath(outputPath.resolve("preprocessingInput").resolve("tissueRois"));
-           preprocessingInput.getTissueROI().setFileName(Paths.get(subjects)); // roiName will be set before flush
-       }
-       else if(dataInterface instanceof MCATPreprocessingOutput) {
-           String subjects = key.getDataSetNames().stream().sorted().collect(Collectors.joining(","));
-           MCATPreprocessingOutput preprocessingOutput = (MCATPreprocessingOutput) dataInterface;
-           String identifier = getPreprocessingIdentifier(key, subjects);
+            preprocessingInput.getTissueROI().setStorageFilePath(outputPath.resolve("preprocessingInput").resolve("tissueRois"));
+            preprocessingInput.getTissueROI().setFileName(Paths.get(subjects)); // roiName will be set before flush
+        } else if (dataInterface instanceof MCATPreprocessingOutput) {
+            String subjects = key.getDataSetNames().stream().sorted().collect(Collectors.joining(","));
+            MCATPreprocessingOutput preprocessingOutput = (MCATPreprocessingOutput) dataInterface;
+            String identifier = getPreprocessingIdentifier(key, subjects);
 
-           // Preprocessed images preprocessingOutput/preprocessedImages/<subject>_anatomyCh_<x>-signalCh-<x>_down-<x>_preprocessedImage.tif
-           preprocessingOutput.getPreprocessedImage().setStorageFilePath(outputPath.resolve("preprocessingOutput").resolve("preprocessedImages"));
-           preprocessingOutput.getPreprocessedImage().setFileName(Paths.get(identifier + "_preprocessedImage.tif"));
+            // Preprocessed images preprocessingOutput/preprocessedImages/<subject>_anatomyCh_<x>-signalCh-<x>_down-<x>_preprocessedImage.tif
+            preprocessingOutput.getPreprocessedImage().setStorageFilePath(outputPath.resolve("preprocessingOutput").resolve("preprocessedImages"));
+            preprocessingOutput.getPreprocessedImage().setFileName(Paths.get(identifier + "_preprocessedImage.tif"));
 
-           // Derivative matrix preprocessingOutput/derivativeMatrices/<subject>_anatomyCh_<x>-signalCh-<x>_down-<x>_der.tf
-           preprocessingOutput.getDerivativeMatrix().setStorageFilePath(outputPath.resolve("preprocessingOutput").resolve("derivativeMatrices"));
-           preprocessingOutput.getDerivativeMatrix().setFileName(Paths.get(identifier + "_derivativeMatrix.csv"));
-       }
-       else if(dataInterface instanceof MCATClusteringOutput) {
-           MCATClusteringOutput clusteringOutput = (MCATClusteringOutput) dataInterface;
-           String identifier = getClusteringIdentifier(key);
+            // Derivative matrix preprocessingOutput/derivativeMatrices/<subject>_anatomyCh_<x>-signalCh-<x>_down-<x>_der.tf
+            preprocessingOutput.getDerivativeMatrix().setStorageFilePath(outputPath.resolve("preprocessingOutput").resolve("derivativeMatrices"));
+            preprocessingOutput.getDerivativeMatrix().setFileName(Paths.get(identifier + "_derivativeMatrix.csv"));
+        } else if (dataInterface instanceof MCATClusteringOutput) {
+            MCATClusteringOutput clusteringOutput = (MCATClusteringOutput) dataInterface;
+            String identifier = getClusteringIdentifier(key);
 
 
-           String group = getGroupIdentifier(clusteringOutput.getGroupTreatment(), clusteringOutput.getGroupSubject());
+            String group = getGroupIdentifier(clusteringOutput.getGroupTreatment(), clusteringOutput.getGroupSubject());
 
-           for (Map.Entry<String, MCATClusteringOutputDataSetEntry> entry : clusteringOutput.getDataSetEntries().entrySet()) {
-               String subjects = entry.getKey();
+            for (Map.Entry<String, MCATClusteringOutputDataSetEntry> entry : clusteringOutput.getDataSetEntries().entrySet()) {
+                String subjects = entry.getKey();
 //               String treatment = getProject().getDataSets().get(subjects).getParameters().getTreatment(); // TODO: I'm not really sure whether to choose the groupTreatment (by which the clusteringOutput is generated) or the actual treatment of the dataset
-               MCATClusteringOutputDataSetEntry dataSetEntry = entry.getValue();
+                MCATClusteringOutputDataSetEntry dataSetEntry = entry.getValue();
 
-               // Cluster abundance clusteringOutput/clusterAbundance/<treatment>/<subject>_anatomyCh_<x>-signalCh-<x>_down-<x>_grouping-<x>_minT-<x>_maxT-<x>_clusterAbundance.csv
-               dataSetEntry.getClusterAbundance().setStorageFilePath(outputPath.resolve("clusteringOutput").resolve("clusterAbundance").resolve(group));
-               dataSetEntry.getClusterAbundance().setFileName(Paths.get(subjects + "_" + identifier + "_clusterAbundance.csv"));
+                // Cluster abundance clusteringOutput/clusterAbundance/<treatment>/<subject>_anatomyCh_<x>-signalCh-<x>_down-<x>_grouping-<x>_minT-<x>_maxT-<x>_clusterAbundance.csv
+                dataSetEntry.getClusterAbundance().setStorageFilePath(outputPath.resolve("clusteringOutput").resolve("clusterAbundance").resolve(group));
+                dataSetEntry.getClusterAbundance().setFileName(Paths.get(subjects + "_" + identifier + "_clusterAbundance.csv"));
 
-               // Cluster images clusteringOutput/clusteredImages/<treatment>/<subject>_anatomyCh_<x>-signalCh-<x>_down-<x>_grouping-<x>_minT-<x>_maxT-<x>_clusterAbundance.csv
-               dataSetEntry.getClusterImages().setStorageFilePath(outputPath.resolve("clusteringOutput").resolve("clusteredImages").resolve(group));
-               dataSetEntry.getClusterImages().setFileName(Paths.get(subjects + "_" + identifier + "_clusteredImage.tif"));
-           }
+                // Cluster images clusteringOutput/clusteredImages/<treatment>/<subject>_anatomyCh_<x>-signalCh-<x>_down-<x>_grouping-<x>_minT-<x>_maxT-<x>_clusterAbundance.csv
+                dataSetEntry.getClusterImages().setStorageFilePath(outputPath.resolve("clusteringOutput").resolve("clusteredImages").resolve(group));
+                dataSetEntry.getClusterImages().setFileName(Paths.get(subjects + "_" + identifier + "_clusteredImage.tif"));
+            }
 
-           // Cluster centers clusteringOutput/clusterCenters/<treatment>_anatomyCh_<x>-signalCh-<x>_down-<x>_grouping-<x>_minT-<x>_maxT-<x>_clusterCenters.csv
-           clusteringOutput.getClusterCenters().setStorageFilePath(outputPath.resolve("clusteringOutput").resolve("clusterCenters"));
-           clusteringOutput.getClusterCenters().setFileName(Paths.get(group + "_" + identifier + "_clusterCenters.csv"));
-       }
-       else if(dataInterface instanceof MCATClusteredPlotGenerationOutput) {
-           MCATClusteredPlotGenerationOutput plotGenerationOutput = (MCATClusteredPlotGenerationOutput) dataInterface;
+            // Cluster centers clusteringOutput/clusterCenters/<treatment>_anatomyCh_<x>-signalCh-<x>_down-<x>_grouping-<x>_minT-<x>_maxT-<x>_clusterCenters.csv
+            clusteringOutput.getClusterCenters().setStorageFilePath(outputPath.resolve("clusteringOutput").resolve("clusterCenters"));
+            clusteringOutput.getClusterCenters().setFileName(Paths.get(group + "_" + identifier + "_clusterCenters.csv"));
+        } else if (dataInterface instanceof MCATClusteredPlotGenerationOutput) {
+            MCATClusteredPlotGenerationOutput plotGenerationOutput = (MCATClusteredPlotGenerationOutput) dataInterface;
 
-           // Clustering plots clusteringPlots/anatomyCh_<x>-signalCh-<x>_down-<x>_grouping-<x>_minT-<x>_maxT-<x>_clusterCentersPlot<.png/svg/csv/...>
-           plotGenerationOutput.getTimeDerivativePlot().setStorageFilePath(outputPath.resolve("clusteringPlots"));
-           plotGenerationOutput.getTimeDerivativePlot().setFileName(Paths.get(getClusteringIdentifier(key) + "_clusterCentersPlot"));
-       }
-       else if(dataInterface instanceof MCATPostprocessingOutput) {
-           MCATPostprocessingOutput postprocessingOutput = (MCATPostprocessingOutput) dataInterface;
+            // Clustering plots clusteringPlots/anatomyCh_<x>-signalCh-<x>_down-<x>_grouping-<x>_minT-<x>_maxT-<x>_clusterCentersPlot<.png/svg/csv/...>
+            plotGenerationOutput.getTimeDerivativePlot().setStorageFilePath(outputPath.resolve("clusteringPlots"));
+            plotGenerationOutput.getTimeDerivativePlot().setFileName(Paths.get(getClusteringIdentifier(key) + "_clusterCentersPlot"));
+        } else if (dataInterface instanceof MCATPostprocessingOutput) {
+            MCATPostprocessingOutput postprocessingOutput = (MCATPostprocessingOutput) dataInterface;
 
-           String group = getGroupIdentifier(postprocessingOutput.getGroupTreatment(), postprocessingOutput.getGroupSubject());
+            String group = getGroupIdentifier(postprocessingOutput.getGroupTreatment(), postprocessingOutput.getGroupSubject());
 
-           // Clustering plots postprocessingOutput/<treatment>_anatomyCh_<x>-signalCh-<x>_down-<x>_grouping-<x>_minT-<x>_maxT-<x>_aucData.csv
-           postprocessingOutput.getAuc().setStorageFilePath(outputPath.resolve("postprocessingOutput"));
-           postprocessingOutput.getAuc().setFileName(Paths.get(group + "_" + getClusteringIdentifier(key) + "_aucData.csv"));
+            // Clustering plots postprocessingOutput/<treatment>_anatomyCh_<x>-signalCh-<x>_down-<x>_grouping-<x>_minT-<x>_maxT-<x>_aucData.csv
+            postprocessingOutput.getAuc().setStorageFilePath(outputPath.resolve("postprocessingOutput"));
+            postprocessingOutput.getAuc().setFileName(Paths.get(group + "_" + getClusteringIdentifier(key) + "_aucData.csv"));
 
-       }
-       else if(dataInterface instanceof MCATPostprocessedPlotGenerationOutput) {
-           MCATPostprocessedPlotGenerationOutput plotGenerationOutput = (MCATPostprocessedPlotGenerationOutput) dataInterface;
-           String group = getGroupIdentifier(plotGenerationOutput.getGroupTreatment(), plotGenerationOutput.getGroupSubject());
+        } else if (dataInterface instanceof MCATPostprocessedPlotGenerationOutput) {
+            MCATPostprocessedPlotGenerationOutput plotGenerationOutput = (MCATPostprocessedPlotGenerationOutput) dataInterface;
+            String group = getGroupIdentifier(plotGenerationOutput.getGroupTreatment(), plotGenerationOutput.getGroupSubject());
 
-           // AUC plot postprocessingPlots/anatomyCh_<x>-signalCh-<x>_down-<x>_grouping-<x>_minT-<x>_maxT-<x>_aucPlot.<png/svg/csv,...>
-           plotGenerationOutput.getAucPlotData().setStorageFilePath(outputPath.resolve("postprocessingPlots"));
-           plotGenerationOutput.getAucPlotData().setFileName(Paths.get(group + "_" + getClusteringIdentifier(key) + "_aucPlot"));
-       }
+            // AUC plot postprocessingPlots/anatomyCh_<x>-signalCh-<x>_down-<x>_grouping-<x>_minT-<x>_maxT-<x>_aucPlot.<png/svg/csv,...>
+            plotGenerationOutput.getAucPlotData().setStorageFilePath(outputPath.resolve("postprocessingPlots"));
+            plotGenerationOutput.getAucPlotData().setFileName(Paths.get(group + "_" + getClusteringIdentifier(key) + "_aucPlot"));
+        }
     }
 
     private String getGroupIdentifier(String groupTreatment, String groupSubject) {
-        if(StringUtils.isNullOrEmpty(groupTreatment) && StringUtils.isNullOrEmpty(groupSubject)) {
+        if (StringUtils.isNullOrEmpty(groupTreatment) && StringUtils.isNullOrEmpty(groupSubject)) {
             return "ALL";
-        }
-        else if(StringUtils.isNullOrEmpty(groupTreatment)) {
+        } else if (StringUtils.isNullOrEmpty(groupTreatment)) {
             return groupSubject;
-        }
-        else if(StringUtils.isNullOrEmpty(groupSubject)){
+        } else if (StringUtils.isNullOrEmpty(groupSubject)) {
             return groupTreatment;
-        }
-        else {
+        } else {
             return groupTreatment + "-" + groupSubject;
         }
     }
 
     private String getPreprocessingIdentifier(MCATDataInterfaceKey key, String subjects) {
         MCATPreprocessingParameters preprocessingParameters = key.getParameterOfType(MCATPreprocessingParameters.class);
-        String identifier =  subjects + "_" +
+        String identifier = subjects + "_" +
                 "anatomyCh-" + preprocessingParameters.getAnatomicChannel() + "_" +
                 "signalCh-" + preprocessingParameters.getChannelOfInterest() + "_" +
                 "down-" + preprocessingParameters.getDownsamplingFactor();
-        if(preprocessingParameters.getMinTime() != MCATPreprocessingParameters.MIN_TIME_DEFAULT) {
+        if (preprocessingParameters.getMinTime() != MCATPreprocessingParameters.MIN_TIME_DEFAULT) {
             identifier += "_" + "startT" + "-" + preprocessingParameters.getMinTime();
         }
-        if(preprocessingParameters.getMaxTime() != MCATPreprocessingParameters.MAX_TIME_DEFAULT) {
+        if (preprocessingParameters.getMaxTime() != MCATPreprocessingParameters.MAX_TIME_DEFAULT) {
             identifier += "_" + "endT" + "-" + preprocessingParameters.getMaxTime();
         }
-        return  identifier;
+        return identifier;
     }
 
     private String getClusteringIdentifier(MCATDataInterfaceKey key) {
         MCATPreprocessingParameters preprocessingParameters = key.getParameterOfType(MCATPreprocessingParameters.class);
         MCATClusteringParameters clusteringParameters = key.getParameterOfType(MCATClusteringParameters.class);
-        String identifier =  "anatomyCh-" + preprocessingParameters.getAnatomicChannel() + "_" +
+        String identifier = "anatomyCh-" + preprocessingParameters.getAnatomicChannel() + "_" +
                 "signalCh-" + preprocessingParameters.getChannelOfInterest() + "_" +
                 "down-" + preprocessingParameters.getDownsamplingFactor() + "_" +
                 "grouping-" + clusteringParameters.getClusteringHierarchy().name() + "_" +
                 "k-" + clusteringParameters.getkMeansK();
-        if(preprocessingParameters.getMinTime() != MCATPreprocessingParameters.MIN_TIME_DEFAULT) {
+        if (preprocessingParameters.getMinTime() != MCATPreprocessingParameters.MIN_TIME_DEFAULT) {
             identifier += "_" + "startT" + "-" + preprocessingParameters.getMinTime();
         }
-        if(preprocessingParameters.getMaxTime() != MCATPreprocessingParameters.MAX_TIME_DEFAULT) {
+        if (preprocessingParameters.getMaxTime() != MCATPreprocessingParameters.MAX_TIME_DEFAULT) {
             identifier += "_" + "endT" + "-" + preprocessingParameters.getMaxTime();
         }
-        return  identifier;
+        return identifier;
     }
 
     public void run(Consumer<Status> onProgress, Supplier<Boolean> isCancelled) {
@@ -671,18 +652,18 @@ public class MCATRun implements MCATValidatable {
         DOTExporter<MCATAlgorithm, DefaultEdge> exporter = new DOTExporter<>(new IntegerComponentNameProvider<>(), new StringComponentNameProvider<MCATAlgorithm>() {
             @Override
             public String getName(MCATAlgorithm component) {
-                if(component instanceof MCATPreprocessingAlgorithm)
+                if (component instanceof MCATPreprocessingAlgorithm)
                     return component.getName() + " " + ((MCATPreprocessingAlgorithm) component).getPreprocessingParameters().toShortenedString();
-                else if(component instanceof MCATClusteringAlgorithm)
+                else if (component instanceof MCATClusteringAlgorithm)
                     return component.getName() + " " + ((MCATClusteringAlgorithm) component).getPreprocessingParameters().toShortenedString() + " " + ((MCATClusteringAlgorithm) component).getClusteringParameters().toShortenedString();
-                else if(component instanceof MCATPostprocessingAlgorithm)
+                else if (component instanceof MCATPostprocessingAlgorithm)
                     return component.getName() + " " + ((MCATPostprocessingAlgorithm) component).getPreprocessingParameters().toShortenedString() + " " +
                             ((MCATPostprocessingAlgorithm) component).getClusteringParameters().toShortenedString() + " " + ((MCATPostprocessingAlgorithm) component).getPostprocessingParameters().toShortenedString();
                 return component.getName();
             }
         }, null);
         try {
-            exporter.exportGraph(graph.getGraph(),outputPath.resolve("graph.dot").toFile());
+            exporter.exportGraph(graph.getGraph(), outputPath.resolve("graph.dot").toFile());
         } catch (ExportException e) {
             e.printStackTrace();
         }

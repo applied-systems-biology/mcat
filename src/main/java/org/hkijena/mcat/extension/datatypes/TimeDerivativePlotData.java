@@ -1,30 +1,20 @@
 /*******************************************************************************
  * Copyright by Dr. Bianca Hoffmann, Ruman Gerst, Dr. Zoltán Cseresnyés and Prof. Dr. Marc Thilo Figge
- * 
+ *
  * Research Group Applied Systems Biology - Head: Prof. Dr. Marc Thilo Figge
  * https://www.leibniz-hki.de/en/applied-systems-biology.html
  * HKI-Center for Systems Biology of Infection
  * Leibniz Institute for Natural Product Research and Infection Biology - Hans Knöll Insitute (HKI)
  * Adolf-Reichwein-Straße 23, 07745 Jena, Germany
- * 
+ *
  * The project code is licensed under BSD 2-Clause.
  * See the LICENSE file provided with the code for the full license.
  ******************************************************************************/
 package org.hkijena.mcat.extension.datatypes;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.Rectangle;
-import java.awt.image.BufferedImage;
-import java.io.BufferedOutputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
+import ij.measure.ResultsTable;
 import org.apache.commons.math3.ml.clustering.DoublePoint;
 import org.hkijena.mcat.api.MCATCentroidCluster;
 import org.hkijena.mcat.api.MCATData;
@@ -40,10 +30,18 @@ import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.graphics2d.svg.SVGGraphics2D;
 import org.jfree.graphics2d.svg.SVGUtils;
 
-import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonSetter;
-
-import ij.measure.ResultsTable;
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
+import java.io.BufferedOutputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Plots multiple {@link ClusterCentersData}
@@ -172,7 +170,7 @@ public class TimeDerivativePlotData implements MCATData {
             int nSeries = table.getLastColumn() + 1;
             for (int col = 0; col < nSeries; col++) {
                 XYSeries series = new XYSeries("C" + col);
-                series.add(0,0);
+                series.add(0, 0);
                 for (int row = 0; row < table.getCounter(); row++) {
                     series.add(row + 1, table.getValueAsDouble(col, row));
                 }
@@ -183,24 +181,24 @@ public class TimeDerivativePlotData implements MCATData {
                     "Time (downsampled)",
                     "Time derivative",
                     dataset));
-            XYPlot plot = (XYPlot)chart.getPlot();
+            XYPlot plot = (XYPlot) chart.getPlot();
             XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
             for (int col = 0; col < nSeries; col++) {
-            	renderer.setSeriesPaint(col, new Color(colors.get(col)));
+                renderer.setSeriesPaint(col, new Color(colors.get(col)));
             }
             plot.setRenderer(renderer);
             return chart;
         }
 
-		@JsonGetter("colors")	
-		public List<Integer> getColors() {
-			return colors;
-		}
+        @JsonGetter("colors")
+        public List<Integer> getColors() {
+            return colors;
+        }
 
-		@JsonSetter("colors")
-		public void setColors(List<Integer> colors) {
-			this.colors = colors;
-		}
+        @JsonSetter("colors")
+        public void setColors(List<Integer> colors) {
+            this.colors = colors;
+        }
     }
 
 }

@@ -1,23 +1,22 @@
 /*******************************************************************************
  * Copyright by Dr. Bianca Hoffmann, Ruman Gerst, Dr. Zoltán Cseresnyés and Prof. Dr. Marc Thilo Figge
- * 
+ *
  * Research Group Applied Systems Biology - Head: Prof. Dr. Marc Thilo Figge
  * https://www.leibniz-hki.de/en/applied-systems-biology.html
  * HKI-Center for Systems Biology of Infection
  * Leibniz Institute for Natural Product Research and Infection Biology - Hans Knöll Insitute (HKI)
  * Adolf-Reichwein-Straße 23, 07745 Jena, Germany
- * 
+ *
  * The project code is licensed under BSD 2-Clause.
  * See the LICENSE file provided with the code for the full license.
  ******************************************************************************/
 package org.hkijena.mcat.api.parameters;
 
-import org.hkijena.mcat.api.MCATDocumentation;
-import org.hkijena.mcat.api.events.ParameterChangedEvent;
-
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.google.common.eventbus.EventBus;
+import org.hkijena.mcat.api.MCATDocumentation;
+import org.hkijena.mcat.api.events.ParameterChangedEvent;
 
 import java.util.Objects;
 
@@ -33,8 +32,8 @@ import java.util.Objects;
  * Add the variable to getHashCode() and equals()
  */
 public class MCATPreprocessingParameters implements MCATParameterCollection {
-	public static final int MIN_TIME_DEFAULT = 1, MAX_TIME_DEFAULT = Integer.MAX_VALUE;
-	
+    public static final int MIN_TIME_DEFAULT = 1, MAX_TIME_DEFAULT = Integer.MAX_VALUE;
+
     private EventBus eventBus = new EventBus();
     private int downsamplingFactor = 4;
     private int channelOfInterest = 2;
@@ -68,7 +67,7 @@ public class MCATPreprocessingParameters implements MCATParameterCollection {
     @JsonSetter("downsampling-factor")
     @MCATParameter("downsampling-factor")
     public boolean setDownsamplingFactor(int downsamplingFactor) {
-    	if (downsamplingFactor <= 0) {
+        if (downsamplingFactor <= 0) {
             return false;
         }
         this.downsamplingFactor = downsamplingFactor;
@@ -86,7 +85,7 @@ public class MCATPreprocessingParameters implements MCATParameterCollection {
     @JsonSetter("channel-of-interest")
     @MCATParameter("channel-of-interest")
     public boolean setChannelOfInterest(int channelOfInterest) {
-    	if (channelOfInterest <= 0) {
+        if (channelOfInterest <= 0) {
             return false;
         }
         this.channelOfInterest = channelOfInterest;
@@ -104,7 +103,7 @@ public class MCATPreprocessingParameters implements MCATParameterCollection {
     @JsonSetter("anatomic-channel")
     @MCATParameter("anatomic-channel")
     public boolean setAnatomicChannel(int anatomicChannel) {
-    	if (anatomicChannel < 0) {
+        if (anatomicChannel < 0) {
             return false;
         }
         this.anatomicChannel = anatomicChannel;
@@ -150,7 +149,7 @@ public class MCATPreprocessingParameters implements MCATParameterCollection {
     @JsonSetter("min-time")
     @MCATParameter("min-time")
     public boolean setMinTime(int minTime) {
-    	if (minTime < 1) {
+        if (minTime < 1) {
             return false;
         }
         this.minTime = minTime;
@@ -168,7 +167,7 @@ public class MCATPreprocessingParameters implements MCATParameterCollection {
     @JsonSetter("max-time")
     @MCATParameter("max-time")
     public boolean setMaxTime(int maxTime) {
-    	if (maxTime < 1) {
+        if (maxTime < 1) {
             return false;
         }
         this.maxTime = maxTime;
@@ -206,10 +205,10 @@ public class MCATPreprocessingParameters implements MCATParameterCollection {
     }
 
     public String toShortenedString() {
-		String minT = minTime == MIN_TIME_DEFAULT? "" : "_minTime-" + minTime;
-		String maxT = maxTime == MAX_TIME_DEFAULT? "" : "_maxTime-" + maxTime;
-		
-		return "_anatomyCh-" + anatomicChannel + "_signalCh-" + channelOfInterest + 
-				"_down-" + downsamplingFactor + minT + maxT;
-	}
+        String minT = minTime == MIN_TIME_DEFAULT ? "" : "_minTime-" + minTime;
+        String maxT = maxTime == MAX_TIME_DEFAULT ? "" : "_maxTime-" + maxTime;
+
+        return "_anatomyCh-" + anatomicChannel + "_signalCh-" + channelOfInterest +
+                "_down-" + downsamplingFactor + minT + maxT;
+    }
 }
