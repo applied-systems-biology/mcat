@@ -17,11 +17,16 @@ import java.util.Map;
 
 public class Cellpose implements Runnable {
 
+    /**
+     * INFO: The model name encodes some info. Cellpose requires the metadata from the name!!!
+     */
+    public static final String CELLPOSE_MODEL_NAME = "cellpose_residual_on_style_on_concatenation_off";
+
     private final Path tmpPath;
     private List<ImagePlus> inputImages = new ArrayList<>();
     private List<ImagePlus> outputProbabilities = new ArrayList<>();
 
-    private double diameter = 30;
+    private double diameter = 210;
     private boolean normalize = true;
     private boolean netAverage = true;
     private boolean augment = false;
@@ -53,9 +58,9 @@ public class Cellpose implements Runnable {
 
         // Save the model
         System.out.println("Saving pretrained model ...");
-        Path modelPath = tmpPath.resolve("cellpose_model");
+        Path modelPath = tmpPath.resolve(CELLPOSE_MODEL_NAME);
         try {
-            Files.copy(ResourceUtils.getPluginResourceAsStream("models/cellpose_model"), modelPath);
+            Files.copy(ResourceUtils.getPluginResourceAsStream("models/" + CELLPOSE_MODEL_NAME), modelPath);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -79,6 +84,9 @@ public class Cellpose implements Runnable {
             IJ.save(inputImages.get(i), rawPath.toString());
         }
 
+        // Create model
+        setupCustomCellposeModel(code, modelPath);
+
         code.append("input_image_paths = ").append(PythonUtils.objectToPython(inputImagePaths)).append("\n");
         code.append("output_probabilities_paths = ").append(PythonUtils.objectToPython(outputProbabilitiesPaths)).append("\n");
 
@@ -88,10 +96,6 @@ public class Cellpose implements Runnable {
         code.append("    input_file = input_image_paths[image_index]\n");
         code.append("    img = io.imread(input_file)\n");
         code.append("    print(\"Read image with index\", image_index, \"shape\", img.shape)\n");
-
-        // Create model
-        injectCustomCellposeClass(code);
-        setupCustomCellposeModel(code, modelPath);
 
         // Evaluate model
         setupModelEval(code);
@@ -114,7 +118,7 @@ public class Cellpose implements Runnable {
         evalParameterMap.put("x", PythonUtils.rawPythonCode("img"));
         evalParameterMap.put("diameter", diameter);
         evalParameterMap.put("channels", PythonUtils.rawPythonCode("[[0, 0]]"));
-        evalParameterMap.put("do_3D", PythonUtils.rawPythonCode("enable_3d_segmentation[image_index]"));
+        evalParameterMap.put("do_3D", false);
         evalParameterMap.put("normalize", normalize);
         evalParameterMap.put("anisotropy", enableAnisotropy ?
                 anisotropy : null);
@@ -130,6 +134,7 @@ public class Cellpose implements Runnable {
         evalParameterMap.put("stitch_threshold", 0);
 
         code.append(String.format("    masks, flows, styles, diams = model.eval(%s)\n", PythonUtils.mapToPythonArguments(evalParameterMap)));
+        code.append("    probs = flows[2]\n");
         code.append("    io.imsave(").append("output_probabilities_paths[image_index]").append(", probs)\n");
     }
 

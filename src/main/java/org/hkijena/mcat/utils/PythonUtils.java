@@ -78,11 +78,12 @@ public class PythonUtils {
             case Conda:
                 commandLine.addArgument("run");
                 commandLine.addArgument("--no-capture-output");
-                commandLine.addArgument("-p");
+                commandLine.addArgument("-n");
                 commandLine.addArgument(environment.getCondaEnvironment());
                 commandLine.addArgument("python");
                 commandLine.addArgument("-u");
                 commandLine.addArgument(scriptFile.toString());
+                break;
             case VirtualEnvironment:
                 commandLine.addArgument("-u");
                 commandLine.addArgument(scriptFile.toString());

@@ -29,6 +29,7 @@ import org.hkijena.mcat.api.parameters.MCATParametersTableRow;
 import org.hkijena.mcat.api.parameters.MCATPostprocessingParameters;
 import org.hkijena.mcat.api.parameters.MCATPreprocessingParameters;
 import org.hkijena.mcat.utils.JsonUtils;
+import org.hkijena.mcat.utils.PathUtils;
 import org.hkijena.mcat.utils.StringUtils;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.io.DOTExporter;
@@ -101,7 +102,7 @@ public class MCATRun implements MCATValidatable {
 
     public Path getScratch(String name) {
         try {
-            return Files.createTempDirectory(getOutputPath().resolve("_scratch"), name);
+            return Files.createTempDirectory(PathUtils.resolveAndMakeSubDirectory(getOutputPath(), "_scratch"), name);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

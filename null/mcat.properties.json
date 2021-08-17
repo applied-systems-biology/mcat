@@ -1,1 +1,1 @@
-{"cellpose-environment":{"type":"System","executable-path":"file:///data/src/msot-cluster-analysis-tool/","conda-environment":"base"}}
+{"cellpose-environment":{"type":"Conda","executable-path":"file:///data/src/msot-cluster-analysis-tool/mcat/cellpose-cpu/bin/conda","conda-environment":"base"}}

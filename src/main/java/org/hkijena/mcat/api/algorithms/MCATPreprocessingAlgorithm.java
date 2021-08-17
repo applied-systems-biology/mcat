@@ -358,8 +358,6 @@ public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
         ImageConverter converter = new ImageConverter(probabilities);
         converter.convertToGray8();
 
-        // TODO: Proper processing
-
         // Thresholding (float -> 8 bit -> otsu)
         AutoThresholder autoThresholder = new AutoThresholder();
         int[] histogram = probabilities.getProcessor().getHistogram();
@@ -382,7 +380,7 @@ public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
                 Double.POSITIVE_INFINITY,
                 0,
                 Double.POSITIVE_INFINITY);
-        analyzer.analyze(imp, maskProcessor);
+        analyzer.analyze(probabilities, maskProcessor);
         return manager.getRoisAsArray()[0];
     }
 
