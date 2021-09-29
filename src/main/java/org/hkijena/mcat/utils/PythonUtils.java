@@ -24,7 +24,7 @@ public class PythonUtils {
     }
 
     public static void runPython(String code, PythonEnvironment environment) {
-        System.out.println(code);
+//        System.out.println(code);
         Path codeFilePath = PathUtils.generateTempFile("py", ".py");
         try {
             Files.write(codeFilePath, code.getBytes(StandardCharsets.UTF_8));
@@ -35,13 +35,13 @@ public class PythonUtils {
     }
 
     public static void setupLogger(CommandLine commandLine, DefaultExecutor executor) {
-        System.out.println("Running " + Arrays.stream(commandLine.toStrings()).map(s -> {
-            if (s.contains(" ")) {
-                return "\"" + PythonUtils.escapeString(s) + "\"";
-            } else {
-                return PythonUtils.escapeString(s);
-            }
-        }).collect(Collectors.joining(" ")));
+//        System.out.println("Running " + Arrays.stream(commandLine.toStrings()).map(s -> {
+//            if (s.contains(" ")) {
+//                return "\"" + PythonUtils.escapeString(s) + "\"";
+//            } else {
+//                return PythonUtils.escapeString(s);
+//            }
+//        }).collect(Collectors.joining(" ")));
 
         LogOutputStream progressInfoLog = new LogOutputStream() {
             @Override
@@ -66,9 +66,9 @@ public class PythonUtils {
 
         Map<String, String> environmentVariables = new HashMap<>(System.getenv());
         environmentVariables.putAll(environment.getEnvironmentVariables());
-        for (Map.Entry<String, String> entry : environmentVariables.entrySet()) {
-            System.out.println("Setting environment variable " + entry.getKey() + "=" + entry.getValue());
-        }
+//        for (Map.Entry<String, String> entry : environmentVariables.entrySet()) {
+//            System.out.println("Setting environment variable " + entry.getKey() + "=" + entry.getValue());
+//        }
 
         switch (environment.getType()) {
             case System:

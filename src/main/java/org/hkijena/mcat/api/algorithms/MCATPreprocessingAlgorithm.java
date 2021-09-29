@@ -19,6 +19,7 @@ import ij.ImagePlus;
 import ij.ImageStack;
 import ij.Prefs;
 import ij.gui.Roi;
+import ij.gui.WaitForUserDialog;
 import ij.measure.ResultsTable;
 import ij.plugin.Duplicator;
 import ij.plugin.ImageCalculator;
@@ -28,7 +29,13 @@ import ij.process.AutoThresholder;
 import ij.process.ImageConverter;
 import ij.process.ImageProcessor;
 import ij.process.ImageStatistics;
+import ij.process.LUT;
+import inra.ijpb.morphology.Morphology;
+import inra.ijpb.morphology.strel.DiskStrel;
+import net.imagej.lut.LUTSelector;
+
 import org.hkijena.mcat.api.MCATAlgorithm;
+import org.hkijena.mcat.api.MCATData;
 import org.hkijena.mcat.api.MCATDataSlot;
 import org.hkijena.mcat.api.MCATRun;
 import org.hkijena.mcat.api.MCATSettings;
@@ -207,6 +214,7 @@ public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
     public void run() {
 
         getPreprocessingInput().getRawImage().resetFromCurrentProvider();
+        
         ImagePlus imp = getPreprocessingInput().getRawImage().getData(HyperstackData.class).getImage();
 
         saveRaw = getPreprocessingParameters().isSaveRawImage();
@@ -222,8 +230,7 @@ public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
                 "; width = " + imp.getWidth() +
                 "; height = " + imp.getHeight() +
                 "; frames = " + imp.getNFrames() +
-                "; channels = " + imp.getNChannels() +
-                "; roi name = " + roiName);
+                "; channels = " + imp.getNChannels());
 
         /*
          * remove slices before Start time frame and after End time frame if necessary
@@ -267,23 +274,23 @@ public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
 
         ////////////////////// TODO: I DON'T KNOW WHERE TO PUT THIS
         MCATDataSlot tissueROI = getPreprocessingInput().getTissueROI();
-
-        if(tissueROI != null && tissueROI.hasData()) {
-            System.out.println("Using user-provided ROI ...");
+        
+        if(tissueROI.hasDataOrIsProvidedData()) {
+            System.out.println("\tUsing user-provided ROI ...");
             tissueROI.resetFromCurrentProvider();
             roi = tissueROI.getData(ROIData.class).getRoi();
-
             if (roi != null)
                 roiName = roi.getName();
             tissueROI.setData(new ROIData(roi, roi.getName()));
         }
         else {
-            System.out.println("Segmenting tissue ...");
+            System.out.println("\tSegmenting tissue ...");
             roi = segmentTissue(imp);
             if (roi != null)
                 roiName = roi.getName();
             tissueROI.setData(new ROIData(roi, roi.getName()));
         }
+        
         //////////////////////
 
         /*
@@ -344,31 +351,38 @@ public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
     }
 
     private Roi segmentTissue(ImagePlus imp) {
+    	String name = "cellpose";
+    	
         // The image is already time-cropped
         ImagePlus firstSlice = new ImagePlus(imp.getTitle(), imp.getProcessor());
-
+        
         // Run cellpose
         Cellpose cellpose = new Cellpose(getRun().getScratch("cellpose"));
         cellpose.setPythonEnvironment(MCATSettings.getInstance().getCellposeEnvironment());
         cellpose.addInputImage(firstSlice);
         cellpose.run();
-
+        
         // Get probabilities
         ImagePlus probabilities = cellpose.getOutputProbabilities().get(0);
         ImageConverter converter = new ImageConverter(probabilities);
         converter.convertToGray8();
-
-        // Thresholding (float -> 8 bit -> otsu)
+        
+        // Improve Contrast between foreground/background
+        IJ.run(probabilities, "Median...", "radius=2");
+        IJ.run(probabilities, "Enhance Contrast...", "saturated=0.3 normalize");
+        
+        // Apply Otsu threshold
         AutoThresholder autoThresholder = new AutoThresholder();
-        int[] histogram = probabilities.getProcessor().getHistogram();
-        int threshold = autoThresholder.getThreshold(AutoThresholder.Method.Otsu, histogram);
-
-        ImageProcessor maskProcessor = probabilities.getProcessor().duplicate();
-        maskProcessor.threshold(threshold);
-
-        // Particle finder
-        // Otherwise we might get issues
-        Prefs.blackBackground = true;
+	    int[] histogram = probabilities.getProcessor().getHistogram();
+	    int threshold = autoThresholder.getThreshold(AutoThresholder.Method.Otsu, histogram);
+	    probabilities.getProcessor().threshold(threshold);
+	    
+	    // Fill holes and remove noise
+        IJ.run(probabilities, "Options...", "iterations=1 count=1 black");
+        IJ.run(probabilities, "Fill Holes","");
+        IJ.run(probabilities, "Despeckle","");
+        
+        // Particle finder to find objects - create mask with largest object
         RoiManager manager = new RoiManager(true);
         ResultsTable table = new ResultsTable();
         ParticleAnalyzer.setRoiManager(manager);
@@ -380,8 +394,57 @@ public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
                 Double.POSITIVE_INFINITY,
                 0,
                 Double.POSITIVE_INFINITY);
-        analyzer.analyze(new ImagePlus("mask", maskProcessor), maskProcessor);
-        return manager.getRoisAsArray()[0];
+        analyzer.analyze(probabilities, probabilities.getProcessor());
+        
+        ImagePlus mask = IJ.createImage("mask", "8-bit black", probabilities.getWidth(), probabilities.getHeight(), 1);
+        
+        Roi[] rois = manager.getRoisAsArray();
+        int maxPix = 0;
+        int index = -1;
+        for (int i = 0; i < rois.length; i++) {
+			int pix = rois[i].getContainedPoints().length;
+			if(pix > maxPix) {
+				maxPix = pix;
+				index = i;
+			}
+		}
+        if(index == -1) {
+        	return null;
+        }
+        else {
+        	IJ.run("Colors...","foreground=white background=black selection=yellow");
+            manager.select(index);
+            manager.runCommand(mask, "Fill");
+        }
+        
+        // Morphological filtering of mask object
+        int width = mask.getWidth();
+        int height = mask.getHeight();
+        
+        IJ.run(mask, "Canvas Size...", "width=" + width*2 + " height=" + height*2 + " position=Center zero");
+        
+        ImageProcessor morphed = Morphology.closing(mask.getProcessor(), DiskStrel.fromRadius(50));
+        morphed = Morphology.opening(mask.getProcessor(), DiskStrel.fromRadius(50));
+        mask.setProcessor(morphed);
+        
+        IJ.run(mask, "Canvas Size...", "width=" + width + " height=" + height + " position=Center zero");
+        
+        // Get convex hull of mask object
+        IJ.run(mask, "Options...", "iterations=1 count=1 black");
+        mask.getProcessor().setThreshold(127, 255, ImageProcessor.BLACK_AND_WHITE_LUT);
+        IJ.run(mask, "Convert to Mask", "");
+        IJ.run(mask, "Create Selection", "");
+        IJ.run(mask, "Convex Hull", "");
+        IJ.run(mask, "Fill", "slice");
+        
+        mask.getProcessor().setThreshold(127, 255, ImageProcessor.BLACK_AND_WHITE_LUT);
+        IJ.run(mask, "Convert to Mask", "");
+        IJ.run(mask, "Create Selection", "");
+        
+        Roi r = mask.getRoi();
+        r.setName(name);
+        
+        return r;
     }
 
     @Override

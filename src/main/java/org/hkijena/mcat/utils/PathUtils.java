@@ -48,14 +48,14 @@ public class PathUtils {
         FileVisitor<Path> visitor = new SimpleFileVisitor<Path>() {
             @Override
             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                System.out.println("Delete: " + file.toString());
+//                System.out.println("Delete: " + file.toString());
                 Files.delete(file);
                 return FileVisitResult.CONTINUE;
             }
 
             @Override
             public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
-                System.out.println("Delete: " + file.toString());
+//                System.out.println("Delete: " + file.toString());
                 Files.delete(file);
                 return FileVisitResult.CONTINUE;
             }
@@ -65,7 +65,7 @@ public class PathUtils {
                 if (exc != null) {
                     throw exc;
                 }
-                System.out.println("Delete: " + dir.toString());
+//                System.out.println("Delete: " + dir.toString());
                 Files.delete(dir);
                 return FileVisitResult.CONTINUE;
             }

@@ -20,7 +20,7 @@ public class Cellpose implements Runnable {
     /**
      * INFO: The model name encodes some info. Cellpose requires the metadata from the name!!!
      */
-    public static final String CELLPOSE_MODEL_NAME = "cellpose_residual_on_style_on_concatenation_off";
+    public static final String CELLPOSE_MODEL_NAME = "cellpose_residual_on_style_on_concatenation_off_2021_09_10";
 
     private final Path tmpPath;
     private List<ImagePlus> inputImages = new ArrayList<>();
@@ -57,7 +57,7 @@ public class Cellpose implements Runnable {
         }
 
         // Save the model
-        System.out.println("Saving pretrained model ...");
+//        System.out.println("Saving pretrained model ...");
         Path modelPath = tmpPath.resolve(CELLPOSE_MODEL_NAME);
         try {
             Files.copy(ResourceUtils.getPluginResourceAsStream("models/" + CELLPOSE_MODEL_NAME), modelPath);
@@ -80,7 +80,7 @@ public class Cellpose implements Runnable {
             inputImagePaths.add(rawPath);
             outputProbabilitiesPaths.add(probabilitiesPath);
 
-            System.out.println("Saving raw image " + rawPath);
+//            System.out.println("Saving raw image " + rawPath);
             IJ.save(inputImages.get(i), rawPath.toString());
         }
 
@@ -105,7 +105,7 @@ public class Cellpose implements Runnable {
 
         // Extract results
         for (Path path : outputProbabilitiesPaths) {
-            System.out.println("Reading result " + path + " ...");
+//            System.out.println("Reading result " + path + " ...");
             outputProbabilities.add(IJ.openImage(path.toString()));
         }
 

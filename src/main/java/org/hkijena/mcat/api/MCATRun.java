@@ -83,9 +83,9 @@ public class MCATRun implements MCATValidatable {
         Set<MCATPreprocessingParameters> uniquePreprocessingParameters =
                 parametersTable.getRows().stream().map(MCATParametersTableRow::getPreprocessingParameters).collect(Collectors.toSet());
         for (MCATPreprocessingParameters preprocessingParameters : uniquePreprocessingParameters) {
-            System.out.println("Visiting preprocessing parameters: " + preprocessingParameters.toShortenedString());
+//            System.out.println("Visiting preprocessing parameters: " + preprocessingParameters.toShortenedString());
             initializePreprocessing(preprocessingParameters);
-            System.out.println("Finished visiting preprocessing parameters: " + preprocessingParameters.toShortenedString());
+//            System.out.println("Finished visiting preprocessing parameters: " + preprocessingParameters.toShortenedString());
         }
 
         // Install some functionality to lock the parameters (which completely ruins some assumptions)
@@ -110,7 +110,7 @@ public class MCATRun implements MCATValidatable {
 
     private MCATDataInterface getOrCreateDataInterface(MCATDataInterfaceKey key, MCATDataInterface defaultEntry) {
         if (!uniqueDataInterfaces.containsKey(key)) {
-            System.out.println("New data interface: " + key.toString());
+//            System.out.println("New data interface: " + key.toString());
             uniqueDataInterfaces.put(key, defaultEntry);
             return defaultEntry;
         } else {
@@ -121,7 +121,7 @@ public class MCATRun implements MCATValidatable {
     private MCATPreprocessingAlgorithm getOrCreatePreprocessingAlgorithm(MCATDataInterfaceKey key, MCATPreprocessingParameters preprocessingParameters, MCATPreprocessingInput rawDataInterface, MCATPreprocessingOutput preprocessedDataInterface) {
         MCATPreprocessingAlgorithm existing = preprocessingAlgorithmMap.getOrDefault(key, null);
         if (existing == null) {
-            System.out.println("New preprocessing algorithm @ " + key + " input=" + preprocessingParameters.toShortenedString());
+//            System.out.println("New preprocessing algorithm @ " + key + " input=" + preprocessingParameters.toShortenedString());
             existing = new MCATPreprocessingAlgorithm(this,
                     preprocessingParameters,
                     rawDataInterface,
@@ -160,9 +160,9 @@ public class MCATRun implements MCATValidatable {
 
         // Go through unique clustering parameters
         for (MCATClusteringParameters clusteringParameters : uniqueClusteringParameters) {
-            System.out.println("Visiting clustering parameters: " + clusteringParameters.toShortenedString());
+//            System.out.println("Visiting clustering parameters: " + clusteringParameters.toShortenedString());
             initializeClustering(preprocessingParameters, clusteringParameters);
-            System.out.println("Finished visiting clustering parameters: " + clusteringParameters.toShortenedString());
+//            System.out.println("Finished visiting clustering parameters: " + clusteringParameters.toShortenedString());
         }
     }
 
@@ -367,7 +367,7 @@ public class MCATRun implements MCATValidatable {
     private MCATClusteringAlgorithm getOrCreateClusteringAlgorithm(MCATDataInterfaceKey key, MCATPreprocessingParameters preprocessingParameters, MCATClusteringParameters clusteringParameters, MCATClusteringInput clusteringInputInterface, MCATClusteringOutput clusteringOutputInterface) {
         MCATClusteringAlgorithm existing = clusteringAlgorithmMap.getOrDefault(key, null);
         if (existing == null) {
-            System.out.println("New clustering algorithm @ " + key + " input=" + preprocessingParameters.toShortenedString() + "_" + clusteringParameters.toShortenedString());
+//            System.out.println("New clustering algorithm @ " + key + " input=" + preprocessingParameters.toShortenedString() + "_" + clusteringParameters.toShortenedString());
             existing = new MCATClusteringAlgorithm(this,
                     preprocessingParameters,
                     clusteringParameters,
