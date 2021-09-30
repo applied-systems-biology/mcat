@@ -73,15 +73,9 @@ public class Cellpose implements Runnable {
                 throw new RuntimeException(e);
             }
         } else {
-        	System.out.println("Using alternative model: " + alternativeModel.toString());
-        	modelPath = tmpPath.resolve(alternativeModel.getFileName());
-            try {
-                Files.copy(Files.newInputStream(alternativeModel), modelPath);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+        	System.out.println("Using alternative model: " + alternativeModel);
+        	modelPath = alternativeModel;
         }
-        
 
         StringBuilder code = new StringBuilder();
         code.append("from cellpose import models\n");
