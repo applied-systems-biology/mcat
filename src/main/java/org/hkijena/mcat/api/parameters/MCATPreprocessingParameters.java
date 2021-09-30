@@ -18,6 +18,7 @@ import com.google.common.eventbus.EventBus;
 import org.hkijena.mcat.api.MCATDocumentation;
 import org.hkijena.mcat.api.events.ParameterChangedEvent;
 
+import java.nio.file.Path;
 import java.util.Objects;
 
 /**
@@ -42,6 +43,7 @@ public class MCATPreprocessingParameters implements MCATParameterCollection {
     private boolean saveRoi = true;
     private int minTime = MIN_TIME_DEFAULT;
     private int maxTime = MAX_TIME_DEFAULT;
+    private Path cellposeModel = null;
 
     public MCATPreprocessingParameters() {
 
@@ -53,6 +55,7 @@ public class MCATPreprocessingParameters implements MCATParameterCollection {
         this.anatomicChannel = other.anatomicChannel;
         this.saveRawImage = other.saveRawImage;
         this.saveRoi = other.saveRoi;
+        this.cellposeModel = other.cellposeModel;
         this.minTime = other.minTime;
         this.maxTime = other.maxTime;
     }
@@ -138,7 +141,21 @@ public class MCATPreprocessingParameters implements MCATParameterCollection {
         this.saveRoi = saveRoi;
         eventBus.post(new ParameterChangedEvent(this, "save-roi"));
     }
+    
+    @MCATDocumentation(name = "Custom Cellpose model", description = "res:///org/hkijena/mcat/documentation/parameter_preprocessing_cellpose_model.md")
+    @JsonGetter("cellpose-model")
+    @MCATParameter(value = "cellpose-model", shortKey = "cellMod", uiOrder = 7)
+    public Path getCellposeModel() {
+        return cellposeModel;
+    }
 
+    @JsonSetter("cellpose-model")
+    @MCATParameter("cellpose-model")
+    public void setCellposeModel(Path cellposeModel) {
+        this.cellposeModel = cellposeModel;
+        eventBus.post(new ParameterChangedEvent(this, "cellpose-modeli"));
+    }
+    
     @MCATDocumentation(name = "Start time frame", description = "res:///org/hkijena/mcat/documentation/parameter_preprocessing_minimum_time.md")
     @JsonGetter("min-time")
     @MCATParameter(value = "min-time", shortKey = "startTime", uiOrder = 4)
@@ -195,20 +212,22 @@ public class MCATPreprocessingParameters implements MCATParameterCollection {
                 anatomicChannel == that.anatomicChannel &&
                 saveRawImage == that.saveRawImage &&
                 saveRoi == that.saveRoi &&
+                cellposeModel == that.cellposeModel &&
                 minTime == that.minTime &&
                 maxTime == that.maxTime;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(downsamplingFactor, channelOfInterest, anatomicChannel, saveRawImage, saveRoi, minTime, maxTime);
+        return Objects.hash(downsamplingFactor, channelOfInterest, anatomicChannel, saveRawImage, saveRoi, cellposeModel, minTime, maxTime);
     }
 
     public String toShortenedString() {
+    	String mod = cellposeModel == null ? "" : "_customModel";
         String minT = minTime == MIN_TIME_DEFAULT ? "" : "_minTime-" + minTime;
         String maxT = maxTime == MAX_TIME_DEFAULT ? "" : "_maxTime-" + maxTime;
 
         return "_anatomyCh-" + anatomicChannel + "_signalCh-" + channelOfInterest +
-                "_down-" + downsamplingFactor + minT + maxT;
+                "_down-" + downsamplingFactor + mod + minT + maxT;
     }
 }

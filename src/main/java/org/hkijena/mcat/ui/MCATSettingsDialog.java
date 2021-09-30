@@ -1,5 +1,7 @@
 package org.hkijena.mcat.ui;
 
+import org.hkijena.mcat.api.MCATProject;
+import org.hkijena.mcat.api.MCATResult;
 import org.hkijena.mcat.api.MCATSettings;
 import org.hkijena.mcat.api.cellpose.CellPoseEnvInstaller;
 import org.hkijena.mcat.api.cellpose.CellPoseGPUEnvInstaller;
@@ -8,6 +10,7 @@ import org.hkijena.mcat.api.parameters.MCATParameterAccess;
 import org.hkijena.mcat.api.parameters.MCATParameterCollection;
 import org.hkijena.mcat.api.parameters.MCATParameterVisibility;
 import org.hkijena.mcat.ui.components.DocumentTabPane;
+import org.hkijena.mcat.ui.components.FileSelection;
 import org.hkijena.mcat.ui.components.MarkdownDocument;
 import org.hkijena.mcat.ui.parameters.ParameterPanel;
 import org.hkijena.mcat.utils.PythonEnvironment;
@@ -19,7 +22,10 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.lang.annotation.Annotation;
+import java.nio.file.Path;
 
 public class MCATSettingsDialog extends JDialog {
     private final Context context;

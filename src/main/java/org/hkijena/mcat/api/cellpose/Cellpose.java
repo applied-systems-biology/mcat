@@ -1,12 +1,5 @@
 package org.hkijena.mcat.api.cellpose;
 
-import ij.IJ;
-import ij.ImagePlus;
-import org.hkijena.mcat.utils.PathUtils;
-import org.hkijena.mcat.utils.PythonEnvironment;
-import org.hkijena.mcat.utils.PythonUtils;
-import org.hkijena.mcat.utils.ResourceUtils;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -15,13 +8,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.hkijena.mcat.utils.PathUtils;
+import org.hkijena.mcat.utils.PythonEnvironment;
+import org.hkijena.mcat.utils.PythonUtils;
+import org.hkijena.mcat.utils.ResourceUtils;
+
+import ij.IJ;
+import ij.ImagePlus;
+
 public class Cellpose implements Runnable {
 
     /**
      * INFO: The model name encodes some info. Cellpose requires the metadata from the name!!!
      */
     public static final String CELLPOSE_MODEL_NAME = "cellpose_residual_on_style_on_concatenation_off_2021_09_10";
-
+    private Path alternativeModel;
+   
     private final Path tmpPath;
     private List<ImagePlus> inputImages = new ArrayList<>();
     private List<ImagePlus> outputProbabilities = new ArrayList<>();
@@ -41,7 +43,8 @@ public class Cellpose implements Runnable {
     private double modelMeanDiameter = 210;
     private PythonEnvironment pythonEnvironment;
 
-    public Cellpose(Path tmpPath) {
+    public Cellpose(Path tmpPath, Path alternativeModel) {
+    	this.alternativeModel = alternativeModel;
         this.tmpPath = tmpPath;
     }
 
@@ -58,12 +61,27 @@ public class Cellpose implements Runnable {
 
         // Save the model
 //        System.out.println("Saving pretrained model ...");
-        Path modelPath = tmpPath.resolve(CELLPOSE_MODEL_NAME);
-        try {
-            Files.copy(ResourceUtils.getPluginResourceAsStream("models/" + CELLPOSE_MODEL_NAME), modelPath);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+//        Path modelPath = tmpPath.resolve(CELLPOSE_MODEL_NAME);
+        
+        Path modelPath;
+        if(alternativeModel == null) {
+        	System.out.println("Using inbuilt model");
+        	modelPath = tmpPath.resolve(CELLPOSE_MODEL_NAME);
+            try {
+                Files.copy(ResourceUtils.getPluginResourceAsStream("models/" + CELLPOSE_MODEL_NAME), modelPath);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+        	System.out.println("Using alternative model: " + alternativeModel.toString());
+        	modelPath = tmpPath.resolve(alternativeModel.getFileName());
+            try {
+                Files.copy(Files.newInputStream(alternativeModel), modelPath);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
+        
 
         StringBuilder code = new StringBuilder();
         code.append("from cellpose import models\n");

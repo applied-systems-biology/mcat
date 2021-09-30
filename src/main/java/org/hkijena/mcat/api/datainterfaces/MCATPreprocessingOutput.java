@@ -12,14 +12,13 @@
  ******************************************************************************/
 package org.hkijena.mcat.api.datainterfaces;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.hkijena.mcat.api.MCATDataInterface;
 import org.hkijena.mcat.api.MCATDataSlot;
 import org.hkijena.mcat.extension.datatypes.DerivativeMatrixData;
 import org.hkijena.mcat.extension.datatypes.HyperstackData;
-import org.hkijena.mcat.extension.datatypes.ROIData;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Organizes preprocessed data
