@@ -105,6 +105,7 @@ public class MCATSettings implements MCATParameterCollection {
                 }
             }
             else {
+                System.err.println("Could not find mcat.properties.json - Your settings will be reset");
                 INSTANCE = new MCATSettings();
             }
         }

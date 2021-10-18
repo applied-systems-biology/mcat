@@ -12,8 +12,10 @@
  ******************************************************************************/
 package org.hkijena.mcat;
 
+import net.imagej.ImageJ;
 import org.hkijena.mcat.api.MCATProject;
 import org.hkijena.mcat.api.MCATRun;
+import org.hkijena.mcat.api.MCATSettings;
 import org.hkijena.mcat.api.MCATValidityReport;
 
 import java.io.IOException;
@@ -40,6 +42,8 @@ public class Main {
         MCATProject project = MCATProject.loadProject(projectFilePath);
         MCATValidityReport report = new MCATValidityReport();
         System.out.println("Output will be written to " + outputPath);
+        final ImageJ ij = new ImageJ();
+        MCATSettings.reloadProperties();
         MCATRun run = new MCATRun(project);
         run.setOutputPath(outputPath);
         run.reportValidity(report);
