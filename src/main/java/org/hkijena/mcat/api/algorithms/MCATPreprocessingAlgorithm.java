@@ -284,9 +284,14 @@ public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
         else {
             System.out.println("\tSegmenting tissue ...");
             roi = segmentTissue(imp);
+            if(roi == null)
+            	throw new NullPointerException("No ROI was found for " + sample + ". Please check data or provide a ROI file.");
+            
             tissueROI.setData(new ROIData(roi, roi.getName()));
+			
         }
 
+        //TODO what happens if null?
 
         /*
          * perform z-transformation on pixel values of channel of interest
