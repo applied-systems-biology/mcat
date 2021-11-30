@@ -13,7 +13,7 @@ public class CellPoseGPUEnvInstaller extends CellPoseEnvInstaller {
     public CellPoseGPUEnvInstaller(Component parent, Context context, MCATParameterAccess parameterAccess) {
         super(parent, context, parameterAccess);
         this.setConfiguration(new Configuration());
-        getConfiguration().setInstallationPath(Paths.get("mcat").resolve("cellpose-gpu"));
+        getConfiguration().setInstallationPath(Paths.get("mcat").resolve("cellpose-gpu").toAbsolutePath());
         getConfiguration().setName("Cellpose (GPU)");
     }
 

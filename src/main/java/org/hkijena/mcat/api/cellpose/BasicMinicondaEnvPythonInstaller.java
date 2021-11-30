@@ -377,7 +377,7 @@ public class BasicMinicondaEnvPythonInstaller implements Runnable {
         private String name = "Conda";
 
         public Configuration() {
-            installationPath = Paths.get("jipipe").resolve("miniconda");
+            installationPath = Paths.get("jipipe").resolve("miniconda").toAbsolutePath();
         }
 
         @Override

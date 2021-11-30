@@ -22,7 +22,7 @@ public class CellPoseEnvInstaller extends BasicMinicondaEnvPythonInstaller {
     public CellPoseEnvInstaller(Component parent, Context context, MCATParameterAccess parameterAccess) {
         super(parent, context, parameterAccess);
         setConfiguration(new Configuration());
-        getConfiguration().setInstallationPath(Paths.get("mcat").resolve("cellpose-cpu"));
+        getConfiguration().setInstallationPath(Paths.get("mcat").resolve("cellpose-cpu").toAbsolutePath());
         getConfiguration().setName("Cellpose (CPU)");
     }
 
@@ -45,10 +45,10 @@ public class CellPoseEnvInstaller extends BasicMinicondaEnvPythonInstaller {
         runConda("run", "--no-capture-output", "pip", "install", "cellpose", "--upgrade");
         runConda("run", "--no-capture-output", "pip", "install", "cellpose[gui]");
 
-        // Download models
-        if (((Configuration) getConfiguration()).isDownloadModels()) {
-            runConda("run", "--no-capture-output", "python", "-u", "-c", "from cellpose import models; models.download_model_weights()");
-        }
+//        // Download models
+//        if (((Configuration) getConfiguration()).isDownloadModels()) {
+//            runConda("run", "--no-capture-output", "python", "-u", "-c", "from cellpose import models; models.download_model_weights()");
+//        }
     }
 
     private Path downloadEnvironment() {
@@ -71,18 +71,18 @@ public class CellPoseEnvInstaller extends BasicMinicondaEnvPythonInstaller {
     }
 
     public static class Configuration extends BasicMinicondaEnvPythonInstaller.Configuration {
-        private boolean downloadModels = true;
-
-        @MCATDocumentation(name = "Download models", description = "If enabled, models will also be downloaded. " +
-                "Otherwise, Cellpose might download the models during its first run.")
-        @MCATParameter("download-models")
-        public boolean isDownloadModels() {
-            return downloadModels;
-        }
-
-        @MCATParameter("download-models")
-        public void setDownloadModels(boolean downloadModels) {
-            this.downloadModels = downloadModels;
-        }
+//        private boolean downloadModels = true;
+//
+//        @MCATDocumentation(name = "Download models", description = "If enabled, models will also be downloaded. " +
+//                "Otherwise, Cellpose might download the models during its first run.")
+//        @MCATParameter("download-models")
+//        public boolean isDownloadModels() {
+//            return downloadModels;
+//        }
+//
+//        @MCATParameter("download-models")
+//        public void setDownloadModels(boolean downloadModels) {
+//            this.downloadModels = downloadModels;
+//        }
     }
 }
