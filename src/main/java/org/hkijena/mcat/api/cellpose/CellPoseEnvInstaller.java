@@ -1,12 +1,5 @@
 package org.hkijena.mcat.api.cellpose;
 
-import org.hkijena.mcat.api.MCATDocumentation;
-import org.hkijena.mcat.api.parameters.MCATParameter;
-import org.hkijena.mcat.api.parameters.MCATParameterAccess;
-import org.hkijena.mcat.utils.PathUtils;
-import org.hkijena.mcat.utils.WebUtils;
-import org.scijava.Context;
-
 import java.awt.Component;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -16,6 +9,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+
+import org.hkijena.mcat.api.parameters.MCATParameterAccess;
+import org.hkijena.mcat.utils.PathUtils;
+import org.hkijena.mcat.utils.WebUtils;
+import org.scijava.Context;
 
 public class CellPoseEnvInstaller extends BasicMinicondaEnvPythonInstaller {
    
@@ -70,7 +68,7 @@ public class CellPoseEnvInstaller extends BasicMinicondaEnvPythonInstaller {
         return path;
     }
 
-    public static class Configuration extends BasicMinicondaEnvPythonInstaller.Configuration {
+//    public static class Configuration extends BasicMinicondaEnvPythonInstaller.Configuration {
 //        private boolean downloadModels = true;
 //
 //        @MCATDocumentation(name = "Download models", description = "If enabled, models will also be downloaded. " +
@@ -84,5 +82,5 @@ public class CellPoseEnvInstaller extends BasicMinicondaEnvPythonInstaller {
 //        public void setDownloadModels(boolean downloadModels) {
 //            this.downloadModels = downloadModels;
 //        }
-    }
+//    }
 }
