@@ -152,8 +152,9 @@ public class MCATWorkbenchUI extends JFrame {
         boolean cellPoseIsValid = MCATSettings.getInstance().getCellposeEnvironment().isValid();
 
         for (MCATProjectDataSet dataSet : project.getDataSets().values()) {
-            if(dataSet.getRawDataInterface().getTissueROI() == null || !dataSet.getRawDataInterface().getTissueROI().hasData()) {
-                if(!cellPoseIsValid) {
+        	
+        	if(dataSet.getRawDataInterface().getTissueROI() == null || !dataSet.getRawDataInterface().getTissueROI().hasDataOrIsProvidedData()) {
+            	if(!cellPoseIsValid) {
                     JOptionPane.showMessageDialog(this, "You have data sets without a user-defined ROI. MCAT will automatically segement the tissue ROIs, which requires Cellpose to be configured.\n" +
                             "Please click the 'Settings' button and configure/install Cellpose.", "Cellpose not installed", JOptionPane.ERROR_MESSAGE);
                     return false;
