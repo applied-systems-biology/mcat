@@ -12,7 +12,6 @@
  ******************************************************************************/
 package org.hkijena.mcat.api.algorithms;
 
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
