@@ -48,6 +48,7 @@ import ij.process.ImageStatistics;
 import inra.ijpb.morphology.Morphology;
 import inra.ijpb.morphology.strel.DiskStrel;
 
+
 public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
 
     private final MCATPreprocessingParameters preprocessingParameters;
