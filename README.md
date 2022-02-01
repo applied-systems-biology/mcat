@@ -15,7 +15,7 @@ The project code is licensed under BSD 2-Clause.
 See the LICENSE file provided with the code for the full license.
 
 ## System Requirements  
-*Mcat* is Java-based and generally platform-independent. It was tested on Windows 7, Linux Ubuntu 20.10 and macOS 10.12.6.
+*Mcat* is Java-based and generally platform-independent. It was tested on Windows 10, Linux Ubuntu 20.10 and macOS 10.12.6.
 
 ## Installation  
 If you don’t have ImageJ installed yet, you can get it [here](https://imagej.net/Fiji). To integrate *Mcat* into your ImageJ distribution you can either install it via its ImageJ Update Site or manually.  
