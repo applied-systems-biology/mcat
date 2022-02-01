@@ -1,3 +1,3 @@
-Path to custom cellpose model for automated image segmentation. 
+If a custom Cellpose model shall be used for the segmentation, specify the path to the model file here. 
 
-The deep learning-based segmentation can be adapted by providing a custom Cellpose model file. Specify the path to the model here to use the custom model instead of the pretrained Cellpose model file that is included in Mcat.
+Don’t rename Cellpose model files as the name encodes important model information.

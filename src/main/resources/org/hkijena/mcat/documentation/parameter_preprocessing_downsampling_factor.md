@@ -1,3 +1,3 @@
-Defines how strongly image data is smoothed in the time domain.
+Defines how strongly image data is smoothed in the time domain. 
 
-This parameter is used to reduce breathing artifacts by performing downsampling and averaging over _s_ consecutive time frames. Set this value to 1 if the image data shall not be smoothed. Smaller values lead to increased computation time and possibly strong fluctuations in the extracted kinetic curves, while larger values decrease computation time but lead to reduced time resolution.
+This parameter is used to reduce breathing artifacts by performing downsampling and averaging over s consecutive time frames. Set this value to 1 if the image data shall not be smoothed. Smaller values lead to increased computation time and possibly strong fluctuations in the extracted kinetic curves, while larger values decrease computation time while reducing the time resolution. 

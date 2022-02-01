@@ -1,1 +1,1 @@
-Define if the ROI file used for analysis is saved to the output folder.
+Defines if the ROI file used for analysis is saved to the output folder.

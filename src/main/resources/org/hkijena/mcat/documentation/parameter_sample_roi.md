@@ -1,3 +1,3 @@
 # ROI file
 
-test
+Manual annotation that serves as ROI.
