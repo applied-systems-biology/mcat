@@ -1,3 +1,3 @@
 Defines if the kinetic cluster with the maximum signal decrease should be used for AUC calculation. 
 
-If it is enabled, a weighted curve is calculated for each subject with the weight being the corresponding pixel abundance value for the kinetic cluster with the maximum signal decrease. These curves are then normalized by the total number of pixels of the respective subjects and the AUC is calculated, taking into account the cutoff value.
+If it is enabled, a weighted curve is calculated for each sample with the weight being the corresponding pixel abundance value for the kinetic cluster with the maximum signal decrease. These curves are then normalized by the total number of pixels of the respective samples and the AUC is calculated, taking into account the cutoff value.

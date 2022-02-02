@@ -107,7 +107,7 @@ public class MCATClusteringAlgorithm extends MCATAlgorithm {
 
         for (int i = 0; i < keys.size(); i++) {
             MCATClusteringInputDataSetEntry samp = clusteringInput.getDataSetEntries().get(keys.get(i));
-            System.out.println("\t\tSubject: " + samp.getDataSetName());
+            System.out.println("\t\tSample: " + samp.getDataSetName());
             names[i] = samp.getDataSetName();
 
             ImagePlus imp = samp.getPreprocessedDataInterface().getPreprocessedImage().getData(HyperstackData.class).getImage();

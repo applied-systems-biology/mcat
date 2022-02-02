@@ -18,7 +18,7 @@ package org.hkijena.mcat.api;
 public enum MCATClusteringHierarchy {
     AllInOne,
     PerTreatment,
-    PerSubject;
+    PerSample;
 
 
     @Override
@@ -28,8 +28,8 @@ public enum MCATClusteringHierarchy {
                 return "All in one";
             case PerTreatment:
                 return "Per treatment";
-            case PerSubject:
-                return "Per subject";
+            case PerSample:
+                return "Per sample";
             default:
                 throw new RuntimeException();
         }
