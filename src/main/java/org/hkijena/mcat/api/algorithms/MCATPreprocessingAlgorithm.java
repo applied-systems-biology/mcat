@@ -13,6 +13,7 @@
 package org.hkijena.mcat.api.algorithms;
 
 
+import java.awt.Color;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -36,12 +37,14 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.gui.Roi;
+import ij.gui.WaitForUserDialog;
 import ij.measure.ResultsTable;
 import ij.plugin.Duplicator;
 import ij.plugin.ImageCalculator;
 import ij.plugin.filter.ParticleAnalyzer;
 import ij.plugin.frame.RoiManager;
 import ij.process.AutoThresholder;
+import ij.process.ColorProcessor;
 import ij.process.ImageConverter;
 import ij.process.ImageProcessor;
 import ij.process.ImageStatistics;
@@ -291,8 +294,6 @@ public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
 			
         }
 
-        //TODO what happens if null?
-
         /*
          * perform z-transformation on pixel values of channel of interest
          */
@@ -364,6 +365,7 @@ public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
         ImageConverter converter = new ImageConverter(probabilities);
         converter.convertToGray8();
         
+        
         // Improve Contrast between foreground/background
         IJ.run(probabilities, "Median...", "radius=2");
         IJ.run(probabilities, "Enhance Contrast...", "saturated=0.3 normalize");
@@ -373,11 +375,13 @@ public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
 	    int[] histogram = probabilities.getProcessor().getHistogram();
 	    int threshold = autoThresholder.getThreshold(AutoThresholder.Method.Otsu, histogram);
 	    probabilities.getProcessor().threshold(threshold);
+        
 	    
 	    // Fill holes and remove noise
         IJ.run(probabilities, "Options...", "iterations=1 count=1 black");
         IJ.run(probabilities, "Fill Holes","");
         IJ.run(probabilities, "Despeckle","");
+        
         
         // Particle finder to find objects - create mask with largest object
         RoiManager manager = new RoiManager(true);
@@ -413,32 +417,27 @@ public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
             manager.select(index);
             manager.runCommand(mask, "Fill");
         }
-        
+    
         // Morphological filtering of mask object
         int width = mask.getWidth();
         int height = mask.getHeight();
         
         IJ.run(mask, "Canvas Size...", "width=" + width*2 + " height=" + height*2 + " position=Center zero");
-        
+           
         ImageProcessor morphed = Morphology.closing(mask.getProcessor(), DiskStrel.fromRadius(50));
         morphed = Morphology.opening(mask.getProcessor(), DiskStrel.fromRadius(50));
         mask.setProcessor(morphed);
         
         IJ.run(mask, "Canvas Size...", "width=" + width + " height=" + height + " position=Center zero");
-        
+             
         // Get convex hull of mask object
         IJ.run(mask, "Options...", "iterations=1 count=1 black");
         mask.getProcessor().setThreshold(127, 255, ImageProcessor.BLACK_AND_WHITE_LUT);
         IJ.run(mask, "Convert to Mask", "");
         IJ.run(mask, "Create Selection", "");
         IJ.run(mask, "Convex Hull", "");
-        IJ.run(mask, "Fill", "slice");
-        
-        mask.getProcessor().setThreshold(127, 255, ImageProcessor.BLACK_AND_WHITE_LUT);
-        IJ.run(mask, "Convert to Mask", "");
-        IJ.run(mask, "Create Selection", "");
-        
-        Roi r = mask.getRoi();
+             
+		Roi r = mask.getRoi();
         r.setName(imp.getShortTitle() + "_cellpose");
         
         return r;
