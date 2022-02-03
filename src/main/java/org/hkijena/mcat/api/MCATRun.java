@@ -169,7 +169,7 @@ public class MCATRun implements MCATValidatable {
     private void initializeClustering(MCATPreprocessingParameters preprocessingParameters,
                                       MCATClusteringParameters clusteringParameters) {
         boolean noTreatment = clusteringParameters.getClusteringHierarchy() != MCATClusteringHierarchy.PerTreatment;
-        boolean noSubject = clusteringParameters.getClusteringHierarchy() != MCATClusteringHierarchy.PerSubject;
+        boolean noSubject = clusteringParameters.getClusteringHierarchy() != MCATClusteringHierarchy.PerSample;
 
         Set<MCATDataInterfaceKey> matchingPreprocessedInterfaceKeys = uniqueDataInterfaces.keySet().stream()
                 .filter(k -> k.getParameters().contains(preprocessingParameters) &&
@@ -396,7 +396,7 @@ public class MCATRun implements MCATValidatable {
             String subject = clusteringAlgorithm.getClusteringInput().getGroupSubject();
             String treatment = clusteringAlgorithm.getClusteringInput().getGroupTreatment();
             if (StringUtils.isNullOrEmpty(subject))
-                subject = "ALL_SUBJECTS";
+                subject = "ALL_SAMPLES";
             if (StringUtils.isNullOrEmpty(treatment))
                 treatment = "ALL_TREATMENTS";
             String id = subject + "__" + treatment;

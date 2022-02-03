@@ -61,7 +61,7 @@ public class AUCPlotData implements MCATData {
         table.incrementCounter();
         int row = table.getCounter() - 1;
 
-        table.setValue("subject", row, subject);
+        table.setValue("sample", row, subject);
         table.setValue("treatment", row, treatment);
         table.setValue("AUC", row, auc);
         table.setValue("cumAUC", row, cumAUC);
@@ -100,7 +100,7 @@ public class AUCPlotData implements MCATData {
         DefaultBoxAndWhiskerCategoryDataset dataset = new DefaultBoxAndWhiskerCategoryDataset();
         Map<String, List<Double>> groupedBy = new HashMap<>();
         for (int row = 0; row < table.getCounter(); row++) {
-            String category = table.getStringValue("subject", row);
+            String category = table.getStringValue("sample", row);
             List<Double> dataList = groupedBy.getOrDefault(category, null);
             if (dataList == null) {
                 dataList = new ArrayList<>();
@@ -113,7 +113,7 @@ public class AUCPlotData implements MCATData {
         }
 
         JFreeChart chart = ChartFactory.createBoxAndWhiskerChart("AUC plot",
-                "Subject",
+                "Sample",
                 "AUC",
                 dataset,
                 true);
@@ -163,7 +163,7 @@ public class AUCPlotData implements MCATData {
         autoSaveChartToSVG(perTreatmentRender, folder.resolve(fileName + "_perTreatment.svg"));
 
         JFreeChart perSubjectRender = renderChartPerSubject();
-        autoSaveChartToPNG(perSubjectRender, folder.resolve(fileName + "_perSubject.png"));
-        autoSaveChartToSVG(perSubjectRender, folder.resolve(fileName + "_perSubject.svg"));
+        autoSaveChartToPNG(perSubjectRender, folder.resolve(fileName + "_perSample.png"));
+        autoSaveChartToSVG(perSubjectRender, folder.resolve(fileName + "_perSample.svg"));
     }
 }

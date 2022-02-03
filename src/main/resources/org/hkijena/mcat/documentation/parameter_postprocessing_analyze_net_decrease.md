@@ -1,3 +1,3 @@
 Defines if all kinetic clusters with a signal net decrease should be used for AUC calculation. 
 
-If it is enabled, a weighted curve is calculated for each subject with the weights being the corresponding pixel abundance values for all kinetic clusters with a signal net decrease. These curves are then normalized by the total number of pixels of the respective subjects and the AUC is calculated, taking into account the cutoff value.
+If it is enabled, a weighted curve is calculated for each sample with the weights being the corresponding pixel abundance values for all kinetic clusters with a signal net decrease. These curves are then normalized by the total number of pixels of the respective samples and the AUC is calculated, taking into account the cutoff value.

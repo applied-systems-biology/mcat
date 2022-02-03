@@ -12,7 +12,6 @@
  ******************************************************************************/
 package org.hkijena.mcat.api.algorithms;
 
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -47,6 +46,7 @@ import ij.process.ImageProcessor;
 import ij.process.ImageStatistics;
 import inra.ijpb.morphology.Morphology;
 import inra.ijpb.morphology.strel.DiskStrel;
+
 
 public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
 
