@@ -432,11 +432,6 @@ public class MCATPreprocessingAlgorithm extends MCATAlgorithm {
         IJ.run(mask, "Convert to Mask", "");
         IJ.run(mask, "Create Selection", "");
         IJ.run(mask, "Convex Hull", "");
-        IJ.run(mask, "Fill", "slice");
-        
-        mask.getProcessor().setThreshold(127, 255, ImageProcessor.BLACK_AND_WHITE_LUT);
-        IJ.run(mask, "Convert to Mask", "");
-        IJ.run(mask, "Create Selection", "");
         
         Roi r = mask.getRoi();
         r.setName(imp.getShortTitle() + "_cellpose");
